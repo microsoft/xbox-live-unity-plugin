@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class XboxLiveMenus : MonoBehaviour {
+public class Presence : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

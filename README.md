@@ -1,12 +1,13 @@
 ## Welcome!
 
-The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their Unity based game. 
-To get access to the Xbox Live service, please apply to the ID@Xbox program at http://www.xbox.com/en-us/Developers/id
+The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game. 
+To get access to the Xbox Live service, please apply to the [ID@Xbox program](http://www.xbox.com/en-us/Developers/id).
 
 ## Getting Started
 The Unity Plugin is broken into the following parts
 
-* __Plugin__ contains the various assets that are actually contained in the plugin package.
+* __Assets__ contains the Unity project content.
+  * The actual Xbox Live plugin assets in the plugin package are located in the __Xbox Live__ folder inside.
 * __Build__ contains scripts to generate the .unitypackage.
 
 ## Contribute Back!
