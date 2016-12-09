@@ -1,0 +1,3 @@
+[submodule "External/xbox-live-plugin-shared"]
+	path = External/xbox-live-plugin-shared
+	url = https://github.com/Microsoft/xbox-live-plugin-shared

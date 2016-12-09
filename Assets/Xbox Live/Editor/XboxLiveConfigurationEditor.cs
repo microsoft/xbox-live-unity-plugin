@@ -55,8 +55,9 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
 		if (GUILayout.Button(associateButtonText, GUILayout.MaxWidth(200)))
 		{
-			string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard.exe");
-			Process.Start(wizardPath, XboxServicesConfiguration.ConfigurationFilePath);
+			string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
+			Debug.Log (wizardPath);
+			Process.Start(wizardPath, Application.dataPath);
 		}
 
 		if (this.IsXboxLiveConfigured) {
