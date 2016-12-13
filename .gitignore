@@ -1,7 +1,6 @@
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
-/[Bb]uild/
 /[Bb]uilds/
 /Assets/AssetStoreTools*
 
@@ -28,3 +27,8 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# Extra components pulled from other places
+/Assets/Xbox Live/Tools
+/Assets/Xbox Live/Libs
+/Assets/Xbox Live/Libs.meta
