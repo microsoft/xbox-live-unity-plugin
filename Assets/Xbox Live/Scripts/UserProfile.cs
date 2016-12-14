@@ -24,17 +24,19 @@ public class UserProfile : MonoBehaviour
 
     public XboxLiveUser CurrentUser;
 
+    public void Awake()
+    {
+        this.profileInfoPanel.SetActive(false);
+    }
+
     public void Start()
     {
-        Debug.Log("Creating user");
+        // Disable the sign-in button if there's no configuration available.
+        this.signInPanel.GetComponentInChildren<Button>().interactable = XboxLive.Instance.IsConfigured;
+
         this.CurrentUser = new XboxLiveUser();
     }
 
-    public void Awake()
-    {
-        Debug.Log("Awake");
-        this.profileInfoPanel.SetActive(false);
-    }
 
     public void SignIn()
     {
@@ -48,7 +50,6 @@ public class UserProfile : MonoBehaviour
 
         yield return this.CurrentUser.SignInAsync(IntPtr.Zero).AsCoroutine();
 
-        this.CurrentUser.Gamertag = "Veleek";
         XboxLive.Instance.Context = new XboxLiveContext(this.CurrentUser);
 
         yield return this.LoadProfileInfo();
@@ -56,6 +57,7 @@ public class UserProfile : MonoBehaviour
 
     private IEnumerator LoadProfileInfo()
     {
+        // How do we get the user profile pic from the Xbox Live SDK?  
         WWW www = new WWW("http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KId46ktn4AUxk.ghIPeRshxRqsosbBN.5ygjwRBcUg7G_su3phiVsbouqmSe7ZRa8o&format=png");
         yield return www;
 

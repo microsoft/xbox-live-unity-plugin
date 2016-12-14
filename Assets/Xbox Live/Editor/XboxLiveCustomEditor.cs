@@ -15,12 +15,10 @@ using UnityEngine;
 [CustomEditor(typeof(XboxLive))]
 public class XboxLiveCustomEditor : Editor
 {
-    private SerializedProperty configuration;
+    private const string MissingValue = "<missing>";
 
     private void OnEnable()
     {
-        this.configuration = this.serializedObject.FindProperty("Configuration");
-
         LoadConfiguration();
 
         FileSystemWatcher configFileWatcher = new FileSystemWatcher(Application.dataPath)
@@ -62,7 +60,24 @@ public class XboxLiveCustomEditor : Editor
 
         if (XboxLive.Instance.IsConfigured)
         {
-            EditorGUILayout.PropertyField(this.configuration, true);
+            const int labelHeight = 18;
+            GUILayout.Label("Title Identity", EditorStyles.boldLabel);
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Title Id");
+            EditorGUILayout.SelectableLabel(XboxLive.Instance.Configuration.TitleId ?? MissingValue, GUILayout.Height(labelHeight));
+            EditorGUILayout.EndHorizontal();
+
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Scid");
+            EditorGUILayout.SelectableLabel(XboxLive.Instance.Configuration.PrimaryServiceConfigId ?? MissingValue, GUILayout.Height(labelHeight));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Product Family Name");
+            EditorGUILayout.SelectableLabel(XboxLive.Instance.Configuration.ProductFamilyName ?? MissingValue, GUILayout.Height(labelHeight));
+            EditorGUILayout.EndHorizontal();
         }
         else
         {

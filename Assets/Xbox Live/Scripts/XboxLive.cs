@@ -18,11 +18,9 @@ public class XboxLive : MonoBehaviour
 {
     public const string ConfigurationFileName = "xboxservices.config";
 
-    public XboxServicesConfiguration Configuration;
+    public XboxServicesConfiguration Configuration { get; set; }
 
     private static XboxLive instance;
-
-    private XboxLiveContext context;
 
     public static XboxLive Instance
     {
@@ -54,7 +52,6 @@ public class XboxLive : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("Awake");
         DontDestroyOnLoad(this);
 
         this.Configuration = XboxServicesConfiguration.Load();
