@@ -17,11 +17,11 @@ if(!$unity)
 }
 
 $projectPath = Resolve-Path (Join-Path $PSScriptRoot ..)
-$exportAssetPath = .\Assets\XboxLive
-$packagePath = Resolve-Path (Join-Path $PSScriptRoot ..\XboxLive.unitypackage)
+$exportAssetPath = Join-Path $projectPath "Assets\Xbox Live"
+$packagePath = Join-Path $projectPath XboxLive.unitypackage
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
-. $unity -exportPackage $exportAssetPath $packagePath -projectPath $projectPath -logFile $logFile -quit -batchmode
+. $unity -exportPackage "$exportAssetPath" "$packagePath" -projectPath "$projectPath" -logFile $logFile -quit -batchmode
 if($LASTEXITCODE -ne 0)
 {
   Write-Error "Unity.exe failed to build package.  Exit Code: $LASTEXITCODE."
