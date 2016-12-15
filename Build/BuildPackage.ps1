@@ -17,8 +17,10 @@ if(!$unity)
 }
 
 $projectPath = Resolve-Path (Join-Path $PSScriptRoot ..)
-$exportAssetPath = Join-Path $projectPath "Assets\Xbox Live"
 $packagePath = Join-Path $projectPath XboxLive.unitypackage
+Remove-Item $packagePath -ErrorAction SilentlyContinue
+
+$exportAssetPath = "Assets\Xbox Live"
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
 Write-Host "Exporting Xbox Live Unity Plugin to $packagePath"
