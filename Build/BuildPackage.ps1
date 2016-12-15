@@ -21,9 +21,24 @@ $exportAssetPath = Join-Path $projectPath "Assets\Xbox Live"
 $packagePath = Join-Path $projectPath XboxLive.unitypackage
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
-. $unity -exportPackage "$exportAssetPath" "$packagePath" -projectPath "$projectPath" -logFile $logFile -quit -batchmode
-if($LASTEXITCODE -ne 0)
+Write-Host "Exporting Xbox Live Unity Plugin to $packagePath"
+. $unity -batchmode -logFile "$logFile" -projectPath "$projectPath" -exportPackage "$exportAssetPath" "$packagePath" -quit
+$global:unityProcess = Get-Process Unity | Sort-Object StartTime | Select-Object -Last 1 
+
+# Wait for it to complete exporting the package
+$unityProcess | Wait-Process -Timeout 120 -ErrorAction SilentlyContinue
+
+if(!$unityProcess.HasExited)
 {
-  Write-Error "Unity.exe failed to build package.  Exit Code: $LASTEXITCODE."
-  Write-Error "See $logFile for details"
+    Write-Warning "Unity (PID $($unityProcess.Id)) seems to be taking a long time to generate the package.  Check the log file for details to see what's happening."
+    Write-Warning "Log: $logFile"
+}
+elseif($unityProcess.ExitCode -ne 0)
+{
+    Write-Warning "Log: $logFile"
+    Write-Error "Unity.exe failed to build package.  Exit Code: $($unityProcess.ExitCode)."
+}
+else
+{
+    Write-Host "Package created successfully"
 }
