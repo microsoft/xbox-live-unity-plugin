@@ -1,10 +1,27 @@
 # Copyright (c) 2016 Microsoft. All Rights Reserved
 # Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+<#
+.SUMMARY Install the Xbox Live SDK into the Unity project
+.PARAM FromNuget
+  Installing the SDK from the NuGet package.
+.PARAM FromSource
+  Build the SDK from the xbox-live-api-csharp submodule and copy the binaries.
+.PARAM RawSource
+  Copy the raw API source files directly into the Unity directory.
+  This is generally useful if you're doing a large amount of back and forth between 
+  the SDK and Unity, but requires manually copying changes back.
+#>
 param(
-  [switch]$FromNuget
+  [switch]$FromNuget, 
+  [switch]$FromSource,
+  [switch]$RawSource
 )
 
 $ErrorActionPreference = "Stop"
+
+$sdkOutputPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\Libs\"
+mkdir $sdkOutputPath -force | Out-Null
 
 
 if($FromNuget)
@@ -31,8 +48,26 @@ if($FromNuget)
   . $nugetPath install Microsoft.Xbox.Live.SDK.WinRT.UWP -OutputDirectory $packagesPath
 
   # TODO: Copy some portion of the files out into Unity directories as needed.
+  return
 }
-else
+elseif($FromSource)
+{
+  $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
+  $sdkSln = Join-Path $sdkPath "Build\Microsoft.Xbox.Services.Unity.CSharp\Microsoft.Xbox.Services.Unity.CSharp.sln" 
+
+  if(!(Test-Path $sdkSln))
+  {
+    Write-Error "Unable to find $sdkSln.  Make sure that all submodules are synced."
+    return
+  }
+
+  nuget restore $sdkSln
+  msbuild $sdkSln
+
+  Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
+  copy (Join-Path $sdkPath "Build\Microsoft.Xbox.Services.Unity.CSharp\bin\Debug\*") $sdkOutputPath -recurse -force
+}
+elseif($RawSource)
 {
   # Otherwise just copy the raw source files from the xbox-live-api-csharp submodule directly into the project
   $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
@@ -41,9 +76,6 @@ else
     Write-Error "Unable to find required files in xbox-live-api-csharp submodule.  Make sure that all submodules are synced."
     return
   }
-  
-  $sdkOutputPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\Libs\"
-  mkdir $sdkOutputPath -force | Out-Null
   
   copy (Join-Path $sdkPath "External\parse-sdk\debug\*") $sdkOutputPath
   copy (Join-Path $sdkPath "Source\api") $sdkOutputPath -Exclude *.csproj -recurse -force
