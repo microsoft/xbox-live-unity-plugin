@@ -5,6 +5,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -13,7 +14,22 @@ public static class UnityTaskExtensions
 {
     public static TaskYieldInstruction AsCoroutine(this Task task)
     {
+        if (task == null)
+        {
+            throw new NullReferenceException();
+        }
+
         return new TaskYieldInstruction(task);
+    }
+
+    public static TaskYieldInstruction<TResult> AsCoroutine<TResult>(this Task<TResult> task)
+    {
+        if (task == null)
+        {
+            throw new NullReferenceException();
+        }
+
+        return new TaskYieldInstruction<TResult>(task);
     }
 }
 
@@ -27,14 +43,45 @@ public class TaskYieldInstruction : CustomYieldInstruction
 
     public TaskYieldInstruction(Task task)
     {
+        this.Task = task;
         task.ContinueWith(t => this.taskComplete = true);
     }
+
+    public Task Task { get; protected set; }
 
     public override bool keepWaiting
     {
         get
         {
             return !this.taskComplete;
+        }
+    }
+}
+
+public class TaskYieldInstruction<TResult> : TaskYieldInstruction
+{
+    public TaskYieldInstruction(Task<TResult> task) : base(task)
+    {
+    }
+
+    public new Task<TResult> Task
+    {
+        get
+        {
+            return base.Task as Task<TResult>;
+        }
+
+        protected set
+        {
+            base.Task = value;
+        }
+    }
+
+    public TResult Result
+    {
+        get
+        {
+            return this.Task.Result;
         }
     }
 }

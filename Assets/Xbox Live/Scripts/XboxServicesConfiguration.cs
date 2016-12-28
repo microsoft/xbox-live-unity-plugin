@@ -33,16 +33,39 @@ public class XboxServicesConfiguration
 
     public string ProductFamilyName;
 
+    public bool UseMockData;
+
+    public void Save()
+    {
+        this.Save(ConfigurationFilePath);
+    }
+
+    private void Save(string path)
+    {
+        try
+        {
+            File.WriteAllText(path, JsonUtility.ToJson(this, true));
+        }
+        catch (ArgumentException)
+        {
+        }
+    }
+
     public static XboxServicesConfiguration Load()
     {
-        if (!File.Exists(ConfigurationFilePath))
+        return Load(ConfigurationFilePath);
+    }
+
+    public static XboxServicesConfiguration Load(string path)
+    {
+        if (!File.Exists(path))
         {
-            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.");
+            return null;
         }
 
         try
         {
-            return JsonUtility.FromJson<XboxServicesConfiguration>(File.ReadAllText(ConfigurationFilePath));
+            return JsonUtility.FromJson<XboxServicesConfiguration>(File.ReadAllText(path));
         }
         catch (ArgumentException)
         {
@@ -57,6 +80,5 @@ public class XboxServicesConfiguration
     public static void Clear()
     {
         AssetDatabase.DeleteAsset("Assets/XboxServices.config");
-        return;
     }
 }
