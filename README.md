@@ -20,15 +20,18 @@ You can also build the Unity plugin yourself:
 
 1. Open up a powershell window.
 2. Clone the project, and be sure to include and sync all the required submodules.
+
     ```
     git clone https://github.com/Microsoft/xbox-live-unity-plugin --recursive
     cd xbox-live-unity-plugin
     ```
 3. Run the Setup script to get all of the pre-requisites configured.
+
     ```
     .\Build\Setup.ps1
     ```
 4. Open up the project in Unity.
+
     ```
     Unity.exe -projectPath .\
     ```
