@@ -27,8 +27,13 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+BuildPackage.log
 
 # Extra components pulled from other places
 /Assets/Xbox Live/Tools
 /Assets/Xbox Live/Libs
 /Assets/Xbox Live/Libs.meta
+
+# Ignore any configuration files created when testing stuff.
+/Assets/XboxServices.config
+/Assets/XboxServices.config.meta

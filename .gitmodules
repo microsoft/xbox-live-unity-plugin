@@ -1,3 +1,6 @@
 [submodule "External/xbox-live-plugin-shared"]
 	path = External/xbox-live-plugin-shared
 	url = https://github.com/Microsoft/xbox-live-plugin-shared
+[submodule "External/xbox-live-api-csharp"]
+	path = External/xbox-live-api-csharp
+	url = https://github.com/Microsoft/xbox-live-api-csharp.git

@@ -22,18 +22,21 @@ public class UserProfile : MonoBehaviour
     public Image gamerpic;
     public Text gamertag;
 
-    public XboxLiveUser CurrentUser;
+    public void Awake()
+    {
+        this.profileInfoPanel.SetActive(false);
+        XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
+    }
 
     public void Start()
     {
-        Debug.Log("Creating user");
-        this.CurrentUser = new XboxLiveUser();
+        // Disable the sign-in button if there's no configuration available.
+        this.signInPanel.GetComponentInChildren<Button>().interactable = XboxLive.IsEnabled;
     }
 
-    public void Awake()
+    private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
     {
-        Debug.Log("Awake");
-        this.profileInfoPanel.SetActive(false);
+        this.Refresh();
     }
 
     public void SignIn()
@@ -46,25 +49,28 @@ public class UserProfile : MonoBehaviour
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-        yield return this.CurrentUser.SignInAsync(IntPtr.Zero).AsCoroutine();
-
-        this.CurrentUser.Gamertag = "Veleek";
-        XboxLive.Instance.Context = new XboxLiveContext(this.CurrentUser);
-
+        yield return XboxLive.Instance.SignInAsync();
         yield return this.LoadProfileInfo();
     }
 
     private IEnumerator LoadProfileInfo()
     {
+        // How do we get the user profile pic from the Xbox Live SDK?  
         WWW www = new WWW("http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KId46ktn4AUxk.ghIPeRshxRqsosbBN.5ygjwRBcUg7G_su3phiVsbouqmSe7ZRa8o&format=png");
         yield return www;
 
         Texture2D t = www.texture;
         Rect r = new Rect(0, 0, t.width, t.height);
         this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
-        this.gamertag.text = this.CurrentUser.Gamertag;
+        this.gamertag.text = XboxLive.Instance.User.Gamertag;
 
-        this.signInPanel.SetActive(false);
-        this.profileInfoPanel.SetActive(true);
+        this.Refresh();
+    }
+
+    private void Refresh()
+    {
+        bool isSignedIn = XboxLive.Instance.Context != null;
+        this.signInPanel.SetActive(!isSignedIn);
+        this.profileInfoPanel.SetActive(isSignedIn);
     }
 }
