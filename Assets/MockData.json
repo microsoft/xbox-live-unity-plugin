@@ -1,0 +1,28 @@
+[
+  {
+    "Request": {
+      "Method": "POST",
+      "ContractVersionHeaderValue": "2",
+      "ContentTypeHeaderValue": null,
+      "RetryAllowed": false,
+      "ServerName": "https://profile.xboxlive.com",
+      "PathQueryFragment": "/users/batch/profile/settings"
+    },
+    "Response": {
+      "HttpStatus": 200,
+      "Body": "{\"profileUsers\":[{\"XboxUserId\":\"2533274795524562\",\"Gamertag\":\"Veleek\",\"Gamerscore\":\"62363\",\"GameDisplayPictureResizeUri\":\"http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KId46ktn4AUxk.ghIPeRshxRqsosbBN.5ygjwRBcUg7G_su3phiVsbouqmSe7ZRa8o&format=png\",\"GameDisplayName\":\"Inside\",\"ApplicationDisplayPictureResizeUri\":\"\",\"ApplicationDisplayName\":\"\"}]}",
+      "ContentLength": 121,
+      "CharacterSet": "UTF8",
+
+      "BodyType": "JsonBody",
+      "Headers": {
+        "Content-Type": "application/json",
+        "X-Content-Type-Options": "nosniff",
+        "X-Xbl-CorrelationId": "9e2c01f9-ac87-4ee9-a858-d283ac319bdf",
+        "Date": "Fri, 13 Jan 2017 19:10:03 GMT",
+        "Connection": "Keep-Alive"
+      }
+    }
+  },
+  
+]

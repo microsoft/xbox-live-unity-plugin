@@ -8,10 +8,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Social;
 using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
 
@@ -29,12 +31,6 @@ public class UserProfile : MonoBehaviour
     {
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
-
-        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
-        {
-            Debug.Log(errors);
-            return true;
-        };
     }
 
     public void Start()
@@ -50,7 +46,7 @@ public class UserProfile : MonoBehaviour
 
     public void SignIn()
     {
-        this.StartCoroutine(this.SignInAsync());
+        var coroutine = this.StartCoroutine(this.SignInAsync());
     }
 
     public IEnumerator SignInAsync()
@@ -58,19 +54,52 @@ public class UserProfile : MonoBehaviour
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+        {
+            return true;
+        };
+
         yield return XboxLive.Instance.SignInAsync();
-        yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColorLevel).AsCoroutine();
-        yield return this.LoadProfileInfo();
+
+        //yield return this.LoadProfileInfo();
+        Task addLocalUser = SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
+        yield return addLocalUser.AsCoroutine();
+        ulong userId = Convert.ToUInt64(XboxLive.Instance.User.XboxUserId);
+
+        XboxSocialUserGroup group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
+        XboxSocialUser user;
+        do
+        {
+            yield return null;
+            user = group.GetUser(userId);
+
+            Debug.Log("User? " + (user == null));
+        }
+        while (user == null);
+
+        var u = group.Users.FirstOrDefault();
     }
 
     private IEnumerator LoadProfileInfo()
     {
-        ulong userId = ulong.Parse(XboxLive.Instance.User.XboxUserId);
-        var group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
-        var socialUser = group.GetUser(userId);
+        string userId = XboxLive.Instance.Context.User.XboxUserId;
+        var getUserProfile = XboxLive.Instance.Context.ProfileService.GetUserProfileAsync(userId).AsCoroutine();
+        yield return getUserProfile;
 
-        // How do we get the user profile pic from the Xbox Live SDK?  
-        WWW www = new WWW(socialUser.DisplayPicRaw + "&w=128");
+        XboxUserProfile profile;
+        try
+        {
+            profile = getUserProfile.Result;
+        }
+        catch (AggregateException ae)
+        {
+            Debug.Log(ae.ToString());
+            Debug.Log(ae.InnerException.ToString());
+            yield break;
+        }
+        string gamerpicUrl = profile.GameDisplayPictureResizeUri.ToString();
+        gamerpicUrl += "&width=128&height=128";
+        WWW www = new WWW(gamerpicUrl);
         yield return www;
 
         Texture2D t = www.texture;

@@ -2,20 +2,25 @@
 # Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 <#
-.SUMMARY Install the Xbox Live SDK into the Unity project
-.PARAM FromNuget
-  Installing the SDK from the NuGet package.
-.PARAM FromSource
+.SYNOPSIS
+  Install the Xbox Live SDK into the Unity project
+.PARAMETER FromSource
   Build the SDK from the xbox-live-api-csharp submodule and copy the binaries.
-.PARAM RawSource
+.PARAMETER CopySource
   Copy the raw API source files directly into the Unity directory.
   This is generally useful if you're doing a large amount of back and forth between 
   the SDK and Unity, but requires manually copying changes back.
+.PARAMETER FromNuget
+  Download the SDK NuGet package and copy the binaries from there.
+.PARAMETER CopyOnly,
+  If FromSource is provided then the built binaries will just be copied as opposed
+  to performing a rebuild and copying after.
 #>
 param(
-  [switch]$FromNuget, 
   [switch]$FromSource,
-  [switch]$RawSource
+  [switch]$CopySource,
+  [switch]$FromNuget,
+  [switch]$CopyOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -23,6 +28,11 @@ $ErrorActionPreference = "Stop"
 $sdkOutputPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\Libs\"
 mkdir $sdkOutputPath -force | Out-Null
 
+if(!($FromNuget -or $FromSource -or $RawSource))
+{
+  Write-Warning "No switch was specified so we are building the SDK from source (equivalent to passing -FromSource)."
+  $FromSource = $true
+}
 
 if($FromNuget)
 {
@@ -53,7 +63,7 @@ if($FromNuget)
 elseif($FromSource)
 {
   $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
-  $sdkSln = Join-Path $sdkPath "Build\Microsoft.Xbox.Services.Unity.CSharp\Microsoft.Xbox.Services.Unity.CSharp.sln" 
+  $sdkSln = Join-Path $sdkPath "Build\Microsoft.Xbox.Services.140.Sidecar.CSharp\Microsoft.Xbox.Services.140.Sidecar.CSharp.sln" 
 
   if(!(Test-Path $sdkSln))
   {
@@ -61,11 +71,15 @@ elseif($FromSource)
     return
   }
 
-  nuget restore $sdkSln
-  msbuild $sdkSln
-
+  if(!$CopyOnly)
+  {
+    nuget restore $sdkSln
+    msbuild $sdkSln
+  }
+    
   Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
-  copy (Join-Path $sdkPath "Build\Microsoft.Xbox.Services.Unity.CSharp\bin\Debug\*") $sdkOutputPath -recurse -force
+  copy (Join-Path $sdkPath "\binaries\AnyCPU\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
+  copy (Join-Path $sdkPath "\binaries\x64\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
 }
 elseif($RawSource)
 {
@@ -78,5 +92,6 @@ elseif($RawSource)
   }
   
   copy (Join-Path $sdkPath "External\parse-sdk\debug\*") $sdkOutputPath
+  copy (Join-Path $sdkPath "External\newtonsoft\9.0.1\*.dll") $sdkOutputPath
   copy (Join-Path $sdkPath "Source\api") $sdkOutputPath -Exclude *.csproj -recurse -force
 }

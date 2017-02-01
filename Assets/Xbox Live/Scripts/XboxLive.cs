@@ -7,6 +7,8 @@
 
 using System;
 using System.Collections;
+using System.IO;
+using System.Reflection;
 
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
@@ -58,6 +60,8 @@ public class XboxLive : MonoBehaviour
                             if (Application.isPlaying)
                             {
                                 DontDestroyOnLoad(singleton);
+
+                                MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
                             }
                         }
                     }
@@ -101,6 +105,11 @@ public class XboxLive : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        SocialManager.Instance.DoWork();
+    }
+
     /// <summary>
     /// When Unity quits, it destroys objects in a random order.
     /// In principle, a Singleton is only destroyed when application quits.
@@ -120,5 +129,6 @@ public class XboxLive : MonoBehaviour
         yield return this.User.SignInAsync().AsCoroutine();
 
         this.Context = new XboxLiveContext(this.User);
+        yield break;
     }
 }
