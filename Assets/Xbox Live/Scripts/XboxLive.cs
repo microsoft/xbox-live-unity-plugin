@@ -20,8 +20,6 @@ using UnityEngine;
 [HelpURL("http://github.com/Microsoft/xbox-live-unity-plugin")]
 public class XboxLive : MonoBehaviour
 {
-    public const string ConfigurationFileName = "xboxservices.config";
-
     private static bool applicationIsQuitting = false;
 
     private static readonly object createInstanceLock = new object();
@@ -118,12 +116,8 @@ public class XboxLive : MonoBehaviour
 
     public IEnumerator SignInAsync()
     {
-        XboxLiveContext.UseMockData = this.Configuration.UseMockData;
-
         this.User = new XboxLiveUser();
-
-        // Popup some UI?
-        yield return this.User.SignInAsync(IntPtr.Zero).AsCoroutine();
+        yield return this.User.SignInAsync().AsCoroutine();
 
         this.Context = new XboxLiveContext(this.User);
     }

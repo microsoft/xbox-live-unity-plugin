@@ -7,9 +7,12 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
 
 using UnityEngine;
@@ -26,6 +29,12 @@ public class UserProfile : MonoBehaviour
     {
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
+
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+        {
+            Debug.Log(errors);
+            return true;
+        };
     }
 
     public void Start()
@@ -50,13 +59,18 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
         yield return XboxLive.Instance.SignInAsync();
+        yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColorLevel).AsCoroutine();
         yield return this.LoadProfileInfo();
     }
 
     private IEnumerator LoadProfileInfo()
     {
+        ulong userId = ulong.Parse(XboxLive.Instance.User.XboxUserId);
+        var group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
+        var socialUser = group.GetUser(userId);
+
         // How do we get the user profile pic from the Xbox Live SDK?  
-        WWW www = new WWW("http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KId46ktn4AUxk.ghIPeRshxRqsosbBN.5ygjwRBcUg7G_su3phiVsbouqmSe7ZRa8o&format=png");
+        WWW www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
 
         Texture2D t = www.texture;
