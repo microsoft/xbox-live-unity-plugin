@@ -32,10 +32,10 @@ namespace Assets.Xbox_Live.Scripts.MockData
 
     public class MockLeaderboardResult : LeaderboardResult
     {
-        private static Random random = new Random(24021524);
+        private static readonly Random random = new Random(24021524);
 
-        private IList<LeaderboardRow> allRows;
-        private uint offset;
+        private readonly IList<LeaderboardRow> allRows;
+        private readonly uint offset;
 
         public MockLeaderboardResult(string displayName, IList<LeaderboardColumn> columns, IList<LeaderboardRow> allRows, uint skipToRank, uint maxItems)
         {

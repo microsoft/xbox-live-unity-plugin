@@ -8,12 +8,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Social;
 using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
 
@@ -25,12 +24,20 @@ public class UserProfile : MonoBehaviour
     public GameObject signInPanel;
     public GameObject profileInfoPanel;
     public Image gamerpic;
+    public Image gamerpicMask;
     public Text gamertag;
+    public Text gamerscore;
 
     public void Awake()
     {
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
+
+        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+        {
+            Debug.Log(errors);
+            return true;
+        };
     }
 
     public void Start()
@@ -60,54 +67,39 @@ public class UserProfile : MonoBehaviour
         };
 
         yield return XboxLive.Instance.SignInAsync();
-
-        //yield return this.LoadProfileInfo();
-        Task addLocalUser = SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
-        yield return addLocalUser.AsCoroutine();
-        ulong userId = Convert.ToUInt64(XboxLive.Instance.User.XboxUserId);
-
-        XboxSocialUserGroup group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
-        XboxSocialUser user;
-        do
-        {
-            yield return null;
-            user = group.GetUser(userId);
-
-            Debug.Log("User? " + (user == null));
-        }
-        while (user == null);
-
-        var u = group.Users.FirstOrDefault();
+        yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+        yield return this.LoadProfileInfo();
     }
 
     private IEnumerator LoadProfileInfo()
     {
-        string userId = XboxLive.Instance.Context.User.XboxUserId;
-        var getUserProfile = XboxLive.Instance.Context.ProfileService.GetUserProfileAsync(userId).AsCoroutine();
-        yield return getUserProfile;
+        ulong userId = ulong.Parse(XboxLive.Instance.User.XboxUserId);
+        var group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
+        var socialUser = group.GetUser(userId);
 
-        XboxUserProfile profile;
-        try
-        {
-            profile = getUserProfile.Result;
-        }
-        catch (AggregateException ae)
-        {
-            Debug.Log(ae.ToString());
-            Debug.Log(ae.InnerException.ToString());
-            yield break;
-        }
-        string gamerpicUrl = profile.GameDisplayPictureResizeUri.ToString();
-        gamerpicUrl += "&width=128&height=128";
-        WWW www = new WWW(gamerpicUrl);
+        WWW www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
 
         Texture2D t = www.texture;
         Rect r = new Rect(0, 0, t.width, t.height);
         this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
         this.gamertag.text = XboxLive.Instance.User.Gamertag;
+        this.gamerscore.text = socialUser.Gamerscore;
+
+        this.profileInfoPanel.GetComponent<Image>().color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+        this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+
 
         this.Refresh();
+    }
+
+    public static Color ColorFromHexString(string color)
+    {
+        float r = (float)byte.Parse(color.Substring(0, 2), NumberStyles.HexNumber) / 255;
+        float g = (float)byte.Parse(color.Substring(2, 2), NumberStyles.HexNumber) / 255;
+        float b = (float)byte.Parse(color.Substring(4, 2), NumberStyles.HexNumber) / 255;
+
+        return new Color(r, g, b);
     }
 
     private void Refresh()

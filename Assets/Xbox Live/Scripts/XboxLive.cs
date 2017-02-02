@@ -8,7 +8,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Reflection;
 
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
