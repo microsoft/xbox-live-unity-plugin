@@ -8,8 +8,6 @@
 using System;
 using System.IO;
 
-using UnityEditor;
-
 using UnityEngine;
 
 [Serializable]
@@ -23,13 +21,17 @@ public class XboxServicesConfiguration
     {
         get
         {
-            return configurationFilePath ?? (configurationFilePath = Path.Combine(Application.dataPath, ConfigurationFileName));
+            return configurationFilePath ?? (configurationFilePath = Path.Combine(Application.dataPath, "..\\" + ConfigurationFileName));
         }
     }
 
     public string TitleId;
 
-    public string PrimaryServiceConfigId;
+    public string ServiceConfigurationId;
+
+    public string Environment;
+
+    public string Sandbox;
 
     public string ProductFamilyName;
 
@@ -71,14 +73,5 @@ public class XboxServicesConfiguration
         {
             return null;
         }
-    }
-
-    /// <summary>
-    /// Delete the Xbox Services configuration file from disc to disassociate a game from a store product.  Also
-    /// deletes the Unity .meta file so that it won't complain about a missing file.
-    /// </summary>
-    public static void Clear()
-    {
-        AssetDatabase.DeleteAsset("Assets/XboxServices.config");
     }
 }

@@ -5,19 +5,19 @@
 //  </copyright>
 // -----------------------------------------------------------------------
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
-using System.Threading.Tasks;
 
-using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
+using Microsoft.Xbox.Services;
 
 using UnityEngine;
 using UnityEngine.UI;
+
+using Debug = System.Diagnostics.Debug;
 
 public class UserProfile : MonoBehaviour
 {
@@ -33,11 +33,14 @@ public class UserProfile : MonoBehaviour
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
 
+#if UNITY_EDITOR
+        // TODO: This ignors all SSL certs because Mono uses it's own cert store.  This MUST be removed when the issues are resolved.
         ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
         {
-            Debug.Log(errors);
+            Debug.Write(errors);
             return true;
         };
+#endif
     }
 
     public void Start()
@@ -48,23 +51,19 @@ public class UserProfile : MonoBehaviour
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
     {
+        
         this.Refresh();
     }
 
     public void SignIn()
     {
-        var coroutine = this.StartCoroutine(this.SignInAsync());
+        var coroutine = StartCoroutine(this.SignInAsync());
     }
 
     public IEnumerator SignInAsync()
     {
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
-
-        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
-        {
-            return true;
-        };
 
         yield return XboxLive.Instance.SignInAsync();
         yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
@@ -88,7 +87,6 @@ public class UserProfile : MonoBehaviour
 
         this.profileInfoPanel.GetComponent<Image>().color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
         this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
-
 
         this.Refresh();
     }

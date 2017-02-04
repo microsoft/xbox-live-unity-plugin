@@ -5,11 +5,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+
 using UnityEngine;
 
+[Serializable]
 public class FriendsList : MonoBehaviour
 {
-    [Range(1,10)]
+    [Range(1, 10)]
     public int count;
 
     // Use this for initialization

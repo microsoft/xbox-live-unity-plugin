@@ -8,7 +8,7 @@
 using System;
 using System.Collections;
 using System.IO;
-
+using System.Threading.Tasks;
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
@@ -125,7 +125,14 @@ public class XboxLive : MonoBehaviour
     public IEnumerator SignInAsync()
     {
         this.User = new XboxLiveUser();
-        yield return this.User.SignInAsync().AsCoroutine();
+        Task<SignInResult> signInTask = this.User.SignInAsync();
+        yield return signInTask.AsCoroutine();
+
+        // Throw any exceptions if needed.
+        if (signInTask.Result.Status != SignInStatus.Success)
+        {
+            throw new Exception("Sign in Failed");
+        }
 
         this.Context = new XboxLiveContext(this.User);
         yield break;

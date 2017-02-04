@@ -60,7 +60,9 @@ public class XboxLiveConfigurationEditor : EditorWindow
         {
             if (GUILayout.Button(new GUIContent("Delete Xbox Live Configuration", "Delete the configuration file containing the Xbox Live identity for your game."), GUILayout.MaxWidth(200)))
             {
-                XboxServicesConfiguration.Clear();
+                // Delete the Xbox Services configuration file from disc to disassociate a game from a store product.  
+                // Also deletes the Unity .meta file so that it won't complain about a missing file.
+                AssetDatabase.DeleteAsset(string.Format("Assets/{0}", XboxServicesConfiguration.ConfigurationFileName));
             }
         }
 
@@ -80,7 +82,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Scid");
-            EditorGUILayout.SelectableLabel(this.configuration.PrimaryServiceConfigId ?? MissingValue, GUILayout.Height(labelHeight));
+            EditorGUILayout.SelectableLabel(this.configuration.ServiceConfigurationId ?? MissingValue, GUILayout.Height(labelHeight));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -103,7 +105,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
                 this.configuration = new XboxServicesConfiguration
                 {
                     TitleId = "<Decimal>",
-                    PrimaryServiceConfigId = "<Guid>",
+                    ServiceConfigurationId = "<Guid>",
                     ProductFamilyName = "<String>",
                     UseMockData = true,
                 };
