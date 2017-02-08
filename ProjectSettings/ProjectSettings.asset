@@ -393,7 +393,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: Microsoft
   metroCertificateIssuer: Microsoft
-  metroCertificateNotAfter: 801787c2c59cd301
+  metroCertificateNotAfter: 8052e188b1a0d301
   metroApplicationDescription: sdk.unityplugin
   wsaImages: {}
   metroTileShortName: 

@@ -57,7 +57,7 @@ public class UserProfile : MonoBehaviour
 
     public void SignIn()
     {
-        var coroutine = StartCoroutine(this.SignInAsync());
+        StartCoroutine(this.SignInAsync());
     }
 
     public IEnumerator SignInAsync()

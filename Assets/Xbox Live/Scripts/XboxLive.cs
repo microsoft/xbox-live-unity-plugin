@@ -71,7 +71,7 @@ public class XboxLive : MonoBehaviour
         }
     }
 
-    public XboxServicesConfiguration Configuration { get; set; }
+    public XboxLiveAppConfiguration Configuration { get; set; }
 
     public static bool IsEnabled
     {
@@ -97,7 +97,7 @@ public class XboxLive : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        this.Configuration = XboxServicesConfiguration.Load();
+        this.Configuration = XboxLiveAppConfiguration.Instance;
         if (this.Configuration == null)
         {
             throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.");

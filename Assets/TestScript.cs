@@ -13,10 +13,6 @@ public class TestScript : MonoBehaviour
 {
     public void Test()
     {
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://www.bing.com");
 
-        request.Headers["Accept"] = "application/json";
-        request.Headers["Accept-Language"] = "*";
-        request.Headers["Accept"] = "*/*";
     }
 }

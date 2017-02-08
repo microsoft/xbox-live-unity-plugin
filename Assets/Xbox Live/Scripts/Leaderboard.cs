@@ -60,31 +60,30 @@ public class Leaderboard : MonoBehaviour
     public void PreviousPage()
     {
         this.currentPage--;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.ServiceConfigurationId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
     }
 
     public void FirstPage()
     {
         this.currentPage = 0;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.ServiceConfigurationId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
     }
 
     public void LastPage()
     {
         this.currentPage = this.totalPages - 1;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.ServiceConfigurationId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
+    }
+
+    private void UpdateData()
+    {
+        LeaderboardQuery query = new LeaderboardQuery
+        {
+            SkipResultsToRank = this.currentPage * this.entryCount,
+            MaxItems = this.entryCount,
+        };
+
+        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(this.leaderboardName, query));
     }
 
     private void UpdateData(Task<LeaderboardResult> task)
@@ -100,7 +99,7 @@ public class Leaderboard : MonoBehaviour
         if (this.totalPages == 0)
         {
             // This is the first update we're doing.  Setup some initial properties.
-            this.headerText.text = this.leaderboardData.Result.DisplayName;
+            this.headerText.text = "<No Display Name>"; //this.leaderboardData.Result.DisplayName;
             this.totalPages = (this.leaderboardData.Result.TotalRowCount - 1) / this.entryCount + 1;
         }
 
