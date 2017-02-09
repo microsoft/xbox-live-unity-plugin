@@ -28,34 +28,36 @@ $ErrorActionPreference = "Stop"
 $sdkOutputPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\Libs\"
 mkdir $sdkOutputPath -force | Out-Null
 
-if(!($FromNuget -or $FromSource -or $RawSource))
+if(!($FromNuget -or $FromSource -or $CopySource))
 {
   Write-Warning "No switch was specified so we are building the SDK from source (equivalent to passing -FromSource)."
   $FromSource = $true
 }
 
+# Check if Nuget is already available somewhere on the path
+$nugetCmd = "nuget"
+if(!(Get-Command $nugetCmd -ErrorAction SilentlyContinue))
+{
+    $nugetPath = Join-Path $PSScriptRoot "nuget.exe"
+
+    if(!(Test-Path $nugetPath))
+    {
+        Write-Host "Downloading nuget.exe..."
+        iwr https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $nugetPath
+    }
+    
+    $nugetCmd = $nugetPath
+}
+
 if($FromNuget)
 {
-  # Check if Nuget is already available somewhere on the path
-  $nugetPath = "nuget.exe"
-  if(!(Get-Command $nugetPath -ErrorAction SilentlyContinue))
-  {
-      $nugetPath = Join-Path $PSScriptRoot $nugetPath
-
-      if(!(Test-Path $nugetPath))
-      {
-          Write-Host "Downloading nuget.exe..."
-          iwr https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $nugetPath
-      }
-  }
-
   # Folder is named with a . prefix so that it's ignored by Unity, the files that we
   # need out of the package are manually copied out to the appropriate locations.
   
   # TODO: We can probably just dump the packages into the root instead of into the Assets folder.
   $packagesPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\.packages"
   Write-Host "Installing Microsoft.Xbox.Live.SDK.WinRT.UWP NuGet package into $packagesPath"
-  . $nugetPath install Microsoft.Xbox.Live.SDK.WinRT.UWP -OutputDirectory $packagesPath
+  . $nugetCmd install Microsoft.Xbox.Live.SDK.WinRT.UWP -OutputDirectory $packagesPath
 
   # TODO: Copy some portion of the files out into Unity directories as needed.
   return
@@ -63,7 +65,7 @@ if($FromNuget)
 elseif($FromSource)
 {
   $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
-  $sdkSln = Join-Path $sdkPath "Build\Microsoft.Xbox.Services.140.Sidecar.CSharp\Microsoft.Xbox.Services.140.Sidecar.CSharp.sln" 
+  $sdkSln = Join-Path $sdkPath "Source\Microsoft.Xbox.Services.CSharp.sln" 
 
   if(!(Test-Path $sdkSln))
   {
@@ -73,15 +75,20 @@ elseif($FromSource)
 
   if(!$CopyOnly)
   {
-    nuget restore $sdkSln
+    if(!(Get-Command msbuild -ErrorAction SilentlyContinue))
+    {
+      throw "Unable to find msbuild.  Make sure you're running a Visual Studio Developer Command Prompt or you've added msbuild to your path."
+    }
+  
+    & $nugetCmd restore $sdkSln
     msbuild $sdkSln
   }
     
-  Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
-  copy (Join-Path $sdkPath "\binaries\AnyCPU\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
-  copy (Join-Path $sdkPath "\binaries\x64\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
+  #Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
+  #copy (Join-Path $sdkPath "\binaries\AnyCPU\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
+  #copy (Join-Path $sdkPath "\binaries\x64\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
 }
-elseif($RawSource)
+elseif($CopySource)
 {
   # Otherwise just copy the raw source files from the xbox-live-api-csharp submodule directly into the project
   $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
