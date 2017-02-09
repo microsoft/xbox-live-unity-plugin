@@ -30,7 +30,6 @@ sysinfo.txt
 BuildPackage.log
 
 # Extra components pulled from other places
-/Assets/Xbox Live/Tools
 /Assets/Xbox Live/Libs
 /Assets/Xbox Live/Libs.meta
 

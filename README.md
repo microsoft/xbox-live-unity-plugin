@@ -7,11 +7,12 @@ To get access to the Xbox Live service, please apply to the [ID@Xbox program](ht
 The Unity Plugin is broken into the following parts
 
 * __Assets__ contains the Unity project content.
-  * The actual Xbox Live plugin assets in the plugin package are located in the __Xbox Live__ folder inside.
+  * __Xbox Live__ contains the actual plugin assets that are included in the published `.unitypackage`.
+    * __Tools/AssociationWizard__ contains the Xbox Live Association Wizard, used to pull down application configuration from DevCenter for use within Unity.
 * __Build__ contains scripts to generate the .unitypackage and handle other project setup tasks.
 * __External__ contains additional resources used by the plugin
   * [__xbox-live-api-csharp__](https://github.com/Microsoft/xbox-live-api-csharp) is a submodule where the Xbox Live SDK comes from.  You can choose to build the SDK from this sub-module or pull existing binaries down from NuGet.
-  * [__xbox-live-plugin-shared__](https://github.com/Microsoft/xbox-live-plugin-shared) is a submodule where we get the Xbox Live Association Wizard from.
+  
 * __ProjectSettings__ contains standard Unity project settings files.
 
 ## Getting Started
