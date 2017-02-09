@@ -97,10 +97,13 @@ public class XboxLive : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        this.Configuration = XboxLiveAppConfiguration.Instance;
-        if (this.Configuration == null)
+        try
         {
-            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.");
+            this.Configuration = XboxLiveAppConfiguration.Instance;
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.", e);
         }
     }
 

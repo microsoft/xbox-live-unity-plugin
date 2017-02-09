@@ -13,7 +13,6 @@ using UnityEngine;
 [InitializeOnLoad]
 public class XboxLiveConfigurationEditor : EditorWindow
 {
-    
     private string configFileDirectory;
     private string configFilePath;
 
@@ -35,7 +34,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
     private void OnEnable()
     {
-        ProjectFilesGenerator.ProjectFileGeneration += AddXboxServicesConfig;
+        
 
         this.configFileDirectory = Path.Combine(Application.dataPath, "..");
         this.configFilePath = Path.Combine(this.configFileDirectory, XboxLiveAppConfiguration.FileName);
@@ -53,20 +52,6 @@ public class XboxLiveConfigurationEditor : EditorWindow
         configFileWatcher.EnableRaisingEvents = true;
     }
 
-    private static string AddXboxServicesConfig(string fileName, string fileContent)
-    {
-        if(!fileName.EndsWith(".Editor.csproj"))
-        {
-            UnityEngine.Debug.Log("Adding config file to " + fileName);
-
-            // Hacky way to do this for now.  Should make it a bit more stable.
-            int lastItemGroup = fileContent.LastIndexOf("</ItemGroup>", StringComparison.OrdinalIgnoreCase);
-            fileContent = fileContent.Insert(lastItemGroup, "  <None Include=\"" + XboxLiveAppConfiguration.FileName + "\" />\r\n  ");
-        }
-
-        return fileContent;
-    }
-
     private void OnGUI()
     {
         EditorGUILayout.Space();
@@ -79,7 +64,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         if (GUILayout.Button(new GUIContent(associateButtonText, "Run the Xbox Live Assocation Wizard to enable your game to communicate with Xbox Live."), GUILayout.MaxWidth(200)))
         {
             string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
-            Process.Start(wizardPath, Application.dataPath);
+            Process.Start(wizardPath, this.configFileDirectory);
         }
 
         if (File.Exists(this.configFilePath))
