@@ -1,21 +1,15 @@
 ﻿// -----------------------------------------------------------------------
-//  <copyright file="Stats.cs" company="Microsoft">
+//  <copyright file="ISocialManagerEventTarget.cs" company="Microsoft">
 //      Copyright (c) Microsoft. All rights reserved.
 //      Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //  </copyright>
 // -----------------------------------------------------------------------
 
-using UnityEngine;
+using Microsoft.Xbox.Services.Social.Manager;
 
-public class Stats : MonoBehaviour
+using UnityEngine.EventSystems;
+
+public interface ISocialManagerEventHandler : IEventSystemHandler
 {
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    void OnSocialManagerEvent(SocialEvent socialEvent);
 }

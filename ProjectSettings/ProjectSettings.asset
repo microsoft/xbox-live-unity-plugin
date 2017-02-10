@@ -129,7 +129,7 @@ PlayerSettings:
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
   aotOptions: 
-  apiCompatibilityLevel: 1
+  apiCompatibilityLevel: 2
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
@@ -393,7 +393,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: Microsoft
   metroCertificateIssuer: Microsoft
-  metroCertificateNotAfter: 00a3790382a1d301
+  metroCertificateNotAfter: 0026fa6a48a2d301
   metroApplicationDescription: sdk.unityplugin
   wsaImages: {}
   metroTileShortName: 

@@ -63,29 +63,39 @@ namespace Assets.Xbox_Live.Editor
 
                 string projectFolder = Path.Combine(solutionFolder, Application.productName);
 
+                CopyXboxServiceConfig(projectFolder);
                 UpdateProjectFile(projectFolder);
                 UpdateAppxManifest(projectFolder);
             }
         }
 
+        private static void CopyXboxServiceConfig(string projectFolder)
+        {
+            string srcFilePath = Path.Combine(Application.dataPath, "../" + XboxLiveAppConfiguration.FileName);
+            string dstFilePath = Path.Combine(projectFolder, XboxLiveAppConfiguration.FileName);
+            File.Copy(srcFilePath, dstFilePath, true);
+        }
+
         private static void UpdateProjectFile(string projectFolder)
         {
             string projectFile = Path.Combine(projectFolder, Application.productName + ".csproj");
-            XDocument project = XDocument.Load(File.OpenRead(projectFile));
+            XDocument project = XDocument.Load(projectFile);
 
             XNamespace msb = "http://schemas.microsoft.com/developer/msbuild/2003";
             XmlNamespaceManager ns = new XmlNamespaceManager(new NameTable());
             ns.AddNamespace("msb", msb.NamespaceName);
 
-            XElement identityItemGroup = project.XPathSelectElement("//msb:ItemGroup[msb:AppxManifest]", ns);
+            XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
 
             // Replace the existing test cert
-            string publisherCertificateFileName = Application.productName + "_StoreKey.pfx";
+
             XElement certificateElement = identityItemGroup.XPathSelectElement("msb:None[@Include='WSATestCertificate.pfx']", ns);
+
+            string publisherCertificateFileName = Application.productName + "_StoreKey.pfx";
             certificateElement.Attribute("Include").Value = publisherCertificateFileName;
 
             // And update the PackageCertificateKeyFile
-            project.XPathSelectElement("//msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
+            project.XPathSelectElement("msb:Project/msb:PropertyGroup/msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
 
             // Add the XboxService.config file
             identityItemGroup.Add(

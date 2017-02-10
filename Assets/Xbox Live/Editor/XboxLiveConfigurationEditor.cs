@@ -34,8 +34,6 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
     private void OnEnable()
     {
-        
-
         this.configFileDirectory = Path.Combine(Application.dataPath, "..");
         this.configFilePath = Path.Combine(this.configFileDirectory, XboxLiveAppConfiguration.FileName);
         this.configuration = this.TryLoad();

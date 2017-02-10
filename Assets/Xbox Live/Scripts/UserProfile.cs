@@ -13,6 +13,7 @@ using System.Net;
 using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.System;
 using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,7 +38,7 @@ public class UserProfile : MonoBehaviour
         // TODO: This ignors all SSL certs because Mono uses it's own cert store.  This MUST be removed when the issues are resolved.
         ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
         {
-            Debug.Write(errors);
+            Debug.WriteLine(errors);
             return true;
         };
 #endif
@@ -66,6 +67,7 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
         yield return XboxLive.Instance.SignInAsync();
+        StatsManager.Singleton.AddLocalUser(XboxLive.Instance.User);
         yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
         yield return this.LoadProfileInfo();
     }

@@ -11,30 +11,35 @@ using System.Collections.Generic;
 using Microsoft.Xbox.Services.Social.Manager;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class SocialManagerComponent : MonoBehaviour
+public class SocialManagerComponent : Singleton<SocialManagerComponent>
 {
-    private XboxSocialUserGroup group;
+    private ISocialManager manager;
 
-    public void DoWork()
+    private SocialManagerComponent()
+    {
+    }
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded
+    /// </summary>
+    private void Awake()
+    {
+        this.manager = SocialManager.Instance;
+    }
+
+    void Update()
     {
         try
         {
-            if (this.group == null)
-            {
-                ulong userId = UInt64.Parse(XboxLive.Instance.User.XboxUserId);
-                this.group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
-            }
+            var socialEvents = this.manager.DoWork();
+            Debug.Log(string.Format("SocialManager processed {0} events", socialEvents.Count));
 
-            var result = SocialManager.Instance.DoWork();
-            Debug.Log(string.Format("SocialManager processed {0} events", result.Count));
-
-            if (this.group != null)
+            foreach (SocialEvent socialEvent in socialEvents)
             {
-                foreach (XboxSocialUser user in this.group)
-                {
-                    Debug.Log(user.DisplayName);
-                }
+                SocialEvent eventData = socialEvent;
+                ExecuteEvents.Execute<ISocialManagerEventHandler>(null, null, (a, b) => { a.OnSocialManagerEvent(eventData);});
             }
         }
         catch (Exception e)

@@ -9,45 +9,45 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1943575484250342}
+  m_RootGameObject: {fileID: 1750201803489462}
   m_IsPrefabParent: 1
---- !u!1 &1943575484250342
+--- !u!1 &1750201803489462
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4300877349051380}
-  - component: {fileID: 114619140071021758}
+  - component: {fileID: 4345621295386414}
+  - component: {fileID: 114306255186905510}
   m_Layer: 0
-  m_Name: Stats
-  m_TagString: Xbox Live
+  m_Name: StringStat
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4300877349051380
+--- !u!4 &4345621295386414
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1943575484250342}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_GameObject: {fileID: 1750201803489462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114619140071021758
+--- !u!114 &114306255186905510
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1943575484250342}
+  m_GameObject: {fileID: 1750201803489462}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90e4ce6ab141f364ba00b2476230fc2c, type: 3}
+  m_Script: {fileID: 11500000, guid: a64d9ed885262e1459e2484ce08728a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
