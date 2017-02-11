@@ -7,6 +7,9 @@
 
 using System;
 
+using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Stats.Manager;
+
 using UnityEngine;
 
 [Serializable]
@@ -18,7 +21,7 @@ public abstract class StatBase : MonoBehaviour
 }
 
 [Serializable]
-public abstract class StatBase<T> : StatBase
+public abstract class StatBase<T> : StatBase, IStatsManagerEventHandler
 {
     public T Value;
 
@@ -32,9 +35,20 @@ public abstract class StatBase<T> : StatBase
 
     public abstract void SetValue(T value);
 
-    void Awake()
+    public void LocalUserAdded(XboxLiveUser user)
     {
         // Set the initial stat value.
         this.SetValue(this.Value);
+    }
+
+    public void LocalUserRemoved(XboxLiveUser user)
+    {
+    }
+
+    public void StatUpdateComplete()
+    {
+        // Grab the value and store it locally.
+        StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
+        this.SetValue((T)statValue.Value);
     }
 }

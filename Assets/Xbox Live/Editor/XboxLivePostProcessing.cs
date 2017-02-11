@@ -87,15 +87,19 @@ namespace Assets.Xbox_Live.Editor
 
             XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
 
-            // Replace the existing test cert
+            
+            XElement certificateElement = identityItemGroup.XPathSelectElement("./msb:None[@Include='WSATestCertificate.pfx']", ns);
 
-            XElement certificateElement = identityItemGroup.XPathSelectElement("msb:None[@Include='WSATestCertificate.pfx']", ns);
+            if (certificateElement != null)
+            {
+                string publisherCertificateFileName = Application.productName + "_StoreKey.pfx";
 
-            string publisherCertificateFileName = Application.productName + "_StoreKey.pfx";
-            certificateElement.Attribute("Include").Value = publisherCertificateFileName;
+                // Replace the existing test cert
+                certificateElement.Attribute("Include").Value = publisherCertificateFileName;
 
-            // And update the PackageCertificateKeyFile
-            project.XPathSelectElement("msb:Project/msb:PropertyGroup/msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
+                // And update the PackageCertificateKeyFile
+                project.XPathSelectElement("msb:Project/msb:PropertyGroup/msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
+            }
 
             // Add the XboxService.config file
             identityItemGroup.Add(
@@ -112,8 +116,20 @@ namespace Assets.Xbox_Live.Editor
             XDocument manifest = XDocument.Load(manifestFile);
 
             XmlNamespaceManager ns = new XmlNamespaceManager(new NameTable());
-            ns.AddNamespace("m", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
+            XNamespace m = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
+            ns.AddNamespace("m", m.NamespaceName);
             ns.AddNamespace("uap", "http://schemas.microsoft.com/appx/manifest/uap/windows10");
+
+            // TODO. Set these to not hardcoded values.
+            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Name").Value = "XboxDeveloperExperienceTe.NoXsapiUWP2";
+            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Publisher").Value = "CN=CE00B9BA-76FD-4DEB-8467-08AFAE3E9B9C";
+            manifest.XPathSelectElement("m:Package/m:Properties/m:DisplayName", ns).Value = "NoXsapiUWP2";
+            manifest.XPathSelectElement("m:Package/m:Properties/m:PublisherDisplayName", ns).Value = "Xbox Developer Experience Team";
+            manifest.XPathSelectElement("m:Package/m:Applications/m:Application/uap:VisualElements", ns).Attribute("DisplayName").Value = "NoXsapiUWP2";
+            manifest.XPathSelectElement("m:Package", ns).Add(
+                new XElement(m + "Capabilities",
+                    new XElement(m + "Cabability",
+                        new XAttribute("Name", "internetClient"))));
 
             manifest.Save(manifestFile);
         }

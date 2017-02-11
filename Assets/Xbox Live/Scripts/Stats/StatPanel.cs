@@ -10,6 +10,9 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Logic for the StatsPanel prefab that displays name and value of a <see cref="StatBase"/>.
+/// </summary>
 [Serializable]
 public class StatPanel : MonoBehaviour
 {

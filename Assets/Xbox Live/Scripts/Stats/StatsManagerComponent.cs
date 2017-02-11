@@ -5,9 +5,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------
 
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class StatsManagerComponent : Singleton<StatsManagerComponent>
 {
@@ -34,12 +36,19 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
 
         foreach (StatEvent statEvent in this.manager.DoWork())
         {
+            Debug.Log(string.Format("[StatsManager] {0} - {1}", statEvent.EventType, statEvent.LocalUser.Gamertag));
+            XboxLiveUser user = statEvent.LocalUser;
+
             switch (statEvent.EventType)
             {
                 case StatEventType.LocalUserAdded:
+                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user);});
+                    break;
                 case StatEventType.LocalUserRemoved:
+                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user); });
+                    break;
                 case StatEventType.StatUpdateComplete:
-                    Debug.Log(string.Format("[StatsManager] {0} - {1}", statEvent.EventType, statEvent.LocalUser.Gamertag));
+                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.StatUpdateComplete(); });
                     break;
             }
         }

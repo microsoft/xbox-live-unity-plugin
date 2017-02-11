@@ -85,7 +85,6 @@ public class XboxLiveConfigurationEditor : EditorWindow
             this.PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
             this.PropertyLabel("Title ID", this.configuration.TitleId.ToString());
             this.PropertyLabel("Sandbox", this.configuration.Sandbox);
-            this.PropertyLabel("Environment ", this.configuration.Environment);
         }
         else
         {
@@ -107,7 +106,6 @@ public class XboxLiveConfigurationEditor : EditorWindow
   ""ServiceConfigurationId"": ""00000000-0000-0000-0000-0000694f5acb"",
   ""TitleId"": ""0000000000"",
   ""Sandbox"": ""XXXXXX.X"",
-  ""Environment"": """",
 }";
                     File.WriteAllText(this.configFilePath, emptyConfig);
                 }
