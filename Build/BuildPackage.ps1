@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $unity = Get-Command Unity -ea SilentlyContinue
 if(!$unity)
 {
-  Get-Command "C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue
+  $unity = Get-Command "C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue
 }
 
 if(!$unity)
