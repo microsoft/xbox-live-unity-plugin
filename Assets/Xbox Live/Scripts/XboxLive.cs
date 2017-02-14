@@ -63,8 +63,8 @@ public class XboxLive : Singleton<XboxLive>
     public IEnumerator SignInAsync()
     {
         this.User = new XboxLiveUser();
-        Task<SignInResult> signInTask = this.User.SignInAsync();
-        yield return signInTask.AsCoroutine();
+        TaskYieldInstruction<SignInResult> signInTask = this.User.SignInAsync().AsCoroutine();
+        yield return signInTask;
 
         // Throw any exceptions if needed.
         if (signInTask.Result.Status != SignInStatus.Success)
@@ -73,6 +73,5 @@ public class XboxLive : Singleton<XboxLive>
         }
 
         this.Context = new XboxLiveContext(this.User);
-        yield break;
     }
 }

@@ -81,7 +81,9 @@ elseif($FromSource)
     }
   
     & $nugetCmd restore $sdkSln
-    msbuild $sdkSln
+    
+    Import-Module "$PSScriptRoot\Invoke-MsBuild"
+    Invoke-MsBuild $sdkSln
   }
     
   #Write-Host "Copying Xbox Live SDK to $sdkOutputPath"

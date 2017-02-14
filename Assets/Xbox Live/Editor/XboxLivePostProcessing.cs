@@ -59,24 +59,29 @@ namespace Assets.Xbox_Live.Editor
             // When we're building for UWP we need to do some extra stuff.
             if (target == BuildTarget.WSAPlayer)
             {
-                Debug.Log("Post Processing " + solutionFolder + " for " + target + " build.");
+                XboxLiveConfigurationEditor editorWindow = EditorWindow.GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
+
+                if (editorWindow.configuration == null)
+                {
+                    Debug.LogWarning("Unable to find any Xbox Live configuration files so Xbox Live will not be enabled on UWP project.\r\nOpen \"Xbox Live > Configuration\" and run \"Enable Xbox Live\" to configure for Xbox Live access.");
+                    return;
+                }
 
                 string projectFolder = Path.Combine(solutionFolder, Application.productName);
-
-                CopyXboxServiceConfig(projectFolder);
-                UpdateProjectFile(projectFolder);
-                UpdateAppxManifest(projectFolder);
+                UpdateProjectFile(projectFolder, editorWindow.configuration);
+                UpdateAppxManifest(projectFolder, editorWindow.configuration);
             }
         }
 
-        private static void CopyXboxServiceConfig(string projectFolder)
+        private static void CopyConfigurationFile(string filename, string projectFolder)
         {
-            string srcFilePath = Path.Combine(Application.dataPath, "../" + XboxLiveAppConfiguration.FileName);
-            string dstFilePath = Path.Combine(projectFolder, XboxLiveAppConfiguration.FileName);
-            File.Copy(srcFilePath, dstFilePath, true);
+            File.Copy(
+                Path.Combine(Application.dataPath, "../" + filename),
+                Path.Combine(projectFolder, filename),
+                true);
         }
 
-        private static void UpdateProjectFile(string projectFolder)
+        private static void UpdateProjectFile(string projectFolder, XboxLiveAppConfiguration configuration)
         {
             string projectFile = Path.Combine(projectFolder, Application.productName + ".csproj");
             XDocument project = XDocument.Load(projectFile);
@@ -86,21 +91,21 @@ namespace Assets.Xbox_Live.Editor
             ns.AddNamespace("msb", msb.NamespaceName);
 
             XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
-
-            
             XElement certificateElement = identityItemGroup.XPathSelectElement("./msb:None[@Include='WSATestCertificate.pfx']", ns);
 
             if (certificateElement != null)
             {
-                string publisherCertificateFileName = Application.productName + "_StoreKey.pfx";
+                string publisherCertificateFileName = configuration.PackageIdentityName + "_StoreKey.pfx";
+                CopyConfigurationFile(publisherCertificateFileName, projectFolder);
 
-                // Replace the existing test cert
+                // Replace the existing test cert with our generated cert.
                 certificateElement.Attribute("Include").Value = publisherCertificateFileName;
 
                 // And update the PackageCertificateKeyFile
                 project.XPathSelectElement("msb:Project/msb:PropertyGroup/msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
             }
 
+            CopyConfigurationFile(XboxLiveAppConfiguration.FileName, projectFolder);
             // Add the XboxService.config file
             identityItemGroup.Add(
                 new XElement(msb + "Content",
@@ -110,7 +115,7 @@ namespace Assets.Xbox_Live.Editor
             project.Save(projectFile);
         }
 
-        private static void UpdateAppxManifest(string projectFolder)
+        private static void UpdateAppxManifest(string projectFolder, XboxLiveAppConfiguration configuration)
         {
             string manifestFile = Path.Combine(projectFolder, "Package.appxmanifest");
             XDocument manifest = XDocument.Load(manifestFile);
@@ -121,15 +126,21 @@ namespace Assets.Xbox_Live.Editor
             ns.AddNamespace("uap", "http://schemas.microsoft.com/appx/manifest/uap/windows10");
 
             // TODO. Set these to not hardcoded values.
-            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Name").Value = "XboxDeveloperExperienceTe.NoXsapiUWP2";
-            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Publisher").Value = "CN=CE00B9BA-76FD-4DEB-8467-08AFAE3E9B9C";
-            manifest.XPathSelectElement("m:Package/m:Properties/m:DisplayName", ns).Value = "NoXsapiUWP2";
-            manifest.XPathSelectElement("m:Package/m:Properties/m:PublisherDisplayName", ns).Value = "Xbox Developer Experience Team";
-            manifest.XPathSelectElement("m:Package/m:Applications/m:Application/uap:VisualElements", ns).Attribute("DisplayName").Value = "NoXsapiUWP2";
-            manifest.XPathSelectElement("m:Package", ns).Add(
-                new XElement(m + "Capabilities",
-                    new XElement(m + "Cabability",
-                        new XAttribute("Name", "internetClient"))));
+            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Name").Value = configuration.PackageIdentityName;
+            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Publisher").Value = configuration.PublisherId;
+            manifest.XPathSelectElement("m:Package/m:Properties/m:DisplayName", ns).Value = configuration.DisplayName;
+            manifest.XPathSelectElement("m:Package/m:Properties/m:PublisherDisplayName", ns).Value = configuration.PublisherDisplayName;
+            manifest.XPathSelectElement("m:Package/m:Applications/m:Application/uap:VisualElements", ns).Attribute("DisplayName").Value = configuration.DisplayName;
+
+            if (manifest.XPathSelectElement("m:Package/m:Capabilities") == null)
+            {
+                manifest.XPathSelectElement("m:Package", ns).Add(new XElement(m + "Capabilities"));
+            }
+
+            if (manifest.XPathSelectElement("m:Package/m:Capabilities/m:Capability[@Name='internetClient']") == null)
+            {
+                manifest.XPathSelectElement("m:Package/m:Capabilities", ns).Add(new XElement(m + "Capability", new XAttribute("Name", "internetClient")));
+            }
 
             manifest.Save(manifestFile);
         }

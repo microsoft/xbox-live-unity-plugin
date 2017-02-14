@@ -18,6 +18,7 @@ using UnityEngine.UI;
 public class Leaderboard : MonoBehaviour
 {
     public string leaderboardName;
+    public string displayName;
 
     [Range(1, 100)]
     public uint entryCount = 10;
@@ -42,6 +43,7 @@ public class Leaderboard : MonoBehaviour
 
     public void Awake()
     {
+        this.headerText.text = this.displayName;
         this.entryObjectPool = GetComponent<ObjectPool>();
         this.UpdateButtons();
     }
@@ -98,8 +100,6 @@ public class Leaderboard : MonoBehaviour
 
         if (this.totalPages == 0)
         {
-            // This is the first update we're doing.  Setup some initial properties.
-            this.headerText.text = "<No Display Name>"; //this.leaderboardData.Result.DisplayName;
             this.totalPages = (this.leaderboardData.Result.TotalRowCount - 1) / this.entryCount + 1;
         }
 

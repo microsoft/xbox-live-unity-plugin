@@ -22,7 +22,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         EditorWindow.GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
     }
 
-    private XboxLiveAppConfiguration configuration;
+    internal XboxLiveAppConfiguration configuration;
 
     private bool IsConfigured
     {
@@ -155,7 +155,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         this.configuration = this.TryLoad();
     }
 
-    private XboxLiveAppConfiguration TryLoad()
+    internal XboxLiveAppConfiguration TryLoad()
     {
         try
         {
