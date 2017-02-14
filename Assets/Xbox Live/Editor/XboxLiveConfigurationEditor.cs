@@ -1,5 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+
+using Microsoft.Xbox.Services;
+
+using SyntaxTree.VisualStudio.Unity.Bridge;
 
 using UnityEditor;
 
@@ -8,7 +13,8 @@ using UnityEngine;
 [InitializeOnLoad]
 public class XboxLiveConfigurationEditor : EditorWindow
 {
-    private const string MissingValue = "<missing>";
+    private string configFileDirectory;
+    private string configFilePath;
 
     [MenuItem("Xbox Live/Configuration")]
     public static void ShowWindow()
@@ -16,7 +22,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         EditorWindow.GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
     }
 
-    private XboxServicesConfiguration configuration;
+    internal XboxLiveAppConfiguration configuration;
 
     private bool IsConfigured
     {
@@ -28,11 +34,14 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
     private void OnEnable()
     {
-        this.configuration = XboxServicesConfiguration.Load();
+        this.configFileDirectory = Path.Combine(Application.dataPath, "..");
+        this.configFilePath = Path.Combine(this.configFileDirectory, XboxLiveAppConfiguration.FileName);
+        this.configuration = this.TryLoad();
 
-        FileSystemWatcher configFileWatcher = new FileSystemWatcher(Application.dataPath)
+        // Start a file system watcher to notify us if we need to reload the configuration file.
+        FileSystemWatcher configFileWatcher = new FileSystemWatcher(this.configFileDirectory)
         {
-            Filter = XboxServicesConfiguration.ConfigurationFileName
+            Filter = XboxLiveAppConfiguration.FileName
         };
         configFileWatcher.Created += this.ConfigFileChanged;
         configFileWatcher.Deleted += this.ConfigFileChanged;
@@ -53,14 +62,14 @@ public class XboxLiveConfigurationEditor : EditorWindow
         if (GUILayout.Button(new GUIContent(associateButtonText, "Run the Xbox Live Assocation Wizard to enable your game to communicate with Xbox Live."), GUILayout.MaxWidth(200)))
         {
             string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
-            Process.Start(wizardPath, Application.dataPath);
+            Process.Start(wizardPath, this.configFileDirectory);
         }
 
-        if (File.Exists(XboxServicesConfiguration.ConfigurationFilePath))
+        if (File.Exists(this.configFilePath))
         {
             if (GUILayout.Button(new GUIContent("Delete Xbox Live Configuration", "Delete the configuration file containing the Xbox Live identity for your game."), GUILayout.MaxWidth(200)))
             {
-                XboxServicesConfiguration.Clear();
+                File.Delete(this.configFilePath);
             }
         }
 
@@ -69,24 +78,13 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         if (this.IsConfigured)
         {
-            const int labelHeight = 18;
             GUILayout.Label("Title Identity", EditorStyles.boldLabel);
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel("Title Id");
-            EditorGUILayout.SelectableLabel(this.configuration.TitleId ?? MissingValue, GUILayout.Height(labelHeight));
-            EditorGUILayout.EndHorizontal();
-
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel("Scid");
-            EditorGUILayout.SelectableLabel(this.configuration.PrimaryServiceConfigId ?? MissingValue, GUILayout.Height(labelHeight));
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel("Product Family Name");
-            EditorGUILayout.SelectableLabel(this.configuration.ProductFamilyName ?? MissingValue, GUILayout.Height(labelHeight));
-            EditorGUILayout.EndHorizontal();
+            this.PropertyLabel("App ID", this.configuration.AppId);
+            this.PropertyLabel("Product Family Name", this.configuration.ProductFamilyName);
+            this.PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
+            this.PropertyLabel("Title ID", this.configuration.TitleId.ToString());
+            this.PropertyLabel("Sandbox", this.configuration.Sandbox);
         }
         else
         {
@@ -96,21 +94,27 @@ public class XboxLiveConfigurationEditor : EditorWindow
         // Always show a button to manually open the configuration
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button(new GUIContent("Edit " + XboxServicesConfiguration.ConfigurationFileName, "Manually create/edit the configuration file if you already have your configuration values"), GUILayout.MaxWidth(200)))
+        if (GUILayout.Button(new GUIContent("Edit " + XboxLiveAppConfiguration.FileName, "Manually create/edit the configuration file if you already have your configuration values"), GUILayout.MaxWidth(200)))
         {
-            if (!File.Exists(XboxServicesConfiguration.ConfigurationFilePath))
+            if (!File.Exists(this.configFilePath))
             {
-                this.configuration = new XboxServicesConfiguration
+                try
                 {
-                    TitleId = "<Decimal>",
-                    PrimaryServiceConfigId = "<Guid>",
-                    ProductFamilyName = "<String>",
-                    UseMockData = true,
-                };
-                this.configuration.Save();
+                    const string emptyConfig = @"{
+  ""AppId"": """",
+  ""ProductFamilyName"": """",
+  ""ServiceConfigurationId"": ""00000000-0000-0000-0000-0000694f5acb"",
+  ""TitleId"": ""0000000000"",
+  ""Sandbox"": ""XXXXXX.X"",
+}";
+                    File.WriteAllText(this.configFilePath, emptyConfig);
+                }
+                catch (ArgumentException)
+                {
+                }
             }
 
-            Process.Start(XboxServicesConfiguration.ConfigurationFilePath);
+            Process.Start(this.configFilePath);
         }
 
         GUILayout.FlexibleSpace();
@@ -120,6 +124,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         if(this.IsConfigured)
         { 
+            /*
             bool useMockData = GUILayout.Toggle(
                 this.configuration.UseMockData,
                 new GUIContent("Use Mock Xbox Live Data", "If checked, calls to Xbox Live will be faked to provide a small hard-coded set of data to evaluate Xbox Live functionality before completing the full configuration"));
@@ -129,12 +134,36 @@ public class XboxLiveConfigurationEditor : EditorWindow
                 this.configuration.UseMockData = useMockData;
                 this.configuration.Save();
             }
+            */
         }
+    }
+
+    private void PropertyLabel(string name, string value)
+    {
+        const int labelHeight = 18;
+        const string missingValue = "<empty>";
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(name);
+        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value, GUILayout.Height(labelHeight));
+        EditorGUILayout.EndHorizontal();
     }
 
     private void ConfigFileChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
     {
         // When the config file changes, reload the configuration.
-        this.configuration = XboxServicesConfiguration.Load();
+        this.configuration = this.TryLoad();
+    }
+
+    internal XboxLiveAppConfiguration TryLoad()
+    {
+        try
+        {
+            return XboxLiveAppConfiguration.Load(this.configFilePath);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

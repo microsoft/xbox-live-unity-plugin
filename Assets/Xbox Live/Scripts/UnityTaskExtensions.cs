@@ -44,6 +44,15 @@ public class TaskYieldInstruction : CustomYieldInstruction
     public TaskYieldInstruction(Task task)
     {
         this.Task = task;
+
+        if (task.IsCompleted)
+        {
+            this.taskComplete = true;
+            return;
+        }
+
+        // If the task is not complete yet, we need to attach a
+        // continuation to mark the task as complete.
         task.ContinueWith(t => this.taskComplete = true);
     }
 

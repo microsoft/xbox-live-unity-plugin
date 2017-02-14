@@ -16,9 +16,14 @@ The Unity Plugin is broken into the following parts
 * __ProjectSettings__ contains standard Unity project settings files.
 
 ## Getting Started
-If you're just looking to integrate Xbox Live functionality into your Unity game, you can download the [Unity Plugin in the Unity Asset Store](https://https://www.assetstore.unity3d.com/#!/content/TODO).
+If you're just looking to integrate Xbox Live functionality into your Unity game, you can download the [Unity Plugin in the Unity Asset Store](https://https://www.assetstore.unity3d.com/#!/content/TODO).  If you want to make changes or you need to debug something, you can do so directly from source.
 
-You can also build the Unity plugin yourself:
+### Prerequisites
+
+* Visual Studio 2015
+* Powershell 3.0
+
+### Building
 
 1. Open up a powershell window.
 2. Clone the project, and be sure to include and sync all the required submodules.
@@ -32,15 +37,25 @@ You can also build the Unity plugin yourself:
     ```
     .\Build\Setup.ps1
     ```
+
+    You'll need .NET 4.6 in order to build the Association Wizard, but you can skip building that by passing the `-SkipAssociationWizard` switch.
 4. Open up the project in Unity.
 
     ```
     Unity.exe -projectPath .\
     ```
 
+    Make any changes or modifications that you need to.
+
+5. Build the Unity Asset package
+
+    ```
+    .\Build\BuildPackage.ps1
+    ```
+
 ## Contribute Back!
 
-Is there a feature missing that you'd like to see, or found a bug that you have a fix for? Or do you have an idea or just interest in helping out in building the plugin? Let us know and we'd love to work with you. For a good starting point on where we are headed and feature ideas, take a look at our [requested features and bugs](https://github.com/Microsoft/xbox-live-unity-plugin/issues).  
+Is there a feature missing that you'd like to see, or found a bug that you have a fix for? Or do you have an idea or just interest in helping out in building the plugin? Let us know and we'd love to work with you. For a good starting point on where we are headed and feature ideas, take a look at our [requested features and bugs](https://github.com/Microsoft/xbox-live-unity-plugin/issues). See the [contribution guidelines](CONTRIBUTING.MD) for details.
 
 Big or small we'd like to take your contributions back to help improve the Xbox Live Unity plugin for everyone. 
 

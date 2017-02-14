@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3d2add50356a2654ea7a08cc6014fe3d
-timeCreated: 1486510926
+guid: ba47ddefe6f945443be63f281ece18e5
+timeCreated: 1486086552
 licenseType: Free
 PluginImporter:
   serializedVersion: 1
@@ -12,7 +12,7 @@ PluginImporter:
     Any:
       enabled: 0
       settings:
-        Exclude Editor: 1
+        Exclude Editor: 0
         Exclude Linux: 1
         Exclude Linux64: 1
         Exclude LinuxUniversal: 1
@@ -23,19 +23,17 @@ PluginImporter:
         Exclude Win64: 1
         Exclude WindowsStoreApps: 1
     Editor:
-      enabled: 0
+      enabled: 1
       settings:
-        CPU: AnyCPU
         DefaultValueInitialized: true
-        OS: AnyOS
     Linux:
       enabled: 0
       settings:
-        CPU: x86
+        CPU: None
     Linux64:
       enabled: 0
       settings:
-        CPU: x86_64
+        CPU: None
     LinuxUniversal:
       enabled: 0
       settings:
@@ -43,11 +41,11 @@ PluginImporter:
     OSXIntel:
       enabled: 0
       settings:
-        CPU: AnyCPU
+        CPU: None
     OSXIntel64:
       enabled: 0
       settings:
-        CPU: AnyCPU
+        CPU: None
     OSXUniversal:
       enabled: 0
       settings:
@@ -55,19 +53,15 @@ PluginImporter:
     Win:
       enabled: 0
       settings:
-        CPU: AnyCPU
+        CPU: None
     Win64:
       enabled: 0
       settings:
-        CPU: AnyCPU
+        CPU: None
     WindowsStoreApps:
       enabled: 0
       settings:
         CPU: AnyCPU
-        DontProcess: False
-        PlaceholderPath: 
-        SDK: AnySDK
-        ScriptingBackend: AnyScriptingBackend
   userData: 
   assetBundleName: 
   assetBundleVariant: 

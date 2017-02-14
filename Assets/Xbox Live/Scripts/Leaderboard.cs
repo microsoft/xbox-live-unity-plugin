@@ -1,18 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿// -----------------------------------------------------------------------
+//  <copyright file="Leaderboard.cs" company="Microsoft">
+//      Copyright (c) Microsoft. All rights reserved.
+//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
+//  </copyright>
+// -----------------------------------------------------------------------
+
+using System;
+using System.Collections;
 using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services.Leaderboard;
 
-using UnityEditor;
-
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
 public class Leaderboard : MonoBehaviour
 {
-    
     public string leaderboardName;
+    public string displayName;
 
     [Range(1, 100)]
     public uint entryCount = 10;
@@ -22,7 +28,7 @@ public class Leaderboard : MonoBehaviour
     public uint totalPages;
 
     private TaskYieldInstruction<LeaderboardResult> leaderboardData;
-    
+
     public Text headerText;
     public Text pageText;
 
@@ -37,7 +43,8 @@ public class Leaderboard : MonoBehaviour
 
     public void Awake()
     {
-        this.entryObjectPool = this.GetComponent<ObjectPool>();
+        this.headerText.text = this.displayName;
+        this.entryObjectPool = GetComponent<ObjectPool>();
         this.UpdateButtons();
     }
 
@@ -55,36 +62,35 @@ public class Leaderboard : MonoBehaviour
     public void PreviousPage()
     {
         this.currentPage--;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.PrimaryServiceConfigId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
     }
 
     public void FirstPage()
     {
         this.currentPage = 0;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.PrimaryServiceConfigId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
     }
 
     public void LastPage()
     {
         this.currentPage = this.totalPages - 1;
-        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(
-            XboxLive.Instance.Configuration.PrimaryServiceConfigId,
-            this.leaderboardName,
-            this.currentPage * this.entryCount,
-            this.entryCount));
+        this.UpdateData();
+    }
+
+    private void UpdateData()
+    {
+        LeaderboardQuery query = new LeaderboardQuery
+        {
+            SkipResultsToRank = this.currentPage * this.entryCount,
+            MaxItems = this.entryCount,
+        };
+
+        this.UpdateData(XboxLive.Instance.Context.LeaderboardService.GetLeaderboardAsync(this.leaderboardName, query));
     }
 
     private void UpdateData(Task<LeaderboardResult> task)
     {
-        this.StartCoroutine(this.UpdateData(task.AsCoroutine()));
+        StartCoroutine(this.UpdateData(task.AsCoroutine()));
     }
 
     private IEnumerator UpdateData(TaskYieldInstruction<LeaderboardResult> data)
@@ -94,8 +100,6 @@ public class Leaderboard : MonoBehaviour
 
         if (this.totalPages == 0)
         {
-            // This is the first update we're doing.  Setup some initial properties.
-            this.headerText.text = this.leaderboardData.Result.DisplayName;
             this.totalPages = (this.leaderboardData.Result.TotalRowCount - 1) / this.entryCount + 1;
         }
 
@@ -111,7 +115,7 @@ public class Leaderboard : MonoBehaviour
         {
             GameObject entryObject = this.entryObjectPool.GetObject();
             LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
-            
+
             entry.Data = row;
 
             entryObject.transform.SetParent(this.contentPanel);

@@ -7,10 +7,10 @@
 
 using System;
 using System.Collections;
+using System.IO;
+using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Social.Manager;
-using Microsoft.Xbox.Services.System;
 
 using UnityEngine;
 
@@ -18,59 +18,13 @@ using UnityEngine;
 /// Handles initializing any Xbox Live functionality when the game starts.  If the game is not properly configured for Xbox Live this will result in errors.
 /// </summary>
 [HelpURL("http://github.com/Microsoft/xbox-live-unity-plugin")]
-public class XboxLive : MonoBehaviour
+public class XboxLive : Singleton<XboxLive>
 {
-    public const string ConfigurationFileName = "xboxservices.config";
-
-    private static bool applicationIsQuitting = false;
-
-    private static readonly object createInstanceLock = new object();
-
-    private static volatile XboxLive instance;
-
     protected XboxLive()
     {
     }
 
-    public static XboxLive Instance
-    {
-        get
-        {
-            if (applicationIsQuitting)
-            {
-                Debug.LogWarning("[XboxLive] Application is exiting and instance has already been destroyed");
-                return null;
-            }
-
-            if (instance == null)
-            {
-                lock (createInstanceLock)
-                {
-                    if (instance == null)
-                    {
-                        // Check for an existing instance
-                        instance = FindObjectOfType<XboxLive>();
-
-                        if (instance == null)
-                        {
-                            GameObject singleton = new GameObject();
-                            instance = singleton.AddComponent<XboxLive>();
-                            singleton.name = "(singleton) XboxLive";
-
-                            if (Application.isPlaying)
-                            {
-                                DontDestroyOnLoad(singleton);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return instance;
-        }
-    }
-
-    public XboxServicesConfiguration Configuration { get; set; }
+    public XboxLiveAppConfiguration Configuration { get; set; }
 
     public static bool IsEnabled
     {
@@ -94,36 +48,29 @@ public class XboxLive : MonoBehaviour
 
     public void Awake()
     {
-        DontDestroyOnLoad(this);
+        MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
 
-        this.Configuration = XboxServicesConfiguration.Load();
-        if (this.Configuration == null)
+        try
         {
-            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.");
+            this.Configuration = XboxLiveAppConfiguration.Instance;
         }
-    }
-
-    /// <summary>
-    /// When Unity quits, it destroys objects in a random order.
-    /// In principle, a Singleton is only destroyed when application quits.
-    /// If any script calls Instance after it have been destroyed, 
-    ///   it will create a buggy ghost object that will stay on the Editor scene
-    ///   even after stopping playing the Application. Really bad!
-    /// So, this was made to be sure we're not creating that buggy ghost object.
-    /// </summary>
-    public void OnDestroy()
-    {
-        applicationIsQuitting = true;
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.", e);
+        }
     }
 
     public IEnumerator SignInAsync()
     {
-        XboxLiveContext.UseMockData = this.Configuration.UseMockData;
-
         this.User = new XboxLiveUser();
+        TaskYieldInstruction<SignInResult> signInTask = this.User.SignInAsync().AsCoroutine();
+        yield return signInTask;
 
-        // Popup some UI?
-        yield return this.User.SignInAsync(IntPtr.Zero).AsCoroutine();
+        // Throw any exceptions if needed.
+        if (signInTask.Result.Status != SignInStatus.Success)
+        {
+            throw new Exception("Sign in Failed");
+        }
 
         this.Context = new XboxLiveContext(this.User);
     }
