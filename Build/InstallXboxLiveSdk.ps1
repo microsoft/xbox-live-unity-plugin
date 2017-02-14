@@ -75,20 +75,23 @@ elseif($FromSource)
 
   if(!$CopyOnly)
   {
-    if(!(Get-Command msbuild -ErrorAction SilentlyContinue))
-    {
-      throw "Unable to find msbuild.  Make sure you're running a Visual Studio Developer Command Prompt or you've added msbuild to your path."
-    }
-  
     & $nugetCmd restore $sdkSln
     
     Import-Module "$PSScriptRoot\Invoke-MsBuild"
-    Invoke-MsBuild $sdkSln
-  }
+
+    Write-Host "Building Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
     
-  #Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
-  #copy (Join-Path $sdkPath "\binaries\AnyCPU\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
-  #copy (Join-Path $sdkPath "\binaries\x64\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
+    if(!$buildResult.BuildSucceeded)
+    {
+       Write-Host "Failed.  See build logs for details."
+       Write-Host "Log File: $buildResult.Build$LogFilePath"
+       Write-Host "Error Log File: $buildResult.BuildErrorsLogFilePath"
+    }
+    else {
+      Write-Host "SDK Build Succeeded."
+    }
+  }
 }
 elseif($CopySource)
 {

@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 $unity = Get-Command Unity -ea SilentlyContinue
 if(!$unity)
 {
-  Get-Command "C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue
+  $unity = Get-Command "C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue
 }
 
 if(!$unity)
@@ -23,7 +23,8 @@ Remove-Item $packagePath -ErrorAction SilentlyContinue
 $exportAssetPath = "Assets\Xbox Live"
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
-Write-Host "Exporting Xbox Live Unity Plugin to $packagePath"
+Write-Host "Exporting Xbox Live Unity Plugin to " -NoNewline
+Write-Host $packagePath -ForegroundColor Green
 . $unity -batchmode -logFile "$logFile" -projectPath "$projectPath" -exportPackage "$exportAssetPath" "$packagePath" -quit
 $global:unityProcess = Get-Process Unity | Sort-Object StartTime | Select-Object -Last 1 
 
@@ -42,5 +43,5 @@ elseif($unityProcess.ExitCode -ne 0)
 }
 else
 {
-    Write-Host "Package created successfully"
+    Write-Host "Package created successfully. "
 }
