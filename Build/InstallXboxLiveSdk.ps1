@@ -85,8 +85,8 @@ elseif($FromSource)
     if(!$buildResult.BuildSucceeded)
     {
        Write-Host "Failed.  See build logs for details."
-       Write-Host "Log File: $buildResult.Build$LogFilePath"
-       Write-Host "Error Log File: $buildResult.BuildErrorsLogFilePath"
+       Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+       Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
     }
     else {
       Write-Host "SDK Build Succeeded."
