@@ -32,22 +32,21 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
     git clone https://github.com/Microsoft/xbox-live-unity-plugin --recursive
     cd xbox-live-unity-plugin
     ```
-3. Run the Setup script to get all of the pre-requisites configured.
+3. Run the Setup script to get all of the pre-requisites built and configured.
 
     ```
     .\Build\Setup.ps1
     ```
+    
+4. If you want to make any modifications to the scripts or prefabs in the package, open up the project (the `xbox-live-unity-plugin` folder) in Unity and make your changes.  
 
-    You'll need .NET 4.6 in order to build the Association Wizard, but you can skip building that by passing the `-SkipAssociationWizard` switch.
-4. Open up the project in Unity.
+    If `Unity.exe` is accessible from your command line, you can launch the project directly using.
 
     ```
     Unity.exe -projectPath .\
     ```
 
-    Make any changes or modifications that you need to.
-
-5. Build the Unity Asset package
+5. Generate the `XboxLive.unitypackage` that you can import into any other project:
 
     ```
     .\Build\BuildPackage.ps1

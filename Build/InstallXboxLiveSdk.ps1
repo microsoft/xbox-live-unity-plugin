@@ -79,7 +79,7 @@ elseif($FromSource)
     
     Import-Module "$PSScriptRoot\Invoke-MsBuild"
 
-    Write-Host "Building Xbox Live SDK... " -NoNewline
+    Write-Host "Building Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
     
     if(!$buildResult.BuildSucceeded)
@@ -88,11 +88,10 @@ elseif($FromSource)
        Write-Host "Log File: $buildResult.Build$LogFilePath"
        Write-Host "Error Log File: $buildResult.BuildErrorsLogFilePath"
     }
+    else {
+      Write-Host "SDK Build Succeeded."
+    }
   }
-    
-  #Write-Host "Copying Xbox Live SDK to $sdkOutputPath"
-  #copy (Join-Path $sdkPath "\binaries\AnyCPU\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
-  #copy (Join-Path $sdkPath "\binaries\x64\Debug\*") $sdkOutputPath -Include *.dll, *.pdb -recurse -force
 }
 elseif($CopySource)
 {
