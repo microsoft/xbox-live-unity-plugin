@@ -45,7 +45,7 @@ public class Leaderboard : MonoBehaviour
     {
         XboxLive.EnsureEnabled();
         this.headerText.text = this.displayName;
-        this.entryObjectPool = GetComponent<ObjectPool>();
+        this.entryObjectPool = this.GetComponent<ObjectPool>();
         this.UpdateButtons();
     }
 
@@ -91,7 +91,7 @@ public class Leaderboard : MonoBehaviour
 
     private void UpdateData(Task<LeaderboardResult> task)
     {
-        StartCoroutine(this.UpdateData(task.AsCoroutine()));
+        this.StartCoroutine(this.UpdateData(task.AsCoroutine()));
     }
 
     private IEnumerator UpdateData(TaskYieldInstruction<LeaderboardResult> data)

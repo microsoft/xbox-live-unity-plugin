@@ -47,7 +47,7 @@ public class TaskYieldInstruction : CustomYieldInstruction
         {
             throw new ArgumentNullException("task");
         }
-        
+
         this.Task = task;
 
         if (task.IsCompleted)

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-//  <copyright file="Stat.cs" company="Microsoft">
+//  <copyright file="StatPanel.cs" company="Microsoft">
 //      Copyright (c) Microsoft. All rights reserved.
 //      Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //  </copyright>
@@ -56,7 +56,7 @@ public class StatPanel : MonoBehaviour
 
         if (this.Stat != null)
         {
-            this.StatValueText.text = this.Stat.ValueString;
+            this.StatValueText.text = this.Stat.ToString();
         }
     }
 }
