@@ -17,6 +17,5 @@ public class DoubleStat : StatBase<double>
     {
         base.SetValue(value);
         StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, this.Value);
-        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
     }
 }
