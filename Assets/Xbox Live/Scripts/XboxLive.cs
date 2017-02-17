@@ -54,15 +54,16 @@ public class XboxLive : Singleton<XboxLive>
         {
             this.Configuration = XboxLiveAppConfiguration.Instance;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            throw new InvalidOperationException("You must associate your game with an Xbox Live Title in order to use Xbox Live functionality.", e);
+            Debug.LogError("Xbox Live must be enabled.  Run the Xbox Live Association Wizard from Xbox Live > Configuration before using any Xbox Live features.");
         }
     }
 
     public IEnumerator SignInAsync()
     {
         this.User = new XboxLiveUser();
+
         TaskYieldInstruction<SignInResult> signInTask = this.User.SignInAsync().AsCoroutine();
         yield return signInTask;
 

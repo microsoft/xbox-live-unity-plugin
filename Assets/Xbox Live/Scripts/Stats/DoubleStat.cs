@@ -12,7 +12,7 @@ using Microsoft.Xbox.Services.Stats.Manager;
 [Serializable]
 public class DoubleStat : StatBase<double>
 {
-    public void Multiply(double multiplier)
+    public void Multiply(float multiplier)
     {
         this.SetValue(Value * multiplier);
     }

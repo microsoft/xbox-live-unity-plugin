@@ -6,10 +6,6 @@
   Install the Xbox Live SDK into the Unity project
 .PARAMETER FromSource
   Build the SDK from the xbox-live-api-csharp submodule and copy the binaries.
-.PARAMETER CopySource
-  Copy the raw API source files directly into the Unity directory.
-  This is generally useful if you're doing a large amount of back and forth between 
-  the SDK and Unity, but requires manually copying changes back.
 .PARAMETER FromNuget
   Download the SDK NuGet package and copy the binaries from there.
 .PARAMETER CopyOnly,
@@ -18,7 +14,6 @@
 #>
 param(
   [switch]$FromSource,
-  [switch]$CopySource,
   [switch]$FromNuget,
   [switch]$CopyOnly
 )
@@ -49,6 +44,8 @@ if(!(Get-Command $nugetCmd -ErrorAction SilentlyContinue))
     $nugetCmd = $nugetPath
 }
 
+Import-Module "$PSScriptRoot\Invoke-MsBuild"
+
 if($FromNuget)
 {
   # Folder is named with a . prefix so that it's ignored by Unity, the files that we
@@ -76,8 +73,6 @@ elseif($FromSource)
   if(!$CopyOnly)
   {
     & $nugetCmd restore $sdkSln
-    
-    Import-Module "$PSScriptRoot\Invoke-MsBuild"
 
     Write-Host "Building Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
@@ -92,18 +87,4 @@ elseif($FromSource)
       Write-Host "SDK Build Succeeded."
     }
   }
-}
-elseif($CopySource)
-{
-  # Otherwise just copy the raw source files from the xbox-live-api-csharp submodule directly into the project
-  $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
-  if(!(Test-Path (Join-Path $sdkPath "Source")))
-  {
-    Write-Error "Unable to find required files in xbox-live-api-csharp submodule.  Make sure that all submodules are synced."
-    return
-  }
-  
-  copy (Join-Path $sdkPath "External\parse-sdk\debug\*") $sdkOutputPath
-  copy (Join-Path $sdkPath "External\newtonsoft\9.0.1\*.dll") $sdkOutputPath
-  copy (Join-Path $sdkPath "Source\api") $sdkOutputPath -Exclude *.csproj -recurse -force
 }

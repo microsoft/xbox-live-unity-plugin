@@ -43,6 +43,11 @@ public class TaskYieldInstruction : CustomYieldInstruction
 
     public TaskYieldInstruction(Task task)
     {
+        if (task == null)
+        {
+            throw new ArgumentNullException("task");
+        }
+        
         this.Task = task;
 
         if (task.IsCompleted)
@@ -62,7 +67,21 @@ public class TaskYieldInstruction : CustomYieldInstruction
     {
         get
         {
-            return !this.taskComplete;
+            if (!this.taskComplete)
+            {
+                return true;
+            }
+
+            // If the task has completed, but completes with an error
+            // this will force the exception to be thrown so that the 
+            // coroutine code will at least log it somewhere which 
+            // should prevent stuff from getting lost.
+            if (this.Task.Exception != null)
+            {
+                throw this.Task.Exception;
+            }
+
+            return false;
         }
     }
 }
