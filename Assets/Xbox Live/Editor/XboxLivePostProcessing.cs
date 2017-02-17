@@ -22,6 +22,10 @@ namespace Assets.Xbox_Live.Editor
 
     using UnityEngine;
 
+    /// <summary>
+    /// Handles post processing the generated Visaul Studio projects in order to deal with DevCenter
+    /// association and including Xbox Live configuration files.
+    /// </summary>
     [InitializeOnLoad]
     public class XboxLivePostProcessing
     {
@@ -31,11 +35,15 @@ namespace Assets.Xbox_Live.Editor
         }
 
         /// <summary>
-        /// Adds the XboxServices.config file
+        /// Adds the XboxServices.config file to the generated project file.
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="fileContent"></param>
-        /// <returns></returns>
+        /// <param name="fileName">The name of the file being processed.</param>
+        /// <param name="fileContent">The content of the file being processed.</param>
+        /// <returns>The project file with an additional content element included.</returns>
+        /// <remarks>
+        /// This only modifies the Unity debug projects and will not have any
+        /// effect on projects built as part of the Unity UWP build process.
+        /// </remarks>
         private static string AddXboxServicesConfig(string fileName, string fileContent)
         {
             if (!fileName.EndsWith(".Editor.csproj"))
@@ -106,11 +114,15 @@ namespace Assets.Xbox_Live.Editor
             }
 
             CopyConfigurationFile(XboxLiveAppConfiguration.FileName, projectFolder);
-            // Add the XboxService.config file
-            identityItemGroup.Add(
-                new XElement(msb + "Content",
-                    new XAttribute("Include", "XboxServices.config"),
-                    new XElement(msb + "CopyToOutputDirectory", "PreserveNewest")));
+
+            // Add the XboxService.config file if it doesn't exist 
+            if (identityItemGroup.XPathSelectElement("msb:Content[@Include='XboxServices.config']", ns) == null)
+            {
+                identityItemGroup.Add(
+                    new XElement(msb + "Content",
+                        new XAttribute("Include", "XboxServices.config"),
+                        new XElement(msb + "CopyToOutputDirectory", "PreserveNewest")));
+            }
 
             project.Save(projectFile);
         }
@@ -132,12 +144,12 @@ namespace Assets.Xbox_Live.Editor
             manifest.XPathSelectElement("m:Package/m:Properties/m:PublisherDisplayName", ns).Value = configuration.PublisherDisplayName;
             manifest.XPathSelectElement("m:Package/m:Applications/m:Application/uap:VisualElements", ns).Attribute("DisplayName").Value = configuration.DisplayName;
 
-            if (manifest.XPathSelectElement("m:Package/m:Capabilities") == null)
+            if (manifest.XPathSelectElement("m:Package/m:Capabilities", ns) == null)
             {
                 manifest.XPathSelectElement("m:Package", ns).Add(new XElement(m + "Capabilities"));
             }
 
-            if (manifest.XPathSelectElement("m:Package/m:Capabilities/m:Capability[@Name='internetClient']") == null)
+            if (manifest.XPathSelectElement("m:Package/m:Capabilities/m:Capability[@Name='internetClient']", ns) == null)
             {
                 manifest.XPathSelectElement("m:Package/m:Capabilities", ns).Add(new XElement(m + "Capability", new XAttribute("Name", "internetClient")));
             }

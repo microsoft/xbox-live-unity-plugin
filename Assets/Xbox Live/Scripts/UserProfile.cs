@@ -47,7 +47,17 @@ public class UserProfile : MonoBehaviour
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        this.signInPanel.GetComponentInChildren<Button>().interactable = XboxLive.IsEnabled;
+        if (!XboxLive.IsEnabled)
+        {
+            Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
+            signInButton.interactable = false;
+            Text signInButtonText = signInButton.GetComponentInChildren<Text>(true);
+            if (signInButtonText != null)
+            {
+                signInButtonText.fontSize = 16;
+                signInButtonText.text = "Xbox Live is not enabled.\nSee errors for detail.";
+            }
+        }
     }
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)

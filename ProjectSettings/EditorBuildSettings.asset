@@ -5,11 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Main.unity
   - enabled: 1
-    path: Assets/Xbox Live/Samples/Leaderboard.unity
+    path: Assets/Scenes/Main.unity
   - enabled: 0
-    path: Assets/Xbox Live/Samples/UpdateStat.unity
+    path: Assets/Xbox Live/Examples/Leaderboard.unity
+  - enabled: 0
+    path: Assets/Xbox Live/Examples/UpdateStat.unity
   - enabled: 0
     path: Assets/Scenes/Demo.unity

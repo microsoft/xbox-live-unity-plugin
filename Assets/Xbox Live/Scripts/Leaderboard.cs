@@ -43,6 +43,7 @@ public class Leaderboard : MonoBehaviour
 
     public void Awake()
     {
+        XboxLive.EnsureEnabled();
         this.headerText.text = this.displayName;
         this.entryObjectPool = GetComponent<ObjectPool>();
         this.UpdateButtons();

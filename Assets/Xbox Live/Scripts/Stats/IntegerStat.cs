@@ -1,7 +1,7 @@
 ﻿// -----------------------------------------------------------------------
 //  <copyright file="IntegerStat.cs" company="Microsoft">
 //      Copyright (c) Microsoft. All rights reserved.
-//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
+//      Internal use only.
 //  </copyright>
 // -----------------------------------------------------------------------
 
@@ -20,17 +20,17 @@ public class IntegerStat : StatBase<int>
 {
     public void Increment()
     {
-        this.SetValue(Value + 1);
+        this.SetValue(this.Value + 1);
     }
 
     public void Decrement()
     {
-        this.SetValue(Value - 1);
+        this.SetValue(this.Value - 1);
     }
 
     public override void SetValue(int value)
     {
-        Value = value;
-        StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, Name, Value);
+        this.Value = value;
+        StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, this.Name, this.Value);
     }
 }
