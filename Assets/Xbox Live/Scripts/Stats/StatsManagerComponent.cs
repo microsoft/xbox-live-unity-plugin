@@ -20,6 +20,7 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
     /// </summary>
     private void Awake()
     {
+        XboxLive.EnsureEnabled();
         this.manager = StatsManager.Singleton;
     }
 

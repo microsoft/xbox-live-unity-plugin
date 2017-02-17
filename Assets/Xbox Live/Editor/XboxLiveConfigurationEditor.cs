@@ -88,15 +88,16 @@ public class XboxLiveConfigurationEditor : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("In order to use Xbox Live functionality within your game, you must first associate it with a new or existing Xbox Live title.\nThis title information identifies your game with Xbox Live services and allows users to interact with Xbox Live and also allows you to interact with", MessageType.Info, true);
+            EditorGUILayout.HelpBox("In order to use Xbox Live functionality within your game, you must first associate it with a new or existing Xbox Live title.\nThis title information identifies your game with Xbox Live services and allows users to interact with Xbox Live.  You need a DevCenter account to associate your game, but you can create an empty configuration file to test functionality within Unity.", MessageType.Info, true);
         }
 
         // Always show a button to manually open the configuration
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button(new GUIContent("Edit " + XboxLiveAppConfiguration.FileName, "Manually create/edit the configuration file if you already have your configuration values"), GUILayout.MaxWidth(200)))
+
+        if (!File.Exists(this.configFilePath))
         {
-            if (!File.Exists(this.configFilePath))
+            if (GUILayout.Button(new GUIContent("Create empty " + XboxLiveAppConfiguration.FileName, "Create an empty configuration file so that you can test Xbox Live in the editor before associating your game with DevCenter.")))
             {
                 try
                 {
@@ -113,8 +114,13 @@ public class XboxLiveConfigurationEditor : EditorWindow
                 {
                 }
             }
-
-            Process.Start(this.configFilePath);
+        }
+        else
+        {
+            if (GUILayout.Button(new GUIContent("Edit " + XboxLiveAppConfiguration.FileName, "Manually edit the configuration file if you already have your configuration values."), GUILayout.MaxWidth(200)))
+            {
+                Process.Start(this.configFilePath);
+            }
         }
 
         GUILayout.FlexibleSpace();
