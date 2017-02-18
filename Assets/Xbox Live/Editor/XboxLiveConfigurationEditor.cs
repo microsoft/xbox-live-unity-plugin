@@ -202,7 +202,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel(name);
-        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value);//, GUILayout.Height(labelHeight));
+        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value, GUILayout.Height(labelHeight));
         EditorGUILayout.EndHorizontal();
     }
 

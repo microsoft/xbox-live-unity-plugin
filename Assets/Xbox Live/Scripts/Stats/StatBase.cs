@@ -68,18 +68,9 @@ public abstract class StatBase<T> : StatBase, IStatsManagerEventHandler
 
     public void StatUpdateComplete()
     {
-        if (this.UseInitialValueFromService)
-        {
-            // Grab the value and store it locally.
-            StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
-            this.SetValue((T)statValue.Value);
-            this.initialized = true;
-        }
-    }
-
-    public override string ToString()
-    {
-        return this.Value != null ? this.Value.ToString() : string.Empty;
+        // Grab the value and store it locally.
+        StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
+        this.SetValue((T)statValue.Value);
     }
 
     public override string ToString()
