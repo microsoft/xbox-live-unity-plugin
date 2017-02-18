@@ -32,5 +32,6 @@ public class IntegerStat : StatBase<int>
     {
         base.SetValue(value);
         StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, this.Name, this.Value);
+        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
     }
 }

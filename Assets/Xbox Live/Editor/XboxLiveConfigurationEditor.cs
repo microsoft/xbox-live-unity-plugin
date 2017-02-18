@@ -21,6 +21,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 {
     private string configFileDirectory;
     private string configFilePath;
+    private Vector2 scrollPosition;
 
     [MenuItem("Xbox Live/Configuration")]
     public static void ShowWindow()
@@ -58,6 +59,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
     private void OnGUI()
     {
+        this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition);
         EditorGUILayout.Space();
 
         string associateButtonText = this.IsConfigured ? "Update Xbox Live Association" : "Enable Xbox Live";
@@ -149,8 +151,8 @@ public class XboxLiveConfigurationEditor : EditorWindow
             EditorGUILayout.HelpBox("You can manually modify the existing configuration file if you need to update an individual value and you don't want to use the Association Wizard.", MessageType.Info, true);
         }
 
-        GUILayout.Label("Sandbox Configuration", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox("In order to call Xbox Live services, your machine must be in the same sandbox that your title is configured in.  Attempting to switch the sandbox may prompt you for administrative credentials.", MessageType.Info);
+        GUILayout.Label("Developer Mode Configuration", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("In order to call Xbox Live services, your machine must be in Developer Mode and in the same sandbox that your title is configured in.  After you have have Enabled Xbox Live, you will be able to switch to Developer Mode.  Attempting to switch to Developer Mode may prompt you for administrative credentials.", MessageType.Info);
 
         string currentSandbox = "RETAIL";
 
@@ -164,29 +166,37 @@ public class XboxLiveConfigurationEditor : EditorWindow
             }
         }
 
-        if (currentSandbox != "RETAIL")
+        bool developerModeEnabled = currentSandbox != "RETAIL";
+
+        if (developerModeEnabled)
         {
-            EditorGUILayout.HelpBox("Your machine is currently configured in a development sandbox.  You will need to switch back to the RETAIL sandbox in order to use Xbox Live functionality in any other apps or games.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Your machine is currently configured in Developer Mode.  You will need to switch back to retail in order to use Xbox Live functionality in any other apps or games.", MessageType.Warning);
         }
 
         EditorGUILayout.BeginHorizontal();
-        PropertyLabel("Current Sandbox", currentSandbox);
+        PropertyLabel("Developer Mode", developerModeEnabled ? "Enabled (" + currentSandbox + ")" : "Disabled");
 
-        if (currentSandbox != this.configuration.Sandbox)
+        if (this.configuration != null && currentSandbox != this.configuration.Sandbox)
         {
-            if (GUILayout.Button("Switch to " + this.configuration.Sandbox + " sandbox"))
+            if (GUILayout.Button("Switch to Developer Mode"))
             {
                 SetSandbox(this.configuration.Sandbox);
             }
         }
         else
         {
-            if (GUILayout.Button("Switch back to RETAIL sandbox"))
+            if (developerModeEnabled)
             {
-                SetSandbox("RETAIL");
+                if (GUILayout.Button("Switch back to Retail Mode"))
+                {
+                    SetSandbox("RETAIL");
+                }
             }
         }
         EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space();
+        GUILayout.EndScrollView();
     }
 
     private static void PropertyLabel(string name, string value)
@@ -196,7 +206,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel(name);
-        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value);//, GUILayout.Height(labelHeight));
+        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value, GUILayout.Height(labelHeight));
         EditorGUILayout.EndHorizontal();
     }
 

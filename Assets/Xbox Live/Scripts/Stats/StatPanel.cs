@@ -43,7 +43,7 @@ public class StatPanel : MonoBehaviour
             Vector3 position = this.StatValueText.rectTransform.position;
             position.x = 130;
             this.StatValueText.rectTransform.position = position;
-            this.StatLabelText.text = this.Stat.Name;
+            this.StatLabelText.text = string.IsNullOrEmpty(this.Stat.DisplayName) ? this.Stat.Name : this.Stat.DisplayName;
             this.StatLabelText.gameObject.SetActive(true);
         }
         else

@@ -16,5 +16,6 @@ public class StringStat : StatBase<string>
     {
         base.SetValue(value);
         StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, this.Value);
+        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
     }
 }

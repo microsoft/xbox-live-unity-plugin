@@ -58,22 +58,12 @@ public abstract class StatBase<T> : StatBase, IStatsManagerEventHandler
 
     public virtual void SetValue(T value)
     {
-        if (!this.initialized)
-        {
-            throw new InvalidOperationException("You cannot set stat values until all stats have been initialized.");
-        }
-
         this.Value = value;
     }
 
     public void LocalUserAdded(XboxLiveUser user)
     {
-        if (!this.UseInitialValueFromService)
-        {
-            // Set the initial stat value.
-            this.SetValue(this.Value);
-            this.initialized = true;
-        }
+        this.EnsureInitialized();
     }
 
     public void LocalUserRemoved(XboxLiveUser user)
@@ -82,17 +72,32 @@ public abstract class StatBase<T> : StatBase, IStatsManagerEventHandler
 
     public void StatUpdateComplete()
     {
-        if (this.UseInitialValueFromService)
-        {
-            // Grab the value and store it locally.
-            StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
-            this.SetValue((T)statValue.Value);
-            this.initialized = true;
-        }
+        // Grab the value and store it locally.
+        StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
+        this.SetValue((T)statValue.Value);
     }
 
     public override string ToString()
     {
         return this.Value != null ? this.Value.ToString() : string.Empty;
+    }
+
+    private void EnsureInitialized()
+    {
+        if (this.initialized) return;
+
+        if (!this.UseInitialValueFromService)
+        {
+            // Set the initial stat value.
+            this.SetValue(this.Value);
+        }
+        else
+        {
+            StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
+            this.SetValue(statValue != null ? (T)statValue.Value : this.Value);
+
+        }
+
+        this.initialized = true;
     }
 }
