@@ -1,10 +1,16 @@
-﻿using System;
+﻿// -----------------------------------------------------------------------
+//  <copyright file="XboxLiveConfigurationEditor.cs" company="Microsoft">
+//      Copyright (c) Microsoft. All rights reserved.
+//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
+//  </copyright>
+// -----------------------------------------------------------------------
+
+using System;
 using System.Diagnostics;
 using System.IO;
 
+using Microsoft.Win32;
 using Microsoft.Xbox.Services;
-
-using SyntaxTree.VisualStudio.Unity.Bridge;
 
 using UnityEditor;
 
@@ -15,11 +21,12 @@ public class XboxLiveConfigurationEditor : EditorWindow
 {
     private string configFileDirectory;
     private string configFilePath;
+    private Vector2 scrollPosition;
 
     [MenuItem("Xbox Live/Configuration")]
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
+        GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
     }
 
     internal XboxLiveAppConfiguration configuration;
@@ -52,6 +59,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
     private void OnGUI()
     {
+        this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition);
         EditorGUILayout.Space();
 
         string associateButtonText = this.IsConfigured ? "Update Xbox Live Association" : "Enable Xbox Live";
@@ -62,7 +70,8 @@ public class XboxLiveConfigurationEditor : EditorWindow
         if (GUILayout.Button(new GUIContent(associateButtonText, "Run the Xbox Live Assocation Wizard to enable your game to communicate with Xbox Live."), GUILayout.MaxWidth(200)))
         {
             string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
-            Process.Start(wizardPath, this.configFileDirectory);
+            // We need to make sure to quote the path that we pass to the association wizard.
+            Process.Start(wizardPath, '"' + this.configFileDirectory + '"');
         }
 
         if (File.Exists(this.configFilePath))
@@ -78,13 +87,20 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         if (this.IsConfigured)
         {
-            GUILayout.Label("Title Identity", EditorStyles.boldLabel);
+            if (string.IsNullOrEmpty(this.configuration.AppId))
+            {
+                EditorGUILayout.HelpBox("Your Xbox Live configuration does not appear to be completely valid.  You will need to re-associate your game before you can create a finished build.", MessageType.Warning, true);
+            }
 
-            this.PropertyLabel("App ID", this.configuration.AppId);
-            this.PropertyLabel("Product Family Name", this.configuration.ProductFamilyName);
-            this.PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
-            this.PropertyLabel("Title ID", this.configuration.TitleId.ToString());
-            this.PropertyLabel("Sandbox", this.configuration.Sandbox);
+            GUILayout.Label("Title Configuration", EditorStyles.boldLabel);
+
+            PropertyLabel("Name", this.configuration.DisplayName);
+            PropertyLabel("Publisher", this.configuration.PublisherDisplayName);
+            PropertyLabel("App ID", this.configuration.AppId);
+            PropertyLabel("Product Family Name", this.configuration.ProductFamilyName);
+            PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
+            PropertyLabel("Title ID", this.configuration.TitleId.ToString());
+            PropertyLabel("Sandbox", this.configuration.Sandbox);
         }
         else
         {
@@ -126,25 +142,64 @@ public class XboxLiveConfigurationEditor : EditorWindow
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 
-        EditorGUILayout.HelpBox("If you already have an existing configuration file, or you know the values you need to fill out, you can create/edit the configuration file manually.", MessageType.Info, true);
-
-        if(this.IsConfigured)
-        { 
-            /*
-            bool useMockData = GUILayout.Toggle(
-                this.configuration.UseMockData,
-                new GUIContent("Use Mock Xbox Live Data", "If checked, calls to Xbox Live will be faked to provide a small hard-coded set of data to evaluate Xbox Live functionality before completing the full configuration"));
-
-            if (this.configuration.UseMockData != useMockData)
-            {
-                this.configuration.UseMockData = useMockData;
-                this.configuration.Save();
-            }
-            */
+        if (!File.Exists(this.configFilePath))
+        {
+            EditorGUILayout.HelpBox("If you already have a configuration file from elsewhere, or you know the values you need to fill out, you can create/edit the configuration file manually.", MessageType.Info, true);
         }
+        else
+        {
+            EditorGUILayout.HelpBox("You can manually modify the existing configuration file if you need to update an individual value and you don't want to use the Association Wizard.", MessageType.Info, true);
+        }
+
+        GUILayout.Label("Developer Mode Configuration", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox("In order to call Xbox Live services, your machine must be in Developer Mode and in the same sandbox that your title is configured in.  After you have have Enabled Xbox Live, you will be able to switch to Developer Mode.  Attempting to switch to Developer Mode may prompt you for administrative credentials.", MessageType.Info);
+
+        string currentSandbox = "RETAIL";
+
+        RegistryKey xboxLiveRegistryKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\XboxLive");
+        if (xboxLiveRegistryKey != null)
+        {
+            string registrySandbox = xboxLiveRegistryKey.GetValue("Sandbox") as string;
+            if (registrySandbox != null)
+            {
+                currentSandbox = registrySandbox;
+            }
+        }
+
+        bool developerModeEnabled = currentSandbox != "RETAIL";
+
+        if (developerModeEnabled)
+        {
+            EditorGUILayout.HelpBox("Your machine is currently configured in Developer Mode.  You will need to switch back to retail in order to use Xbox Live functionality in any other apps or games.", MessageType.Warning);
+        }
+
+        EditorGUILayout.BeginHorizontal();
+        PropertyLabel("Developer Mode", developerModeEnabled ? "Enabled (" + currentSandbox + ")" : "Disabled");
+
+        if (this.configuration != null && currentSandbox != this.configuration.Sandbox)
+        {
+            if (GUILayout.Button("Switch to Developer Mode"))
+            {
+                SetSandbox(this.configuration.Sandbox);
+            }
+        }
+        else
+        {
+            if (developerModeEnabled)
+            {
+                if (GUILayout.Button("Switch back to Retail Mode"))
+                {
+                    SetSandbox("RETAIL");
+                }
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space();
+        GUILayout.EndScrollView();
     }
 
-    private void PropertyLabel(string name, string value)
+    private static void PropertyLabel(string name, string value)
     {
         const int labelHeight = 18;
         const string missingValue = "<empty>";
@@ -159,6 +214,23 @@ public class XboxLiveConfigurationEditor : EditorWindow
     {
         // When the config file changes, reload the configuration.
         this.configuration = this.TryLoad();
+    }
+
+    private static void SetSandbox(string sandboxId)
+    {
+        UnityEngine.Debug.Log("Setting sandbox to " + sandboxId);
+
+        string command = string.Format("/c \"reg add HKLM\\Software\\Microsoft\\XboxLive /f /v Sandbox /d {0} && net stop XblAuthManager && net start XblAuthManager\"", sandboxId);
+        ProcessStartInfo psi = new ProcessStartInfo("cmd", command)
+        {
+            UseShellExecute = true,
+            Verb = "runas"
+        };
+        Process setSandboxProcess = Process.Start(psi);
+        if (setSandboxProcess != null)
+        {
+            setSandboxProcess.WaitForExit();
+        }
     }
 
     internal XboxLiveAppConfiguration TryLoad()

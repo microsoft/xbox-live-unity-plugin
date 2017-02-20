@@ -51,7 +51,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
                         DontDestroyOnLoad(singleton);
 
-                        Debug.Log("[Singleton] " + typeof(T) +" was created with DontDestroyOnLoad.");
+                        Debug.Log("[Singleton] " + typeof(T) + " was created with DontDestroyOnLoad.");
                     }
                 }
 

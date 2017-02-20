@@ -23,7 +23,7 @@ $ErrorActionPreference = "Stop"
 $sdkOutputPath = Join-Path $PSScriptRoot "..\Assets\Xbox Live\Libs\"
 mkdir $sdkOutputPath -force | Out-Null
 
-if(!($FromNuget -or $FromSource -or $CopySource))
+if(!($FromNuget -or $FromSource))
 {
   Write-Warning "No switch was specified so we are building the SDK from source (equivalent to passing -FromSource)."
   $FromSource = $true
@@ -48,6 +48,7 @@ Import-Module "$PSScriptRoot\Invoke-MsBuild"
 
 if($FromNuget)
 {
+  throw "Installing the SDK from NuGet is not currently supported."
   # Folder is named with a . prefix so that it's ignored by Unity, the files that we
   # need out of the package are manually copied out to the appropriate locations.
   

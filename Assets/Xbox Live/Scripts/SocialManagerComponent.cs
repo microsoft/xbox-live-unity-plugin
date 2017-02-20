@@ -1,12 +1,11 @@
 ﻿// -----------------------------------------------------------------------
 //  <copyright file="SocialManagerComponent.cs" company="Microsoft">
 //      Copyright (c) Microsoft. All rights reserved.
-//      Internal use only.
+//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //  </copyright>
 // -----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 using Microsoft.Xbox.Services.Social.Manager;
 
@@ -39,7 +38,7 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
             foreach (SocialEvent socialEvent in socialEvents)
             {
                 SocialEvent eventData = socialEvent;
-                ExecuteEvents.Execute<ISocialManagerEventHandler>(null, null, (a, b) => { a.OnSocialManagerEvent(eventData);});
+                ExecuteEvents.Execute<ISocialManagerEventHandler>(null, null, (a, b) => { a.OnSocialManagerEvent(eventData); });
             }
         }
         catch (Exception e)

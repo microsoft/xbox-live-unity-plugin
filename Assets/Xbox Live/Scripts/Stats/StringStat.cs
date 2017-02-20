@@ -14,7 +14,8 @@ public class StringStat : StatBase<string>
 {
     public override void SetValue(string value)
     {
-        this.Value = value;
+        base.SetValue(value);
         StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, this.Value);
+        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
     }
 }

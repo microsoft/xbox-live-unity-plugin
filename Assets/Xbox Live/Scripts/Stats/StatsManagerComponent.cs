@@ -43,7 +43,7 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
             switch (statEvent.EventType)
             {
                 case StatEventType.LocalUserAdded:
-                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user);});
+                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user); });
                     break;
                 case StatEventType.LocalUserRemoved:
                     ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user); });

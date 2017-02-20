@@ -10,9 +10,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 
-using Microsoft.Xbox.Services.Social.Manager;
-using Microsoft.Xbox.Services.System;
 using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Social.Manager;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
@@ -62,13 +61,12 @@ public class UserProfile : MonoBehaviour
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
     {
-        
         this.Refresh();
     }
 
     public void SignIn()
     {
-        StartCoroutine(this.SignInAsync());
+        this.StartCoroutine(this.SignInAsync());
     }
 
     public IEnumerator SignInAsync()
