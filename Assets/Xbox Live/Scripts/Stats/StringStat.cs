@@ -1,10 +1,6 @@
-// -----------------------------------------------------------------------
-//  <copyright file="StringStat.cs" company="Microsoft">
-//      Copyright (c) Microsoft. All rights reserved.
-//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
-//  </copyright>
-// -----------------------------------------------------------------------
-
+// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// 
 using System;
 
 using Microsoft.Xbox.Services.Stats.Manager;
