@@ -5,8 +5,6 @@ using System;
 
 using Microsoft.Xbox.Services.Social.Manager;
 
-using UnityEditor;
-
 using UnityEngine;
 
 public delegate void SocialEventHandler(object sender, SocialEvent socialEvent);
