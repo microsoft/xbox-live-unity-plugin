@@ -1,28 +1,29 @@
-﻿// Copyright (c) Microsoft Corporation
+// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
+using System;
+
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class StatsManagerComponent : Singleton<StatsManagerComponent>
 {
     private IStatsManager manager;
 
-    /// <summary>
-    /// Awake is called when the script instance is being loaded
-    /// </summary>
+    public event EventHandler<XboxLiveUserEventArgs> LocalUserAdded;
+
+    public event EventHandler<XboxLiveUserEventArgs> LocalUserRemoved;
+
+    public event EventHandler StatUpdateComplete;
+
     private void Awake()
     {
-        XboxLive.EnsureEnabled();
+        XboxLive.EnsureConfigured();
         this.manager = StatsManager.Singleton;
     }
 
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled
-    /// </summary>
     private void Update()
     {
         if (this.manager == null)
@@ -33,21 +34,38 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
 
         foreach (StatEvent statEvent in this.manager.DoWork())
         {
-            Debug.Log(string.Format("[StatsManager] {0} - {1}", statEvent.EventType, statEvent.LocalUser.Gamertag));
-            XboxLiveUser user = statEvent.LocalUser;
+            Debug.Log(string.Format("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.LocalUser.Gamertag));
 
             switch (statEvent.EventType)
             {
                 case StatEventType.LocalUserAdded:
-                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user); });
+                    this.OnLocalUserAdded(statEvent.LocalUser);
                     break;
                 case StatEventType.LocalUserRemoved:
-                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.LocalUserAdded(user); });
+                    this.OnLocalUserRemoved(statEvent.LocalUser);
                     break;
                 case StatEventType.StatUpdateComplete:
-                    ExecuteEvents.Execute<IStatsManagerEventHandler>(this.gameObject, null, (handler, b) => { handler.StatUpdateComplete(); });
+                    this.OnStatUpdateComplete();
                     break;
             }
         }
+    }
+
+    protected virtual void OnLocalUserAdded(XboxLiveUser user)
+    {
+        var handler = this.LocalUserAdded;
+        if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
+    }
+
+    protected virtual void OnLocalUserRemoved(XboxLiveUser user)
+    {
+        var handler = this.LocalUserRemoved;
+        if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
+    }
+
+    protected virtual void OnStatUpdateComplete()
+    {
+        var handler = this.StatUpdateComplete;
+        if (handler != null) handler(this, EventArgs.Empty);
     }
 }

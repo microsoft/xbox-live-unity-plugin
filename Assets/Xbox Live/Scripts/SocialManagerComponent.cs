@@ -5,12 +5,17 @@ using System;
 
 using Microsoft.Xbox.Services.Social.Manager;
 
+using UnityEditor;
+
 using UnityEngine;
-using UnityEngine.EventSystems;
+
+public delegate void SocialEventHandler(object sender, SocialEvent socialEvent);
 
 public class SocialManagerComponent : Singleton<SocialManagerComponent>
 {
     private ISocialManager manager;
+
+    public event SocialEventHandler EventProcessed;
 
     private SocialManagerComponent()
     {
@@ -24,22 +29,27 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
         this.manager = SocialManager.Instance;
     }
 
-    void Update()
+    private void Update()
     {
         try
         {
             var socialEvents = this.manager.DoWork();
-            Debug.Log(string.Format("SocialManager processed {0} events", socialEvents.Count));
 
             foreach (SocialEvent socialEvent in socialEvents)
             {
-                SocialEvent eventData = socialEvent;
-                ExecuteEvents.Execute<ISocialManagerEventHandler>(null, null, (a, b) => { a.OnSocialManagerEvent(eventData); });
+                Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
+                this.OnEventProcessed(socialEvent);
             }
         }
         catch (Exception e)
         {
             Debug.LogError(e.ToString());
         }
+    }
+
+    protected virtual void OnEventProcessed(SocialEvent socialEvent)
+    {
+        var handler = this.EventProcessed;
+        if (handler != null) handler(this, socialEvent);
     }
 }

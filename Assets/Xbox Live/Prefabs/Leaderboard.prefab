@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 114106039212620896}
   - component: {fileID: 114169854041552720}
   m_Layer: 5
-  m_Name: Button
+  m_Name: RefreshButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1291,6 +1291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboardName: Sample
+  displayName: 
   entryCount: 10
   currentPage: 0
   totalPages: 0

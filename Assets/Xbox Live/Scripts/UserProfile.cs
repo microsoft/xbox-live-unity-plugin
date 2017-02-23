@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
@@ -13,36 +12,36 @@ using Microsoft.Xbox.Services.Stats.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Debug = System.Diagnostics.Debug;
-
 public class UserProfile : MonoBehaviour
 {
+    [HideInInspector]
     public GameObject signInPanel;
+
+    [HideInInspector]
     public GameObject profileInfoPanel;
+
+    [HideInInspector]
     public Image gamerpic;
+
+    [HideInInspector]
     public Image gamerpicMask;
+
+    [HideInInspector]
     public Text gamertag;
+
+    [HideInInspector]
     public Text gamerscore;
 
     public void Awake()
     {
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
-
-#if UNITY_EDITOR
-        // TODO: This ignors all SSL certs because Mono uses it's own cert store.  This MUST be removed when the issues are resolved.
-        ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
-        {
-            Debug.WriteLine(errors);
-            return true;
-        };
-#endif
     }
 
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        if (!XboxLive.IsEnabled)
+        if (!XboxLive.IsConfigured)
         {
             Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
             signInButton.interactable = false;

@@ -10,13 +10,19 @@ public class DoubleStat : StatBase<double>
 {
     public void Multiply(float multiplier)
     {
-        this.SetValue(this.Value * multiplier);
+        this.Value = this.Value * multiplier;
     }
 
-    public override void SetValue(double value)
+    public override double Value
     {
-        base.SetValue(value);
-        StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, this.Value);
-        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
+        get
+        {
+            return base.Value;
+        }
+        set
+        {
+            StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, value);
+            base.Value = value;
+        }
     }
 }

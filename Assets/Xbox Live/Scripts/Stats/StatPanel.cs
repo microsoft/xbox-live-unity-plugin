@@ -12,21 +12,21 @@ using UnityEngine.UI;
 [Serializable]
 public class StatPanel : MonoBehaviour
 {
-    public bool ShowStatLabel;
-
+    [HideInInspector]
     public Text StatLabelText;
 
+    [HideInInspector]
     public Text StatValueText;
 
+    [Tooltip("The stat object that this panel renders.")]
     public StatBase Stat;
+
+    public bool ShowStatLabel;
 
     private void Awake()
     {
         this.StatLabelText.text = string.Empty;
         this.StatValueText.text = string.Empty;
-
-        // Make sure there is a StatsManager for us.
-        var statsManager = StatsManagerComponent.Instance;
     }
 
     /// <summary>
