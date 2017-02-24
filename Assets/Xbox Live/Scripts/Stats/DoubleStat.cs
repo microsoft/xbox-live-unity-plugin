@@ -13,6 +13,12 @@ public class DoubleStat : StatBase<double>
         this.Value = this.Value * multiplier;
     }
 
+    public void Square()
+    {
+        var value = this.Value;
+        this.Value = value * value;
+    }
+
     public override double Value
     {
         get

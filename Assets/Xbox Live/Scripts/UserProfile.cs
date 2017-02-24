@@ -12,7 +12,7 @@ using Microsoft.Xbox.Services.Stats.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UserProfile : MonoBehaviour
+public class UserProfile : UIMonoBehaviour
 {
     [HideInInspector]
     public GameObject signInPanel;
@@ -34,8 +34,11 @@ public class UserProfile : MonoBehaviour
 
     public void Awake()
     {
+        this.EnsureEventSystem();
+
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
+        this.Refresh();
     }
 
     public void Start()
@@ -107,7 +110,7 @@ public class UserProfile : MonoBehaviour
 
     private void Refresh()
     {
-        bool isSignedIn = XboxLive.Instance.Context != null;
+        bool isSignedIn = XboxLive.Instance.User != null && XboxLive.Instance.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }

@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class Leaderboard : MonoBehaviour
+public class Leaderboard : UIMonoBehaviour
 {
     public string leaderboardName;
     public string displayName;
@@ -45,8 +45,10 @@ public class Leaderboard : MonoBehaviour
     private TaskYieldInstruction<LeaderboardResult> leaderboardData;
     private ObjectPool entryObjectPool;
 
-    public void Awake()
+    private void Awake()
     {
+        this.EnsureEventSystem();
+
         XboxLive.EnsureConfigured();
         this.headerText.text = this.displayName;
         this.entryObjectPool = this.GetComponent<ObjectPool>();
