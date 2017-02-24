@@ -39,7 +39,7 @@ public class StatPanel : UIMonoBehaviour
         if (this.ShowStatLabel)
         {
             Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = 130;
+            position.x = this.StatLabelText.rectTransform.position.x + this.StatLabelText.rectTransform.rect.xMax + 10;
             this.StatValueText.rectTransform.position = position;
             this.StatLabelText.text = string.IsNullOrEmpty(this.Stat.DisplayName) ? this.Stat.Name : this.Stat.DisplayName;
             this.StatLabelText.gameObject.SetActive(true);
@@ -48,7 +48,7 @@ public class StatPanel : UIMonoBehaviour
         {
             this.StatLabelText.gameObject.SetActive(false);
             Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = 10;
+            position.x = this.StatLabelText.rectTransform.position.x;
             this.StatValueText.rectTransform.position = position;
         }
 

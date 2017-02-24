@@ -242,7 +242,7 @@ Prefab:
     - target: {fileID: 114524918340390160, guid: 1e652f2a783ee37488d7e38fb10180f5,
         type: 2}
       propertyPath: Name
-      value: Jumps
+      value: jumps
       objectReference: {fileID: 0}
     - target: {fileID: 114524918340390160, guid: 1e652f2a783ee37488d7e38fb10180f5,
         type: 2}
@@ -880,6 +880,11 @@ Prefab:
       propertyPath: Stat
       value: 
       objectReference: {fileID: 486259306}
+    - target: {fileID: 114701035934894952, guid: 31c42f47b3c0cb94895f2405b1dabd8b,
+        type: 2}
+      propertyPath: ShowStatLabel
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 31c42f47b3c0cb94895f2405b1dabd8b, type: 2}
   m_IsPrefabParent: 0
@@ -1077,12 +1082,52 @@ Prefab:
     - target: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: leaderboardName
-      value: Jumps
+      value: jumps
       objectReference: {fileID: 0}
     - target: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: displayName
       value: Most Jumps
+      objectReference: {fileID: 0}
+    - target: {fileID: 224647959109519794, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224647959109519794, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224647959109519794, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 224647959109519794, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 224118793282265866, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224118793282265866, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 224874643074315358, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224874643074315358, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: -17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f3f126b8a38414b4f95d318ba52a4ade, type: 2}

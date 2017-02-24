@@ -53,7 +53,10 @@ public abstract class StatBase<T> : StatBase
 
     private void Awake()
     {
-        this.Value = this.InitialValue;
+        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        {
+            this.Value = this.InitialValue;
+        };
     }
 
     public virtual T Value
