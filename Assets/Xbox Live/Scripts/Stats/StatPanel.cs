@@ -10,23 +10,25 @@ using UnityEngine.UI;
 /// Logic for the StatsPanel prefab that displays name and value of a <see cref="StatBase"/>.
 /// </summary>
 [Serializable]
-public class StatPanel : MonoBehaviour
+public class StatPanel : UIMonoBehaviour
 {
-    public bool ShowStatLabel;
-
+    [HideInInspector]
     public Text StatLabelText;
 
+    [HideInInspector]
     public Text StatValueText;
 
+    [Tooltip("The stat object that this panel renders.")]
     public StatBase Stat;
+
+    public bool ShowStatLabel;
 
     private void Awake()
     {
+        this.EnsureEventSystem();
+
         this.StatLabelText.text = string.Empty;
         this.StatValueText.text = string.Empty;
-
-        // Make sure there is a StatsManager for us.
-        var statsManager = StatsManagerComponent.Instance;
     }
 
     /// <summary>
@@ -37,7 +39,7 @@ public class StatPanel : MonoBehaviour
         if (this.ShowStatLabel)
         {
             Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = 130;
+            position.x = this.StatLabelText.rectTransform.position.x + this.StatLabelText.rectTransform.rect.xMax + 10;
             this.StatValueText.rectTransform.position = position;
             this.StatLabelText.text = string.IsNullOrEmpty(this.Stat.DisplayName) ? this.Stat.Name : this.Stat.DisplayName;
             this.StatLabelText.gameObject.SetActive(true);
@@ -46,7 +48,7 @@ public class StatPanel : MonoBehaviour
         {
             this.StatLabelText.gameObject.SetActive(false);
             Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = 10;
+            position.x = this.StatLabelText.rectTransform.position.x;
             this.StatValueText.rectTransform.position = position;
         }
 

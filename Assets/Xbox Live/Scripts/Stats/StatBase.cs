@@ -3,7 +3,6 @@
 // 
 using System;
 
-using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
@@ -21,18 +20,19 @@ public abstract class StatBase : MonoBehaviour
     /// <summary>
     /// The name of the stat that is published to the stats service.
     /// </summary>
+    [Tooltip("The name of the stat that is published to the stats service.")]
     public string Name;
 
     /// <summary>
     /// A friendly name for the stat that can be used for display purposes.
     /// </summary>
+    [Tooltip("A friendly name for the stat that can be used for display purposes.")]
     public string DisplayName;
 
     private void Awake()
     {
-        // Ensure that a StatsManager has been created so that stats will be
-        // pushed up to the service as they are modified.
-        IStatsManager statsManager = StatsManager.Singleton;
+        // Ensure that a StatsManager has been created so that stats will be sync with the service as they are modified.
+        var statsManager = StatsManagerComponent.Instance;
     }
 }
 
@@ -41,59 +41,39 @@ public abstract class StatBase : MonoBehaviour
 /// </summary>
 /// <typeparam name="T"></typeparam>
 [Serializable]
-public abstract class StatBase<T> : StatBase, IStatsManagerEventHandler
+public abstract class StatBase<T> : StatBase
 {
+    private T value;
+
     /// <summary>
-    /// Indicates whether or not the initial value of the stat has been recieved from the stats service yet.
+    /// The initial value for the stat.
     /// </summary>
-    private bool initialized;
+    [Tooltip("The initial value for the stat.")]
+    public T InitialValue;
 
-    public T Value;
-
-    public bool UseInitialValueFromService;
-
-    public virtual void SetValue(T value)
+    private void Awake()
     {
-        this.Value = value;
+        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        {
+            this.Value = this.InitialValue;
+        };
     }
 
-    public void LocalUserAdded(XboxLiveUser user)
+    public virtual T Value
     {
-        this.EnsureInitialized();
-    }
-
-    public void LocalUserRemoved(XboxLiveUser user)
-    {
-    }
-
-    public void StatUpdateComplete()
-    {
-        // Grab the value and store it locally.
-        StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
-        this.SetValue((T)statValue.Value);
+        get
+        {
+            return this.value;
+        }
+        set
+        {
+            this.value = value;
+            StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
+        }
     }
 
     public override string ToString()
     {
         return this.Value != null ? this.Value.ToString() : string.Empty;
-    }
-
-    private void EnsureInitialized()
-    {
-        if (this.initialized) return;
-
-        if (!this.UseInitialValueFromService)
-        {
-            // Set the initial stat value.
-            this.SetValue(this.Value);
-        }
-        else
-        {
-            StatValue statValue = StatsManager.Singleton.GetStat(XboxLive.Instance.User, this.Name);
-            this.SetValue(statValue != null ? (T)statValue.Value : this.Value);
-
-        }
-
-        this.initialized = true;
     }
 }

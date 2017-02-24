@@ -30,6 +30,9 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
 * [Windows 10](https://microsoft.com/windows) Anniversary Update
 * [Unity 5.5](https://unity3d.com)
   * Currently 5.5 is the minimum supported version, but we are looking into supporting some earlier versions in the future.
+  * You need to include the following components when installing.
+    * [Microsoft Visual Studio Tools for Unity](https://marketplace.visualstudio.com/items?itemName=SebastienLebreton.VisualStudio2015ToolsforUnity)
+    * Windows Store .NET Scripting Backend
 * [Visual Studio 2015](https://www.visualstudio.com/)
   * Any version of Visual Studio should work for this including Community Edition.
   * Make sure to select everything under **Universal Windowsn App Development Tools** when installing.  You can modify the installation to include these features for an existing installation as well.

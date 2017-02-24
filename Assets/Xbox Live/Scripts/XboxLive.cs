@@ -3,6 +3,7 @@
 // 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.IO;
 
 using Microsoft.Xbox.Services;
@@ -15,17 +16,29 @@ using UnityEngine;
 [HelpURL("http://github.com/Microsoft/xbox-live-unity-plugin")]
 public class XboxLive : Singleton<XboxLive>
 {
+    private static readonly bool isConfigured;
+
+    static XboxLive()
+    {
+        try
+        {
+            isConfigured = XboxLiveAppConfiguration.Instance != null;
+        }
+        catch (Exception)
+        {
+            isConfigured = false;
+        }
+    }
+
     protected XboxLive()
     {
     }
 
-    public XboxLiveAppConfiguration Configuration { get; set; }
-
-    public static bool IsEnabled
+    public static bool IsConfigured
     {
         get
         {
-            return Instance.Configuration != null;
+            return isConfigured;
         }
     }
 
@@ -33,9 +46,9 @@ public class XboxLive : Singleton<XboxLive>
 
     public XboxLiveContext Context { get; set; }
 
-    public static void EnsureEnabled()
+    public static void EnsureConfigured()
     {
-        if (!IsEnabled)
+        if (!IsConfigured)
         {
             throw new InvalidOperationException("Xbox Live must be enabled.  Run the Xbox Live Association Wizard from Xbox Live > Configuration before using this feature.");
         }
@@ -43,16 +56,21 @@ public class XboxLive : Singleton<XboxLive>
 
     public void Awake()
     {
-        MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
+        // Super simple check to determine if configuration is non-empty.  This is not a thorough check to determine if the configuration is valid.
+        // A user can easly bypass this check which will just cause them to fail at runtime if they try to use any functionality.
+        if (XboxLiveAppConfiguration.Instance.TitleId == 0 && Application.isPlaying)
+        {
+            if (Application.isEditor)
+            {
+                Debug.LogWarning("Xbox Live is not configured, but the game is attempting to use Xbox Live functionality.  You must update the configuration in 'Xbox Live > Configuration' before building the game to enable Xbox Live.");
+            }
+            else
+            {
+                Debug.LogError("Xbox Live must be enabled.  Run the Xbox Live Association Wizard from Xbox Live > Configuration before using any Xbox Live features.");
+            }
+        }
 
-        try
-        {
-            this.Configuration = XboxLiveAppConfiguration.Instance;
-        }
-        catch (Exception)
-        {
-            Debug.LogError("Xbox Live must be enabled.  Run the Xbox Live Association Wizard from Xbox Live > Configuration before using any Xbox Live features.");
-        }
+        MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
     }
 
     public IEnumerator SignInAsync()

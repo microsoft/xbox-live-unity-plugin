@@ -16,18 +16,24 @@ public class IntegerStat : StatBase<int>
 {
     public void Increment()
     {
-        this.SetValue(this.Value + 1);
+        this.Value = this.Value + 1;
     }
 
     public void Decrement()
     {
-        this.SetValue(this.Value - 1);
+        this.Value = this.Value - 1;
     }
 
-    public override void SetValue(int value)
+    public override int Value
     {
-        base.SetValue(value);
-        StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, this.Name, this.Value);
-        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
+        get
+        {
+            return base.Value;
+        }
+        set
+        {
+            StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, this.Name, value);
+            base.Value = value;
+        }
     }
 }

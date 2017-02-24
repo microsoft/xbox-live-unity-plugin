@@ -65,9 +65,9 @@ namespace Assets.Xbox_Live.Editor
             {
                 XboxLiveConfigurationEditor editorWindow = EditorWindow.GetWindow<XboxLiveConfigurationEditor>("Xbox Live");
 
-                if (editorWindow.configuration == null)
+                if (editorWindow.configuration == null || editorWindow.configuration.TitleId == 0)
                 {
-                    Debug.LogWarning("Unable to find any Xbox Live configuration files so Xbox Live will not be enabled on UWP project.\r\nOpen \"Xbox Live > Configuration\" and run \"Enable Xbox Live\" to configure for Xbox Live access.");
+                    Debug.LogWarning("Unable to find any Xbox Live configuration files so Xbox Live will not be enabled on UWP project.\r\nOpen \"Xbox Live > Configuration\" and click \"Run Xbox Live Association Wizard\" to configure for Xbox Live access.");
                     return;
                 }
 

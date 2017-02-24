@@ -8,10 +8,16 @@ using Microsoft.Xbox.Services.Stats.Manager;
 [Serializable]
 public class StringStat : StatBase<string>
 {
-    public override void SetValue(string value)
+    public override string Value
     {
-        base.SetValue(value);
-        StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, this.Value);
-        StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
+        get
+        {
+            return base.Value;
+        }
+        set
+        {
+            StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, value);
+            base.Value = value;
+        }
     }
 }

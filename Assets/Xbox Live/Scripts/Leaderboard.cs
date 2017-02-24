@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class Leaderboard : MonoBehaviour
+public class Leaderboard : UIMonoBehaviour
 {
     public string leaderboardName;
     public string displayName;
@@ -19,27 +19,37 @@ public class Leaderboard : MonoBehaviour
     [Range(1, 100)]
     public uint entryCount = 10;
 
+    [HideInInspector]
     public uint currentPage = 0;
 
+    [HideInInspector]
     public uint totalPages;
 
-    private TaskYieldInstruction<LeaderboardResult> leaderboardData;
-
+    [HideInInspector]
     public Text headerText;
+    [HideInInspector]
     public Text pageText;
 
+    [HideInInspector]
     public Button firstButton;
+    [HideInInspector]
     public Button previousButton;
+    [HideInInspector]
     public Button nextButton;
+    [HideInInspector]
     public Button lastButton;
 
+    [HideInInspector]
     public Transform contentPanel;
 
+    private TaskYieldInstruction<LeaderboardResult> leaderboardData;
     private ObjectPool entryObjectPool;
 
-    public void Awake()
+    private void Awake()
     {
-        XboxLive.EnsureEnabled();
+        this.EnsureEventSystem();
+
+        XboxLive.EnsureConfigured();
         this.headerText.text = this.displayName;
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         this.UpdateButtons();
@@ -123,7 +133,7 @@ public class Leaderboard : MonoBehaviour
 
     public void UpdateButtons()
     {
-        this.firstButton.interactable = this.previousButton.interactable = XboxLive.IsEnabled && this.currentPage != 0;
-        this.nextButton.interactable = this.lastButton.interactable = XboxLive.IsEnabled && this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+        this.firstButton.interactable = this.previousButton.interactable = XboxLive.IsConfigured && this.currentPage != 0;
+        this.nextButton.interactable = this.lastButton.interactable = XboxLive.IsConfigured && this.totalPages > 1 && this.currentPage < this.totalPages - 1;
     }
 }
