@@ -7,6 +7,7 @@ using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
+using System.Collections.Generic;
 
 public class StatsManagerComponent : Singleton<StatsManagerComponent>
 {
@@ -15,6 +16,8 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
     public event EventHandler<XboxLiveUserEventArgs> LocalUserAdded;
 
     public event EventHandler<XboxLiveUserEventArgs> LocalUserRemoved;
+
+    public event EventHandler<XboxLivePrefab.StatEventArgs> GetLeaderboardCompleted;
 
     public event EventHandler StatUpdateComplete;
 
@@ -31,8 +34,8 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
             Debug.LogWarning("Somehow the manager got nulled out.");
             return;
         }
-
-        foreach (StatEvent statEvent in this.manager.DoWork())
+        List<StatEvent> events = this.manager.DoWork();
+        foreach (StatEvent statEvent in events)
         {
             Debug.Log(string.Format("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.LocalUser.Gamertag));
 
@@ -46,6 +49,9 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
                     break;
                 case StatEventType.StatUpdateComplete:
                     this.OnStatUpdateComplete();
+                    break;
+                case StatEventType.GetLeaderboardComplete:
+                    this.OnGetLeaderboardCompleted(new XboxLivePrefab.StatEventArgs(statEvent));
                     break;
             }
         }
@@ -67,5 +73,11 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
     {
         var handler = this.StatUpdateComplete;
         if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    protected virtual void OnGetLeaderboardCompleted(XboxLivePrefab.StatEventArgs statEvent)
+    {
+        var handler = this.GetLeaderboardCompleted;
+        if (handler != null) handler(this, statEvent);
     }
 }

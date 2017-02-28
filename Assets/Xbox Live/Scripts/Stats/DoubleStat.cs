@@ -8,6 +8,20 @@ using Microsoft.Xbox.Services.Stats.Manager;
 [Serializable]
 public class DoubleStat : StatBase<double>
 {
+    private bool isLocalUserAdded = false;
+    private void Awake()
+    {
+        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        {
+            StatValue statValue = StatsManager.Singleton.GetStat(args.User, Name);
+            if (statValue != null)
+            {
+                this.Value = statValue.AsNumber();
+            }
+            isLocalUserAdded = true;
+        };
+    }
+
     public void Multiply(float multiplier)
     {
         this.Value = this.Value * multiplier;
@@ -27,7 +41,10 @@ public class DoubleStat : StatBase<double>
         }
         set
         {
-            StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, value);
+            if(isLocalUserAdded)
+            {
+                StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, value);
+            }
             base.Value = value;
         }
     }
