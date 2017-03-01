@@ -143,7 +143,9 @@ public class Leaderboard : UIMonoBehaviour
 
     private void UpdateData(LeaderboardResult data)
     {
-        if(Stat != null && data.NextQuery.StatName == Stat.Name)
+        if (Stat != null && 
+            (data.NextQuery == null || 
+            (data.NextQuery != null && data.NextQuery.StatName == Stat.Name)))
         {
             this.leaderboardData = data;
 
