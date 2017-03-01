@@ -45,20 +45,6 @@ public abstract class StatBase<T> : StatBase
 {
     private T value;
 
-    /// <summary>
-    /// The initial value for the stat.
-    /// </summary>
-    [Tooltip("The initial value for the stat.")]
-    public T InitialValue;
-
-    private void Awake()
-    {
-        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
-        {
-            this.Value = this.InitialValue;
-        };
-    }
-
     public virtual T Value
     {
         get
@@ -68,7 +54,6 @@ public abstract class StatBase<T> : StatBase
         set
         {
             this.value = value;
-            StatsManager.Singleton.RequestFlushToService(XboxLive.Instance.User, true);
         }
     }
 

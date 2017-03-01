@@ -8,6 +8,19 @@ using Microsoft.Xbox.Services.Stats.Manager;
 [Serializable]
 public class StringStat : StatBase<string>
 {
+    private bool isLocalUserAdded = false;
+    private void Awake()
+    {
+        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        {
+            StatValue statValue = StatsManager.Singleton.GetStat(args.User, Name);
+            if (statValue != null)
+            {
+                this.Value = statValue.AsString();
+            }
+            isLocalUserAdded = true;
+        };
+    }
     public override string Value
     {
         get
@@ -16,7 +29,10 @@ public class StringStat : StatBase<string>
         }
         set
         {
-            StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, value);
+            if(isLocalUserAdded)
+            {
+                StatsManager.Singleton.SetStatAsString(XboxLive.Instance.User, this.Name, value);
+            }
             base.Value = value;
         }
     }
