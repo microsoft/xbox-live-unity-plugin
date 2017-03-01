@@ -91,7 +91,7 @@ public class Leaderboard : UIMonoBehaviour
             this.currentPage++;
             if(isLocalUserAdded)
             {
-                if(isConfigured)
+                if(isConfigured || string.IsNullOrEmpty(socialGroup))
                 {
                     StatsManager.Singleton.GetLeaderboard(XboxLive.Instance.User, query.StatName, query);
                 }
@@ -130,7 +130,7 @@ public class Leaderboard : UIMonoBehaviour
         };
         if(isLocalUserAdded && Stat != null)
         {
-            if (isConfigured)
+            if (isConfigured || string.IsNullOrEmpty(socialGroup))
             {
                 StatsManager.Singleton.GetLeaderboard(XboxLive.Instance.User, Stat.Name, query);
             }
