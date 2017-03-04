@@ -23,7 +23,7 @@ The Unity Plugin is broken into the following parts
 * __ProjectSettings__ contains standard Unity project settings files.
 
 ## Getting Started
-If you're just looking to integrate Xbox Live functionality into your Unity game, you can [download the latest UnityPackage from Releases](./releases/latest).  If you want to make changes or you need to debug something, you can do so directly from this source.
+If you're just looking to integrate Xbox Live functionality into your Unity game, you can [download the latest UnityPackage from Releases](http://github.com/Microsoft/xbox-live-unity-plugin/releases/latest).  If you want to make changes or you need to debug something, you can do so directly from this source.
 
 ### Prerequisites
 
