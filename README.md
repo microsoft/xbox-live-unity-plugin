@@ -72,10 +72,17 @@ Big or small we'd like to take your contributions back to help improve the Xbox 
 
 We'd love to get your review score, whether good or bad, but even more than that, we want to fix your problem. If you submit your issue as a Review, we won't be able to respond to your problem and ask any follow-up questions that may be necessary. The most efficient way to do that is to open a an issue in our [issue tracker](https://github.com/Microsoft/xbox-live-unity-plugin/issues).  
 
-### Quick Links
+Any questions you might have can be answered on the [MSDN Forums](https://social.msdn.microsoft.com/Forums/en-US/home?forum=xboxlivedev).  You can also ask programming related questions to [Stack Overflow](http://stackoverflow.com/questions/tagged/xbox-live) using the "xbox-live" tag.  The Xbox Live team will be engaged with the community and be continually improving our APIs, tools, and documentation based on the feedback received there.  
 
-*   [Issue Tracker](https://github.com/Microsoft/xbox-live-unity-plugin/issues)
-*   [ID@Xbox](http://www.xbox.com/en-us/Developers/id)
+For developers in the Xbox Live Creators Program, you can submit a new idea or vote on existing idea at our [Xbox Live Creators Program User Voice](https://aka.ms/xblcpuv)
+
+### Xbox Live GitHub projects
+*   [Xbox Live Service API for C++](https://github.com/Microsoft/xbox-live-api)
+*   [Xbox Live Service API for C#](https://github.com/Microsoft/xbox-live-api-csharp)
+*   [Xbox Live Samples](https://github.com/Microsoft/xbox-live-samples)
+*   [Xbox Live Unity Plugin](https://github.com/Microsoft/xbox-live-unity-plugin)
+*   [Xbox Live Resiliency Fiddler Plugin](https://github.com/Microsoft/xbox-live-resiliency-fiddler-plugin)
+*   [Xbox Live Trace Analyzer](https://github.com/Microsoft/xbox-live-trace-analyzer)
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
