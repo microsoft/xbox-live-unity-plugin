@@ -67,13 +67,12 @@ namespace Assets.Xbox_Live.Editor
 
                 if (editorWindow.configuration == null || editorWindow.configuration.TitleId == 0)
                 {
-                    Debug.LogWarning("Unable to find any Xbox Live configuration files so Xbox Live will not be enabled on UWP project.\r\nOpen \"Xbox Live > Configuration\" and click \"Run Xbox Live Association Wizard\" to configure for Xbox Live access.");
+                    Debug.LogWarning("Unable to find a valid Xbox Live configuration file so Xbox Live will not be enabled on UWP project.\r\nOpen \"Xbox Live > Configuration\" and click \"Run Xbox Live Association Wizard\" to configure for Xbox Live access.");
                     return;
                 }
 
                 string projectFolder = Path.Combine(solutionFolder, Application.productName);
                 UpdateProjectFile(projectFolder, editorWindow.configuration);
-                UpdateAppxManifest(projectFolder, editorWindow.configuration);
             }
         }
 
@@ -88,30 +87,17 @@ namespace Assets.Xbox_Live.Editor
         private static void UpdateProjectFile(string projectFolder, XboxLiveAppConfiguration configuration)
         {
             string projectFile = Path.Combine(projectFolder, Application.productName + ".csproj");
-            XDocument project = XDocument.Load(projectFile);
 
+            // Copy the XboxServices.config file over to the project folder.
+            CopyConfigurationFile(XboxLiveAppConfiguration.FileName, projectFolder);
+
+            XDocument project = XDocument.Load(projectFile);
             XNamespace msb = "http://schemas.microsoft.com/developer/msbuild/2003";
             XmlNamespaceManager ns = new XmlNamespaceManager(new NameTable());
             ns.AddNamespace("msb", msb.NamespaceName);
 
+            // Add the XboxService.config to the project if it doesn't exist already.
             XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
-            XElement certificateElement = identityItemGroup.XPathSelectElement("./msb:None[@Include='WSATestCertificate.pfx']", ns);
-
-            if (certificateElement != null)
-            {
-                string publisherCertificateFileName = configuration.PackageIdentityName + "_StoreKey.pfx";
-                CopyConfigurationFile(publisherCertificateFileName, projectFolder);
-
-                // Replace the existing test cert with our generated cert.
-                certificateElement.Attribute("Include").Value = publisherCertificateFileName;
-
-                // And update the PackageCertificateKeyFile
-                project.XPathSelectElement("msb:Project/msb:PropertyGroup/msb:PackageCertificateKeyFile", ns).Value = publisherCertificateFileName;
-            }
-
-            CopyConfigurationFile(XboxLiveAppConfiguration.FileName, projectFolder);
-
-            // Add the XboxService.config file if it doesn't exist 
             if (identityItemGroup.XPathSelectElement("msb:Content[@Include='XboxServices.config']", ns) == null)
             {
                 identityItemGroup.Add(
@@ -121,36 +107,6 @@ namespace Assets.Xbox_Live.Editor
             }
 
             project.Save(projectFile);
-        }
-
-        private static void UpdateAppxManifest(string projectFolder, XboxLiveAppConfiguration configuration)
-        {
-            string manifestFile = Path.Combine(projectFolder, "Package.appxmanifest");
-            XDocument manifest = XDocument.Load(manifestFile);
-
-            XmlNamespaceManager ns = new XmlNamespaceManager(new NameTable());
-            XNamespace m = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
-            ns.AddNamespace("m", m.NamespaceName);
-            ns.AddNamespace("uap", "http://schemas.microsoft.com/appx/manifest/uap/windows10");
-
-            // TODO. Set these to not hardcoded values.
-            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Name").Value = configuration.PackageIdentityName;
-            manifest.XPathSelectElement("m:Package/m:Identity", ns).Attribute("Publisher").Value = configuration.PublisherId;
-            manifest.XPathSelectElement("m:Package/m:Properties/m:DisplayName", ns).Value = configuration.DisplayName;
-            manifest.XPathSelectElement("m:Package/m:Properties/m:PublisherDisplayName", ns).Value = configuration.PublisherDisplayName;
-            manifest.XPathSelectElement("m:Package/m:Applications/m:Application/uap:VisualElements", ns).Attribute("DisplayName").Value = configuration.DisplayName;
-
-            if (manifest.XPathSelectElement("m:Package/m:Capabilities", ns) == null)
-            {
-                manifest.XPathSelectElement("m:Package", ns).Add(new XElement(m + "Capabilities"));
-            }
-
-            if (manifest.XPathSelectElement("m:Package/m:Capabilities/m:Capability[@Name='internetClient']", ns) == null)
-            {
-                manifest.XPathSelectElement("m:Package/m:Capabilities", ns).Add(new XElement(m + "Capability", new XAttribute("Name", "internetClient")));
-            }
-
-            manifest.Save(manifestFile);
         }
     }
 }

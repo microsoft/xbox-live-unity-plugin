@@ -3,6 +3,7 @@
 // 
 using System;
 
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 /// <summary>
@@ -19,7 +20,7 @@ public class IntegerStat : StatBase<int>
     {
         StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
         {
-            StatValue statValue = StatsManager.Singleton.GetStat(args.User, Name);
+            StatValue statValue = XboxLive.Instance.StatsManager.GetStat(args.User, Name);
             if(statValue != null)
             {
                 this.Value = statValue.AsInteger();
@@ -47,7 +48,7 @@ public class IntegerStat : StatBase<int>
         {
             if(isLocalUserAdded)
             {
-                StatsManager.Singleton.SetStatAsInteger(XboxLive.Instance.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsInteger(XboxLiveComponent.Instance.User, this.Name, value);
             }
             base.Value = value;
         }

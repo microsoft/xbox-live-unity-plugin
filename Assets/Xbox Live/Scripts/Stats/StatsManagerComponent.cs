@@ -11,8 +11,6 @@ using System.Collections.Generic;
 
 public class StatsManagerComponent : Singleton<StatsManagerComponent>
 {
-    private IStatsManager manager;
-
     public event EventHandler<XboxLiveUserEventArgs> LocalUserAdded;
 
     public event EventHandler<XboxLiveUserEventArgs> LocalUserRemoved;
@@ -21,10 +19,15 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
 
     public event EventHandler StatUpdateComplete;
 
+    private IStatsManager manager;
+
+    protected StatsManagerComponent()
+    {
+    }
+
     private void Awake()
     {
-        XboxLive.EnsureConfigured();
-        this.manager = StatsManager.Singleton;
+        this.manager = XboxLive.Instance.StatsManager;
     }
 
     private void Update()

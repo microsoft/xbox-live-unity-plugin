@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-//  <copyright file="UIMonoBehavior.cs" company="Microsoft">
+//  <copyright file="UnityComponentExtensions.cs" company="Microsoft">
 //      Copyright (c) Microsoft. All rights reserved.
 //      Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //  </copyright>
@@ -8,10 +8,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-/// <summary>
-/// A base class to provide some general helper
-/// </summary>
-public abstract class UIMonoBehaviour : MonoBehaviour
+public static class UnityComponentExtensions
 {
     /// <summary>
     /// Ensures that this GameObject is parented under a Canvas so that it will be rendered properly.
@@ -21,11 +18,11 @@ public abstract class UIMonoBehaviour : MonoBehaviour
     /// method will cause an error to be written to the console but should not have any other detrimental
     /// effect. See https://docs.unity3d.com/Manual/comp-CanvasComponents.html for more detail.
     /// </remarks>
-    protected void EnsureInCanvas()
+    public static void EnsureInCanvas(this Component component)
     {
-        if (this.GetComponentInParent<Canvas>() == null)
+        if (component.GetComponentInParent<Canvas>() == null)
         {
-            Debug.LogErrorFormat("UI Object '{0}' ({1}) is not a child of a Canvas so it will not render.  Create a Canvas element and place the element inside it.", this.name, this.GetType().Name);
+            Debug.LogErrorFormat("UI Object '{0}' ({1}) is not a child of a Canvas so it will not render.  Create a Canvas element and place the element inside it.", component.name, component.GetType().Name);
         }
     }
 
@@ -37,11 +34,11 @@ public abstract class UIMonoBehaviour : MonoBehaviour
     /// an error to be written to the console but should not have any other detrimental.
     /// See https://docs.unity3d.com/Manual/EventSystem.html for more detail.
     /// </remarks>
-    protected void EnsureEventSystem()
+    public static void EnsureEventSystem(this Component component)
     {
-        if (FindObjectOfType<EventSystem>() == null)
+        if (Object.FindObjectOfType<EventSystem>() == null)
         {
-            Debug.LogErrorFormat("Interactive UI element '{0}' ({1}) requires an EventSystem component to function.  Create an EventSystem using 'GameObject > UI > EventSystem'.  A temporary event system will be created in the mean time.", this.name, this.GetType().Name);
+            Debug.LogErrorFormat("Interactive UI element '{0}' ({1}) requires an EventSystem component to function.  Create an EventSystem using 'GameObject > UI > EventSystem'.  A temporary event system will be created in the mean time.", component.name, component.GetType().Name);
 
             GameObject eventSystem = new GameObject("EventSystem");
             eventSystem.AddComponent<EventSystem>();

@@ -766,8 +766,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81cff9327f735844597d3056a734f3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leaderboardName: LeaderboardName
-  displayName: Sample Leaderboard
+  stat: {fileID: 0}
+  isConfigured: 0
+  socialGroup: 
   entryCount: 10
   currentPage: 0
   totalPages: 0
@@ -778,6 +779,7 @@ MonoBehaviour:
   nextButton: {fileID: 114094830200404508}
   lastButton: {fileID: 114741228911112320}
   contentPanel: {fileID: 224480538316267192}
+  scrollRect: {fileID: 114472075546955404}
 --- !u!114 &114329547803133118
 MonoBehaviour:
   m_ObjectHideFlags: 1

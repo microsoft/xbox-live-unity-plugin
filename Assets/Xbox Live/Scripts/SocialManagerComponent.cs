@@ -3,6 +3,7 @@
 // 
 using System;
 
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
 
 using UnityEngine;
@@ -11,11 +12,11 @@ public delegate void SocialEventHandler(object sender, SocialEvent socialEvent);
 
 public class SocialManagerComponent : Singleton<SocialManagerComponent>
 {
-    private ISocialManager manager;
-
     public event SocialEventHandler EventProcessed;
 
-    private SocialManagerComponent()
+    private ISocialManager manager;
+
+    protected SocialManagerComponent()
     {
     }
 
@@ -24,7 +25,7 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
     /// </summary>
     private void Awake()
     {
-        this.manager = SocialManager.Instance;
+        this.manager = XboxLive.Instance.SocialManager;
     }
 
     private void Update()

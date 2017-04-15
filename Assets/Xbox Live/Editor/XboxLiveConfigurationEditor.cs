@@ -28,14 +28,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
     }
 
     internal XboxLiveAppConfiguration configuration;
-
-    private bool IsConfigured
-    {
-        get
-        {
-            return this.configuration != null && this.configuration.TitleId != 0;
-        }
-    }
+    
 
     private void OnEnable()
     {
@@ -76,7 +69,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         if (this.configuration != null)
         {
-            if (string.IsNullOrEmpty(this.configuration.ServiceConfigurationId) || this.configuration.TitleId == 0 || string.IsNullOrEmpty(this.configuration.AppId))
+            if (string.IsNullOrEmpty(this.configuration.PrimaryServiceConfigId) || this.configuration.TitleId == 0 || string.IsNullOrEmpty(this.configuration.AppId))
             {
                 EditorGUILayout.HelpBox("Your Xbox Live configuration appears invalid.  You will need to re-associate your game before you can create a finished build.", MessageType.Warning, true);
             }
@@ -87,7 +80,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
             PropertyLabel("Publisher", this.configuration.PublisherDisplayName);
             PropertyLabel("App ID", this.configuration.AppId);
             PropertyLabel("Product Family Name", this.configuration.ProductFamilyName);
-            PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
+            PropertyLabel("SCID", this.configuration.PrimaryServiceConfigId);
             PropertyLabel("Title ID", this.configuration.TitleId.ToString());
             PropertyLabel("Sandbox", this.configuration.Sandbox);
         }
@@ -191,6 +184,44 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         EditorGUILayout.Space();
         GUILayout.EndScrollView();
+
+        // Set a few additional settings based on values in the configuration file.
+        // This is handled in the OnGUI thread because we need to be on the main thread to update these values.
+        if (this.configuration != null)
+        {
+            // Update the certificate to the Association Wizard generated certificate if it exists.
+            string certificatePath = string.Format(this.configuration.PackageIdentityName + "_StoreKey.pfx");
+            if (File.Exists(certificatePath) && PlayerSettings.WSA.certificatePath != certificatePath)
+            {
+                string certificateDescriptor;
+                if (PlayerSettings.WSA.certificatePath == "Assets/WSATestCertificate.pfx")
+                {
+                    certificateDescriptor = "Unity generated test publisher";
+                }
+                else
+                {
+                    certificateDescriptor = string.Format("exististing '{0}' publisher", PlayerSettings.WSA.certificateSubject);
+                }
+
+                Debug.LogFormat(
+                    "Replacing {0} certificate with '{1}' ({2}) publisher certificate.\r\n" +
+                    "To use a different certificate, delete or rename '{3}' and update Windows Store Publishing settings in 'Edit > Project Settings > Player' to the proper certificate.", 
+                    certificateDescriptor, 
+                    this.configuration.PublisherDisplayName,
+                    this.configuration.PublisherId,
+                    certificatePath);
+
+                PlayerSettings.WSA.SetCertificate(certificatePath, string.Empty);
+            }
+
+            if (!PlayerSettings.WSA.GetCapability(PlayerSettings.WSACapability.InternetClient))
+            {
+                Debug.Log("Enabling InternetClient capability which is required for Xbox Live.");
+                PlayerSettings.WSA.SetCapability(PlayerSettings.WSACapability.InternetClient, true);
+            }
+
+            PlayerSettings.WSA.packageName = this.configuration.PackageIdentityName;
+        }
     }
 
     private static void PropertyLabel(string name, string value)
@@ -200,7 +231,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel(name);
-        EditorGUILayout.SelectableLabel(String.IsNullOrEmpty(value) ? missingValue : value, GUILayout.Height(labelHeight));
+        EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(value) ? missingValue : value, GUILayout.Height(labelHeight));
         EditorGUILayout.EndHorizontal();
     }
 
