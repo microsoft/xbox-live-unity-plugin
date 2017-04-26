@@ -47,7 +47,7 @@ public class UserProfile : MonoBehaviour
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        if (XboxLive.Instance.AppConfig != null)
+        if (XboxLive.Instance.AppConfig == null)
         {
             Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
             signInButton.interactable = false;
