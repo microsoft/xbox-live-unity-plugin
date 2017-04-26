@@ -3,6 +3,7 @@
 // 
 using System;
 
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Stats.Manager;
 
 [Serializable]
@@ -13,7 +14,7 @@ public class DoubleStat : StatBase<double>
     {
         StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
         {
-            StatValue statValue = StatsManager.Singleton.GetStat(args.User, Name);
+            StatValue statValue = XboxLive.Instance.StatsManager.GetStat(args.User, Name);
             if (statValue != null)
             {
                 this.Value = statValue.AsNumber();
@@ -43,7 +44,7 @@ public class DoubleStat : StatBase<double>
         {
             if(isLocalUserAdded)
             {
-                StatsManager.Singleton.SetStatAsNumber(XboxLive.Instance.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsNumber(XboxLiveComponent.Instance.User, this.Name, value);
             }
             base.Value = value;
         }

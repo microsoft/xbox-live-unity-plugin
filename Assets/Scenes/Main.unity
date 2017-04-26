@@ -365,6 +365,12 @@ RectTransform:
   m_AnchoredPosition: {x: 480, y: 335}
   m_SizeDelta: {x: 960, y: 670}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &684182816 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
+    type: 2}
+  m_PrefabInternal: {fileID: 2001662213}
+  m_Script: {fileID: 11500000, guid: 81cff9327f735844597d3056a734f3f0, type: 3}
 --- !u!1 &788207117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,22 +1068,22 @@ Prefab:
     - target: {fileID: 224400594119026076, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224400594119026076, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224653897811453492, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224653897811453492, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
         type: 2}
@@ -1129,6 +1135,26 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: -17
       objectReference: {fileID: 0}
+    - target: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: isConfigured
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114968111384317702, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 684182816}
+    - target: {fileID: 114968111384317702, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Refresh
+      objectReference: {fileID: 0}
+    - target: {fileID: 114313510524976260, guid: f3f126b8a38414b4f95d318ba52a4ade,
+        type: 2}
+      propertyPath: stat
+      value: 
+      objectReference: {fileID: 486259306}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f3f126b8a38414b4f95d318ba52a4ade, type: 2}
   m_IsPrefabParent: 0

@@ -1,19 +1,22 @@
 ﻿// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
-using Microsoft.Xbox.Services.Stats.Manager;
 
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UserProfile : UIMonoBehaviour
+public class UserProfile : MonoBehaviour
 {
+    private XboxLiveUser User;
+
     [HideInInspector]
     public GameObject signInPanel;
 
@@ -44,7 +47,7 @@ public class UserProfile : UIMonoBehaviour
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        if (!XboxLive.IsConfigured)
+        if (XboxLive.Instance.AppConfig != null)
         {
             Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
             signInButton.interactable = false;
@@ -72,16 +75,25 @@ public class UserProfile : UIMonoBehaviour
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-        yield return XboxLive.Instance.SignInAsync();
-        StatsManager.Singleton.AddLocalUser(XboxLive.Instance.User);
-        yield return SocialManager.Instance.AddLocalUser(XboxLive.Instance.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+        this.User = XboxLiveComponent.Instance.User;
+        TaskYieldInstruction<SignInResult> signInTask = this.User.SignInAsync().AsCoroutine();
+        yield return signInTask;
+
+        // Throw any exceptions if needed.
+        if (signInTask.Result.Status != SignInStatus.Success)
+        {
+            throw new Exception("Sign in Failed");
+        }
+
+        XboxLive.Instance.SocialManager.AddLocalUser(this.User);
+        yield return XboxLive.Instance.SocialManager.AddLocalUser(this.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
         yield return this.LoadProfileInfo();
     }
 
     private IEnumerator LoadProfileInfo()
     {
-        ulong userId = ulong.Parse(XboxLive.Instance.User.XboxUserId);
-        var group = SocialManager.Instance.CreateSocialUserGroupFromList(XboxLive.Instance.User, new List<ulong> { userId });
+        ulong userId = ulong.Parse(this.User.XboxUserId);
+        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.User, new List<ulong> { userId });
         var socialUser = group.GetUser(userId);
 
         WWW www = new WWW(socialUser.DisplayPicRaw + "&w=128");
@@ -90,7 +102,7 @@ public class UserProfile : UIMonoBehaviour
         Texture2D t = www.texture;
         Rect r = new Rect(0, 0, t.width, t.height);
         this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
-        this.gamertag.text = XboxLive.Instance.User.Gamertag;
+        this.gamertag.text = this.User.Gamertag;
         this.gamerscore.text = socialUser.Gamerscore;
 
         this.profileInfoPanel.GetComponent<Image>().color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
@@ -110,7 +122,7 @@ public class UserProfile : UIMonoBehaviour
 
     private void Refresh()
     {
-        bool isSignedIn = XboxLive.Instance.User != null && XboxLive.Instance.User.IsSignedIn;
+        bool isSignedIn = this.User != null && this.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }

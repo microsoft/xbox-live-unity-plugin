@@ -10,7 +10,7 @@ using UnityEngine.UI;
 /// Logic for the StatsPanel prefab that displays name and value of a <see cref="StatBase"/>.
 /// </summary>
 [Serializable]
-public class StatPanel : UIMonoBehaviour
+public class StatPanel : MonoBehaviour
 {
     [HideInInspector]
     public Text StatLabelText;

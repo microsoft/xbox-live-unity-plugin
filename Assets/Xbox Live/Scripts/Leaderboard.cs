@@ -1,10 +1,13 @@
-﻿// Copyright (c) Microsoft Corporation
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// 
-using System;
-using System.Collections;
-using System.Threading.Tasks;
+﻿// -----------------------------------------------------------------------
+//  <copyright file="Leaderboard.cs" company="Microsoft">
+//      Copyright (c) Microsoft. All rights reserved.
+//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
+//  </copyright>
+// -----------------------------------------------------------------------
 
+using System;
+
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Leaderboard;
 using Microsoft.Xbox.Services.Stats.Manager;
 
@@ -12,10 +15,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class Leaderboard : UIMonoBehaviour
+public class Leaderboard : MonoBehaviour
 {
-    public StatBase Stat;
-    public string displayName;
+    public StatBase stat;
     public bool isConfigured;
 
     [Tooltip("This property needs to be set to get an unconfigured leaderboard. Example: \"all\"")]
@@ -25,27 +27,34 @@ public class Leaderboard : UIMonoBehaviour
     public uint entryCount = 10;
 
     [HideInInspector]
-    public uint currentPage = 0;
+    public uint currentPage;
 
     [HideInInspector]
     public uint totalPages;
 
     [HideInInspector]
     public Text headerText;
+
     [HideInInspector]
     public Text pageText;
 
     [HideInInspector]
     public Button firstButton;
+
     [HideInInspector]
     public Button previousButton;
+
     [HideInInspector]
     public Button nextButton;
+
     [HideInInspector]
     public Button lastButton;
 
     [HideInInspector]
     public Transform contentPanel;
+
+    [HideInInspector]
+    public ScrollRect scrollRect;
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
@@ -55,27 +64,18 @@ public class Leaderboard : UIMonoBehaviour
     {
         this.EnsureEventSystem();
 
-        XboxLive.EnsureConfigured();
-        this.headerText.text = this.displayName;
+        if (this.stat == null)
+        {
+            Debug.LogFormat("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
+            return;
+        }
+
+        this.headerText.text = this.stat.DisplayName;
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         this.UpdateButtons();
-        StatsManagerComponent.Instance.LocalUserAdded += LocalUserAdded;
-        StatsManagerComponent.Instance.GetLeaderboardCompleted += GetLeaderboardCompleted;
-        isLocalUserAdded = false;
-    }
-
-    private void GetLeaderboardCompleted(object sender, XboxLivePrefab.StatEventArgs e)
-    {
-        if (e.EventData.ErrorInfo == null)
-        {
-            LeaderboardResultEventArgs leaderboardArgs = (LeaderboardResultEventArgs)e.EventData.EventArgs;
-            UpdateData(leaderboardArgs.Result);
-        }
-    }
-
-    private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
-    {
-        isLocalUserAdded = true;
+        StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
+        StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
+        this.isLocalUserAdded = false;
     }
 
     public void Refresh()
@@ -85,99 +85,108 @@ public class Leaderboard : UIMonoBehaviour
 
     public void NextPage()
     {
-        if (this.leaderboardData != null && this.leaderboardData.NextQuery != null && this.leaderboardData.NextQuery.HasNext)
-        {
-            LeaderboardQuery query = this.leaderboardData.NextQuery;
-            this.currentPage++;
-            if(isLocalUserAdded)
-            {
-                if(isConfigured || string.IsNullOrEmpty(socialGroup))
-                {
-                    StatsManager.Singleton.GetLeaderboard(XboxLive.Instance.User, query.StatName, query);
-                }
-                else
-                {
-                    StatsManager.Singleton.GetSocialLeaderboard(XboxLive.Instance.User, query.StatName, socialGroup, query);
-                }
-            }
-        }
+        this.UpdateData(this.currentPage + 1);
     }
 
     public void PreviousPage()
     {
-        this.currentPage--;
-        this.UpdateData();
+        this.UpdateData(this.currentPage - 1);
     }
 
     public void FirstPage()
     {
-        this.currentPage = 0;
-        this.UpdateData();
+        this.UpdateData(0);
     }
 
     public void LastPage()
     {
-        this.currentPage = this.totalPages - 1;
-        this.UpdateData();
+        this.UpdateData(this.totalPages - 1);
     }
 
-    private void UpdateData()
+    private void UpdateData(uint newPage)
     {
-        LeaderboardQuery query = new LeaderboardQuery
+        if (!this.isLocalUserAdded) return;
+        if (this.stat == null) return;
+
+        if (this.isConfigured && string.IsNullOrEmpty(this.socialGroup))
         {
-            SkipResultsToRank = this.currentPage * this.entryCount,
-            MaxItems = this.entryCount,
-        };
-        if(isLocalUserAdded && Stat != null)
-        {
-            if (isConfigured || string.IsNullOrEmpty(socialGroup))
-            {
-                StatsManager.Singleton.GetLeaderboard(XboxLive.Instance.User, Stat.Name, query);
-            }
-            else
-            {
-                StatsManager.Singleton.GetSocialLeaderboard(XboxLive.Instance.User, Stat.Name, socialGroup, query);
-            }
+            throw new InvalidOperationException("If you are using a configured leaderboard you must specify a social group.");
         }
+
+        LeaderboardQuery query;
+        if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
+        {
+            query = this.leaderboardData.NextQuery;
+        }
+        else
+        {
+            query = new LeaderboardQuery
+            {
+                StatName = this.stat.Name,
+                SocialGroup = this.socialGroup,
+                SkipResultsToRank = this.currentPage * this.entryCount,
+                MaxItems = this.entryCount,
+            };
+        }
+
+        this.currentPage = newPage;
+        XboxLive.Instance.StatsManager.GetLeaderboard(XboxLiveComponent.Instance.User, query);
     }
 
-    private void UpdateData(LeaderboardResult data)
+    private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
     {
-        if (Stat != null && 
-            (data.NextQuery == null || 
-            (data.NextQuery != null && data.NextQuery.StatName == Stat.Name)))
+        this.isLocalUserAdded = true;
+    }
+
+    private void GetLeaderboardCompleted(object sender, XboxLivePrefab.StatEventArgs e)
+    {
+        if (e.EventData.ErrorInfo != null) return;
+
+        LeaderboardResultEventArgs leaderboardArgs = (LeaderboardResultEventArgs)e.EventData.EventArgs;
+        this.LoadResult(leaderboardArgs.Result);
+    }
+
+    /// <summary>
+    /// Load the leaderboard result data from the service into the view.
+    /// </summary>
+    /// <param name="result"></param>
+    private void LoadResult(LeaderboardResult result)
+    {
+        if (this.stat == null || this.stat.Name != result.NextQuery.StatName || this.socialGroup != result.NextQuery.SocialGroup) return;
+
+        this.leaderboardData = result;
+
+        if (this.totalPages == 0)
         {
-            this.leaderboardData = data;
-
-            if (this.totalPages == 0)
-            {
-                this.totalPages = (this.leaderboardData.TotalRowCount - 1) / this.entryCount + 1;
-            }
-
-            this.pageText.text = string.Format("Page: {0} / {1}", this.currentPage + 1, this.totalPages);
-
-            while (this.contentPanel.childCount > 0)
-            {
-                var entry = this.contentPanel.GetChild(0).gameObject;
-                this.entryObjectPool.ReturnObject(entry);
-            }
-
-            foreach (LeaderboardRow row in this.leaderboardData.Rows)
-            {
-                GameObject entryObject = this.entryObjectPool.GetObject();
-                LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
-
-                entry.Data = row;
-
-                entryObject.transform.SetParent(this.contentPanel);
-            }
-            this.UpdateButtons();
+            this.totalPages = (this.leaderboardData.TotalRowCount - 1) / this.entryCount + 1;
         }
+
+        this.pageText.text = string.Format("Page: {0} / {1}", this.currentPage + 1, this.totalPages);
+
+        while (this.contentPanel.childCount > 0)
+        {
+            var entry = this.contentPanel.GetChild(0).gameObject;
+            this.entryObjectPool.ReturnObject(entry);
+        }
+
+        foreach (LeaderboardRow row in this.leaderboardData.Rows)
+        {
+            GameObject entryObject = this.entryObjectPool.GetObject();
+            LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
+
+            entry.Data = row;
+
+            entryObject.transform.SetParent(this.contentPanel);
+        }
+
+        // Reset the scroll view to the top.
+        this.scrollRect.verticalNormalizedPosition = 1;
+        this.UpdateButtons();
     }
 
     public void UpdateButtons()
     {
-        this.firstButton.interactable = this.previousButton.interactable = XboxLive.IsConfigured && this.currentPage != 0;
-        this.nextButton.interactable = this.lastButton.interactable = XboxLive.IsConfigured && this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+        this.firstButton.interactable = this.previousButton.interactable = this.currentPage != 0;
+        this.nextButton.interactable = this.lastButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
     }
 }
