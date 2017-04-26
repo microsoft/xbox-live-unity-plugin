@@ -106,7 +106,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
   ""DisplayName"": """",
   ""AppId"": """",
   ""ProductFamilyName"": """",
-  ""ServiceConfigurationId"": ""00000000-0000-0000-0000-000000000000"",
+  ""PrimaryServiceConfigId"": ""00000000-0000-0000-0000-000000000000"",
   ""TitleId"": 0,
   ""Sandbox"": """",
 }";
