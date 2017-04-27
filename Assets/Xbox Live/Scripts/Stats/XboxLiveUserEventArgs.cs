@@ -3,7 +3,7 @@
 // 
 using System;
 
-using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.CSharp;
 
 public class XboxLiveUserEventArgs : EventArgs
 {

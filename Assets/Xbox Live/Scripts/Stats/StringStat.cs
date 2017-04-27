@@ -3,8 +3,8 @@
 // 
 using System;
 
-using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Stats.Manager;
+using Microsoft.Xbox.Services.CSharp;
+using Microsoft.Xbox.Services.CSharp.Stats.Manager;
 
 [Serializable]
 public class StringStat : StatBase<string>

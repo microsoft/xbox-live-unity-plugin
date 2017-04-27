@@ -7,8 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 
-using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Social.Manager;
+using Microsoft.Xbox.Services.CSharp;
+using Microsoft.Xbox.Services.CSharp.Social.Manager;
 
 using UnityEngine;
 using UnityEngine.UI;

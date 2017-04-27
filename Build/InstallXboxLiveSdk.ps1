@@ -75,8 +75,8 @@ elseif($FromSource)
   {
     & $nugetCmd restore $sdkSln
 
-    Write-Host "Building Xbox Live SDK... "
-    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
+    Write-Host "Building Xbox Live SDK for ARM... "
+    $buildResult = Invoke-MsBuild $sdkSln -MsBuildParameters "/p:platform=ARM /p:PreferredToolArchitecture=x64 /p:configuration=Release" -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
     
     if(!$buildResult.BuildSucceeded)
     {
@@ -85,7 +85,35 @@ elseif($FromSource)
        Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
     }
     else {
-      Write-Host "SDK Build Succeeded."
+        Write-Host "SDK Build Succeeded."
+      
+        Write-Host "Building Xbox Live SDK for x86... "
+        $buildResult = Invoke-MsBuild $sdkSln -MsBuildParameters "/p:platform=x86 /p:PreferredToolArchitecture=x64 /p:configuration=Release" -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
+        
+        if(!$buildResult.BuildSucceeded)
+        {
+           Write-Host "Failed.  See build logs for details."
+           Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+           Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+        }
+        else {
+            Write-Host "SDK Build Succeeded."
+              
+            Write-Host "Building Xbox Live SDK for x64... "
+            $buildResult = Invoke-MsBuild $sdkSln -MsBuildParameters "/p:platform=x64 /p:PreferredToolArchitecture=x64 /p:configuration=Release" -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
+            
+            if(!$buildResult.BuildSucceeded)
+            {
+               Write-Host "Failed.  See build logs for details."
+               Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+               Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+            }
+            else {
+              Write-Host "SDK Build Succeeded."
+            }              
+          
+        }              
     }
+    
   }
 }

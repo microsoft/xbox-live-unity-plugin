@@ -9,7 +9,7 @@ namespace Assets.Xbox_Live.Editor
     using System.Xml.Linq;
     using System.Xml.XPath;
 
-    using Microsoft.Xbox.Services;
+    using Microsoft.Xbox.Services.CSharp;
 
     using SyntaxTree.VisualStudio.Unity.Bridge;
 
