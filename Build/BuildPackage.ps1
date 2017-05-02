@@ -25,8 +25,10 @@ $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
 Write-Host "Exporting Xbox Live Unity Plugin to " -NoNewline
 Write-Host $packagePath -ForegroundColor Green
+Write-Host "$($unity) -batchmode -logFile '$($logFile)' -projectPath '$($projectPath)' -exportPackage '$($exportAssetPath)' '$($packagePath)' -quit"
 . $unity -batchmode -logFile "$logFile" -projectPath "$projectPath" -exportPackage "$exportAssetPath" "$packagePath" -quit
 $global:unityProcess = Get-Process Unity | Sort-Object StartTime | Select-Object -Last 1 
+
 
 # Wait for it to complete exporting the package
 $unityProcess | Wait-Process -Timeout 120 -ErrorAction SilentlyContinue
