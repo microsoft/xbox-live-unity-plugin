@@ -85,7 +85,7 @@ public class UserProfile : MonoBehaviour
             throw new Exception("Sign in Failed");
         }
 
-        XboxLive.Instance.SocialManager.AddLocalUser(this.User);
+        XboxLive.Instance.StatsManager.AddLocalUser(this.User);
         yield return XboxLive.Instance.SocialManager.AddLocalUser(this.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
         yield return this.LoadProfileInfo();
     }
