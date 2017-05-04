@@ -1,0 +1,933 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.IdentityModel.Clients.ActiveDirectory.Platform</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContextIntegratedAuthExtensions">
+            <summary>
+            Extension class to support username/password flow.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContextIntegratedAuthExtensions.AcquireTokenAsync(Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext,System.String,System.String,Microsoft.IdentityModel.Clients.ActiveDirectory.UserCredential)">
+            <summary>
+            Acquires security token from the authority.
+            </summary>
+            <remarks>This feature is supported only for Azure Active Directory and Active Directory Federation Services (ADFS) on Windows 10.</remarks>
+            <param name="ctx">Authentication context instance</param>
+            <param name="resource">Identifier of the target resource that is the recipient of the requested token.</param>
+            <param name="clientId">Identifier of the client requesting the token.</param>
+            <param name="userCredential">The user credential to use for token acquisition.</param>
+            <returns>It contains Access Token, Refresh Token and the Access Token's expiration time.</returns>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate">
+            <summary>
+            Containing certificate used to create client assertion.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.#ctor(System.String,System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Constructor to create credential with client Id and certificate.
+            </summary>
+            <param name="clientId">Identifier of the client requesting the token.</param>
+            <param name="certificate">The certificate used as credential.</param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.ClientId">
+            <summary>
+            Gets the identifier of the client requesting the token.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.MinKeySizeInBits">
+            <summary>
+            Gets minimum X509 certificate key size in bits
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.Certificate">
+            <summary>
+            Gets the certificate used as credential.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.Sign(System.String)">
+            <summary>
+            Signs a message using the private key in the certificate
+            </summary>
+            <param name="message">Message that needs to be signed</param>
+            <returns>Signed message as a byte array</returns>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.ClientAssertionCertificate.Thumbprint">
+            <summary>
+            Returns thumbprint of the certificate
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalOption">
+            <summary>
+            Helper class to get ADAL EventSource
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.AdalOption.AdalEventSource">
+            <summary>
+            Returns ADAL EventSource
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.DeviceAuthHelper.GetCngPrivateKey(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+                <para>
+                    The GetCngPrivateKey method will return a <see cref="T:System.Security.Cryptography.CngKey"/> representing the private
+                    key of an X.509 certificate which has its private key stored with NCrypt rather than with
+                    CAPI. If the key is not stored with NCrypt or if there is no private key available,
+                    GetCngPrivateKey returns null.
+                </para>
+                <para>
+                    The HasCngKey method can be used to test if the certificate does have its private key
+                    stored with NCrypt.
+                </para>
+                <para>
+                    The X509Certificate that is used to get the key must be kept alive for the lifetime of the
+                    CngKey that is returned - otherwise the handle may be cleaned up when the certificate is
+                    finalized.
+                </para>
+            </summary>
+            <permission cref="T:System.Security.Permissions.SecurityPermission">The caller of this method must have SecurityPermission/UnmanagedCode.</permission>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.DeviceAuthHelper.GetCertificateContext(System.Security.Cryptography.X509Certificates.X509Certificate)">
+            <summary>
+                Get a <see cref="T:Microsoft.IdentityModel.Clients.ActiveDirectory.SafeCertContextHandle" /> for the X509 certificate.  The caller of this
+                method owns the returned safe handle, and should dispose of it when they no longer need it. 
+                This handle can be used independently of the lifetime of the original X509 certificate.
+            </summary>
+            <permission cref="T:System.Security.Permissions.SecurityPermission">
+                The immediate caller must have SecurityPermission/UnmanagedCode to use this method
+            </permission>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode">
+            <summary>
+                Padding modes 
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode.None">
+            <summary>
+                No padding
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode.Pkcs1">
+            <summary>
+                PKCS #1 padding
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode.Oaep">
+            <summary>
+                Optimal Asymmetric Encryption Padding
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode.Pss">
+            <summary>
+                Probabilistic Signature Scheme padding
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative">
+            <summary>
+                Native wrappers for bcrypt CNG APIs.
+                
+                The general pattern for this interop layer is that the BCryptNative type exports a wrapper method
+                for consumers of the interop methods.  This wrapper method puts a managed face on the raw
+                P/Invokes, by translating from native structures to managed types and converting from error
+                codes to exceptions.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.AlgorithmName">
+            <summary>
+                Well known algorithm names
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.AlgorithmProviderOptions">
+            <summary>
+                Flags for BCryptOpenAlgorithmProvider
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.AuthenticatedCipherModeInfoFlags">
+            <summary>
+                Flags for use with the BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO structure
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.ChainingMode">
+            <summary>
+                Well known chaining modes
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.ErrorCode">
+            <summary>
+                Result codes from BCrypt APIs
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.KeyBlobMagicNumber">
+            <summary>
+                Magic numbers for different key blobs
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.KeyBlobType">
+            <summary>
+                Well known key blob tyes
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.ParameterTypes">
+            <summary>
+            BCrypt parameter types (used in parameter lists)
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.BCryptNative.ProviderName">
+            <summary>
+                Well known BCrypt provider names
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeBCryptAlgorithmHandle">
+            <summary>
+                SafeHandle for a native BCRYPT_ALG_HANDLE
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeBCryptHashHandle">
+            <summary>
+                SafeHandle for a BCRYPT_HASH_HANDLE.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeBCryptKeyHandle">
+            <summary>
+                SafeHandle for a native BCRYPT_KEY_HANDLE.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.ICngAlgorithm.Provider">
+            <summary>
+                Gets the algorithm or key storage provider being used for the implementation of the CNG
+                algorithm.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.ICngAsymmetricAlgorithm">
+            <summary>
+                Interface for asymmetric algorithms implemented over the CNG layer of Windows to provide CNG
+                implementation details through.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.ICngAsymmetricAlgorithm.Key">
+            <summary>
+                Get the CNG key being used by the asymmetric algorithm.
+            </summary>
+            <permission cref="T:System.Security.Permissions.SecurityPermission">
+                This method requires that the immediate caller have SecurityPermission/UnmanagedCode
+            </permission>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptAlgorithmOperations">
+            <summary>
+                Algorithm classes exposed by NCrypt
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative">
+            <summary>
+                Native wrappers for ncrypt CNG APIs.
+                
+                The general pattern for this interop layer is that the NCryptNative type exports a wrapper method
+                for consumers of the interop methods.  This wrapper method puts a managed face on the raw
+                P/Invokes, by translating from native structures to managed types and converting from error
+                codes to exceptions.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.KeyPropertyName">
+            <summary>
+                Well known key property names
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.NCryptAlgorithmClass">
+            <summary>
+                NCrypt algorithm classes
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.ErrorCode">
+            <summary>
+                Enum for some SECURITY_STATUS return codes
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.NCryptDecryptor`1">
+            <summary>
+                Adapter to wrap specific NCryptDecrypt P/Invokes with specific padding info
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.NCryptEncryptor`1">
+            <summary>
+                Adapter to wrap specific NCryptEncrypt P/Invokes with specific padding info
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.NCryptHashSigner`1">
+            <summary>
+                Adapter to wrap specific NCryptSignHash P/Invokes with a specific padding info
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.SignHash``1(Microsoft.Win32.SafeHandles.SafeNCryptKeyHandle,System.Byte[],``0@,Microsoft.IdentityModel.Clients.ActiveDirectory.Native.AsymmetricPaddingMode,Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.NCryptHashSigner{``0})">
+            <summary>
+                Generic signature method, wrapped by signature calls for specific padding modes
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.SignHashPkcs1(Microsoft.Win32.SafeHandles.SafeNCryptKeyHandle,System.Byte[],System.String)">
+            <summary>
+                Sign a hash, using PKCS1 padding
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.NCryptNative.SignHashPss(Microsoft.Win32.SafeHandles.SafeNCryptKeyHandle,System.Byte[],System.String,System.Int32)">
+            <summary>
+                Sign a hash, using PSS padding
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeNCryptBuffer">
+            <summary>
+                Handle for buffers that need to be released with NCryptFreeBuffer
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeNCryptBuffer.ReadArray``1(System.UInt32)">
+            <summary>
+                Helper method to read a structure out of the buffer, treating it as if it were an array of
+                T.  This method does not do any validation that the read data is within the buffer itself. 
+                
+                Esentially, this method treats the safe handle as if it were a native T[], and returns
+                handle[index].  It will add enough padding space such that each T will begin on a
+                pointer-sized location.
+            </summary>
+            <typeparam name="T">type of structure to read from the buffer</typeparam>
+            <param name="index">0 based index into the array to read the structure from</param>
+            <returns>the value of the structure at the index into the array</returns>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng">
+            <summary>
+                <para>
+                    The RSACng class provides a wrapper for the CNG implementation of the RSA algorithm. The
+                    interface provided by RSACng is derived from the <see cref="T:System.Security.Cryptography.RSA" /> base type, and not from
+                    the <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider" /> class. Consequently, it is not a drop in
+                    replacement for existing uses of RSACryptoServiceProvider.
+                </para>
+                <para>
+                    RSACng uses a programming model more similar to the <see cref="T:System.Security.Cryptography.ECDsaCng" /> class than
+                    RSACryptoServiceProvider. For instance, unlike RSACryptoServiceProvider which has a key
+                    directly tied into the operations of the type itself, the key used by RsaCng is managed by a
+                    separate <see cref="T:System.Security.Cryptography.CngKey" /> object. Additionally, operations such as signing and verifying
+                    signatures take their parameters from a set of properties set on the RSACng object, similar to
+                    how ECDsaCng uses properties of its object to control the signing and verification operations.
+                </para>
+                <para>    
+                    RSACng uses the NCrypt layer of CNG to do its work, and requires Windows Vista and the .NET
+                    Framework 3.5.
+                </para>
+                <para>
+                    Example usage:
+                    <example>
+                        // Create an RSA-SHA256 signature using the key stored in "MyKey"
+                        byte[] dataToSign = Encoding.UTF8.GetBytes("Data to sign");
+                        using (CngKey signingKey = CngKey.Open("MyKey");
+                        using (RSACng rsa = new RSACng(signingKey))
+                        {
+                            rsa.SignatureHashAlgorithm = CngAlgorithm.Sha256;
+                            return rsa.SignData(dataToSign);
+                        }
+                    </example>
+                </para>
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.#ctor">
+            <summary>
+                Create an RSACng algorithm with a random 2048 bit key pair.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.#ctor(System.Int32)">
+            <summary>
+                Creates a new RSACng object that will use a randomly generated key of the specified size.
+                Valid key sizes range from 384 to 16384 bits, in increments of 8. It's suggested that a
+                minimum size of 2048 bits be used for all keys.
+            </summary>
+            <param name="keySize">size of hte key to generate, in bits</param>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">if <paramref name="keySize" /> is not valid</exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.#ctor(System.Security.Cryptography.CngKey)">
+            <summary>
+                Creates a new RSACng object that will use the specified key. The key's
+                <see cref="P:System.Security.Cryptography.CngKey.AlgorithmGroup" /> must be Rsa.
+            </summary>
+            <param name="key">key to use for RSA operations</param>
+            <exception cref="T:System.ArgumentException">if <paramref name="key" /> is not an RSA key</exception>
+            <exception cref="T:System.ArgumentNullException">if <paramref name="key" /> is null</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.EncryptionHashAlgorithm">
+            <summary>
+                Sets the hash algorithm to use when encrypting or decrypting data using the OAEP padding
+                method. This property is only used if data is encrypted or decrypted and the
+                EncryptionPaddingMode is set to AsymmetricEncryptionPaddingMode.Oaep. The default value is
+                Sha256.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if EncryptionHashAlgorithm is set to null</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.EncryptionPaddingMode">
+            <summary>
+                Sets the padding mode to use when encrypting or decrypting data. The default value is
+                AsymmetricPaddingMode.Oaep.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if EncryptionPaddingMOde is set to null</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.Key">
+            <summary>
+                Gets the key that will be used by the RSA object for any cryptographic operation that it uses.
+                This key object will be disposed if the key is reset, for instance by changing the KeySize
+                property, using ImportParamers to create a new key, or by Disposing of the parent RSA object.
+                Therefore, you should make sure that the key object is no longer used in these scenarios. This
+                object will not be the same object as the CngKey passed to the RSACng constructor if that
+                constructor was used, however it will point at the same CNG key.
+            </summary>
+            <permission cref="T:System.Security.Permissions.SecurityPermission">
+                SecurityPermission/UnmanagedCode is required to read this property.
+            </permission>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.KeyHandle">
+            <summary>
+                Helper property to get the NCrypt key handle
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.KeyExchangeAlgorithm">
+            <summary>
+                Returns "RSA-PKCS1-KeyEx". This property should not be used.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.Provider">
+            <summary>
+                Key storage provider being used for the algorithm
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignatureAlgorithm">
+            <summary>
+                Returns "http://www.w3.org/2000/09/xmldsig#rsa-sha1". This property should not be used.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignatureHashAlgorithm">
+            <summary>
+                Gets or sets the hash algorithm to use when signing or verifying data. The default value is
+                Sha256.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">if SignatureHashAlgorithm is set to null</exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignaturePaddingMode">
+            <summary>
+                Gets or sets the padding mode to use when encrypting or decrypting data. The default value is
+                AsymmetricPaddingMode.Pkcs1.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                if SignaturePaddingMode is set to a mode other than Pkcs1 or Pss
+            </exception>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignatureSaltBytes">
+            <summary>
+                Gets or sets the number of bytes of salt to use when signing data or verifying a signature
+                using the PSS padding mode. This property is only used if data is being signed or verified and
+                the SignaturePaddingMode is set to AsymmetricEncryptionPaddingMode.Pss. The default value is
+                20 bytes.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                if SignatureSaltBytes is set to a negative number
+            </exception>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.Dispose(System.Boolean)">
+            <summary>
+            Dispose implementation
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.BuildKeyContainerPermission(System.Security.Cryptography.CngKey,System.Security.Permissions.KeyContainerPermissionFlags)">
+            <summary>
+                Build a key container permission that should be demanded before using the private key
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.CreateSignatureHashObject">
+            <summary>
+                Create an object to hash signature data with
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignData(System.Byte[])">
+            <summary>
+                SignData signs the given data after hashing it with the SignatureHashAlgorithm algorithm.
+            </summary>
+            <param name="data">data to sign</param>
+            <exception cref="T:System.ArgumentNullException">if <paramref name="data" /> is null</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">if <paramref name="data" /> could not be signed</exception>
+            <exception cref="T:System.InvalidOperationException">
+                if SignatureHashAlgorithm is not MD5, SHA-1, SHA-256, SHA-384, or SHA-512
+            </exception>
+            <permission cref="T:System.Security.Permissions.KeyContainerPermission">
+                 This method will demand KeyContainerPermission if the key being used is not ephemeral.
+            </permission>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignData(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+                SignData signs the given data after hashing it with the SignatureHashAlgorithm algorithm.
+            </summary>
+            <param name="data">data to sign</param>
+            <param name="offset">offset into the data that the signature should begin covering</param>
+            <param name="count">number of bytes to include in the signed data</param>
+            <exception cref="T:System.ArgumentNullException">if <paramref name="data" /> is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                if <paramref name="offset" /> or <paramref name="count" /> are negative, or if
+                <paramref name="count" /> specifies more bytes than are available in <paramref name="data" />.
+            </exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">if <paramref name="data" /> could not be signed</exception>
+            <exception cref="T:System.InvalidOperationException">
+                if SignatureHashAlgorithm is not MD5, SHA-1, SHA-256, SHA-384, or SHA-512
+            </exception>
+            <permission cref="T:System.Security.Permissions.KeyContainerPermission">
+                 This method will demand KeyContainerPermission if the key being used is not ephemeral.
+            </permission>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignHash(System.Byte[])">
+            <summary>
+                Sign data which was hashed using the SignatureHashAlgorithm; if the algorithm used to hash
+                the data was different, use the SignHash(byte[], CngAlgorithm) overload instead.
+            </summary>
+            <param name="hash">hash to sign</param>
+            <exception cref="T:System.ArgumentNullException">if <paramref name="hash" /> is null</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">if <paramref name="hash" /> could not be signed</exception>
+            <exception cref="T:System.InvalidOperationException">
+                if SignatureHashAlgorithm is not MD5, SHA-1, SHA-256, SHA-384, or SHA-512
+            </exception>
+            <permission cref="T:System.Security.Permissions.KeyContainerPermission">
+                 This method will demand KeyContainerPermission if the key being used is not ephemeral.
+            </permission>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.SignHash(System.Byte[],System.Security.Cryptography.CngAlgorithm)">
+            <summary>
+                Sign already hashed data, specifying the algorithm it was hashed with.  This method does not
+                use the SignatureHashAlgorithm property.
+            </summary>
+            <param name="hash">hash to sign</param>
+            <param name="hashAlgorithm">algorithm <paramref name="hash" /> was signed with</param>
+            <exception cref="T:System.ArgumentNullException">
+                if <paramref name="hash" /> or <paramref name="hashAlgorithm"/> are null
+             </exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">if <paramref name="hash" /> could not be signed</exception>
+            <permission cref="T:System.Security.Permissions.KeyContainerPermission">
+                 This method will demand KeyContainerPermission if the key being used is not ephemeral.
+            </permission>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.DecryptValue(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="rgb"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.EncryptValue(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="rgb"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.ExportParameters(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="includePrivateParameters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.RSACng.ImportParameters(System.Security.Cryptography.RSAParameters)">
+            <summary>
+            
+            </summary>
+            <param name="parameters"></param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.Win32Native">
+            <summary>
+                Native interop layer for Win32 APIs
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.Win32Native.FormatMessageFromLibrary(System.Int32,System.String)">
+            <summary>
+                Lookup an error message in the message table of a specific library as well as the system
+                message table.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.Win32Native.GetNTStatusMessage(System.Int32)">
+            <summary>
+                Get an error message for an NTSTATUS error code
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeHandleWithBuffer">
+            <summary>
+                Safe handle base class for safe handles which are associated with an additional data buffer that
+                must be kept alive for the same amount of time as the handle itself.
+                
+                This is required rather than having a seperate safe handle own the key data buffer blob so
+                that we can ensure that the key handle is disposed of before the key data buffer is freed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeHandleWithBuffer.DataBuffer">
+            <summary>
+                Buffer that holds onto the key data object. This data must be allocated with CoAllocTaskMem, 
+                or the ReleaseBuffer method must be overriden to match the deallocation function with the
+                allocation function.  Once the buffer is assigned into the DataBuffer property, the safe
+                handle owns the buffer and users of this property should not attempt to free the memory.
+                
+                This property should be set only once, otherwise the first data buffer will leak.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeHandleWithBuffer.ReleaseBuffer">
+            <summary>
+                Release the buffer associated with the handle
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeHandleWithBuffer.ReleaseNativeHandle">
+            <summary>
+                Release just the native handle associated with the safe handle
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeLibraryHandle">
+            <summary>
+                SafeHandle for a native HMODULE
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Native.SafeLocalAllocHandle">
+            <summary>
+                SafeHandle for memory allocated with LocalAlloc
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters">
+            <summary>
+            Additional parameters used in acquiring user's authorization
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior)">
+            <summary>
+            
+            </summary>
+            <param name="promptBehavior"></param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.#ctor(Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="promptBehavior"></param>
+            <param name="ownerWindow"></param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.OwnerWindow">
+            <summary>
+            Gets the owner of the browser dialog which pops up for receiving user credentials. It can be null.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters.PromptBehavior">
+            <summary>
+            Gets prompt behavior. If <see cref="F:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.Always"/>, asks service to show user the authentication page which gives them chance to authenticate as a different user.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventHandler">
+            <summary>
+            Delegate to handle navifation errors in the browser control
+            </summary>
+            <param name="sender">object type</param>
+            <param name="e">WebBrowserNavigateErrorEventArgs type</param>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWebUI.NavigationWaitMiliSecs">
+            <summary>
+            This is how long we allow between completed navigations.
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWebUI.NavigationOverallTimeout">
+            <summary>
+            This is how long all redirect navigations are allowed to run for before a graceful 
+            termination of the entire browser based authentication process is attempted.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWebUI.WaitForCompletionOrTimeout(System.Threading.Thread)">
+            <summary>
+            Waits on the UI Thread to complete normally for NavigationOverallTimeout.  
+            After it attempts shutdown the UI thread graceful followed by aborting
+            the thread if a graceful shutdown is not successful.
+            </summary>
+            <param name="uiThread"></param>
+            <returns>Returns true if the UI thread completed on its own before the timeout.  Otherwise false.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWebUI.OnAuthenticate">
+            <summary>
+            Callers expect the call to show the authentication dialog to be synchronous.  This is easy in the 
+            interactive case as ShowDialog is a synchronous call.  However, ShowDialog will always show 
+            the dialog.  It can not be hidden. So it can not be used in the silent case.  Instead we need
+            to do the equivalent of creating our own modal dialog.  We start a new thread, launch an 
+            invisible window on that thread.  The original calling thread blocks until the secondary
+            UI thread completes.  
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWindowsFormsAuthenticationDialog.SuppressBrowserSubDialogs">
+            <summary>
+            Make sure that the browser control does not surface any of it's own dialogs.
+            For instance bad certificate or javascript error dialogs.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.SilentWindowsFormsAuthenticationDialog.SignalDone(System.Exception)">
+            <summary>
+            This method must only be called from the UI thread.  Since this is the 
+            callers opportunity to call dispose on this object.  Calling
+            Dispose must be done on the same thread on which this object
+            was constructed.
+            </summary>
+            <param name="exception"></param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs.#ctor(System.String,System.String,System.Int32,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="url"></param>
+            <param name="targetFrameName"></param>
+            <param name="statusCode"></param>
+            <param name="webBrowserActiveXInstance"></param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs.TargetFrameName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs.Url">
+            <summary>
+            url as a string, as in case of error it could be invalid url
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs.StatusCode">
+            <summary>
+            ADAL.Native has code for interpretation of this code to string we don't do it here, as we need to come consideration should we do it or not.
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs.WebBrowserActiveXInstance">
+            <summary>
+            return object
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase">
+            <summary>
+            Base class for web form
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.ownerWindow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.#ctor(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="ownerWindow"></param>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.WebBrowser">
+            <summary>
+            Gets Web Browser control used by the dialog.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.WebBrowserNavigatingHandler(System.Object,System.Windows.Forms.WebBrowserNavigatingEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.WebBrowserNavigateErrorHandler(System.Object,Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WebBrowserNavigateErrorEventArgs)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.OnClosingUrl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.OnNavigationCanceled(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="statusCode"></param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.OnAuthenticate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.Dispose(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.CreateExceptionForAuthenticationUiFailed(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="statusCode"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.DpiHelper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialogBase.DpiHelper.ZoomPercent">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog">
+            <summary>
+            The browser dialog used for user authentication
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.#ctor(System.Object)">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.OnAuthenticate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.ShowBrowser">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.WebBrowserNavigatingHandler(System.Object,System.Windows.Forms.WebBrowserNavigatingEventArgs)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.OnClosingUrl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.Internal.WindowsFormsWebAuthenticationDialog.OnNavigationCanceled(System.Int32)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior">
+            <summary>
+            Indicates whether AcquireToken should automatically prompt only if necessary or whether
+            it should prompt regardless of whether there is a cached token.
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.Auto">
+            <summary>
+            Acquire token will prompt the user for credentials only when necessary.  If a token
+            that meets the requirements is already cached then the user will not be prompted.
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.Always">
+            <summary>
+            The user will be prompted for credentials even if there is a token that meets the requirements
+            already in the cache.
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.Never">
+            <summary>
+            The user will not be prompted for credentials.  If prompting is necessary then the AcquireToken request
+            will fail.
+            </summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.PromptBehavior.RefreshSession">
+            <summary>
+            Re-authorizes (through displaying webview) the resource usage, making sure that the resulting access
+            token contains updated claims. If user logon cookies are available, the user will not be asked for 
+            credentials again and the logon dialog will dismiss automatically.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.SecureClientSecret">
+            <summary>
+            This class allows to pass client secret as a SecureString to the API.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.SecureClientSecret.#ctor(System.Security.SecureString)">
+            <summary>
+            Required Constructor
+            </summary>
+            <param name="secret">SecureString secret. Required and cannot be null.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.SecureClientSecret.ApplyTo(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Applies the secret to the dictionary.
+            </summary>
+            <param name="parameters">Dictionary to which the securestring is applied to be sent to server</param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler">
+            <summary>Provides a scheduler that uses STA threads.</summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler._tasks">
+            <summary>Stores the queued tasks to be executed by our pool of STA threads.</summary>
+        </member>
+        <member name="F:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler._threads">
+            <summary>The STA threads used by the scheduler.</summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.#ctor(System.Int32)">
+            <summary>Initializes a new instance of the StaTaskScheduler class with the specified concurrency level.</summary>
+            <param name="numberOfThreads">The number of threads that should be created and used by this scheduler.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <summary>Queues a Task to be executed by this scheduler.</summary>
+            <param name="task">The task to be executed.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.GetScheduledTasks">
+            <summary>Provides a list of the scheduled tasks for the debugger to consume.</summary>
+            <returns>An enumerable of all tasks currently scheduled.</returns>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>Determines whether a Task may be inlined.</summary>
+            <param name="task">The task to be executed.</param>
+            <param name="taskWasPreviouslyQueued">Whether the task was previously queued.</param>
+            <returns>true if the task was successfully inlined; otherwise, false.</returns>
+        </member>
+        <member name="P:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.MaximumConcurrencyLevel">
+            <summary>Gets the maximum concurrency level supported by this scheduler.</summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.StaTaskScheduler.Dispose">
+            <summary>
+            Cleans up the scheduler by indicating that no more tasks will be queued.
+            This method blocks until all threads successfully shutdown.
+            </summary>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.UserPasswordCredential">
+            <summary>
+            Credential used for username/password authentication.
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.UserPasswordCredential.#ctor(System.String,System.String)">
+            <summary>
+            Constructor to create credential with client id and secret
+            </summary>
+            <param name="userName">Identifier of the user application requests token on behalf.</param>
+            <param name="password">User password.</param>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.UserPasswordCredential.#ctor(System.String,System.Security.SecureString)">
+            <summary>
+            Constructor to create credential with client id and secret
+            </summary>
+            <param name="userName">Identifier of the user application requests token on behalf.</param>
+            <param name="securePassword">User password.</param>
+        </member>
+        <member name="T:Microsoft.IdentityModel.Clients.ActiveDirectory.X509Native.AcquireCertificateKeyOptions">
+            <summary>
+                Flags for the CryptAcquireCertificatePrivateKey API
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.X509Native.DuplicateCertContext(System.IntPtr)">
+            <summary>
+                Duplicate the certificate context into a safe handle
+            </summary>
+        </member>
+        <member name="M:Microsoft.IdentityModel.Clients.ActiveDirectory.X509Native.AcquireCngPrivateKey(Microsoft.IdentityModel.Clients.ActiveDirectory.SafeCertContextHandle)">
+            <summary>
+                Get the private key of a certificate
+            </summary>
+        </member>
+    </members>
+</doc>
