@@ -136,6 +136,7 @@ public class Leaderboard : MonoBehaviour
     private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
     {
         this.isLocalUserAdded = true;
+        Refresh();
     }
 
     private void GetLeaderboardCompleted(object sender, XboxLivePrefab.StatEventArgs e)
