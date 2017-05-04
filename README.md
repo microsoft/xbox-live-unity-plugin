@@ -1,6 +1,6 @@
 ## Welcome!
 
-The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game. 
+The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.
 To get access to the Xbox Live service, please apply to the [ID@Xbox program](http://www.xbox.com/en-us/Developers/id).
 
 ## Overview
@@ -14,12 +14,14 @@ The Unity Plugin is broken into the following parts
     * __Libs__ is where the Xbox Live libraries will be stored.  This will only contain `.meta` files when you initially clone the repository.  You must [build the SDK](#Getting_Started) to pull those files in.
     * __Prefabs__ contains various Unity prefab objects that implement Xbox Live functionality.  See [the prefabs documentation](prefabs.md) for more information.
     * __Scripts__ contains all of the code files that actually call the Xbox Live APIs from the prefabs.  This is a great place to look for examples about how to properly call the Xbox Live APIs. See [the scripts documentation](scripts.md) for more detail.
+
+      Inside this folder, you'll also find a folder called __GameSave__ where you'll see the Game Save (Connected Storage) plugin and its scripts.
     * __Tools/AssociationWizard__ contains the Xbox Live Association Wizard, used to pull down application configuration from DevCenter for use within Unity.
 
 * __Build__ contains scripts to generate the .unitypackage and handle other project setup tasks.
 * __External__ contains additional resources used by the plugin
   * [__xbox-live-api-csharp__](https://github.com/Microsoft/xbox-live-api-csharp) is a submodule where the Xbox Live API comes from.  You can choose to build the SDK from this sub-module or directly from the repository.
-  
+
 * __ProjectSettings__ contains standard Unity project settings files.
 
 ## Getting Started
@@ -62,11 +64,19 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
     .\Build\BuildPackage.ps1
     ```
 
+## Using the Game Save Plugin
+
+When the ```.\Build\BuildPackage.ps1``` script is run, the `XboxLive.unitypackage` is generated. When that unity package is imported into a unity project, the `GameSave` folder within the `Xbox Live\Assets\Scripts\` folder will contain the `GameSave.unitypackage` which contains scripts for integrating with Connected Storage.
+
+For an example of how to use Connected Storage, you'll need to first add Sign In to your game. Afterwards, drag the `GameSaveUI.cs` script and drop it on any object in your scene. That will kick-off a simple UI to test your integration to Connected Storage.
+
+Please make sure to check out the best practice and documentation of how to use Connected Storage at: [Connected Storage Documenation](https://developer.microsoft.com/en-us/games/xbox/docs/xboxlive/storage-platform/connected-storage/connected-storage-technical-overview).
+
 ## Contribute Back!
 
 Is there a feature missing that you'd like to see, or found a bug that you have a fix for? Or do you have an idea or just interest in helping out in building the plugin? Let us know and we'd love to work with you. For a good starting point on where we are headed and feature ideas, take a look at our [requested features and bugs](https://github.com/Microsoft/xbox-live-unity-plugin/issues). See the [contribution guidelines](CONTRIBUTING.MD) for details.
 
-Big or small we'd like to take your contributions back to help improve the Xbox Live Unity plugin for everyone. 
+Big or small we'd like to take your contributions back to help improve the Xbox Live Unity plugin for everyone.
 
 ## Having Trouble?
 
@@ -85,4 +95,3 @@ For developers in the Xbox Live Creators Program, you can submit a new idea or v
 *   [Xbox Live Trace Analyzer](https://github.com/Microsoft/xbox-live-trace-analyzer)
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
