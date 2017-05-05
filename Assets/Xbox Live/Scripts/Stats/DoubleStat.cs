@@ -12,15 +12,27 @@ public class DoubleStat : StatBase<double>
     private bool isLocalUserAdded = false;
     private void Awake()
     {
-        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        if (XboxLiveComponent.Instance.User == null || !XboxLiveComponent.Instance.User.IsSignedIn)
         {
-            StatValue statValue = XboxLive.Instance.StatsManager.GetStat(args.User, Name);
-            if (statValue != null)
+            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
             {
-                this.Value = statValue.AsNumber();
-            }
-            isLocalUserAdded = true;
-        };
+                this.HandleGetStat(args.User, this.Name);
+            };
+        }
+        else
+        {
+            this.HandleGetStat(XboxLiveComponent.Instance.User, this.Name);
+        }
+    }
+
+    private void HandleGetStat(XboxLiveUser user, string statName)
+    {
+        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        if (statValue != null)
+        {
+            this.Value = statValue.AsNumber();
+        }
+        this.isLocalUserAdded = true;
     }
 
     public void Multiply(float multiplier)
@@ -42,7 +54,7 @@ public class DoubleStat : StatBase<double>
         }
         set
         {
-            if(isLocalUserAdded)
+            if (this.isLocalUserAdded)
             {
                 XboxLive.Instance.StatsManager.SetStatAsNumber(XboxLiveComponent.Instance.User, this.Name, value);
             }
