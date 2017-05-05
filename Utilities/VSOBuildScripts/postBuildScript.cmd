@@ -24,7 +24,29 @@ mkdir "%exportPath%\Libs"
 robocopy /NJS /NJH /MT:16 /S /NP "%CSharpBinFolder%\Source\binaries\Layout\Release" "%libPath%"
 
 mkdir %TFS_DropLocation%\Packages
+
+set SRC_GAMESAVE=%exportPath%\Scripts\GameSave
+set SRC_GAMESAVE_PACKAGE=%exportPath%\Scripts\GameSave\GameSave.unitypackage
+set DEST_GAMESAVE=%TFS_DropLocation%\TempGameSave
+
+"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\gamesave-unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets\Xbox Live\Scripts\GameSave" "%SRC_GAMESAVE_PACKAGE%" -quit
+
+rmdir /q /s "%DEST_GAMESAVE%"
+robocopy /NJS /NJH /MT:16 /S /NP "%SRC_GAMESAVE%" "%DEST_GAMESAVE%"
+rmdir /q /s "%SRC_GAMESAVE%"
+del "%SRC_GAMESAVE%"
+del "%SRC_GAMESAVE%.meta"
+mkdir "%SRC_GAMESAVE%"
+copy "%DEST_GAMESAVE%\readme.txt" "%SRC_GAMESAVE%"
+copy "%DEST_GAMESAVE%\GameSave.unitypackage" "%SRC_GAMESAVE%"
+
 "C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets\Xbox Live" "%projectPath%" -quit
+
+rmdir /q /s "%SRC_GAMESAVE%"
+robocopy /NJS /NJH /MT:16 /S /NP "%DEST_GAMESAVE%" "%SRC_GAMESAVE%"
+rmdir /q /s "%DEST_GAMESAVE%"
+del "%SRC_GAMESAVE%\GameSave.unitypackage"
+del "%SRC_GAMESAVE%\GameSave.unitypackage.meta"
 robocopy /NJS /NJH /MT:16 /S /NP "%exportPath%" "%TFS_DropLocation%\Assets\Xbox Live"
 
 echo Running postBuildScript.cmd
