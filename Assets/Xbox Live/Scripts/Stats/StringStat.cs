@@ -12,16 +12,29 @@ public class StringStat : StatBase<string>
     private bool isLocalUserAdded = false;
     private void Awake()
     {
-        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        if (XboxLiveComponent.Instance.User == null || !XboxLiveComponent.Instance.User.IsSignedIn)
         {
-            StatValue statValue = XboxLive.Instance.StatsManager.GetStat(args.User, Name);
-            if (statValue != null)
+            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
             {
-                this.Value = statValue.AsString();
-            }
-            isLocalUserAdded = true;
-        };
+                this.HandleGetStat(args.User, this.Name);
+            };
+        }
+        else
+        {
+            this.HandleGetStat(XboxLiveComponent.Instance.User, this.Name);
+        }
     }
+
+    private void HandleGetStat(XboxLiveUser user, string statName)
+    {
+        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        if (statValue != null)
+        {
+            this.Value = statValue.AsString();
+        }
+        this.isLocalUserAdded = true;
+    }
+
     public override string Value
     {
         get
@@ -30,7 +43,7 @@ public class StringStat : StatBase<string>
         }
         set
         {
-            if(isLocalUserAdded)
+            if (this.isLocalUserAdded)
             {
                 XboxLive.Instance.StatsManager.SetStatAsString(XboxLiveComponent.Instance.User, this.Name, value);
             }

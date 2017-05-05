@@ -15,6 +15,8 @@ using UnityEngine.UI;
 
 public class UserProfile : MonoBehaviour
 {
+    private static UserProfile instance;
+
     private XboxLiveUser User;
 
     [HideInInspector]
@@ -39,8 +41,18 @@ public class UserProfile : MonoBehaviour
     {
         this.EnsureEventSystem();
 
+        if (!instance)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
         this.profileInfoPanel.SetActive(false);
         XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
+        DontDestroyOnLoad(this.gameObject);
         this.Refresh();
     }
 

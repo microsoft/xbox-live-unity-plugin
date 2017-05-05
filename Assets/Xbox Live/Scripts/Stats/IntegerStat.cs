@@ -18,16 +18,29 @@ public class IntegerStat : StatBase<int>
     private bool isLocalUserAdded = false;
     private void Awake()
     {
-        StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+        if (XboxLiveComponent.Instance.User == null || !XboxLiveComponent.Instance.User.IsSignedIn)
         {
-            StatValue statValue = XboxLive.Instance.StatsManager.GetStat(args.User, Name);
-            if(statValue != null)
+            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
             {
-                this.Value = statValue.AsInteger();
-            }
-            isLocalUserAdded = true;
-        };
+                this.HandleGetStat(args.User, this.Name);
+            };
+        }
+        else
+        {
+            this.HandleGetStat(XboxLiveComponent.Instance.User, this.Name);
+        }
     }
+
+    private void HandleGetStat(XboxLiveUser user, string statName)
+    {
+        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        if (statValue != null)
+        {
+            this.Value = statValue.AsInteger();
+        }
+        this.isLocalUserAdded = true;
+    }
+
     public void Increment()
     {
         this.Value = this.Value + 1;
@@ -51,7 +64,7 @@ public class IntegerStat : StatBase<int>
         }
         set
         {
-            if(isLocalUserAdded)
+            if (this.isLocalUserAdded)
             {
                 XboxLive.Instance.StatsManager.SetStatAsInteger(XboxLiveComponent.Instance.User, this.Name, value);
             }
