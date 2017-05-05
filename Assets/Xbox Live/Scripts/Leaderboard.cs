@@ -164,12 +164,18 @@ public class Leaderboard : MonoBehaviour
 
         this.leaderboardData = result;
 
-        if (this.totalPages == 0)
+        uint displayCurrentPage = this.currentPage + 1;
+        if (this.leaderboardData.TotalRowCount == 0)
+        {
+            this.totalPages = 0;
+            displayCurrentPage = 0;
+        }
+        else if (this.totalPages == 0)
         {
             this.totalPages = (this.leaderboardData.TotalRowCount - 1) / this.entryCount + 1;
         }
 
-        this.pageText.text = string.Format("Page: {0} / {1}", this.currentPage + 1, this.totalPages);
+        this.pageText.text = string.Format("Page: {0} / {1}", displayCurrentPage, this.totalPages);
 
         while (this.contentPanel.childCount > 0)
         {
