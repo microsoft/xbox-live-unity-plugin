@@ -40,7 +40,7 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
   * Make sure to select everything under **Universal Windowsn App Development Tools** when installing.  You can modify the installation to include these features for an existing installation as well.
 * [Powershell](https://microsoft.com/powershell)
   * If you've never used powershell before make sure that you have [enabled powershell scripts to run](https://technet.microsoft.com/en-us/library/ee176961.aspx).
-* [Xbox Live Platform Extensions SDK](aka.ms/xblextsdk) 
+* [Xbox Live Platform Extensions SDK](http://aka.ms/xblextsdk) 
 
 ### Building
 
