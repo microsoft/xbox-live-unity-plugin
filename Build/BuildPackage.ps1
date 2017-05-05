@@ -53,7 +53,7 @@ Remove-Item $packagePath -ErrorAction SilentlyContinue
 
 Write-Host "Moving Game Save Scripts to a temporary folder."
 $externalFolder = Resolve-Path (Join-Path $projectPath ..)
-$tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory
+$tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory -force
 Copy-Item $gameSaveAssetsPath -Destination $tempGameSaveFolder -ErrorAction SilentlyContinue -recurse
 Remove-Item $gameSaveAssetsPath -recurse
 
