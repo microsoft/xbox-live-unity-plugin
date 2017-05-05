@@ -100,7 +100,7 @@ public class Leaderboard : MonoBehaviour
 
     public void LastPage()
     {
-        this.UpdateData(this.totalPages - 1);
+        this.UpdateData(this.totalPages);
     }
 
     private void UpdateData(uint newPage)
@@ -124,9 +124,16 @@ public class Leaderboard : MonoBehaviour
             {
                 StatName = this.stat.Name,
                 SocialGroup = this.socialGroup,
-                SkipResultsToRank = this.currentPage * this.entryCount,
+                SkipResultsToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
                 MaxItems = this.entryCount,
             };
+
+            // Handle last page
+            if (this.totalPages > 0 && newPage ==  this.totalPages)
+            {
+                query.SkipResultsToRank = (newPage * this.entryCount) - 1;
+                newPage -= 1;
+            }
         }
 
         this.currentPage = newPage;
@@ -157,12 +164,18 @@ public class Leaderboard : MonoBehaviour
 
         this.leaderboardData = result;
 
-        if (this.totalPages == 0)
+        uint displayCurrentPage = this.currentPage + 1;
+        if (this.leaderboardData.TotalRowCount == 0)
+        {
+            this.totalPages = 0;
+            displayCurrentPage = 0;
+        }
+        else if (this.totalPages == 0)
         {
             this.totalPages = (this.leaderboardData.TotalRowCount - 1) / this.entryCount + 1;
         }
 
-        this.pageText.text = string.Format("Page: {0} / {1}", this.currentPage + 1, this.totalPages);
+        this.pageText.text = string.Format("Page: {0} / {1}", displayCurrentPage, this.totalPages);
 
         while (this.contentPanel.childCount > 0)
         {
