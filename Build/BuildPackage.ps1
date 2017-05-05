@@ -23,6 +23,11 @@ $tempgameSavePackagePath = Join-Path 'Assets\Xbox Live\Scripts\' GameSave.unityp
 $gameSavePackagePath = Join-Path 'Assets\Xbox Live\Scripts\GameSave\' GameSave.unitypackage
 Remove-Item $gameSavePackagePath -ErrorAction SilentlyContinue
 
+Write-Host "Moving Game Save Readme.txt into a temporary folder"
+$externalFolder = Resolve-Path (Join-Path $projectPath ..)
+$tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory -force
+Move-Item (Resolve-Path (Join-Path $gameSaveAssetsPath 'README.txt')) -Destination $tempGameSaveFolder
+
 Write-Host "Exporting Xbox Live Game Save Unity Plugin to " -NoNewline
 Write-Host $gameSavePackagePath -ForegroundColor Green
 Write-Host "$($unity) -batchmode -logFile '$($logFile)' -projectPath '$($projectPath)' -exportPackage '$($gameSavePackagePath)' '$($gameSavePackagePath)' -quit"
@@ -52,10 +57,9 @@ $packagePath = Join-Path $projectPath XboxLive.unitypackage
 Remove-Item $packagePath -ErrorAction SilentlyContinue
 
 Write-Host "Moving Game Save Scripts to a temporary folder."
-$externalFolder = Resolve-Path (Join-Path $projectPath ..)
-$tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory -force
 Copy-Item $gameSaveAssetsPath -Destination $tempGameSaveFolder -ErrorAction SilentlyContinue -recurse
 Remove-Item $gameSaveAssetsPath -recurse
+
 
 Write-Host ""
 
@@ -63,6 +67,10 @@ Write-Host "Moving Game Save plugin into the 'GameSave' folder within Assets."
 New-Item $gameSaveAssetsPath -type directory
 Copy-Item $tempgameSavePackagePath -Destination $gameSaveAssetsPath
 Remove-Item $tempgameSavePackagePath
+
+Write-Host "Moving Readme.txt back into the Game Save folder ..."
+Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'README.txt')) -Destination $gameSaveAssetsPath 
+
 
 $exportAssetPath = "Assets\Xbox Live"
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
