@@ -28,11 +28,6 @@ $externalFolder = Resolve-Path (Join-Path $projectPath ..)
 $tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory -force
 Move-Item (Resolve-Path (Join-Path $gameSaveAssetsPath 'README.txt')) -Destination $tempGameSaveFolder
 
-Write-Host "Moving Game Save UI Prefab into a temporary folder"
-$externalFolder = Resolve-Path (Join-Path $projectPath ..)
-$tempGameSaveFolder = New-Item (Join-Path $externalFolder 'tempGameSave') -type directory -force
-Move-Item (Resolve-Path (Join-Path $gameSaveAssetsPath 'GameSaveUI.prefab')) -Destination $tempGameSaveFolder
-
 Write-Host "Exporting Xbox Live Game Save Unity Plugin to " -NoNewline
 Write-Host $gameSavePackagePath -ForegroundColor Green
 Write-Host "$($unity) -batchmode -logFile '$($logFile)' -projectPath '$($projectPath)' -exportPackage '$($gameSavePackagePath)' '$($gameSavePackagePath)' -quit"
@@ -61,7 +56,7 @@ Write-Host ""
 $packagePath = Join-Path $projectPath XboxLive.unitypackage
 Remove-Item $packagePath -ErrorAction SilentlyContinue
 
-Write-Host "Moving Game Save Scripts to a temporary folder."
+Write-Host "Moving Game Save Scripts and Prefabs to a temporary folder."
 Copy-Item $gameSaveAssetsPath -Destination $tempGameSaveFolder -ErrorAction SilentlyContinue -recurse
 Remove-Item $gameSaveAssetsPath -recurse
 
@@ -75,10 +70,6 @@ Remove-Item $tempgameSavePackagePath
 
 Write-Host "Moving Readme.txt back into the Game Save folder ..."
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'README.txt')) -Destination $gameSaveAssetsPath 
-
-Write-Host "Moving Game Save UI Prefab back into the Game Save folder ..."
-Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSaveUI.prefab')) -Destination $gameSaveAssetsPath 
-
 
 $exportAssetPath = "Assets\Xbox Live"
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
@@ -111,9 +102,11 @@ else
 }
 Write-Host ""
 
-Write-Host "Moving Game Save scripts back into the 'GameSave' folder within Assets."
+Write-Host "Moving Game Save scripts and prefabs back into the 'GameSave' folder within Assets."
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\*.cs')) -Destination $gameSaveAssetsPath
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\*.cs.meta')) -Destination $gameSaveAssetsPath 
+Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\*.prefab')) -Destination $gameSaveAssetsPath 
+Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\*.prefab.meta')) -Destination $gameSaveAssetsPath 
 Remove-Item $tempGameSaveFolder -recurse
 
 if(!$unityProcess.HasExited)
