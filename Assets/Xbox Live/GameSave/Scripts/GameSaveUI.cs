@@ -11,14 +11,17 @@ using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.ConnectedStorage;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSaveUI : MonoBehaviour
 {
     private GameSaveHelper gameSaveHelper;
 
     public string GameSaveContainerName = "TestContainer";
-
     public string GameSaveBlobName = "TestBlob";
+    public Text Console;
+    public Scrollbar ScrollBar;
+    public RectTransform ScrollRect;
 
     private GUIStyle guiStyle;
     private string logText;
@@ -29,7 +32,8 @@ public class GameSaveUI : MonoBehaviour
     private XboxLiveUser xboxLiveUser;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         this.logText = string.Empty;
         this.guiStyle = new GUIStyle();
         this.random = new System.Random();
@@ -60,13 +64,12 @@ public class GameSaveUI : MonoBehaviour
                             status == GameSaveStatus.Ok
                                 ? "Successfully initialized save system."
                                 : string.Format("InitializeSaveSystem failed: {0}", status));
-                }));
+                    }));
         }
         catch (Exception ex)
         {
             this.LogLine("InitializeSaveSystem failed: " + ex.Message);
         }
-        this.LogLine("");
     }
 
     // Update is called once per frame
@@ -80,7 +83,7 @@ public class GameSaveUI : MonoBehaviour
 
     private void DrawTextWithShadow(float x, float y, float width, float height, string text)
     {
-        this.guiStyle.fontSize = 14;
+        this.guiStyle.fontSize = 12;
         this.guiStyle.normal.textColor = Color.black;
         GUI.Label(new Rect(x, y, height, height), text, this.guiStyle);
         this.guiStyle.normal.textColor = Color.white;
@@ -91,44 +94,30 @@ public class GameSaveUI : MonoBehaviour
     {
         lock (this.logText)
         {
-            this.DrawTextWithShadow(10, 400, 800, 900, this.logText);
-        }
-        if (this.gameSaveHelper.IsInitialized())
-        {
-            if (GUI.Button(new Rect(10, 150, 150, 30), "Generate Data"))
-            {
-                this.gameData = this.random.Next();
-                this.LogLine(string.Format("Game data: {0}", this.gameData));
-                this.LogLine("");
-            }
-
-            if (GUI.Button(new Rect(10, 190, 150, 30), "Save Data"))
-            {
-                this.SaveData();
-            }
-
-            if (GUI.Button(new Rect(10, 230, 150, 30), "Load Data"))
-            {
-                this.LoadData();
-            }
-
-            if (GUI.Button(new Rect(10, 270, 150, 30), "Get Container Info"))
-            {
-                this.GetContainerInfo();
-            }
-
-            if (GUI.Button(new Rect(10, 310, 150, 30), "Delete Container"))
-            {
-                this.DeleteContainer();
-            }
+            this.Console.text = this.logText;
         }
     }
 
-    private void SaveData()
+    public void GenerateData()
     {
-        try
+        if (this.gameSaveHelper.IsInitialized())
         {
-            var contentToSave = new Dictionary<string, byte[]>
+            this.gameData = this.random.Next();
+            this.LogLine(string.Format("Game data: {0}", this.gameData));
+        }
+        else
+        {
+            this.LogLine("Game Save Helper hasn't been initialized yet. Please Sign In first.");
+        }
+    }
+
+    public void SaveData()
+    {
+        if (this.gameSaveHelper.IsInitialized())
+        {
+            try
+            {
+                var contentToSave = new Dictionary<string, byte[]>
                                     {
                                         {
                                             this.GameSaveBlobName,
@@ -136,78 +125,93 @@ public class GameSaveUI : MonoBehaviour
                                         }
                                     };
 
-            this.StartCoroutine(this.gameSaveHelper.SubmitUpdates(this.GameSaveContainerName, contentToSave, null,
-                saveResultStatus =>
-                {
-                    this.LogLine(
-                            saveResultStatus == GameSaveStatus.Ok
-                                ? string.Format("Saved data : {0}", this.gameData)
-                                : string.Format("SaveDataForUser failed: {0}", saveResultStatus));
-                }));
+                this.StartCoroutine(this.gameSaveHelper.SubmitUpdates(this.GameSaveContainerName, contentToSave, null,
+                    saveResultStatus =>
+                    {
+                        this.LogLine(
+                                saveResultStatus == GameSaveStatus.Ok
+                                    ? string.Format("Saved data : {0}", this.gameData)
+                                    : string.Format("SaveDataForUser failed: {0}", saveResultStatus));
+                    }));
 
+            }
+            catch (Exception ex)
+            {
+                this.LogLine("SaveDataForUser failed: " + ex.Message);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            this.LogLine("SaveDataForUser failed: " + ex.Message);
+            this.LogLine("Game Save Helper hasn't been initialized yet. Please Sign In first.");
         }
-
-        this.LogLine("");
     }
 
-    private void LoadData()
+    public void LoadData()
     {
-        try
+        if (this.gameSaveHelper.IsInitialized())
         {
-            this.StartCoroutine(this.gameSaveHelper.GetAsStrings(this.GameSaveContainerName, new[] { this.GameSaveBlobName },
-                loadResultDictionary =>
-                {
-                    try
+            try
+            {
+                this.StartCoroutine(this.gameSaveHelper.GetAsStrings(this.GameSaveContainerName, new[] { this.GameSaveBlobName },
+                    loadResultDictionary =>
                     {
-                        var blobLoadResult = loadResultDictionary[this.GameSaveBlobName];
+                        try
+                        {
+                            var blobLoadResult = loadResultDictionary[this.GameSaveBlobName];
 #if !UNITY_EDITOR
                             this.gameData = int.Parse(blobLoadResult);
 #endif
                             this.LogLine(string.Format("Loaded data : {0}", this.gameData));
-                    }
-                    catch (Exception ex)
-                    {
-                        this.LogLine(ex.Message);
-                    }
-                }));
+                        }
+                        catch (Exception ex)
+                        {
+                            this.LogLine(ex.Message);
+                        }
+                    }));
+            }
+            catch (Exception ex)
+            {
+                this.LogLine("LoadData failed: " + ex.Message);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            this.LogLine("LoadData failed: " + ex.Message);
+            this.LogLine("Game Save Helper hasn't been initialized yet. Please Sign In first.");
         }
 
-        this.LogLine("");
     }
 
-    private void GetContainerInfo()
+    public void GetContainerInfo()
     {
-        try
+        if (this.gameSaveHelper.IsInitialized())
         {
-            this.StartCoroutine(this.gameSaveHelper.GetContainerInfo(string.Empty,
-                result =>
-                {
-                    if (result.Status == GameSaveStatus.Ok)
+            try
+            {
+                this.StartCoroutine(this.gameSaveHelper.GetContainerInfo(string.Empty,
+                    result =>
                     {
-                        this.LogLine("Got container info:");
-                        this.LogLine("");
-                        this.LogSaveContainerInfoList(result.Value);
-                    }
-                    else
-                    {
-                        this.LogLine(string.Format("GetContainerInfo failed: {0}", result.Status));
-                    }
-                }));
+                        if (result.Status == GameSaveStatus.Ok)
+                        {
+                            this.LogLine("Got container info:");
+                            this.LogLine("");
+                            this.LogSaveContainerInfoList(result.Value);
+                        }
+                        else
+                        {
+                            this.LogLine(string.Format("GetContainerInfo failed: {0}", result.Status));
+                        }
+                    }));
+            }
+            catch (Exception ex)
+            {
+                this.LogLine("GetContainerInfo failed: " + ex.Message);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            this.LogLine("GetContainerInfo failed: " + ex.Message);
+            this.LogLine("Game Save Helper hasn't been initialized yet. Please Sign In first.");
         }
 
-        this.LogLine("");
     }
 
     private void LogSaveContainerInfoList(List<StorageContainerInfo> list)
@@ -215,7 +219,6 @@ public class GameSaveUI : MonoBehaviour
         if (list.Count == 0)
         {
             this.LogLine("[Empty ContainerStagingInfo list]");
-            this.LogLine("");
         }
 
         for (var i = 0; i < list.Count; i++)
@@ -230,28 +233,34 @@ public class GameSaveUI : MonoBehaviour
         }
     }
 
-    private void DeleteContainer()
+    public void DeleteContainer()
     {
-        try
+        if (this.gameSaveHelper.IsInitialized())
         {
-            this.StartCoroutine(this.gameSaveHelper.DeleteContainer(this.GameSaveContainerName,
-                deleteStatus =>
-                {
-                    this.LogLine(
-                            deleteStatus == GameSaveStatus.Ok
-                                ? "Deleted save container."
-                                : string.Format("DeleteContainer failed: {0}", deleteStatus));
-                }));
+            try
+            {
+                this.StartCoroutine(this.gameSaveHelper.DeleteContainer(this.GameSaveContainerName,
+                    deleteStatus =>
+                    {
+                        this.LogLine(
+                                deleteStatus == GameSaveStatus.Ok
+                                    ? "Deleted save container."
+                                    : string.Format("DeleteContainer failed: {0}", deleteStatus));
+                    }));
 
 
+            }
+            catch (Exception ex)
+            {
+                this.LogLine("DeleteContainer failed: " + ex.Message);
+            }
         }
-        catch (Exception ex)
+        else
         {
-            this.LogLine("DeleteContainer failed: " + ex.Message);
+            this.LogLine("Game Save Helper hasn't been initialized yet. Please Sign In first.");
         }
-
-        this.LogLine("");
     }
+
 
 
     public void LogLine(string line)
@@ -267,10 +276,9 @@ public class GameSaveUI : MonoBehaviour
             this.logText = string.Empty;
             foreach (var s in this.logLines)
             {
-                this.logText += "\n";
                 this.logText += s;
+                this.logText += "\n";
             }
-            this.logText += "\n";
         }
     }
 }
