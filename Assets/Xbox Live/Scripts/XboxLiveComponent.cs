@@ -41,7 +41,6 @@ public class XboxLiveComponent : Singleton<XboxLiveComponent>
 
         MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
 
-        // TODO: Move user handling into the XboxLive class UserManager.  Until then, this class will just be used as the cache for the individual XboxLiveUser object.
         this.User = new XboxLiveUser();
     }
 }
