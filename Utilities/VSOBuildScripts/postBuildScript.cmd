@@ -25,11 +25,11 @@ robocopy /NJS /NJH /MT:16 /S /NP "%CSharpBinFolder%\Source\binaries\Layout\Relea
 
 mkdir %TFS_DropLocation%\Packages
 
-set SRC_GAMESAVE=%exportPath%\Scripts\GameSave
-set SRC_GAMESAVE_PACKAGE=%exportPath%\Scripts\GameSave\GameSave.unitypackage
+set SRC_GAMESAVE=%exportPath%\GameSave
+set SRC_GAMESAVE_PACKAGE=%exportPath%\GameSave\GameSave.unitypackage
 set DEST_GAMESAVE=%TFS_DropLocation%\TempGameSave
 
-"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\gamesave-unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets\Xbox Live\Scripts\GameSave" "%SRC_GAMESAVE_PACKAGE%" -quit
+"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\gamesave-unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets\Xbox Live\GameSave" "%SRC_GAMESAVE_PACKAGE%" -quit
 
 rmdir /q /s "%DEST_GAMESAVE%"
 robocopy /NJS /NJH /MT:16 /S /NP "%SRC_GAMESAVE%" "%DEST_GAMESAVE%"
