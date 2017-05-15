@@ -51,11 +51,6 @@ public class IntegerStat : StatBase<int>
         this.Value = this.Value - 1;
     }
 
-    public void RequestFlushToService(System.Boolean isHighPriority)
-    {
-        XboxLive.Instance.StatsManager.RequestFlushToService(XboxLiveComponent.Instance.User, isHighPriority);
-    }
-
     public override int Value
     {
         get

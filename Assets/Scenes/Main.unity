@@ -746,7 +746,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 486259306}
+      - m_Target: {fileID: 684182816}
         m_MethodName: RequestFlushToService
         m_Mode: 6
         m_Arguments:
