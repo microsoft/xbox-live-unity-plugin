@@ -98,7 +98,14 @@ public class UserProfile : MonoBehaviour
         }
 
         XboxLive.Instance.StatsManager.AddLocalUser(this.User);
-        yield return XboxLive.Instance.SocialManager.AddLocalUser(this.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+        var addLocalUserTask = XboxLive.Instance.SocialManager.AddLocalUser(this.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+        yield return addLocalUserTask;
+
+        if (addLocalUserTask.Task.IsFaulted)
+        {
+            throw addLocalUserTask.Task.Exception;
+        }
+
         yield return this.LoadProfileInfo();
     }
 
