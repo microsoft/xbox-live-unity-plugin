@@ -26,14 +26,13 @@ public class Leaderboard : MonoBehaviour
     [Range(1, 100)]
     public uint entryCount = 10;
 
+    public Text headerText;
+
     [HideInInspector]
     public uint currentPage;
 
     [HideInInspector]
     public uint totalPages;
-
-    [HideInInspector]
-    public Text headerText;
 
     [HideInInspector]
     public Text pageText;
