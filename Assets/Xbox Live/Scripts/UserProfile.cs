@@ -44,21 +44,23 @@ public class UserProfile : MonoBehaviour
         if (!instance)
         {
             instance = this;
+            XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
             if (XboxLiveComponent.Instance.User != null && XboxLiveComponent.Instance.User.IsSignedIn)
             {
                 instance.User = XboxLiveComponent.Instance.User;
                 this.StartCoroutine(this.LoadProfileInfo());
-                this.Refresh();
             }
+            else
+            {
+                this.profileInfoPanel.SetActive(false);
+            }
+
+            this.Refresh();
         }
         else
         {
             Destroy(this.gameObject);
         }
-
-        this.profileInfoPanel.SetActive(false);
-        XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
-        this.Refresh();
     }
 
     public void Start()
