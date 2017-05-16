@@ -78,6 +78,11 @@ public class Leaderboard : MonoBehaviour
         this.isLocalUserAdded = false;
     }
 
+    public void RequestFlushToService(System.Boolean isHighPriority)
+    {
+        StatsManagerComponent.Instance.RequestFlushToService(isHighPriority);
+    }
+
     public void Refresh()
     {
         this.FirstPage();
