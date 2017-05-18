@@ -4,7 +4,7 @@
 using System;
 
 using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Stats.Manager;
+using Microsoft.Xbox.Services.Statistics.Manager;
 
 [Serializable]
 public class StringStat : StatBase<string>

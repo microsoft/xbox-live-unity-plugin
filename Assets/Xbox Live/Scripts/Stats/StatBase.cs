@@ -3,7 +3,7 @@
 // 
 using System;
 
-using Microsoft.Xbox.Services.Stats.Manager;
+using Microsoft.Xbox.Services.Statistics.Manager;
 
 using UnityEngine;
 
