@@ -4,7 +4,7 @@
 using System;
 
 using Microsoft.Xbox.Services;
-using Microsoft.Xbox.Services.Stats.Manager;
+using Microsoft.Xbox.Services.Statistics.Manager;
 
 /// <summary>
 /// The actual integer value of the for the stat.
