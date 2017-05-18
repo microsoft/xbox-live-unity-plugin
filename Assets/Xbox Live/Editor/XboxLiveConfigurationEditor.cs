@@ -73,7 +73,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("This plugin only supports the Xbox Live Creators Program.  You can join the Xbox Live Creators Program at https://aka.ms/xblcp\n\nFor developers in the ID@Xbox program, instead follow the docs at http://aka.ms/xbldocs", MessageType.Warning);
+            EditorGUILayout.HelpBox("This plugin only supports the Xbox Live Creators Program.  You can join the Xbox Live Creators Program at https://aka.ms/xblcp \n\nFor developers in the ID@Xbox program, instead follow the docs at http://aka.ms/xbldocs", MessageType.Warning);
             EditorGUILayout.HelpBox("In order to use Xbox Live functionality within your game, you can use the Xbox Live Assocation Wizard to link your game to a new or existing Xbox Live title.\n\nThis title information identifies your game with Xbox Live services and allows users to interact with Xbox Live.", MessageType.Info, true);
         }
 
