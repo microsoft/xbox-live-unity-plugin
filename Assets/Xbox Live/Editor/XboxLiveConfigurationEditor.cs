@@ -51,21 +51,8 @@ public class XboxLiveConfigurationEditor : EditorWindow
     private void OnGUI()
     {
         this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition);
-        EditorGUILayout.Space();
-
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.Space();
-        if (GUILayout.Button(new GUIContent("Run Xbox Live Association Wizard", "Run the Xbox Live Assocation Wizard to generate the configuration files needed to communicate with Xbox Live."), GUILayout.MaxWidth(250)))
-        {
-            string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
-            // We need to make sure to quote the path that we pass to the association wizard.
-            Process.Start(wizardPath, '"' + this.configFileDirectory + '"');
-        }
 
         EditorGUILayout.Space();
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.EndHorizontal();
 
         if (this.configuration != null)
         {
@@ -86,7 +73,32 @@ public class XboxLiveConfigurationEditor : EditorWindow
         }
         else
         {
-            EditorGUILayout.HelpBox("In order to use Xbox Live functionality within your game, you must first associate it with a new or existing Xbox Live title.\nThis title information identifies your game with Xbox Live services and allows users to interact with Xbox Live.  You need a DevCenter account to associate your game, but you can create an empty configuration file to test functionality within Unity.", MessageType.Info, true);
+            EditorGUILayout.HelpBox("This plugin only supports the Xbox Live Creators Program.  You can join the Xbox Live Creators Program at https://aka.ms/xblcp \n\nFor developers in the ID@Xbox program, instead follow the docs at http://aka.ms/xbldocs", MessageType.Warning);
+            EditorGUILayout.HelpBox("In order to use Xbox Live functionality within your game, you can use the Xbox Live Assocation Wizard to link your game to a new or existing Xbox Live title.\n\nThis title information identifies your game with Xbox Live services and allows users to interact with Xbox Live.", MessageType.Info, true);
+        }
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.Space();
+        if (GUILayout.Button(new GUIContent("Run Xbox Live Association Wizard", "Run the Xbox Live Assocation Wizard to generate the configuration files needed to communicate with Xbox Live."), GUILayout.MaxWidth(250)))
+        {
+            string wizardPath = Path.Combine(Application.dataPath, "Xbox Live/Tools/AssociationWizard/AssociationWizard.exe");
+            // We need to make sure to quote the path that we pass to the association wizard.
+            Process.Start(wizardPath, '"' + this.configFileDirectory + '"');
+        }
+
+        EditorGUILayout.Space();
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space();
+
+        if (!File.Exists(this.configFilePath))
+        {
+            EditorGUILayout.HelpBox("If you already have a configuration file from elsewhere, or you know the values you need to fill out, you can create/edit the configuration file manually.", MessageType.Info, true);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("You can manually modify the existing configuration file if you need to update an individual value and you don't want to use the Association Wizard.", MessageType.Info, true);
         }
 
         // Always show a button to manually open the configuration
@@ -126,15 +138,6 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-
-        if (!File.Exists(this.configFilePath))
-        {
-            EditorGUILayout.HelpBox("If you already have a configuration file from elsewhere, or you know the values you need to fill out, you can create/edit the configuration file manually.", MessageType.Info, true);
-        }
-        else
-        {
-            EditorGUILayout.HelpBox("You can manually modify the existing configuration file if you need to update an individual value and you don't want to use the Association Wizard.", MessageType.Info, true);
-        }
 
         GUILayout.Label("Developer Mode Configuration", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("In order to call Xbox Live services, your machine must be in Developer Mode and in the same sandbox that your title is configured in.  After you have have Enabled Xbox Live, you will be able to switch to Developer Mode.  Attempting to switch to Developer Mode may prompt you for administrative credentials.", MessageType.Info);
