@@ -1,9 +1,5 @@
-﻿// -----------------------------------------------------------------------
-//  <copyright file="Leaderboard.cs" company="Microsoft">
-//      Copyright (c) Microsoft. All rights reserved.
-//      Licensed under the MIT license. See LICENSE file in the project root for full license information.
-//  </copyright>
-// -----------------------------------------------------------------------
+﻿// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 
@@ -49,10 +45,9 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public Button lastButton;
 
-    [HideInInspector]
+    
     public Transform contentPanel;
 
-    [HideInInspector]
     public ScrollRect scrollRect;
 
     private LeaderboardResult leaderboardData;

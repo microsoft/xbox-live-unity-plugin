@@ -7,9 +7,16 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Main.unity
+    guid: 8852e537d73096e41ae528380d8e33c7
   - enabled: 0
     path: Assets/Xbox Live/Examples/Leaderboard.unity
+    guid: 29b841dd67813a94992f653a3204d1d4
   - enabled: 0
     path: Assets/Xbox Live/Examples/UpdateStat.unity
+    guid: 5b30f80ef676a3f49980fc604e80d30a
   - enabled: 0
     path: Assets/Scenes/Demo.unity
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: Assets/Xbox Live/Examples/Social.unity
+    guid: 2762fa9a1025f714486ca1436a8421f5
