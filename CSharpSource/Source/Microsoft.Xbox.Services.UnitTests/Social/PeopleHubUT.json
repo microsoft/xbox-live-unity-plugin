@@ -1,0 +1,335 @@
+﻿{
+  "ProfileInfoWithoutDecoration": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/me/people/xuids(2814662072777140)/decoration/presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814662072777140",
+            "isFavorite": false,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": false,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": null,
+            "displayName": "2 Dev 183714711",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIU5Sj_1hNZHeOVzbgzVj2gl0huLzRktrOPIt7LWZyuaghGltBhJkDROP7NOeAebn4&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 183714711",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": null,
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "ProfileInfoWithPreferredColor": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/me/people/xuids(2814662072777140)/decoration/preferredcolor,presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814662072777140",
+            "isFavorite": false,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": false,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": null,
+            "displayName": "2 Dev 183714711",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIU5Sj_1hNZHeOVzbgzVj2gl0huLzRktrOPIt7LWZyuaghGltBhJkDROP7NOeAebn4&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 183714711",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": {
+              "primaryColor": "107c10",
+              "secondaryColor": "102b14",
+              "tertiaryColor": "155715"
+            },
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "ProfileInfoWithTitleHistory": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/me/people/xuids(2814662072777140)/decoration/titlehistory(1766808267),presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814662072777140",
+            "isFavorite": false,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": false,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": null,
+            "displayName": "2 Dev 183714711",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIU5Sj_1hNZHeOVzbgzVj2gl0huLzRktrOPIt7LWZyuaghGltBhJkDROP7NOeAebn4&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 183714711",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": null,
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "ProfileInfoWithPreferredColorAndTitleHistory": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/me/people/xuids(2814662072777140)/decoration/titlehistory(1766808267),preferredcolor,presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814662072777140",
+            "isFavorite": false,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": false,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": null,
+            "displayName": "2 Dev 183714711",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIU5Sj_1hNZHeOVzbgzVj2gl0huLzRktrOPIt7LWZyuaghGltBhJkDROP7NOeAebn4&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 183714711",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": {
+              "primaryColor": "107c10",
+              "secondaryColor": "102b14",
+              "tertiaryColor": "155715"
+            },
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "GetSocialGraph": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/xuid(2814662072777140)/people/social"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [ ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "GetSocialGraphWithDetails": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/xuid(2814662072777140)/people/social/decoration/titlehistory(1766808267),preferredcolor,presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814613569642996",
+            "isFavorite": true,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": true,
+            "isIdentityShared": true,
+            "addedDateTimeUtc": "2015-05-28T23:41:29.2043944Z",
+            "displayName": "2 Dev 417471033",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KI6TRSO7kB1LAmJSmUVW5wJqn2n6xd9r5UHGMgD0o0KoNt6tmXjlLNUUwF2C9S1qGb&background=0xababab&mode=Padding&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 417471033",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": {
+              "primaryColor": "1081ca",
+              "secondaryColor": "10314f",
+              "tertiaryColor": "105080"
+            },
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          },
+          {
+            "xuid": "2814642663377255",
+            "isFavorite": true,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": true,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": "2016-02-22T22:59:03.4469506Z",
+            "displayName": "2 Dev 665221694",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIwuPiuIs6TLDV4WsQAGzSwhtPXK324jSFISZXwjn7Pxep.qUTgu_FaqU1f_RnUzRI&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 665221694",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": {
+              "primaryColor": "107c10",
+              "secondaryColor": "102b14",
+              "tertiaryColor": "155715"
+            },
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  }
+}

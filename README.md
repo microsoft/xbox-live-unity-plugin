@@ -19,8 +19,7 @@ The Unity Plugin is broken into the following parts
     * __Tools/AssociationWizard__ contains the Xbox Live Association Wizard, used to pull down application configuration from DevCenter for use within Unity.
 
 * __Build__ contains scripts to generate the .unitypackage and handle other project setup tasks.
-* __External__ contains additional resources used by the plugin
-  * [__xbox-live-api-csharp__](https://github.com/Microsoft/xbox-live-api-csharp) is a submodule where the Xbox Live API comes from.  You can choose to build the SDK from this sub-module or directly from the repository.
+* __CSharpSource__ contains source for the Xbox Live API that is used by the plugin
 
 * __ProjectSettings__ contains standard Unity project settings files.
 

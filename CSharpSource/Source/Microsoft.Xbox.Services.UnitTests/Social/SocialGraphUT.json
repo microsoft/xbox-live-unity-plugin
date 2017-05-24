@@ -1,0 +1,75 @@
+﻿{
+  "ProfileInfoWithPreferredColor": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/me/people/xuids(2814662072777140)/decoration/preferredcolor,presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [
+          {
+            "xuid": "2814662072777140",
+            "isFavorite": false,
+            "isFollowingCaller": false,
+            "isFollowedByCaller": false,
+            "isIdentityShared": false,
+            "addedDateTimeUtc": null,
+            "displayName": "2 Dev 183714711",
+            "realName": "",
+            "displayPicRaw": "http://images-eds.xboxlive.com/image?url=z951ykn43p4FqWbbFvR2Ec.8vbDhj8G2Xe7JngaTToBrrCmIEEXHC9UNrdJ6P7KIU5Sj_1hNZHeOVzbgzVj2gl0huLzRktrOPIt7LWZyuaghGltBhJkDROP7NOeAebn4&format=png",
+            "useAvatar": false,
+            "gamertag": "2 Dev 183714711",
+            "gamerScore": "0",
+            "xboxOneRep": "GoodPlayer",
+            "presenceState": "Offline",
+            "presenceText": "Offline",
+            "presenceDevices": null,
+            "isBroadcasting": false,
+            "isCloaked": null,
+            "suggestion": null,
+            "recommendation": null,
+            "titleHistory": null,
+            "multiplayerSummary": null,
+            "recentPlayer": null,
+            "follower": null,
+            "preferredColor": {
+              "primaryColor": "107c10",
+              "secondaryColor": "102b14",
+              "tertiaryColor": "155715"
+            },
+            "presenceDetails": [ ],
+            "titlePresence": null,
+            "titleSummaries": null,
+            "presenceTitleIds": null,
+            "detail": null,
+            "communityManagerTitles": null,
+            "socialManager": null,
+            "broadcast": null,
+            "tournamentSummary": null
+          }
+        ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  },
+  "GetSocialGraphWithOnlyPreferredColor": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://peoplehub.xboxlive.com",
+      "pathQueryFragment": "/users/xuid(2814662072777140)/people/social/decoration/preferredcolor,presenceDetail"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "people": [ ],
+        "recommendationSummary": null,
+        "friendFinderState": null
+      }
+    }
+  }
+}

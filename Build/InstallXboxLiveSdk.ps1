@@ -5,7 +5,7 @@
 .SYNOPSIS
   Install the Xbox Live SDK into the Unity project
 .PARAMETER FromSource
-  Build the SDK from the xbox-live-api-csharp submodule and copy the binaries.
+  Build the SDK from the CSharpSource folder and copy the binaries.
 .PARAMETER FromNuget
   Download the SDK NuGet package and copy the binaries from there.
 .PARAMETER CopyOnly,
@@ -62,7 +62,7 @@ if($FromNuget)
 }
 elseif($FromSource)
 {
-  $sdkPath = Join-Path $PSScriptRoot "..\External\xbox-live-api-csharp"
+  $sdkPath = Join-Path $PSScriptRoot "..\CSharpSource"
   $sdkSln = Join-Path $sdkPath "Source\Microsoft.Xbox.Services.CSharp.sln" 
 
   if(!(Test-Path $sdkSln))

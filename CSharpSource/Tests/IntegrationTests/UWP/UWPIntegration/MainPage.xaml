@@ -1,0 +1,178 @@
+﻿<Page
+    x:Class="UWPIntegration.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:leaderboard="using:Microsoft.Xbox.Services.Leaderboard"
+    xmlns:social="using:Microsoft.Xbox.Services.Social.Manager"
+    mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="signinSilentButton" Content="Sign In silently" Click="SignInSilentButton_Click" Margin="12" Width="113"/>
+            <TextBlock Text="{Binding User.Gamertag}" VerticalAlignment="Center"/>
+            <Button x:Name="signinButton" Content="Sign In" Click="SignInButton_Click" Margin="12" Width="100"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="4">
+            <TextBlock Text="Leaderboards" Margin="4" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal" >
+                <Button x:Name="globalLeaderboardButton" Content="Query Global Leaderboard" Click="globalLeaderboardButton_Click" Margin="4" VerticalAlignment="Top"/>
+                <Button x:Name="socialLeaderboardButton" Content="Query Social Leaderboard" Click="socialLeaderboardButton_Click" Margin="4" VerticalAlignment="Top"/>
+            </StackPanel>
+            <TextBlock>
+                <Run>Showing </Run>
+                <Run Text="{Binding LeaderboardResult.Rows.Count}"/>
+                <Run Text=" of "/>
+                <Run Text="{Binding LeaderboardResult.TotalRowCount}"/>
+            </TextBlock>
+            <Button x:Name="NextLbBtn" Content="Get Next" VerticalAlignment="Top" Click="NextLb_Click" Margin="4" IsEnabled="{Binding LeaderboardResult.HasNext}"/>
+            <ItemsControl ItemsSource="{Binding LeaderboardResult.Rows}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="leaderboard:LeaderboardRow">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                          </Grid.ColumnDefinitions>
+                            <TextBlock Margin="4" Grid.Column="0" Width="200">
+                                <Run FontWeight="Bold" FontSize="20" Text="{Binding Rank}"/>
+                                <Run FontWeight="Bold" FontSize="20" Text="."/>
+                                <Run Text="{Binding Gamertag}"/>
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" >
+                                <Run FontSize="20" Text="{Binding Values[0]}"/>
+                            </TextBlock>
+                      </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="4">
+            <TextBlock Text="Stats" Margin="4" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Write Stats (global)" VerticalAlignment="Top" Click="WriteGlobalStats_Click" Margin="4"/>
+                <Button Content="Write Stats (social)" VerticalAlignment="Top" Click="WriteSocialStats_Click" Margin="4"/>
+                <Button Content="Flush Stats" VerticalAlignment="Top" Click="FlushStats_Click" Margin="4"/>
+            </StackPanel>
+            <TextBlock x:Name="StatsData" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="150" Margin="4"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Margin="4">
+            <TextBlock Text="Privacy APIs" Margin="4" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Check Permissions" VerticalAlignment="Top" Click="CheckPermissions_Click" Margin="4"/>
+                <Button Content="Check Multiple Permissions" VerticalAlignment="Top" Click="CheckMultiplePermissions_Click" Margin="4"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel  Margin="4">
+                    <TextBlock Text="Social" Margin="4" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" >
+                        <Button x:Name="createSocialUserGroupAllButton" Content="Create Social Group (All)" Click="createSocialUserGroupAllButton_Click" Margin="4" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <TextBlock>
+                        <Run>Friends Count: </Run>
+                        <Run Text="{Binding XboxSocialUserGroupAll.Count}"/>
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding XboxSocialUserGroupAll.Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="social:XboxSocialUser">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="4" Grid.Column="0" Width="200">
+                                        <Run FontWeight="Bold" FontSize="20" Text="{Binding Gamertag}"/>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" >
+                                        <Run FontSize="20" Text="{Binding PresenceState}"/>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="20,4">
+                    <TextBlock Text=" " Margin="4" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" >
+                        <Button x:Name="createSocialUserAllOnlineGroupButton" Content="Create Social Group (All Online)" Click="createSocialUserGroupAllOnlineButton_Click" Margin="4" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <TextBlock>
+                        <Run>Friends Count: </Run>
+                        <Run Text="{Binding XboxSocialUserGroupAllOnline.Count}"/>
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding XboxSocialUserGroupAllOnline.Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="social:XboxSocialUser">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="4" Grid.Column="0" Width="200">
+                                        <Run FontWeight="Bold" FontSize="20" Text="{Binding Gamertag}"/>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" >
+                                        <Run FontSize="20" Text="{Binding PresenceState}"/>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Margin="20,4">
+                    <TextBlock Text=" " Margin="4" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" >
+                        <Button Content="Create Social Group From List" Click="createSocialUserGroupFromListButton_Click" Margin="4" VerticalAlignment="Top"/>
+                    </StackPanel>
+                    <TextBlock>
+                        <Run>Friends Count: </Run>
+                        <Run Text="{Binding XboxSocialUserGroupFromList.Count}"/>
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding XboxSocialUserGroupFromList.Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="social:XboxSocialUser">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="4" Grid.Column="0" Width="200">
+                                        <Run FontWeight="Bold" FontSize="20" Text="{Binding Gamertag}"/>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" >
+                                        <Run FontSize="20" Text="{Binding PresenceState}"/>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Page>
