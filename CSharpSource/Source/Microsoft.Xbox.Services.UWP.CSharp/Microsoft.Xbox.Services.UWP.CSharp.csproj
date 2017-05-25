@@ -107,12 +107,12 @@
     <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
   </Target>
-  <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
-    <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\..\Assets\Xbox Live\libs" />
-    <MakeDir Directories="$(SolutionDir)..\..\..\Assets\Xbox Live\libs" />
+  <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
+    <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
+    <MakeDir Directories="$(SolutionDir)..\..\Assets\Xbox Live\libs" />
     <ItemGroup>
       <PluginFiles Include="$(PluginLayoutPath)\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\..\Assets\Xbox Live\libs\UWP" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\Assets\Xbox Live\libs\UWP" />
   </Target>
 </Project>
