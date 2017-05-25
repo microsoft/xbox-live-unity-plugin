@@ -1,0 +1,233 @@
+﻿{
+  "GlobalStorageGetQuota": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/global/scids/00000000-0000-0000-0000-0000694f5acb"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "quotaInfo": {
+          "usedBytes": 605,
+          "quotaBytes": 268435456
+        }
+      }
+    }
+  },
+  "TrustedPlatformGetQuota": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/trustedplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "quotaInfo": {
+          "usedBytes": 605,
+          "quotaBytes": 268435456
+        }
+      }
+    }
+  },
+  "UniversalPlatformGetQuota": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "quotaInfo": {
+          "usedBytes": 605,
+          "quotaBytes": 268435456
+        }
+      }
+    }
+  },
+  "UniversalPlatformUploadBlob": {
+    "Request": {
+      "method": "PUT",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/queststatus/quest01.json,json",
+      "body": {
+        "QuestName": "Quest 01",
+        "CharactersInvolved": [
+          "Character 01",
+          "Character 02",
+          "Character 03"
+        ]
+      }
+    },
+    "Response": {
+      "httpStatus": 201,
+      "bodyType": 2,
+      "body": {
+
+      }
+    }
+  },
+  "UniversalPlatformDeleteBlob": {
+    "Request": {
+      "method": "DELETE",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/queststatus/quest01.json,json"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+
+      }
+    }
+  },
+  "UniversalPlatformUploadBinary01": {
+    "Request": {
+      "method": "PUT",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/file.bin,binary?finalBlock=True"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "continuationToken": "40b2d28a-da60-4c80-b772-3208a1512bd2-1"
+      }
+    }
+  },
+  "UniversalPlatformUploadBinary02": {
+    "Request": {
+      "method": "PUT",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/file.bin,binary?continuationToken=40b2d28a-da60-4c80-b772-3208a1512bd2-1&finalBlock=True"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+      }
+    }
+  },
+  "UniversalPlatformGetBlobMetadata": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/queststatus"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "blobs": [
+          {
+            "fileName": "queststatus/quest01.json,json",
+            "etag": "0x8D47D2671F4407E",
+            "size": 122
+          },
+          {
+            "fileName": "queststatus/quest5.json,json",
+            "etag": "0x8D47C5A027989C3",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest6.json,json",
+            "etag": "0x8D47C5A02AC0C43",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest7.json,json",
+            "etag": "0x8D47C5A02D28094",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest8.json,json",
+            "etag": "0x8D47C5A02F8A6AF",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest9.json,json",
+            "etag": "0x8D47C5A03207A91",
+            "size": 121
+          }
+        ],
+        "pagingInfo": {
+          "totalItems": 6,
+          "continuationToken": null
+        }
+      }
+    }
+  },
+  "UniversalPlatformGetBlobMetadata2": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/queststatus"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "blobs": [
+          {
+            "fileName": "queststatus/quest01.json,json",
+            "etag": "0x8D47D2671F4407E",
+            "size": 122
+          },
+          {
+            "fileName": "queststatus/quest5.json,json",
+            "etag": "0x8D47C5A027989C3",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest6.json,json",
+            "etag": "0x8D47C5A02AC0C43",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest7.json,json",
+            "etag": "0x8D47C5A02D28094",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest8.json,json",
+            "etag": "0x8D47C5A02F8A6AF",
+            "size": 121
+          },
+          {
+            "fileName": "queststatus/quest9.json,json",
+            "etag": "0x8D47C5A03207A91",
+            "size": 121
+          }
+        ],
+        "pagingInfo": {
+          "totalItems": 6,
+          "continuationToken": null
+        }
+      }
+    }
+  },
+  "UniversalPlatformDownloadBlob": {
+    "Request": {
+      "method": "GET",
+      "serverName": "https://titlestorage.xboxlive.com",
+      "pathQueryFragment": "/universalplatform/users/xuid(2814662072777140)/scids/00000000-0000-0000-0000-0000694f5acb/data/queststatus/quest01.json,json"
+    },
+    "Response": {
+      "httpStatus": 200,
+      "bodyType": 2,
+      "body": {
+        "QuestName": "Quest 01",
+        "CharactersInvolved": [
+          "Character 01",
+          "Character 02",
+          "Character 03"
+        ]
+      }
+    }
+  }
+}

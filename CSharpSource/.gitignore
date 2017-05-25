@@ -1,0 +1,72 @@
+.git-credentials
+
+.gitk
+.config/git/gitk
+
+**/.vs/
+
+#NuGet packages
+**/[pP]ackages/*
+
+# Xcode
+
+xcuserdata
+
+# Mac
+
+.DS_Store
+
+# VS temp files
+**/*.sln.ide/
+**/*.opensdf
+**/*.sdf
+**/*.suo
+**/*.opendb
+**/*.VC.db
+**/*.user
+**/ipch/
+**/Generated Files/
+**/AppPackages/*
+**/*.orig
+**/pingme.txt
+**/*.cache
+**/dlldata.c
+**/*_i.c
+**/*_p.c
+**/*.metaproj
+**/*.metaproj.tmp
+**/*.opendb
+**/*.coveragexml
+**/project.lock.json
+
+Source/**/bin/
+Source/**/gen/
+Source/**/Debug/
+Source/**/Release/
+Build/**/Debug/
+Build/**/Release/
+External/**/lib/
+External/**/bin/
+External/**/Debug/
+External/**/Release/
+
+**/*.classpath
+
+**/local.properties
+
+**/.workspace/
+
+# Unit Test
+FakesAssemblies/
+TestResults/
+
+# Build objects
+Obj/
+Binaries/
+Win32/
+Debug/
+Release/
+ARM/
+
+# Allow files in our /Build folder
+!/Build

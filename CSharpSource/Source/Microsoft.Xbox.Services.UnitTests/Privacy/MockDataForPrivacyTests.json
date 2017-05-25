@@ -1,0 +1,80 @@
+{
+    "defaultCheckPermissionsResponse": {
+        "Request" :  {
+            "method": "GET",
+            "serverName": "https://privacy.xboxlive.com",
+            "pathQueryFragment": "/users/xuid(2814662072777140)/permission/validate?setting=ViewTargetVideoHistory&target=xuid(2814680291986301)"
+        },
+        "Response" : {
+            "httpStatus": 200,
+            "bodyType": 2,
+            "body": {
+                "isAllowed":false,
+                "reasons":[
+                    {
+                        "reason":"NotAllowed"
+                    },
+                    {
+                        "reason":"BlockListRestrictsTarget"
+                    },
+                    { 
+                        "reason":"MuteListRestrictsTarget" 
+                    }
+                ]
+            }
+        }
+    },
+    "defaultCheckMultiplePermissionsResponse": {
+        "Request" :  {
+            "method": "POST",
+            "serverName": "https://privacy.xboxlive.com",
+            "pathQueryFragment": "/users/xuid(2814662072777140)/permission/validate"
+        },
+        "Response" : {
+            "httpStatus": 200,
+            "bodyType": 2,
+            "body": {
+                "responses": [{
+                    "user": {
+                        "xuid": "2814680291986301"
+                    },
+                    "permissions": [{
+                        "isAllowed": false,
+                        "reasons": [{
+                            "reason": "NotAllowed"
+                        }]
+                    },
+                    {
+                        "isAllowed": false,
+                        "reasons": [{
+                            "reason": "NotAllowed"
+                        }]
+                    },
+                    {
+                        "isAllowed": true
+                    }]
+                },
+                {
+                    "user": {
+                        "xuid": "2814634309691161"
+                    },
+                    "permissions": [{
+                        "isAllowed": false,
+                        "reasons": [{
+                            "reason": "NotAllowed"
+                        }]
+                    },
+                    {
+                        "isAllowed": false,
+                        "reasons": [{
+                            "reason": "NotAllowed"
+                        }]
+                    },
+                    {
+                        "isAllowed": true
+                    }]
+                }]
+            }
+        }
+    }
+}

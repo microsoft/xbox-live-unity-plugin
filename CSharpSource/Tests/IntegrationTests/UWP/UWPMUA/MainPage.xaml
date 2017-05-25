@@ -1,0 +1,16 @@
+﻿<Page
+    x:Class="UWPIntegration.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:leaderboard="using:Microsoft.Xbox.Services.Leaderboard"
+    mc:Ignorable="d" d:DesignWidth="1024" d:DesignHeight="768"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ScrollViewer>
+            <StackPanel x:Name="LogStackPanel" HorizontalAlignment="Left" />
+        </ScrollViewer>
+    </Grid>
+</Page>
