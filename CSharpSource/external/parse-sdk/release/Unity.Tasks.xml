@@ -1,0 +1,367 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unity.Tasks</name>
+    </assembly>
+    <members>
+        <member name="T:Unity.Tasks.Internal.InternalExtensions">
+            <summary>
+            Provides helper methods that allow us to use terser code elsewhere.
+            </summary>
+        </member>
+        <member name="T:System.AggregateException">
+            <summary>
+            Aggregates Exceptions that may be thrown in the process of a task's execution.
+            </summary>
+        </member>
+        <member name="M:System.AggregateException.#ctor(System.Collections.Generic.IEnumerable{System.Exception})">
+            <summary>
+            Creates a new AggregateException from a collection of exceptions.
+            </summary>
+            <param name="innerExceptions">The inner exceptions.</param>
+        </member>
+        <member name="P:System.AggregateException.InnerExceptions">
+            <summary>
+            Gets the exceptions that caused this AggregateException to be raised.
+            </summary>
+        </member>
+        <member name="M:System.AggregateException.Flatten">
+            <summary>
+            Flattens any nested AggregateExceptions into a single AggregateException
+            whose InnerExceptions include the Exceptions of its children.
+            </summary>
+            <returns>A new AggregateException with no inner AggregateExceptions.</returns>
+        </member>
+        <member name="M:System.AggregateException.ToString">
+            <summary>
+            Provides a summary of this Exception and all of its InnerExceptions.
+            </summary>
+            <returns>A string representation of this AggregateException.</returns>
+        </member>
+        <member name="T:System.Threading.CancellationToken">
+            <summary>
+            A token that can be used for cancellation of an asynchronous operation.
+            </summary>
+        </member>
+        <member name="P:System.Threading.CancellationToken.None">
+            <summary>
+            Gets an empty CancellationToken that cannot be cancelled.
+            </summary>
+        </member>
+        <member name="P:System.Threading.CancellationToken.IsCancellationRequested">
+            <summary>
+            Gets whether cancellation has been requested for this token.
+            </summary>
+        </member>
+        <member name="M:System.Threading.CancellationToken.Register(System.Action)">
+            <summary>
+            Registers a callback to be invoked when this CancellationToken is cancelled.
+            </summary>
+            <param name="callback">The action to be invoked.</param>
+            <returns>A registration object that can be used to deregister the callback.</returns>
+        </member>
+        <member name="M:System.Threading.CancellationToken.ThrowIfCancellationRequested">
+            <summary>
+            Throws an OperationCanceledException if the token has been cancelled.
+            </summary>
+        </member>
+        <member name="T:System.Threading.CancellationTokenRegistration">
+            <summary>
+            Represents a registration of a handler with a cancellation token, and can be used to
+            unregister that handler.
+            </summary>
+        </member>
+        <member name="M:System.Threading.CancellationTokenRegistration.Dispose">
+            <summary>
+            Unregisters the handler associated with this registration.
+            </summary>
+        </member>
+        <member name="T:System.Threading.CancellationTokenSource">
+            <summary>
+            A provider for <see cref="T:System.Threading.CancellationToken"/>s. Use the CancellationTokenSource to
+            notify consumers of its token that they should cancel any ongoing operations.
+            </summary>
+        </member>
+        <member name="P:System.Threading.CancellationTokenSource.Token">
+            <summary>
+            Gets a cancellation token linked to this CancellationTokenSource.
+            </summary>
+        </member>
+        <member name="M:System.Threading.CancellationTokenSource.Cancel">
+            <summary>
+            Notifies consumers of the token that cancellation was requested.
+            </summary>
+        </member>
+        <member name="M:System.Threading.CancellationTokenSource.Cancel(System.Boolean)">
+            <summary>
+            Notifies consumers of the token that cancellation was requested.
+            If <paramref name="throwOnFirstException"/> is true, any exception thrown by a
+            handler of the cancellation request will cause processing of the cancellation
+            to halt and the exception will propagate immediately to the caller.
+            </summary>
+            <param name="throwOnFirstException">Whether to throw on first exception.</param>
+        </member>
+        <member name="T:System.Threading.Tasks.Task">
+            <summary>
+            Represents an asynchronous task.
+            </summary>
+        </member>
+        <member name="P:System.Threading.Tasks.Task.Exception">
+            <summary>
+            Gets the exceptions for the task, if there are any. <c>null</c> otherwise.
+            </summary>
+        </member>
+        <member name="P:System.Threading.Tasks.Task.IsCanceled">
+            <summary>
+            Gets whether the task was cancelled.
+            </summary>
+        </member>
+        <member name="P:System.Threading.Tasks.Task.IsCompleted">
+            <summary>
+            Gets whether the task has been completed with either an exception,
+            cancellation, or a result.
+            </summary>
+        </member>
+        <member name="P:System.Threading.Tasks.Task.IsFaulted">
+            <summary>
+            Gets whether the task failed.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.Wait">
+            <summary>
+            Blocks until the task is complete.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.ContinueWith``1(System.Func{System.Threading.Tasks.Task,``0})">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <typeparam name="T">The type returned by the continuation.</typeparam>
+            <param name="continuation">The continuation to run after the task completes.
+            The function takes the completed task as an argument and can return a value.</param>
+            <returns>A new Task that returns the value returned by the continuation after both
+            the task and the continuation are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.ContinueWith``1(System.Func{System.Threading.Tasks.Task,``0},System.Threading.CancellationToken)">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <typeparam name="T">The type returned by the continuation.</typeparam>
+            <param name="continuation">The continuation to run after the task completes.
+            The function takes the completed task as an argument and can return a value.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A new Task that returns the value returned by the continuation after both
+            the task and the continuation are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.ContinueWith(System.Action{System.Threading.Tasks.Task})">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <param name="continuation">The continuation to run after the task completes.
+            The function takes the completed task as an argument.</param>
+            <returns>A new Task that is complete after both the task and the continuation are
+            complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.ContinueWith(System.Action{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <param name="continuation">The continuation to run after the task completes.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A new Task that is complete after both the task and the continuation are
+            complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.WhenAll(System.Threading.Tasks.Task[])">
+            <summary>
+            Creates a task that is complete when all of the provided tasks are complete.
+            If any of the tasks has an exception, all exceptions raised in the tasks will
+            be aggregated into the returned task. Otherwise, if any of the tasks is cancelled,
+            the returned task will be cancelled.
+            </summary>
+            <param name="tasks">The tasks to aggregate.</param>
+            <returns>A task that is complete when all of the provided tasks are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.WhenAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
+            <summary>
+            Creates a task that is complete when all of the provided tasks are complete.
+            If any of the tasks has an exception, all exceptions raised in the tasks will
+            be aggregated into the returned task. Otherwise, if any of the tasks is cancelled,
+            the returned task will be cancelled.
+            </summary>
+            <param name="tasks">The tasks to aggregate.</param>
+            <returns>A task that is complete when all of the provided tasks are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.WhenAll``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Creates a task that is complete when all of the provided tasks are complete.
+            If any of the tasks has an exception, all exceptions raised in the tasks will
+            be aggregated into the returned task. Otherwise, if any of the tasks is cancelled,
+            the returned task will be cancelled. If all of the tasks succeed, the result of the
+            returned task will be an array containing the results of all of the input tasks.
+            </summary>
+            <typeparam name="T">The result type of the tasks.</typeparam>
+            <param name="tasks">The tasks to aggregate.</param>
+            <returns>A task that is complete when all of the provided tasks are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.FromResult``1(``0)">
+            <summary>
+            Creates a new, completed task for the given result.
+            </summary>
+            <typeparam name="T">The result type of the task.</typeparam>
+            <param name="result"></param>
+            <returns>A completed task.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.Run``1(System.Func{``0})">
+            <summary>
+            Executes a function asynchronously, returning a task that represents the operation.
+            </summary>
+            <typeparam name="T">The return type of the task.</typeparam>
+            <param name="toRun">The function to run.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.Run(System.Action)">
+            <summary>
+            Executes an action asynchronously, returning a task that represents the operation.
+            </summary>
+            <param name="toRun">The action to run.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task.Delay(System.TimeSpan)">
+            <summary>
+            Creates a task that will complete successfully after the given timespan.
+            </summary>
+            <param name="timespan">The amount of time to wait.</param>
+            <returns>A new task.</returns>
+        </member>
+        <member name="T:System.Threading.Tasks.Task`1">
+            <summary>
+            Represents an asynchronous task that has a result.
+            </summary>
+            <typeparam name="T">The type of the task's result.</typeparam>
+        </member>
+        <member name="P:System.Threading.Tasks.Task`1.Result">
+            <summary>
+            Gets the result of the task. If the task is not complete, this property blocks
+            until the task is complete. If the task has an Exception or was cancelled, this
+            property will rethrow the exception.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Tasks.Task`1.ContinueWith(System.Action{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <param name="continuation">The continuation to run after the task completes.
+            The function takes the completed task as an argument.</param>
+            <returns>A new Task that is complete after both the task and the continuation are
+            complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.Task`1.ContinueWith``1(System.Func{System.Threading.Tasks.Task{`0},``0})">
+            <summary>
+            Registers a continuation for the task that will run when the task is complete.
+            </summary>
+            <typeparam name="TResult">The type returned by the continuation.</typeparam>
+            <param name="continuation">The continuation to run after the task completes.
+            The function takes the completed task as an argument and can return a value.</param>
+            <returns>A new Task that returns the value returned by the continuation after both
+            the task and the continuation are complete.</returns>
+        </member>
+        <member name="T:System.Threading.Tasks.TaskCompletionSource`1">
+            <summary>
+            Allows safe orchestration of a task's completion, preventing the consumer from prematurely
+            completing the task. Essentially, it represents the producer side of a <see cref="T:System.Threading.Tasks.Task`1"/>,
+            providing access to the consumer side through the <see cref="P:System.Threading.Tasks.TaskCompletionSource`1.Task"/>
+            while isolating the Task's completion mechanisms from the consumer.
+            </summary>
+            <typeparam name="T">The type of the result of the Task being created.</typeparam>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.#ctor">
+            <summary>
+            Constructs a new TaskCompletionSource.
+            </summary>
+        </member>
+        <member name="P:System.Threading.Tasks.TaskCompletionSource`1.Task">
+            <summary>
+            Gets the task associated with this TaskCompletionSource.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetResult(`0)">
+            <summary>
+            If the task is not already complete, completes the task by setting the result.
+            </summary>
+            <param name="result">The result for the task.</param>
+            <returns><c>true</c> if the result was set successfully.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetException(System.AggregateException)">
+            <summary>
+            If the task is not already complete, completes the task by setting the exception.
+            </summary>
+            <param name="exception">The exception for the task.</param>
+            <returns><c>true</c> if the exception was set successfully.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetException(System.Exception)">
+            <summary>
+            If the task is not already complete, completes the task by setting the exception.
+            </summary>
+            <param name="exception">The exception for the task.</param>
+            <returns><c>true</c> if the exception was set successfully.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.TrySetCanceled">
+            <summary>
+            If the task is not already complete, cancels the task.
+            </summary>
+            <returns><c>true</c> if the task was successfully cancelled.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.SetResult(`0)">
+            <summary>
+            Completes the task by setting the result. Throws an <see cref="T:System.InvalidOperationException"/>
+            if the task is already complete.
+            </summary>
+            <param name="result">The result for the task.</param>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.SetException(System.AggregateException)">
+            <summary>
+            Completes the task by setting the exception. Throws an
+            <see cref="T:System.InvalidOperationException"/> if the task is already complete.
+            </summary>
+            <param name="exception">The exception for the task.</param>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.SetException(System.Exception)">
+            <summary>
+            Completes the task by setting the exception. Throws an
+            <see cref="T:System.InvalidOperationException"/> if the task is already complete.
+            </summary>
+            <param name="exception">The exception for the task.</param>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskCompletionSource`1.SetCanceled">
+            <summary>
+            Cancels the task. Throws an <see cref="T:System.InvalidOperationException"/> if the task is
+            already complete.
+            </summary>
+        </member>
+        <member name="T:System.Threading.Tasks.TaskExtensions">
+            <summary>
+            Provides extension methods for working with <see cref="T:System.Threading.Tasks.Task"/>s.
+            </summary>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskExtensions.Unwrap(System.Threading.Tasks.Task{System.Threading.Tasks.Task})">
+            <summary>
+            Unwraps a nested task, producing a task that is complete when both the outer
+            and inner tasks are complete. This is primarily useful for chaining asynchronous
+            operations together.
+            </summary>
+            <param name="task">The task to unwrap.</param>
+            <returns>A new task that is complete when both the outer and inner tasks
+            are complete.</returns>
+        </member>
+        <member name="M:System.Threading.Tasks.TaskExtensions.Unwrap``1(System.Threading.Tasks.Task{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Unwraps a nested task, producing a task that is complete when both the outer
+            and inner tasks are complete and that has the inner task's result.
+            This is primarily useful for chaining asynchronous operations together.
+            </summary>
+            <param name="task">The task to unwrap.</param>
+            <returns>A new task that is complete when both the outer and inner tasks
+            are complete and that has the inner task's result.</returns>
+        </member>
+    </members>
+</doc>
