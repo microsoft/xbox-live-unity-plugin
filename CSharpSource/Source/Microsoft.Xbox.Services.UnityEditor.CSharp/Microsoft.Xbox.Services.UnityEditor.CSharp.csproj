@@ -56,10 +56,10 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Unity.Compat">
-      <HintPath>$(BuildRoot)\external\parse-sdk\release\Unity.Compat.dll</HintPath>
+      <HintPath>..\..\external\parse-sdk\release\Unity.Compat.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Tasks">
-      <HintPath>$(BuildRoot)\external\parse-sdk\release\Unity.Tasks.dll</HintPath>
+      <HintPath>..\..\external\parse-sdk\release\Unity.Tasks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

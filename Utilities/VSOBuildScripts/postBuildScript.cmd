@@ -14,14 +14,13 @@ goto done
 
 :ready
 
-set CSharpBinFolder=\\edge-svcs\release\XboxLiveSDK\Xbox_Live_Api_CSharp\Latest.tst
 set exportPath=%TFS_SourcesDirectory%\Assets\Xbox Live
 set projectPath=%TFS_DropLocation%\Packages\XboxLive.unitypackage
 set libPath=%exportPath%\Libs
 
 mkdir "%exportPath%\Libs"
 
-robocopy /NJS /NJH /MT:16 /S /NP "%CSharpBinFolder%\Source\binaries\Layout\Release" "%libPath%"
+robocopy /NJS /NJH /MT:16 /S /NP "%TFS_SourcesDirectory%\Source\CSharpSource\binaries\Layout\Release" "%libPath%"
 
 mkdir %TFS_DropLocation%\Packages
 
