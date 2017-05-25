@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Unity.Compat</name>
+    </assembly>
+    <members>
+        <member name="T:System.IProgress`1">
+            <summary>
+            An interface for handlers of progress update notifications.
+            </summary>
+            <typeparam name="T">The type of progress notifications that will be sent.</typeparam>
+        </member>
+        <member name="M:System.IProgress`1.Report(`0)">
+            <summary>
+            Reports a change in progress to the handler.
+            </summary>
+            <param name="value">The new progress value.</param>
+        </member>
+        <member name="T:System.ProgressSynchronizationContext">
+            <summary>
+            Separate class so we don't have one synchronization context per generic instantiation of Progress.
+            </summary>
+        </member>
+        <member name="T:System.Progress`1">
+            <summary>
+            Provides a convenient <see cref="T:System.IProgress`1"/> implementation for
+            handling progress update notifications.
+            </summary>
+            <typeparam name="T">The progress event argument type.</typeparam>
+        </member>
+        <member name="M:System.Progress`1.#ctor">
+            <summary>
+            Constructs a new Progress handler.
+            </summary>
+        </member>
+        <member name="M:System.Progress`1.#ctor(System.Action{`0})">
+            <summary>
+            Constructs a new Progress handler that will invoke the given action when
+            progress events are raised.
+            </summary>
+            <param name="handler">The action to invoke when progress changes.</param>
+        </member>
+        <member name="M:System.Progress`1.OnReport(`0)">
+            <summary>
+            A method that is called whenever progress events are raised. Override
+            this method to handle the event.
+            </summary>
+            <param name="value">The updated progress.</param>
+        </member>
+        <member name="E:System.Progress`1.ProgressChanged">
+            <summary>
+            An event that is raised whenever progress changes are reported.
+            </summary>
+        </member>
+        <member name="M:System.Progress`1.NotifyDelegates(System.Object)">
+             <summary>
+             Notify all listening delegates of the change.
+            
+             Don't call this manually, only invoke it from the proper
+             synchronization context by posting a message to it.
+             </summary>
+        </member>
+        <member name="T:System.TypeExtensions">
+             <summary>
+             Unity does not have an API for GetTypeInfo(), instead they expose most of the methods
+             on System.Reflection.TypeInfo on the type itself. This poses a problem for compatibility
+             with the rest of the C# world, as we expect the result of GetTypeInfo() to be an actual TypeInfo,
+             as well as be able to be converted back to a type using AsType().
+            
+             This class simply implements some of the simple missing methods on Type to make it as API-compatible
+             as possible to TypeInfo.
+             </summary>
+        </member>
+    </members>
+</doc>
