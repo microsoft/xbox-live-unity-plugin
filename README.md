@@ -1,7 +1,8 @@
 ## Welcome!
 
-The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.
-To get access to the Xbox Live service, please apply to the [ID@Xbox program](http://www.xbox.com/en-us/Developers/id).
+The Xbox Live Unity Plugin provides a way for developers in the Xbox Live Creators Program to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.  For more information about the Xbox Live Creators Program go to [http://aka.ms/xblcp](http://aka.ms/xblcp).
+
+For ID@Xbox developers, this Xbox Live Unity Plugin does not yet support all the features you will need.  Instead, please follow the documentation at [http://aka.ms/xbldocs](http://aka.ms/xbldocs)
 
 ## Overview
 The Unity Plugin is broken into the following parts
