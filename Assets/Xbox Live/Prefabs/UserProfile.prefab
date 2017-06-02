@@ -287,12 +287,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45829806981fe345a581299f7f690ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  XboxLiveUser: {fileID: 0}
+  SignInKeyName: 
   signInPanel: {fileID: 1749418158358190}
   profileInfoPanel: {fileID: 1263778235714358}
   gamerpic: {fileID: 114701560925218942}
   gamerpicMask: {fileID: 114211488682245012}
   gamertag: {fileID: 114459826148149502}
   gamerscore: {fileID: 114967327416088764}
+  XboxLiveUserPrefab: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
+    type: 2}
+  AllowGuestAccounts: 0
 --- !u!114 &114262447663805920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -662,7 +667,7 @@ Canvas:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1382577602184268}
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
@@ -671,6 +676,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

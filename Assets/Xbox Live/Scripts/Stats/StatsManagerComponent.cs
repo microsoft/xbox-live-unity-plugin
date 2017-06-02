@@ -60,9 +60,9 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
         }
     }
 
-    public void RequestFlushToService(System.Boolean isHighPriority)
+    public void RequestFlushToService(XboxLiveUser user, bool isHighPriority)
     {
-        this.manager.RequestFlushToService(XboxLiveComponent.Instance.User, isHighPriority);
+        this.manager.RequestFlushToService(user, isHighPriority);
     }
 
     protected virtual void OnLocalUserAdded(XboxLiveUser user)

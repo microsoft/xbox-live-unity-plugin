@@ -50,6 +50,8 @@ public class Leaderboard : MonoBehaviour
 
     public ScrollRect scrollRect;
 
+    public XboxLiveUserInfo XboxLiveUser;
+
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
     private bool isLocalUserAdded;
@@ -71,10 +73,17 @@ public class Leaderboard : MonoBehaviour
         StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
         this.isLocalUserAdded = false;
     }
-
-    public void RequestFlushToService(System.Boolean isHighPriority)
+    private void Start()
     {
-        StatsManagerComponent.Instance.RequestFlushToService(isHighPriority);
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
+        {
+            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        }
+    }
+
+    public void RequestFlushToService(bool isHighPriority)
+    {
+        StatsManagerComponent.Instance.RequestFlushToService(this.XboxLiveUser.User, isHighPriority);
     }
 
     public void Refresh()
@@ -136,13 +145,13 @@ public class Leaderboard : MonoBehaviour
         }
 
         this.currentPage = newPage;
-        XboxLive.Instance.StatsManager.GetLeaderboard(XboxLiveComponent.Instance.User, query);
+        XboxLive.Instance.StatsManager.GetLeaderboard(this.XboxLiveUser.User, query);
     }
 
     private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
     {
         this.isLocalUserAdded = true;
-        Refresh();
+        this.Refresh();
     }
 
     private void GetLeaderboardCompleted(object sender, XboxLivePrefab.StatEventArgs e)

@@ -22,6 +22,7 @@ public class GameSaveUI : MonoBehaviour
     public Text Console;
     public Scrollbar ScrollBar;
     public RectTransform ScrollRect;
+    public XboxLiveUserInfo XboxLiveUser;
 
     private GUIStyle guiStyle;
     private string logText;
@@ -29,7 +30,6 @@ public class GameSaveUI : MonoBehaviour
     private int gameData;
     private bool initializing;
     private List<string> logLines;
-    private XboxLiveUser xboxLiveUser;
 
     // Use this for initialization
     void Start()
@@ -46,7 +46,6 @@ public class GameSaveUI : MonoBehaviour
         this.initializing = true;
 
         // Game Saves require a Windows System User
-        this.xboxLiveUser = XboxLiveComponent.Instance.User;
         try
         {
             if (this.gameSaveHelper.IsInitialized())
@@ -56,7 +55,7 @@ public class GameSaveUI : MonoBehaviour
             }
 
             this.LogLine("Initializing save system...");
-            this.StartCoroutine(this.gameSaveHelper.Initialize(this.xboxLiveUser,
+            this.StartCoroutine(this.gameSaveHelper.Initialize(this.XboxLiveUser.User,
                 r =>
                     {
                         var status = r;
@@ -64,6 +63,11 @@ public class GameSaveUI : MonoBehaviour
                             status == GameSaveStatus.Ok
                                 ? "Successfully initialized save system."
                                 : string.Format("InitializeSaveSystem failed: {0}", status));
+
+                        if (status != GameSaveStatus.Ok)
+                        {
+                            this.initializing = false;
+                        }
                     }));
         }
         catch (Exception ex)
@@ -75,19 +79,17 @@ public class GameSaveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (XboxLiveComponent.Instance.User != null && XboxLiveComponent.Instance.User.IsSignedIn && !this.gameSaveHelper.IsInitialized() && !this.initializing)
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled
+            && XboxLiveUserHelper.Instance.SingleXboxLiveUser.User != null)
+        {
+            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.gameSaveHelper.IsInitialized() && !this.initializing)
         {
             this.InitializeSaveSystem();
+            this.initializing = false;
         }
-    }
-
-    private void DrawTextWithShadow(float x, float y, float width, float height, string text)
-    {
-        this.guiStyle.fontSize = 12;
-        this.guiStyle.normal.textColor = Color.black;
-        GUI.Label(new Rect(x, y, height, height), text, this.guiStyle);
-        this.guiStyle.normal.textColor = Color.white;
-        GUI.Label(new Rect(x - 1, y - 1, width, height), text, this.guiStyle);
     }
 
     void OnGUI()

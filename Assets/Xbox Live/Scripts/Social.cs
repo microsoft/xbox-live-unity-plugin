@@ -17,6 +17,7 @@ public class Social : MonoBehaviour
     public Dropdown presenceFilterDropdown;
     public Transform contentPanel;
     public ScrollRect scrollRect;
+    public XboxLiveUserInfo XboxLiveUser;
 
     private Dictionary<int, XboxSocialUserGroup> socialUserGroups = new Dictionary<int, XboxSocialUserGroup>();
     private ObjectPool entryObjectPool;
@@ -39,21 +40,41 @@ public class Social : MonoBehaviour
         });
     }
 
+    private void Start()
+    {
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
+        {
+            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        }
+    }
+
+    private void Update()
+    {
+        if (this.XboxLiveUser == null && XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser != null)
+        {
+            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        }
+
+    }
+
     private void OnEventProcessed(object sender, SocialEvent socialEvent)
     {
-        switch (socialEvent.EventType)
+        if (this.XboxLiveUser.User != null && socialEvent.User.Gamertag == this.XboxLiveUser.User.Gamertag)
         {
-            case SocialEventType.LocalUserAdded:
-                if (socialEvent.Exception == null)
-                {
-                    CreateDefaulSocialGraphs();
-                }
-                break;
-            case SocialEventType.SocialUserGroupLoaded:
-            case SocialEventType.SocialUserGroupUpdated:
-            case SocialEventType.PresenceChanged:
-                this.RefreshSocialGroups();
-                break;
+            switch (socialEvent.EventType)
+            {
+                case SocialEventType.LocalUserAdded:
+                    if (socialEvent.Exception == null)
+                    {
+                        this.CreateDefaulSocialGraphs();
+                    }
+                    break;
+                case SocialEventType.SocialUserGroupLoaded:
+                case SocialEventType.SocialUserGroupUpdated:
+                case SocialEventType.PresenceChanged:
+                    this.RefreshSocialGroups();
+                    break;
+            }
         }
     }
 
@@ -64,17 +85,17 @@ public class Social : MonoBehaviour
 
     private void CreateDefaulSocialGraphs()
     {
-        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(XboxLiveComponent.Instance.User, PresenceFilter.All, RelationshipFilter.Friends);
+        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.All, RelationshipFilter.Friends);
         this.socialUserGroups.Add(0, allSocialUserGroup);
 
-        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(XboxLiveComponent.Instance.User, PresenceFilter.AllOnline, RelationshipFilter.Friends);
+        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.AllOnline, RelationshipFilter.Friends);
         this.socialUserGroups.Add(1, allOnlineSocialUserGroup);
     }
 
     private void RefreshSocialGroups()
     {
         XboxSocialUserGroup socialUserGroup;
-        if (!this.socialUserGroups.TryGetValue(presenceFilterDropdown.value, out socialUserGroup))
+        if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup))
         {
             throw new Exception("Invalid PresenceFilter selected");
         }

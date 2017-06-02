@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 
 using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Social.Manager;
@@ -15,9 +16,11 @@ using UnityEngine.UI;
 
 public class UserProfile : MonoBehaviour
 {
-    private static UserProfile instance;
+    public XboxLiveUserInfo XboxLiveUser;
 
-    private XboxLiveUser User;
+    public string SignInKeyName;
+
+    private bool SignInCalledOnce;
 
     [HideInInspector]
     public GameObject signInPanel;
@@ -37,29 +40,18 @@ public class UserProfile : MonoBehaviour
     [HideInInspector]
     public Text gamerscore;
 
+    [HideInInspector]
+    public XboxLiveUserInfo XboxLiveUserPrefab;
+
+    public bool AllowGuestAccounts = false;
+
     public void Awake()
     {
         this.EnsureEventSystem();
 
-        if (!instance)
+        if (!XboxLiveUserHelper.Instance.IsInitialized)
         {
-            instance = this;
-            XboxLiveUser.SignOutCompleted += this.XboxLiveUserOnSignOutCompleted;
-            if (XboxLiveComponent.Instance.User != null && XboxLiveComponent.Instance.User.IsSignedIn)
-            {
-                instance.User = XboxLiveComponent.Instance.User;
-                this.StartCoroutine(this.LoadProfileInfo());
-            }
-            else
-            {
-                this.profileInfoPanel.SetActive(false);
-            }
-
-            this.Refresh();
-        }
-        else
-        {
-            Destroy(this.gameObject);
+            XboxLiveUserHelper.Instance.Initialize();
         }
     }
 
@@ -77,6 +69,15 @@ public class UserProfile : MonoBehaviour
                 signInButtonText.text = "Xbox Live is not enabled.\nSee errors for detail.";
             }
         }
+
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser == null)
+        {
+            Debug.Log("Instantiating Xbox Live User");
+            this.XboxLiveUser = Instantiate(this.XboxLiveUserPrefab);
+            XboxLiveUserHelper.Instance.SingleXboxLiveUser = this.XboxLiveUser;
+        }
+
+        this.Refresh();
     }
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
@@ -86,16 +87,73 @@ public class UserProfile : MonoBehaviour
 
     public void SignIn()
     {
-        this.StartCoroutine(this.SignInAsync());
+        this.StartCoroutine(this.InitializeXboxLiveUser());
+    }
+
+    public void Update()
+    {
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser != null
+            && XboxLiveUserHelper.Instance.SingleXboxLiveUser.User != null
+            && !XboxLiveUserHelper.Instance.SingleXboxLiveUser.User.IsSignedIn && !this.SignInCalledOnce)
+        {
+            this.StartCoroutine(this.SignInAsync());
+        }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && !this.XboxLiveUser.User.IsSignedIn && !this.SignInCalledOnce)
+        {
+            this.StartCoroutine(this.SignInAsync());
+        }
+
+        if (!this.SignInCalledOnce && !string.IsNullOrEmpty(this.SignInKeyName) && Input.GetKeyDown(this.SignInKeyName))
+        {
+            this.StartCoroutine(this.InitializeXboxLiveUser());
+        }
+
+    }
+
+    public IEnumerator InitializeXboxLiveUser()
+    {
+        yield return null;
+        // Disable the sign-in button
+        this.signInPanel.GetComponentInChildren<Button>().interactable = false;
+
+#if NETFX_CORE
+        if (!XboxLiveUserHelper.Instance.SingleUserModeEnabled) {
+            var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts};
+            autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
+                    task =>
+                        {
+                            if (task.Status == TaskStatus.RanToCompletion)
+                            {
+                                this.XboxLiveUser.WindowsSystemUser = task.Result;
+                                this.XboxLiveUser.Initialize();
+                            }
+                            else
+                            {
+                                Debug.Log("Exception occured: "+ task.Exception.Message);
+                            }
+                        });
+        } 
+        else {
+           this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+           this.XboxLiveUser.Initialize();
+        }
+#else
+        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
+        {
+            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        }
+
+        this.XboxLiveUser.Initialize();
+#endif
+
     }
 
     public IEnumerator SignInAsync()
     {
-        // Disable the sign-in button
-        this.signInPanel.GetComponentInChildren<Button>().interactable = false;
+        this.SignInCalledOnce = true;
 
-        this.User = XboxLiveComponent.Instance.User;
-        TaskYieldInstruction<SignInResult> signInTask = this.User.SignInAsync().AsCoroutine();
+        TaskYieldInstruction<SignInResult> signInTask = this.XboxLiveUser.User.SignInAsync().AsCoroutine();
         yield return signInTask;
 
         // Throw any exceptions if needed.
@@ -104,8 +162,9 @@ public class UserProfile : MonoBehaviour
             throw new Exception("Sign in Failed");
         }
 
-        XboxLive.Instance.StatsManager.AddLocalUser(this.User);
-        var addLocalUserTask = XboxLive.Instance.SocialManager.AddLocalUser(this.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+
+        XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
+        var addLocalUserTask = XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
         yield return addLocalUserTask;
 
         if (addLocalUserTask.Task.IsFaulted)
@@ -118,17 +177,17 @@ public class UserProfile : MonoBehaviour
 
     private IEnumerator LoadProfileInfo()
     {
-        ulong userId = ulong.Parse(this.User.XboxUserId);
-        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.User, new List<ulong> { userId });
+        var userId = ulong.Parse(this.XboxLiveUser.User.XboxUserId);
+        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<ulong> { userId });
         var socialUser = group.GetUser(userId);
 
-        WWW www = new WWW(socialUser.DisplayPicRaw + "&w=128");
+        var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
 
-        Texture2D t = www.texture;
-        Rect r = new Rect(0, 0, t.width, t.height);
+        var t = www.texture;
+        var r = new Rect(0, 0, t.width, t.height);
         this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
-        this.gamertag.text = this.User.Gamertag;
+        this.gamertag.text = this.XboxLiveUser.User.Gamertag;
         this.gamerscore.text = socialUser.Gamerscore;
 
         this.profileInfoPanel.GetComponent<Image>().color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
@@ -148,7 +207,7 @@ public class UserProfile : MonoBehaviour
 
     private void Refresh()
     {
-        bool isSignedIn = this.User != null && this.User.IsSignedIn;
+        bool isSignedIn = this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }
