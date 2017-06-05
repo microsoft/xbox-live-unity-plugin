@@ -42,17 +42,17 @@ public class Social : MonoBehaviour
 
     private void Start()
     {
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
+        if (this.XboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
     }
 
     private void Update()
     {
-        if (this.XboxLiveUser == null && XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser != null)
+        if (this.XboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
 
     }

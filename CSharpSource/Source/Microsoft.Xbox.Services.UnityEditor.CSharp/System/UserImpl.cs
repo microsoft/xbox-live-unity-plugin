@@ -18,7 +18,7 @@ namespace Microsoft.Xbox.Services.System
         public string WebAccountId { get; set; }
         public AuthConfig AuthConfig { get; set; }
 
-		private static int numberOfInstances { get; set; }
+        private static int numberOfInstances;
         private static Random random = new Random();
 		
         public Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh)

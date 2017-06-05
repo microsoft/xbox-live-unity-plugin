@@ -49,9 +49,9 @@ public class UserProfile : MonoBehaviour
     {
         this.EnsureEventSystem();
 
-        if (!XboxLiveUserHelper.Instance.IsInitialized)
+        if (!XboxLiveUserManager.Instance.IsInitialized)
         {
-            XboxLiveUserHelper.Instance.Initialize();
+            XboxLiveUserManager.Instance.Initialize();
         }
     }
 
@@ -70,11 +70,10 @@ public class UserProfile : MonoBehaviour
             }
         }
 
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser == null)
+        if (XboxLiveUserManager.Instance.SingleUserModeEnabled && XboxLiveUserManager.Instance.UserForSingleUserMode == null)
         {
-            Debug.Log("Instantiating Xbox Live User");
             this.XboxLiveUser = Instantiate(this.XboxLiveUserPrefab);
-            XboxLiveUserHelper.Instance.SingleXboxLiveUser = this.XboxLiveUser;
+            XboxLiveUserManager.Instance.UserForSingleUserMode = this.XboxLiveUser;
         }
 
         this.Refresh();
@@ -92,9 +91,9 @@ public class UserProfile : MonoBehaviour
 
     public void Update()
     {
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled && XboxLiveUserHelper.Instance.SingleXboxLiveUser != null
-            && XboxLiveUserHelper.Instance.SingleXboxLiveUser.User != null
-            && !XboxLiveUserHelper.Instance.SingleXboxLiveUser.User.IsSignedIn && !this.SignInCalledOnce)
+        if (XboxLiveUserManager.Instance.SingleUserModeEnabled && XboxLiveUserManager.Instance.UserForSingleUserMode != null
+            && XboxLiveUserManager.Instance.UserForSingleUserMode.User != null
+            && !XboxLiveUserManager.Instance.UserForSingleUserMode.User.IsSignedIn && !this.SignInCalledOnce)
         {
             this.StartCoroutine(this.SignInAsync());
         }
@@ -118,7 +117,7 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
 #if NETFX_CORE
-        if (!XboxLiveUserHelper.Instance.SingleUserModeEnabled) {
+        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled) {
             var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts};
             autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
                     task =>
@@ -135,13 +134,12 @@ public class UserProfile : MonoBehaviour
                         });
         } 
         else {
-           this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+           this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
            this.XboxLiveUser.Initialize();
         }
 #else
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
-        {
-            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+        if(this.XboxLiveUser == null){
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
 
         this.XboxLiveUser.Initialize();
@@ -157,22 +155,20 @@ public class UserProfile : MonoBehaviour
         yield return signInTask;
 
         // Throw any exceptions if needed.
-        if (signInTask.Result.Status != SignInStatus.Success)
+        if (signInTask.Result.Status == SignInStatus.Success)
         {
-            throw new Exception("Sign in Failed");
+            XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
+            var addLocalUserTask =
+                XboxLive.Instance.SocialManager.AddLocalUser(
+                    this.XboxLiveUser.User,
+                    SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
+            yield return addLocalUserTask;
+
+            if (!addLocalUserTask.Task.IsFaulted)
+            {
+                yield return this.LoadProfileInfo();
+            }
         }
-
-
-        XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
-        var addLocalUserTask = XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
-        yield return addLocalUserTask;
-
-        if (addLocalUserTask.Task.IsFaulted)
-        {
-            throw addLocalUserTask.Task.Exception;
-        }
-
-        yield return this.LoadProfileInfo();
     }
 
     private IEnumerator LoadProfileInfo()
@@ -190,8 +186,13 @@ public class UserProfile : MonoBehaviour
         this.gamertag.text = this.XboxLiveUser.User.Gamertag;
         this.gamerscore.text = socialUser.Gamerscore;
 
-        this.profileInfoPanel.GetComponent<Image>().color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
-        this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+        if (socialUser.PreferredColor != null)
+        {
+            this.profileInfoPanel.GetComponent<Image>().color =
+                ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+            this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+        }
+
 
         this.Refresh();
     }

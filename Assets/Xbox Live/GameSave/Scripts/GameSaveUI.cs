@@ -39,12 +39,15 @@ public class GameSaveUI : MonoBehaviour
         this.random = new System.Random();
         this.gameSaveHelper = new GameSaveHelper();
         this.logLines = new List<string>();
+
+        if (this.XboxLiveUser == null)
+        {
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
     }
 
     public void InitializeSaveSystem()
     {
-        this.initializing = true;
-
         // Game Saves require a Windows System User
         try
         {
@@ -64,10 +67,8 @@ public class GameSaveUI : MonoBehaviour
                                 ? "Successfully initialized save system."
                                 : string.Format("InitializeSaveSystem failed: {0}", status));
 
-                        if (status != GameSaveStatus.Ok)
-                        {
-                            this.initializing = false;
-                        }
+                        this.initializing = false;
+
                     }));
         }
         catch (Exception ex)
@@ -79,16 +80,17 @@ public class GameSaveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled
-            && XboxLiveUserHelper.Instance.SingleXboxLiveUser.User != null)
+        if (this.XboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
-
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.gameSaveHelper.IsInitialized() && !this.initializing)
+        else
         {
-            this.InitializeSaveSystem();
-            this.initializing = false;
+            if (this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.gameSaveHelper.IsInitialized() && !this.initializing)
+            {
+                this.initializing = true;
+                this.InitializeSaveSystem();
+            }
         }
     }
 

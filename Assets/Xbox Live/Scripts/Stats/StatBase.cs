@@ -20,6 +20,7 @@ public abstract class StatBase : MonoBehaviour
 {
     public XboxLiveUserInfo XboxLiveUser;
     protected bool isLocalUserAdded = false;
+    private bool LocalUserAddedSetup = false;
 
     /// <summary>
     /// The name of the stat that is published to the stats service.
@@ -41,22 +42,20 @@ public abstract class StatBase : MonoBehaviour
 
     void Start()
     {
-        if (XboxLiveUserHelper.Instance.SingleUserModeEnabled)
+        if (this.XboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserHelper.Instance.SingleXboxLiveUser;
-            if (this.XboxLiveUser == null || this.XboxLiveUser.User == null || !this.XboxLiveUser.User.IsSignedIn)
-            {
-                StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
-                {
-                    this.HandleGetStat(args.User, this.Name);
-                };
-            }
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
     }
 
     protected void Update()
     {
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.isLocalUserAdded)
+        if (this.XboxLiveUser == null)
+        {
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.isLocalUserAdded && !this.LocalUserAddedSetup)
         {
             StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
             {
@@ -65,6 +64,7 @@ public abstract class StatBase : MonoBehaviour
                     this.HandleGetStat(args.User, this.Name);
                 }
             };
+            this.LocalUserAddedSetup = true;
         }
     }
 
