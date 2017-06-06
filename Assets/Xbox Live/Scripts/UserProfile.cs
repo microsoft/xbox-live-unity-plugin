@@ -148,16 +148,25 @@ public class UserProfile : MonoBehaviour
 
         this.XboxLiveUser.Initialize();
 #endif
-
     }
 
     public IEnumerator SignInAsync()
     {
-        TaskYieldInstruction<SignInResult> signInTask = this.XboxLiveUser.User.SignInAsync().AsCoroutine();
-        yield return signInTask;
+        SignInStatus signInStatus;
+        TaskYieldInstruction<SignInResult> signInSilentlyTask = this.XboxLiveUser.User.SignInSilentlyAsync().AsCoroutine();
+        yield return signInSilentlyTask;
+
+        signInStatus = signInSilentlyTask.Result.Status;
+        if (signInSilentlyTask.Result.Status != SignInStatus.Success)
+        {
+            TaskYieldInstruction<SignInResult> signInTask = this.XboxLiveUser.User.SignInAsync().AsCoroutine();
+            yield return signInTask;
+
+            signInStatus = signInTask.Result.Status;
+        }
 
         // Throw any exceptions if needed.
-        if (signInTask.Result.Status == SignInStatus.Success)
+        if (signInStatus == SignInStatus.Success)
         {
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
             var addLocalUserTask =
@@ -201,16 +210,16 @@ public class UserProfile : MonoBehaviour
 
     public static Color ColorFromHexString(string color)
     {
-        float r = (float)byte.Parse(color.Substring(0, 2), NumberStyles.HexNumber) / 255;
-        float g = (float)byte.Parse(color.Substring(2, 2), NumberStyles.HexNumber) / 255;
-        float b = (float)byte.Parse(color.Substring(4, 2), NumberStyles.HexNumber) / 255;
+        var r = (float)byte.Parse(color.Substring(0, 2), NumberStyles.HexNumber) / 255;
+        var g = (float)byte.Parse(color.Substring(2, 2), NumberStyles.HexNumber) / 255;
+        var b = (float)byte.Parse(color.Substring(4, 2), NumberStyles.HexNumber) / 255;
 
         return new Color(r, g, b);
     }
 
     private void Refresh()
     {
-        bool isSignedIn = this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
+        var isSignedIn = this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }
