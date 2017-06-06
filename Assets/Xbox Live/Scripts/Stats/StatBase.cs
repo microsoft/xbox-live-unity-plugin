@@ -50,21 +50,24 @@ public abstract class StatBase : MonoBehaviour
 
     protected void Update()
     {
-        if (this.XboxLiveUser == null)
-        {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-        }
-
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.isLocalUserAdded && !this.LocalUserAddedSetup)
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn
+            && !this.isLocalUserAdded && !this.LocalUserAddedSetup)
         {
             StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
-            {
-                if (args.User.Gamertag == this.XboxLiveUser.User.Gamertag)
                 {
-                    this.HandleGetStat(args.User, this.Name);
-                }
-            };
+                    if (args.User.Gamertag == this.XboxLiveUser.User.Gamertag)
+                    {
+                        this.HandleGetStat(args.User, this.Name);
+                    }
+                };
             this.LocalUserAddedSetup = true;
+        }
+        else
+        {
+            if (this.XboxLiveUser == null)
+            {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            }
         }
     }
 

@@ -28,15 +28,15 @@ public class Social : MonoBehaviour
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         SocialManagerComponent.Instance.EventProcessed += this.OnEventProcessed;
 
-        presenceFilterDropdown.options.Clear();
-        presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
-        presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.AllOnline.ToString() });
-        presenceFilterDropdown.value = 0;
-        presenceFilterDropdown.RefreshShownValue();
+        this.presenceFilterDropdown.options.Clear();
+        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
+        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.AllOnline.ToString() });
+        this.presenceFilterDropdown.value = 0;
+        this.presenceFilterDropdown.RefreshShownValue();
 
-        presenceFilterDropdown.onValueChanged.AddListener(delegate
+        this.presenceFilterDropdown.onValueChanged.AddListener(delegate
         {
-            PresenceFilterValueChangedHandler(presenceFilterDropdown);
+            this.PresenceFilterValueChangedHandler(this.presenceFilterDropdown);
         });
     }
 
@@ -46,15 +46,6 @@ public class Social : MonoBehaviour
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
-    }
-
-    private void Update()
-    {
-        if (this.XboxLiveUser == null)
-        {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-        }
-
     }
 
     private void OnEventProcessed(object sender, SocialEvent socialEvent)
@@ -74,6 +65,13 @@ public class Social : MonoBehaviour
                 case SocialEventType.PresenceChanged:
                     this.RefreshSocialGroups();
                     break;
+            }
+        }
+        else
+        {
+            if (this.XboxLiveUser == null)
+            {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
             }
         }
     }

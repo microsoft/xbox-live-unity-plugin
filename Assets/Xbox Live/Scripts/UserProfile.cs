@@ -95,11 +95,13 @@ public class UserProfile : MonoBehaviour
             && XboxLiveUserManager.Instance.UserForSingleUserMode.User != null
             && !XboxLiveUserManager.Instance.UserForSingleUserMode.User.IsSignedIn && !this.SignInCalledOnce)
         {
+            this.SignInCalledOnce = true;
             this.StartCoroutine(this.SignInAsync());
         }
 
         if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && !this.XboxLiveUser.User.IsSignedIn && !this.SignInCalledOnce)
         {
+            this.SignInCalledOnce = true;
             this.StartCoroutine(this.SignInAsync());
         }
 
@@ -113,6 +115,7 @@ public class UserProfile : MonoBehaviour
     public IEnumerator InitializeXboxLiveUser()
     {
         yield return null;
+
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
@@ -138,7 +141,8 @@ public class UserProfile : MonoBehaviour
            this.XboxLiveUser.Initialize();
         }
 #else
-        if(this.XboxLiveUser == null){
+        if (this.XboxLiveUser == null) 
+        {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
 
@@ -149,8 +153,6 @@ public class UserProfile : MonoBehaviour
 
     public IEnumerator SignInAsync()
     {
-        this.SignInCalledOnce = true;
-
         TaskYieldInstruction<SignInResult> signInTask = this.XboxLiveUser.User.SignInAsync().AsCoroutine();
         yield return signInTask;
 
