@@ -120,7 +120,7 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
 #if NETFX_CORE
-        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled) {
+        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser != null) {
             var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts};
             autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
                     task =>
