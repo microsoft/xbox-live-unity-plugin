@@ -1,28 +1,25 @@
-﻿// Copyright (c) Microsoft Corporation
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// 
-using System;
-using System.Collections;
-using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 using Microsoft.Xbox.Services;
 
 using UnityEngine;
 
-/// <summary>
-/// Handles initializing any Xbox Live functionality when the game starts.  If the game is not properly configured for Xbox Live this will result in errors.
-/// </summary>
-[HelpURL("http://github.com/Microsoft/xbox-live-unity-plugin")]
-public class XboxLiveComponent : Singleton<XboxLiveComponent>
+#if NETFX_Core
+using Windows.System;
+#endif
+
+public class XboxLiveUserInfo : MonoBehaviour
 {
-    protected XboxLiveComponent()
-    {
-    }
 
-    public XboxLiveUser User { get; set; }
+    public XboxLiveUser User { get; private set; }
 
-    public void Awake()
+#if NETFX_CORE
+    public Windows.System.User WindowsSystemUser { get; set; }
+#endif
+
+    public void Start()
     {
         // Super simple check to determine if configuration is non-empty.  This is not a thorough check to determine if the configuration is valid.
         // A user can easly bypass this check which will just cause them to fail at runtime if they try to use any functionality.
@@ -40,7 +37,28 @@ public class XboxLiveComponent : Singleton<XboxLiveComponent>
         }
 
         MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
+    }
 
+    public void Initialize()
+    {
+#if NETFX_CORE
+        this.InitializeWithWindowsSystemUser();
+#else
         this.User = new XboxLiveUser();
+#endif
+    }
+
+    private void InitializeWithWindowsSystemUser()
+    {
+#if NETFX_CORE
+        if (this.WindowsSystemUser != null)
+        {
+            this.User = new XboxLiveUser(this.WindowsSystemUser);
+        }
+        else
+        {
+            this.User = new XboxLiveUser();
+        }
+#endif
     }
 }
