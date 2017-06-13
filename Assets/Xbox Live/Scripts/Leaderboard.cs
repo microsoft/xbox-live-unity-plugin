@@ -13,12 +13,12 @@ using UnityEngine.UI;
 [Serializable]
 public class Leaderboard : MonoBehaviour
 {
+    private string socialGroup;
+
     public StatBase stat;
-    public bool isConfigured;
 
-    [Tooltip("This property needs to be set to get an unconfigured leaderboard. Example: \"all\"")]
-    public string socialGroup;
-
+    public LeaderboardTypes leaderboardType;
+    
     [Range(1, 100)]
     public uint entryCount = 10;
 
@@ -132,7 +132,6 @@ public class Leaderboard : MonoBehaviour
         {
             throw new InvalidOperationException("If you are using a configured leaderboard you must specify a social group.");
         }
-
         LeaderboardQuery query;
         if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
         {
@@ -140,10 +139,22 @@ public class Leaderboard : MonoBehaviour
         }
         else
         {
+            switch (leaderboardType) {
+                case LeaderboardTypes.Global:
+                    socialGroup = null;
+                    break;
+                case LeaderboardTypes.Favorites:
+                    socialGroup = "favorite";
+                    break;
+                case LeaderboardTypes.Friends:
+                    socialGroup = "all";
+                    break;
+            }
+
             query = new LeaderboardQuery
             {
                 StatName = this.stat.Name,
-                SocialGroup = this.socialGroup,
+                SocialGroup = socialGroup,
                 SkipResultsToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
                 MaxItems = this.entryCount,
             };
