@@ -114,16 +114,16 @@ public class Leaderboard : MonoBehaviour
         }
         else
         {
-            if (leaderboardType == LeaderboardTypes.Global) {
-                socialGroup = null;
-            }
-
-            if (leaderboardType == LeaderboardTypes.Favorites) {
-                socialGroup = "favorite";
-            }
-
-            if (leaderboardType == LeaderboardTypes.Friends) {
-                socialGroup = "all";
+            switch (leaderboardType) {
+                case LeaderboardTypes.Global:
+                    socialGroup = null;
+                    break;
+                case LeaderboardTypes.Favorites:
+                    socialGroup = "favorite";
+                    break;
+                case LeaderboardTypes.Friends:
+                    socialGroup = "all";
+                    break;
             }
 
             query = new LeaderboardQuery
