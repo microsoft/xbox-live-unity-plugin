@@ -3,6 +3,7 @@
 // 
 using System;
 
+using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Statistics.Manager;
 
 using UnityEngine;
@@ -17,6 +18,10 @@ using UnityEngine;
 [Serializable]
 public abstract class StatBase : MonoBehaviour
 {
+    public XboxLiveUserInfo XboxLiveUser;
+    protected bool isLocalUserAdded = false;
+    private bool LocalUserAddedSetup = false;
+
     /// <summary>
     /// The name of the stat that is published to the stats service.
     /// </summary>
@@ -34,6 +39,39 @@ public abstract class StatBase : MonoBehaviour
         // Ensure that a StatsManager has been created so that stats will be sync with the service as they are modified.
         var statsManager = StatsManagerComponent.Instance;
     }
+
+    void Start()
+    {
+        if (this.XboxLiveUser == null)
+        {
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
+    }
+
+    protected void Update()
+    {
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn
+            && !this.isLocalUserAdded && !this.LocalUserAddedSetup)
+        {
+            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
+                {
+                    if (args.User.Gamertag == this.XboxLiveUser.User.Gamertag)
+                    {
+                        this.HandleGetStat(args.User, this.Name);
+                    }
+                };
+            this.LocalUserAddedSetup = true;
+        }
+        else
+        {
+            if (this.XboxLiveUser == null)
+            {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            }
+        }
+    }
+
+    protected abstract void HandleGetStat(XboxLiveUser user, string statName);
 }
 
 /// <summary>
