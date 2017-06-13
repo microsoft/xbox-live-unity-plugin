@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,7 +15,6 @@ using Windows.System;
 
 public class XboxLiveUserInfo : MonoBehaviour
 {
-
     public XboxLiveUser User { get; private set; }
 
 #if NETFX_CORE

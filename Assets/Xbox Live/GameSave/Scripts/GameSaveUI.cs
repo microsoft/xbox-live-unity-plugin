@@ -1,4 +1,7 @@
-﻿#if NETFX_CORE
+﻿// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+#if NETFX_CORE
 using System.Linq;
 using Windows.System;
 #endif
