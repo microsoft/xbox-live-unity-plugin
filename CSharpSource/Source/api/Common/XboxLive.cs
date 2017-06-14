@@ -5,6 +5,8 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
     using global::System.IO;
+    using global::System.ComponentModel;
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
 
@@ -12,6 +14,7 @@ namespace Microsoft.Xbox.Services
     {
         private bool disposed;
         private static XboxLive instance;
+        private static IntPtr xsapiNativeDll;
         private XboxLiveSettings settings;
         private IStatsManager statsManager;
         private ISocialManager socialManager;
@@ -30,6 +33,15 @@ namespace Microsoft.Xbox.Services
             catch (FileLoadException)
             {
                 this.appConfig = null;
+            }
+
+            try
+            {
+                xsapiNativeDll = LoadNativeDll(@"Microsoft.Xbox.Services.141.UWP.C.dll");
+            }
+            catch (Exception ex)
+            {
+                throw new XboxException("Failed to load Microsoft.Xbox.Services.dll");
             }
         }
 
@@ -108,6 +120,30 @@ namespace Microsoft.Xbox.Services
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal static class NativeMethods
+        {
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static extern IntPtr LoadLibrary(string lpFileName);
+
+            [DllImport("kernel32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool FreeLibrary(IntPtr hModule);
+
+            [DllImport("kernel32")]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+        }
+
+        public static IntPtr LoadNativeDll(string fileName)
+        {
+            IntPtr nativeDll = NativeMethods.LoadLibrary(fileName);
+            if (nativeDll == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+
+            return nativeDll;
         }
     }
 }

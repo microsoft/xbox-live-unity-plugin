@@ -249,7 +249,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\GamingPrivilege.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\JsonSerialization.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\StringService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\TitleCallableUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\VerifyStringResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\VerifyStringResultCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveServicesSettings.cs" />
