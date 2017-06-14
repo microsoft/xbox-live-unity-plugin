@@ -37,7 +37,7 @@ namespace Microsoft.Xbox.Services
 
             try
             {
-                xsapiNativeDll = LoadNativeDll(@"Microsoft.Xbox.Services.141.UWP.C.dll");
+                xsapiNativeDll = LoadNativeDll(@"Microsoft.Xbox.Services.140.UWP.C.dll");
             }
             catch (Exception ex)
             {
