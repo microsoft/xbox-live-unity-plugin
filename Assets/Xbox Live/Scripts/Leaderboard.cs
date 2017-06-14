@@ -128,10 +128,6 @@ public class Leaderboard : MonoBehaviour
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
 
-        if (this.isConfigured && string.IsNullOrEmpty(this.socialGroup))
-        {
-            throw new InvalidOperationException("If you are using a configured leaderboard you must specify a social group.");
-        }
         LeaderboardQuery query;
         if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
         {
