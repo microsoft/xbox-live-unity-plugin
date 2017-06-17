@@ -145,5 +145,29 @@ namespace Microsoft.Xbox.Services
 
             return nativeDll;
         }
+
+        public T Invoke<T, T2>(params object[] args)
+        {
+            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T2).Name);
+            if (procAddress == IntPtr.Zero)
+            {
+                return default(T);
+            }
+
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T2));
+            return (T)function.DynamicInvoke(args);
+        }
+
+        public void Invoke<T>(params object[] args)
+        {
+            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T).Name);
+            if (procAddress == IntPtr.Zero)
+            {
+                return;
+            }
+
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T));
+            function.DynamicInvoke(args);
+        }
     }
 }

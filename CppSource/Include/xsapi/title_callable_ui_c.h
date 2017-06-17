@@ -86,50 +86,48 @@ typedef enum GAMING_PRIVILEGE
 } GAMING_PRIVILEGE;
 
 typedef void(*TCUIShowProfileCardUICompletionRoutine)(
-    _In_ void* completionRoutineContext,
-    _In_ XboxLiveResult result
+    _In_ XboxLiveResult result,
+    _In_opt_ void* completionRoutineContext
     );
 
-_XSAPIIMP void XSAPI_CALL
+XSAPI_DLLEXPORT void XSAPI_CALL
 TCUIShowProfileCardUI(
     _In_ PCSTR_T targetXboxUserId,
-    _In_opt_ Windows::System::User^ user,
-    _In_ void* completionRoutineContext,
-    _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine
+    _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
+    _In_opt_ void* completionRoutineContext
     );
 
 typedef struct TCUICheckGamingPrivilegeSilentlyResult
 {
-    XboxLiveResult XboxLiveResult;
+    XboxLiveResult result;
     bool hasPrivilege;
 } TCUICheckGamingPrivilegeSilentlyResult;
 
 typedef void(*TCUICheckGamingPrivilegeSilentlyCompletionRoutine)(
-    _In_ void* completionRoutineContext,
-    _In_ TCUICheckGamingPrivilegeSilentlyResult result
+    _In_ TCUICheckGamingPrivilegeSilentlyResult result,
+    _In_opt_ void* completionRoutineContext
     );
 
-_XSAPIIMP void XSAPI_CALL
+XSAPI_DLLEXPORT void XSAPI_CALL
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_opt_ Windows::System::User^ user,
-    _In_ void* completionRoutineContext,
-    _In_ TCUICheckGamingPrivilegeSilentlyCompletionRoutine completionRoutine
+    _In_ TCUICheckGamingPrivilegeSilentlyCompletionRoutine completionRoutine,
+    _In_opt_ void* completionRoutineContext
     );
-
 
 typedef void(*TCUICheckGamingPrivilegeWithUICompletionRoutine)(
-    _In_ void* completionRoutineContext,
-    _In_ XboxLiveResult result
+    _In_ XboxLiveResult result,
+    _In_opt_ void* completionRoutineContext
     );
 
-_XSAPIIMP void XSAPI_CALL
+XSAPI_DLLEXPORT void XSAPI_CALL
 TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,
     _In_opt_ Windows::System::User^ user,
-    _In_ void* completionRoutineContext,
-    _In_ TCUICheckGamingPrivilegeWithUICompletionRoutine completionRoutine
+    _In_ TCUICheckGamingPrivilegeWithUICompletionRoutine completionRoutine,
+    _In_opt_ void* completionRoutineContext
     );
 
 #if defined(__cplusplus)

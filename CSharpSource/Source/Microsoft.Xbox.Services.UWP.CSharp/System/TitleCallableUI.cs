@@ -5,11 +5,23 @@ namespace Microsoft.Xbox.Services.System
 {
     using global::System;
     using global::System.Collections.Generic;
+    using global::System.Diagnostics;
+    using global::System.Runtime.InteropServices;
     using global::System.Threading.Tasks;
     using Microsoft.Xbox.Services;
 
     public class TitleCallableUI
     {
+        private delegate void TCUIShowProfileCardUICompletionRoutine(XboxLiveResult result, IntPtr completionRoutineContext);
+        private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, TCUIShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext);
+
+        private static void show_profile_card_ui_complete(XboxLiveResult result, IntPtr completionRoutineContext)
+        {
+            Debug.WriteLine("show_profile_card_ui_complete");
+            Debug.WriteLine("errorCode: " + result.errorCode);
+            Debug.WriteLine("errorMessage: " + result.errorMessage);
+        }
+
         /// <summary>
         /// Shows UI displaying the profile card for a specified user.
         /// </summary>
@@ -21,7 +33,12 @@ namespace Microsoft.Xbox.Services.System
         /// </returns>
         public static Task ShowProfileCardUIAsync(XboxLiveUser user, string targetXboxUserId)
         {
-            return Task.FromResult(true);
+            return Task.FromResult(targetXboxUserId)
+                .ContinueWith(t =>
+                {
+                    XboxLive.Instance.Invoke<int, TCUIShowProfileCardUI>(Marshal.StringToHGlobalUni(targetXboxUserId), (TCUIShowProfileCardUICompletionRoutine)show_profile_card_ui_complete, (IntPtr)3);
+                });
+
             //return Microsoft.Xbox.Services.WinRT.TitleCallableUI.ShowProfileCardUIAsync(
             //        targetXboxUserId,
             //        user.SystemUser
