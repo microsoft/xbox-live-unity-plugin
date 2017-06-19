@@ -105,6 +105,7 @@ Write-Host ""
 Write-Host "Moving Game Save scripts and prefabs back into the 'GameSave' folder within Assets."
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Scripts')) -Destination $gameSaveAssetsPath
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Prefabs')) -Destination $gameSaveAssetsPath 
+Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Examples')) -Destination $gameSaveAssetsPath 
 Remove-Item $tempGameSaveFolder -recurse
 
 if(!$unityProcess.HasExited)

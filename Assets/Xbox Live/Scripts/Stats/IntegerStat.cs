@@ -15,30 +15,14 @@ using Microsoft.Xbox.Services.Statistics.Manager;
 [Serializable]
 public class IntegerStat : StatBase<int>
 {
-    private bool isLocalUserAdded = false;
-    private void Awake()
+    protected override void HandleGetStat(XboxLiveUser user, string statName)
     {
-        if (XboxLiveComponent.Instance.User == null || !XboxLiveComponent.Instance.User.IsSignedIn)
-        {
-            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
-            {
-                this.HandleGetStat(args.User, this.Name);
-            };
-        }
-        else
-        {
-            this.HandleGetStat(XboxLiveComponent.Instance.User, this.Name);
-        }
-    }
-
-    private void HandleGetStat(XboxLiveUser user, string statName)
-    {
+        this.isLocalUserAdded = true;
         StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
         if (statValue != null)
         {
             this.Value = statValue.AsInteger();
         }
-        this.isLocalUserAdded = true;
     }
 
     public void Increment()
@@ -61,7 +45,7 @@ public class IntegerStat : StatBase<int>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsInteger(XboxLiveComponent.Instance.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsInteger(this.XboxLiveUser.User, this.Name, value);
             }
             base.Value = value;
         }

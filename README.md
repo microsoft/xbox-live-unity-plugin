@@ -1,7 +1,8 @@
 ## Welcome!
 
-The Xbox Live Unity Plugin provides a way for developers to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.
-To get access to the Xbox Live service, please apply to the [ID@Xbox program](http://www.xbox.com/en-us/Developers/id).
+The Xbox Live Unity Plugin provides a way for developers in the Xbox Live Creators Program to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.  For more information about the Xbox Live Creators Program go to [http://aka.ms/xblcp](http://aka.ms/xblcp).
+
+For ID@Xbox developers, this Xbox Live Unity Plugin does not yet support all the features you will need.  Instead, please follow the documentation at [http://aka.ms/xbldocs](http://aka.ms/xbldocs)
 
 ## Overview
 The Unity Plugin is broken into the following parts
@@ -88,10 +89,10 @@ For developers in the Xbox Live Creators Program, you can submit a new idea or v
 
 ### Xbox Live GitHub projects
 *   [Xbox Live Service API for C++](https://github.com/Microsoft/xbox-live-api)
-*   [Xbox Live Service API for C#](https://github.com/Microsoft/xbox-live-api-csharp)
 *   [Xbox Live Samples](https://github.com/Microsoft/xbox-live-samples)
 *   [Xbox Live Unity Plugin](https://github.com/Microsoft/xbox-live-unity-plugin)
 *   [Xbox Live Resiliency Fiddler Plugin](https://github.com/Microsoft/xbox-live-resiliency-fiddler-plugin)
 *   [Xbox Live Trace Analyzer](https://github.com/Microsoft/xbox-live-trace-analyzer)
+*   [Xbox Live Powershell Cmdlets](https://github.com/Microsoft/xbox-live-powershell-module)
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

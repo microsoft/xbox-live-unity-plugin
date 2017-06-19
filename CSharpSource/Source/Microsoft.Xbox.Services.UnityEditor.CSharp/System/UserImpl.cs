@@ -18,13 +18,17 @@ namespace Microsoft.Xbox.Services.System
         public string WebAccountId { get; set; }
         public AuthConfig AuthConfig { get; set; }
 
+        private static int numberOfInstances;
+        private static Random random = new Random();
+		
         public Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh)
         {
             if (XboxLive.UseMockServices)
             {
                 this.IsSignedIn = true;
-                this.Gamertag = "Fake User";
-                this.XboxUserId = "123456789";
+                numberOfInstances++;
+                this.Gamertag = "Fake User " + numberOfInstances;
+                this.XboxUserId = random.Next(100000, 999999).ToString();
 
                 return Task.FromResult(new SignInResult(SignInStatus.Success));
             }

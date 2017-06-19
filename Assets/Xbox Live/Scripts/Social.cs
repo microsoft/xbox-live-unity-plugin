@@ -17,6 +17,7 @@ public class Social : MonoBehaviour
     public Dropdown presenceFilterDropdown;
     public Transform contentPanel;
     public ScrollRect scrollRect;
+    public XboxLiveUserInfo XboxLiveUser;
 
     private Dictionary<int, XboxSocialUserGroup> socialUserGroups = new Dictionary<int, XboxSocialUserGroup>();
     private ObjectPool entryObjectPool;
@@ -27,33 +28,51 @@ public class Social : MonoBehaviour
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         SocialManagerComponent.Instance.EventProcessed += this.OnEventProcessed;
 
-        presenceFilterDropdown.options.Clear();
-        presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
-        presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.AllOnline.ToString() });
-        presenceFilterDropdown.value = 0;
-        presenceFilterDropdown.RefreshShownValue();
+        this.presenceFilterDropdown.options.Clear();
+        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
+        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.AllOnline.ToString() });
+        this.presenceFilterDropdown.value = 0;
+        this.presenceFilterDropdown.RefreshShownValue();
 
-        presenceFilterDropdown.onValueChanged.AddListener(delegate
+        this.presenceFilterDropdown.onValueChanged.AddListener(delegate
         {
-            PresenceFilterValueChangedHandler(presenceFilterDropdown);
+            this.PresenceFilterValueChangedHandler(this.presenceFilterDropdown);
         });
+    }
+
+    private void Start()
+    {
+        if (this.XboxLiveUser == null)
+        {
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
     }
 
     private void OnEventProcessed(object sender, SocialEvent socialEvent)
     {
-        switch (socialEvent.EventType)
+        if (this.XboxLiveUser.User != null && socialEvent.User.Gamertag == this.XboxLiveUser.User.Gamertag)
         {
-            case SocialEventType.LocalUserAdded:
-                if (socialEvent.Exception == null)
-                {
-                    CreateDefaulSocialGraphs();
-                }
-                break;
-            case SocialEventType.SocialUserGroupLoaded:
-            case SocialEventType.SocialUserGroupUpdated:
-            case SocialEventType.PresenceChanged:
-                this.RefreshSocialGroups();
-                break;
+            switch (socialEvent.EventType)
+            {
+                case SocialEventType.LocalUserAdded:
+                    if (socialEvent.Exception == null)
+                    {
+                        this.CreateDefaulSocialGraphs();
+                    }
+                    break;
+                case SocialEventType.SocialUserGroupLoaded:
+                case SocialEventType.SocialUserGroupUpdated:
+                case SocialEventType.PresenceChanged:
+                    this.RefreshSocialGroups();
+                    break;
+            }
+        }
+        else
+        {
+            if (this.XboxLiveUser == null)
+            {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            }
         }
     }
 
@@ -64,17 +83,17 @@ public class Social : MonoBehaviour
 
     private void CreateDefaulSocialGraphs()
     {
-        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(XboxLiveComponent.Instance.User, PresenceFilter.All, RelationshipFilter.Friends);
+        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.All, RelationshipFilter.Friends);
         this.socialUserGroups.Add(0, allSocialUserGroup);
 
-        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(XboxLiveComponent.Instance.User, PresenceFilter.AllOnline, RelationshipFilter.Friends);
+        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.AllOnline, RelationshipFilter.Friends);
         this.socialUserGroups.Add(1, allOnlineSocialUserGroup);
     }
 
     private void RefreshSocialGroups()
     {
         XboxSocialUserGroup socialUserGroup;
-        if (!this.socialUserGroups.TryGetValue(presenceFilterDropdown.value, out socialUserGroup))
+        if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup))
         {
             throw new Exception("Invalid PresenceFilter selected");
         }
