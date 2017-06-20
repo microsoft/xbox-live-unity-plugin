@@ -22,6 +22,7 @@ namespace UWPIntegration
     using System.Threading.Tasks;
     using Windows.UI.Xaml.Data;
     using System.Diagnostics;
+    using Microsoft.Xbox.Services.System;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -180,6 +181,24 @@ namespace UWPIntegration
         {
             if (!this.User.IsSignedIn) return;
             this.StatsManager.RequestFlushToService(this.User);
+        }
+
+        private async void ShowProfileCard_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await TitleCallableUI.ShowProfileCardUIAsync(this.User, "2814613569642996");
+        }
+
+        private async void CheckPrivilege_Click(object sender, RoutedEventArgs e)
+        {
+            // If you want to see the dialog, change your privacy settings to block 
+            // multilayer sessions for this account on the console
+
+            var checkPermission = TitleCallableUI.CheckPrivilegeSilently(this.User, GamingPrivilege.MultiplayerSessions);
+            if (!checkPermission)
+            {
+                // Show UI if CheckPrivilegeSilently fails.
+                var result = await TitleCallableUI.CheckPrivilegeWithUIAsync(this.User, GamingPrivilege.MultiplayerSessions, "");
+            }
         }
 
         private async void CheckPermissions_Click(object sender, RoutedEventArgs e)

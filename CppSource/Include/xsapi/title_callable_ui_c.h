@@ -97,27 +97,22 @@ TCUIShowProfileCardUI(
     _In_opt_ void* completionRoutineContext
     );
 
-typedef struct TCUICheckGamingPrivilegeSilentlyResult
+typedef struct TCUICheckGamingPrivilegeResult
 {
-    XboxLiveResult result;
     bool hasPrivilege;
-} TCUICheckGamingPrivilegeSilentlyResult;
+    XboxLiveResult result;
+} TCUICheckGamingPrivilegeResult;
 
-typedef void(*TCUICheckGamingPrivilegeSilentlyCompletionRoutine)(
-    _In_ TCUICheckGamingPrivilegeSilentlyResult result,
+typedef void(*TCUICheckGamingPrivilegeCompletionRoutine)(
+    _In_ TCUICheckGamingPrivilegeResult result,
     _In_opt_ void* completionRoutineContext
     );
 
 XSAPI_DLLEXPORT void XSAPI_CALL
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
-    _In_opt_ Windows::System::User^ user,
-    _In_ TCUICheckGamingPrivilegeSilentlyCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
-    );
-
-typedef void(*TCUICheckGamingPrivilegeWithUICompletionRoutine)(
-    _In_ XboxLiveResult result,
+    /*_In_ Windows::System::User^ user,*/
+    _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext
     );
 
@@ -125,8 +120,8 @@ XSAPI_DLLEXPORT void XSAPI_CALL
 TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,
-    _In_opt_ Windows::System::User^ user,
-    _In_ TCUICheckGamingPrivilegeWithUICompletionRoutine completionRoutine,
+    /*_In_ Windows::System::User^ user,*/
+    _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext
     );
 

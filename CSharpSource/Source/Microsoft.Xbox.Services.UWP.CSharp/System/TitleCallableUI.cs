@@ -7,19 +7,39 @@ namespace Microsoft.Xbox.Services.System
     using global::System.Collections.Generic;
     using global::System.Diagnostics;
     using global::System.Runtime.InteropServices;
+    using global::System.Threading;
     using global::System.Threading.Tasks;
     using Microsoft.Xbox.Services;
 
     public class TitleCallableUI
     {
+        [StructLayout(LayoutKind.Sequential)]
+        private struct TCUICheckGamingPrivilegeResult
+        {
+            [MarshalAsAttribute(UnmanagedType.U1)]
+            public bool hasPrivilege;
+
+            public XboxLiveResult xblResult;
+        }
+
         private delegate void TCUIShowProfileCardUICompletionRoutine(XboxLiveResult result, IntPtr completionRoutineContext);
         private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, TCUIShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext);
 
-        private static void show_profile_card_ui_complete(XboxLiveResult result, IntPtr completionRoutineContext)
+        private delegate void TCUICheckGamingPrivilegeCompletionRoutine(TCUICheckGamingPrivilegeResult result, IntPtr completionRoutineContext);
+        private delegate int TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, TCUICheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
+        private delegate int TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, TCUICheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
+
+        private static TaskCompletionSource<XboxLiveResult> showProfileCardUITCS;
+        private static TaskCompletionSource<bool> checkPrivilegeSilentlyTCS;
+        private static TaskCompletionSource<bool> checkPrivilegeWithUITCS;
+
+        private static void ShowProfileCardUIComplete(XboxLiveResult result, IntPtr completionRoutineContext)
         {
-            Debug.WriteLine("show_profile_card_ui_complete");
+            Debug.WriteLine("ShowProfileCardUIComplete");
             Debug.WriteLine("errorCode: " + result.errorCode);
             Debug.WriteLine("errorMessage: " + result.errorMessage);
+
+            showProfileCardUITCS.SetResult(result);
         }
 
         /// <summary>
@@ -31,18 +51,29 @@ namespace Microsoft.Xbox.Services.System
         /// An interface for tracking the progress of the asynchronous call.
         /// The operation completes when the UI is closed.
         /// </returns>
-        public static Task ShowProfileCardUIAsync(XboxLiveUser user, string targetXboxUserId)
+        public static Task<XboxLiveResult> ShowProfileCardUIAsync(XboxLiveUser user, string targetXboxUserId)
         {
-            return Task.FromResult(targetXboxUserId)
-                .ContinueWith(t =>
-                {
-                    XboxLive.Instance.Invoke<int, TCUIShowProfileCardUI>(Marshal.StringToHGlobalUni(targetXboxUserId), (TCUIShowProfileCardUICompletionRoutine)show_profile_card_ui_complete, (IntPtr)3);
-                });
+            showProfileCardUITCS = new TaskCompletionSource<XboxLiveResult>();
 
-            //return Microsoft.Xbox.Services.WinRT.TitleCallableUI.ShowProfileCardUIAsync(
-            //        targetXboxUserId,
-            //        user.SystemUser
-            //        ).AsTask();
+            Task.Run(() =>
+            {
+                XboxLive.Instance.Invoke<int, TCUIShowProfileCardUI>(
+                    Marshal.StringToHGlobalUni(targetXboxUserId),
+                    (TCUIShowProfileCardUICompletionRoutine)ShowProfileCardUIComplete,
+                    (IntPtr)3
+                    );
+            });
+
+            return showProfileCardUITCS.Task;
+        }
+
+        private static void CheckPrivilegeSilentlyComplete(TCUICheckGamingPrivilegeResult result, IntPtr completionRoutineContext)
+        {
+            Debug.WriteLine("CheckPrivilegeSilentlyComplete");
+            Debug.WriteLine("errorCode: " + result.xblResult.errorCode);
+            Debug.WriteLine("errorMessage: " + result.xblResult.errorMessage);
+
+            checkPrivilegeSilentlyTCS.SetResult(result.hasPrivilege);
         }
 
         /// <summary>
@@ -55,17 +86,29 @@ namespace Microsoft.Xbox.Services.System
         /// </returns>
         public static bool CheckPrivilegeSilently(XboxLiveUser user, GamingPrivilege privilege)
         {
-            return true;
-            //string scope;
-            //string policy;
-            //GetPrivilegeScopePolicy(out scope, out policy);
+            checkPrivilegeSilentlyTCS = new TaskCompletionSource<bool>();
 
-            //return Microsoft.Xbox.Services.WinRT.TitleCallableUI.CheckPrivilegeSilently(
-            //        (Microsoft.Xbox.Services.WinRT.GamingPrivilege)privilege,
-            //        user.SystemUser,
-            //        scope,
-            //        policy
-            //        );
+            Task.Run(() =>
+            {
+                XboxLive.Instance.Invoke<int, TCUICheckGamingPrivilegeSilently>(
+                    privilege,
+                    //null,
+                    (TCUICheckGamingPrivilegeCompletionRoutine)CheckPrivilegeSilentlyComplete,
+                    (IntPtr)3
+                    );
+            });
+
+            checkPrivilegeSilentlyTCS.Task.Wait();
+            return checkPrivilegeSilentlyTCS.Task.Result;
+        }
+
+        private static void CheckPrivilegeWithUIComplete(TCUICheckGamingPrivilegeResult result, IntPtr completionRoutineContext)
+        {
+            Debug.WriteLine("CheckPrivilegeWithUIComplete");
+            Debug.WriteLine("errorCode: " + result.xblResult.errorCode);
+            Debug.WriteLine("errorMessage: " + result.xblResult.errorMessage);
+
+            checkPrivilegeWithUITCS.SetResult(result.hasPrivilege);
         }
 
         /// <summary>
@@ -81,33 +124,19 @@ namespace Microsoft.Xbox.Services.System
         /// </returns>
         public static Task<bool> CheckPrivilegeWithUIAsync(XboxLiveUser user, GamingPrivilege privilege, string friendlyMessage)
         {
-            return Task.FromResult(true);
-            //string scope;
-            //string policy;
-            //GetPrivilegeScopePolicy(out scope, out policy);
+            checkPrivilegeWithUITCS = new TaskCompletionSource<bool>();
 
-            //return Microsoft.Xbox.Services.WinRT.TitleCallableUI.CheckPrivilegeWithUIAsync(
-            //        (Microsoft.Xbox.Services.WinRT.GamingPrivilege)privilege,
-            //        friendlyMessage,
-            //        user.SystemUser,
-            //        scope,
-            //        policy
-            //        ).AsTask();
-        }
-
-        private static void GetPrivilegeScopePolicy(out string scope, out string policy)
-        {
-            var appConfig = XboxLiveAppConfiguration.Instance;
-            var authConfig = new AuthConfig
+            Task.Run(() =>
             {
-                Sandbox = appConfig.Sandbox,
-                // EnvrionmentPrefix = appConfig.EnvironmentPrefix,
-                // Envrionment = appConfig.Environment,
-                UseCompactTicket = appConfig.UseFirstPartyToken
-            };
+                XboxLive.Instance.Invoke<int, TCUICheckGamingPrivilegeWithUI>(
+                    privilege,
+                    Marshal.StringToHGlobalUni(friendlyMessage),
+                    (TCUICheckGamingPrivilegeCompletionRoutine)CheckPrivilegeWithUIComplete,
+                    (IntPtr)3
+                    );
+            });
 
-            scope = authConfig.RPSTicketService;
-            policy = authConfig.RPSTicketPolicy;
+            return checkPrivilegeWithUITCS.Task;
         }
     }
 }
