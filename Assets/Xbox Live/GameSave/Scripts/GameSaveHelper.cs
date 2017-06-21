@@ -13,6 +13,8 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
     using global::System.Collections.Generic;
     using global::System.Text;
 
+    using UnityEngine;
+
 #if NETFX_CORE
     using global::System.Runtime.InteropServices.WindowsRuntime;
 #endif
@@ -79,7 +81,10 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception("Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
                 resultCallBack(GameSaveStatus.Ok);
@@ -107,10 +112,13 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception("Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
-            var blobContent = "Fake Content";
+                var blobContent = "Fake Content";
             var blobContentBytes = Encoding.UTF8.GetBytes(blobContent);
             foreach (var blob in blobsToRead)
             {
@@ -144,10 +152,13 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception("Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
-            var blobContent = "Fake Content";
+                var blobContent = "Fake Content";
             foreach (var blob in blobsToRead)
             {
                 returnDictionary.Add(blob, blobContent);
@@ -176,8 +187,10 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception(
-                        "Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
                 resultCallBack(GameSaveStatus.Ok);
@@ -202,13 +215,13 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                                 foreach (var resultgameSaveContainerInfo in gameSaveQueryResults.Value)
                                 {
                                     var containerInfo = new StorageContainerInfo
-                                                            {
-                                                                Name = resultgameSaveContainerInfo.Name,
-                                                                DisplayName = resultgameSaveContainerInfo.DisplayName,
-                                                                LastModifiedTime = resultgameSaveContainerInfo.LastModifiedTime,
-                                                                NeedsSync = resultgameSaveContainerInfo.NeedsSync,
-                                                                TotalSize = resultgameSaveContainerInfo.TotalSize
-                                                            };
+                                    {
+                                        Name = resultgameSaveContainerInfo.Name,
+                                        DisplayName = resultgameSaveContainerInfo.DisplayName,
+                                        LastModifiedTime = resultgameSaveContainerInfo.LastModifiedTime,
+                                        NeedsSync = resultgameSaveContainerInfo.NeedsSync,
+                                        TotalSize = resultgameSaveContainerInfo.TotalSize
+                                    };
                                     resultList.Add(containerInfo);
                                 }
 
@@ -224,11 +237,13 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception(
-                        "Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
-                    var resultList = new List<StorageContainerInfo>();
+                var resultList = new List<StorageContainerInfo>();
                     var firstContainer = new StorageContainerInfo
                     {
                         Name = "Container01",
@@ -270,8 +285,10 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
                 else
                 {
-                    throw new Exception(
-                        "Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                    {
+                        Debug.Log("An Exception Occured: Game Save Provider hasn't been initialized yet. Initialize needs to be called first.");
+                    }
                 }
 #else
                 resultCallBack(1024);
@@ -296,10 +313,9 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 {
                     IBuffer loadedBuffer;
                     loadResult.Value.TryGetValue(blobName, out loadedBuffer);
-                    if (loadedBuffer == null)
+                    if (loadedBuffer == null && XboxLiveDebugManager.Instance.DebugLogsOn)
                     {
-                        throw new Exception(
-                            string.Format("Didn't find expected blob \"{0}\" in the loaded data.", blobName));
+                        Debug.LogFormat("An Exception Occured: Didn't find expected blob \"{0}\" in the loaded data.", blobName);
                     }
 
                     resultBuffers.Add(blobName, loadedBuffer);
@@ -308,7 +324,12 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
             }
             else
             {
-                throw new Exception(string.Format("Loading Data failed. Error Status: {0}", loadResult.Status));
+                if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                {
+                    Debug.LogFormat("An Exception Occured: Loading Data failed. Error Status: {0}", loadResult.Status);
+                }
+
+                return null;
             }
         }
 

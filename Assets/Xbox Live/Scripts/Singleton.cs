@@ -22,7 +22,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             lock (syncRoot)
             {
-                if (applicationIsQuitting)
+                if (applicationIsQuitting && XboxLiveDebugManager.Instance.DebugLogsOn)
                 {
                     Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
                                      "' already destroyed on application quit." +
@@ -32,7 +32,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
                 if (instance == null)
                 {
-                    if (FindObjectsOfType(typeof(T)).Length > 1)
+                    if (FindObjectsOfType(typeof(T)).Length > 1 && XboxLiveDebugManager.Instance.DebugLogsOn)
                     {
                         Debug.LogError("[Singleton] Something went wrong.  There should never be more than 1 singleton!");
                         return instance;
@@ -47,7 +47,10 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
                         DontDestroyOnLoad(singleton);
 
-                        Debug.Log("[Singleton] " + typeof(T) + " was created with DontDestroyOnLoad.");
+                        if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                        {
+                            Debug.Log("[Singleton] " + typeof(T) + " was created with DontDestroyOnLoad.");
+                        }
                     }
                 }
 
