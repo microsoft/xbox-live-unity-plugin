@@ -106,7 +106,7 @@
     <MakeDir Directories="$(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\external\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\..\Libs\UWP\*.dll $(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\..\Libs\UWP\*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
