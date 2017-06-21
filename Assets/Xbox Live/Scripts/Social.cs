@@ -30,7 +30,7 @@ public class Social : MonoBehaviour
 
         this.presenceFilterDropdown.options.Clear();
         this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
-        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.AllOnline.ToString() });
+        this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = "All Online" });
         this.presenceFilterDropdown.value = 0;
         this.presenceFilterDropdown.RefreshShownValue();
 
@@ -50,7 +50,12 @@ public class Social : MonoBehaviour
 
     private void OnEventProcessed(object sender, SocialEvent socialEvent)
     {
-        if (this.XboxLiveUser.User != null && socialEvent.User.Gamertag == this.XboxLiveUser.User.Gamertag)
+        if (this.XboxLiveUser == null)
+        {
+            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && socialEvent.User.Gamertag == this.XboxLiveUser.User.Gamertag)
         {
             switch (socialEvent.EventType)
             {
