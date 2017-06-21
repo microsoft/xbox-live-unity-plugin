@@ -35,26 +35,6 @@ bool
 XSAPI_CALL
 xbl_thread_is_async_op_pending();
 
-/// Set to 0 to disable
-/// Defaults to 2
-XSAPI_DLLEXPORT
-void
-XSAPI_CALL
-xbl_thread_set_thread_pool_num_threads(_In_ long targetNumThreads);
-
-/// thread index of -1 to set default
-/// calls SetThreadIdealProcessor
-XSAPI_DLLEXPORT
-void
-XSAPI_CALL
-xbl_thread_set_thread_ideal_processor(_In_ int threadIndex, _In_ uint32_t dwIdealProcessor);
-
-XSAPI_DLLEXPORT
-double
-XSAPI_CALL
-xbl_get_version();
-
-
 #if defined(__cplusplus)
 } // end extern "C"
 #endif // defined(__cplusplus)

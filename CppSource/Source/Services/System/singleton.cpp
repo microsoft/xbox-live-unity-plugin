@@ -34,10 +34,3 @@ get_xsapi_singleton(_In_ bool createIfRequired)
 
     return g_xsapiSingleton.get();
 }
-
-double
-XSAPI_CALL
-xbl_get_version()
-{
-    return 5.0f;
-}

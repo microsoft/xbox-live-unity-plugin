@@ -103,18 +103,3 @@ xbl_thread_is_async_op_done(_In_ XSAPI_ASYNC_HANDLE handle)
     return (info->state == completed);
 }
 
-void
-XSAPI_CALL
-xbl_thread_set_thread_pool_num_threads(_In_ long targetNumThreads)
-{
-    get_xsapi_singleton()->threadPool->set_target_num_active_threads(targetNumThreads);
-}
-
-void
-XSAPI_CALL
-xbl_thread_set_thread_ideal_processor(_In_ int threadIndex, _In_ uint32_t dwIdealProcessor)
-{
-    get_xsapi_singleton()->threadPool->set_thread_ideal_processor(threadIndex, dwIdealProcessor);
-}
-
-
