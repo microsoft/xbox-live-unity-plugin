@@ -41,7 +41,7 @@ namespace Microsoft.Xbox.Services
             }
             catch (Exception ex)
             {
-                throw new XboxException("Failed to load Microsoft.Xbox.Services.dll");
+                throw new XboxException("Failed to load Microsoft.Xbox.Services.140.UWP.C.dll");
             }
         }
 

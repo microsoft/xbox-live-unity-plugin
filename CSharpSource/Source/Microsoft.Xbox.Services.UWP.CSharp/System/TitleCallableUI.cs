@@ -61,7 +61,7 @@ namespace Microsoft.Xbox.Services.System
         /// <summary>
         /// Checks if the current user has a specific privilege
         /// </summary>
-        /// /// /// <param name="user">XboxLiveUser that identifies the user to show the UI on behalf of.</param>
+        /// <param name="user">XboxLiveUser that identifies the user to show the UI on behalf of.</param>
         /// <param name="privilege">The privilege to check.</param>
         /// <returns>
         /// A boolean which is true if the current user has the privilege.
@@ -86,7 +86,7 @@ namespace Microsoft.Xbox.Services.System
         /// <summary>
         /// Checks if the current user has a specific privilege and if it doesn't, it shows UI 
         /// </summary>
-        /// /// <param name="user">XboxLiveUser that identifies the user to show the UI on behalf of.</param>
+        /// <param name="user">XboxLiveUser that identifies the user to show the UI on behalf of.</param>
         /// <param name="privilege">The privilege to check.</param>
         /// <param name="friendlyMessage">Text to display in addition to the stock text about the privilege</param>
         /// <returns>

@@ -60,19 +60,19 @@ check_gaming_privilege_silently_execute_routine(_In_ const std::shared_ptr<xsapi
     auto args = std::dynamic_pointer_cast<xbl_args_tcui_check_gaming_privilege>(info->args);
     auto result = xbox::services::system::title_callable_ui::check_gaming_privilege_silently((xbox::services::system::gaming_privilege)args->privilege);
 
-    TCUICheckGamingPrivilegeResult checkGameingPrivilegeResult;
+    TCUICheckGamingPrivilegeResult checkGamingPrivilegeResult;
     XboxLiveResult xboxLiveResult;
     xboxLiveResult.errorCode = result.err().value();
     std::wstring errMessage = std::wstring(result.err_message().begin(), result.err_message().end());
     xboxLiveResult.errorMessage = errMessage.c_str();
 
-    checkGameingPrivilegeResult.result = xboxLiveResult;
-    checkGameingPrivilegeResult.hasPrivilege = result.payload();
+    checkGamingPrivilegeResult.result = xboxLiveResult;
+    checkGamingPrivilegeResult.hasPrivilege = result.payload();
 
     if (info->completionRoutine != nullptr)
     {
         TCUICheckGamingPrivilegeCompletionRoutine callbackFn = static_cast<TCUICheckGamingPrivilegeCompletionRoutine>(info->completionRoutine);
-        callbackFn(checkGameingPrivilegeResult, info->completionRoutineContext);
+        callbackFn(checkGamingPrivilegeResult, info->completionRoutineContext);
     }
 }
 
@@ -102,19 +102,19 @@ check_gaming_privilege_with_ui_execute_routine(_In_ const std::shared_ptr<xsapi_
         string_t(args->friendlyMessage)
         ).get();
 
-    TCUICheckGamingPrivilegeResult checkGameingPrivilegeResult;
+    TCUICheckGamingPrivilegeResult checkGamingPrivilegeResult;
     XboxLiveResult xboxLiveResult;
     xboxLiveResult.errorCode = result.err().value();
     std::wstring errMessage = std::wstring(result.err_message().begin(), result.err_message().end());
     xboxLiveResult.errorMessage = errMessage.c_str();
 
-    checkGameingPrivilegeResult.result = xboxLiveResult;
-    checkGameingPrivilegeResult.hasPrivilege = result.payload();
+    checkGamingPrivilegeResult.result = xboxLiveResult;
+    checkGamingPrivilegeResult.hasPrivilege = result.payload();
 
     if (info->completionRoutine != nullptr)
     {
         TCUICheckGamingPrivilegeCompletionRoutine callbackFn = static_cast<TCUICheckGamingPrivilegeCompletionRoutine>(info->completionRoutine);
-        callbackFn(checkGameingPrivilegeResult, info->completionRoutineContext);
+        callbackFn(checkGamingPrivilegeResult, info->completionRoutineContext);
     }
 }
 
