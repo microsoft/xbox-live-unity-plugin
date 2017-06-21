@@ -183,9 +183,9 @@ namespace UWPIntegration
             this.StatsManager.RequestFlushToService(this.User);
         }
 
-        private async void ShowProfileCard_Click(object sender, RoutedEventArgs e)
+        private void ShowProfileCard_Click(object sender, RoutedEventArgs e)
         {
-            var result = await TitleCallableUI.ShowProfileCardUIAsync(this.User, "2814613569642996");
+            TitleCallableUI.ShowProfileCardUIAsync(this.User, "2814613569642996");
         }
 
         private async void CheckPrivilege_Click(object sender, RoutedEventArgs e)
@@ -193,11 +193,11 @@ namespace UWPIntegration
             // If you want to see the dialog, change your privacy settings to block 
             // multilayer sessions for this account on the console
 
-            var checkPermission = TitleCallableUI.CheckPrivilegeSilently(this.User, GamingPrivilege.MultiplayerSessions);
+            var checkPermission = TitleCallableUI.CheckGamingPrivilegeSilently(this.User, GamingPrivilege.MultiplayerSessions);
             if (!checkPermission)
             {
                 // Show UI if CheckPrivilegeSilently fails.
-                var result = await TitleCallableUI.CheckPrivilegeWithUIAsync(this.User, GamingPrivilege.MultiplayerSessions, "");
+                var result = await TitleCallableUI.CheckGamingPrivilegeWithUI(this.User, GamingPrivilege.MultiplayerSessions, "");
             }
         }
 
