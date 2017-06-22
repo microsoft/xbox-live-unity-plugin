@@ -24,7 +24,7 @@ public class XboxLiveServicesSettings : Singleton<XboxLiveServicesSettings> {
     {
         if (Object.FindObjectOfType<XboxLiveServicesSettings>() == null)
         {
-            Debug.LogErrorFormat("Make sure to drag at least one instance of the XboxLiveServicesSettings prefab on your initial scene.");
+            Debug.LogErrorFormat("Make sure to drag at least one instance of the XboxLiveServices prefab on your initial scene.");
         }
     }
 }
