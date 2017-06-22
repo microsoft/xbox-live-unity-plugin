@@ -28,13 +28,13 @@ public class XboxLiveUserInfo : MonoBehaviour
         if (XboxLive.Instance.AppConfig == null || XboxLive.Instance.AppConfig.TitleId == 0 && Application.isPlaying)
         {
             const string message = "Xbox Live is not configured, but the game is attempting to use Xbox Live functionality.  You must update the configuration in 'Xbox Live > Configuration' before building the game to enable Xbox Live.";
-            if (Application.isEditor && XboxLiveDebugManager.Instance.DebugLogsOn)
+            if (Application.isEditor && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
                 Debug.LogWarning(message);
             }
             else
             {
-                if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                 {
                     Debug.LogError(message);
                 }

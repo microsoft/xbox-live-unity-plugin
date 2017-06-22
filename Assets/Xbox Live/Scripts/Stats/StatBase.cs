@@ -36,7 +36,7 @@ public abstract class StatBase : MonoBehaviour
 
     private void Awake()
     {
-        XboxLiveDebugManager.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
 
         // Ensure that a StatsManager has been created so that stats will be sync with the service as they are modified.
         var statsManager = StatsManagerComponent.Instance;

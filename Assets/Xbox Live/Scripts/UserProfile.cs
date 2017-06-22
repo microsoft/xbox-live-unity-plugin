@@ -48,7 +48,7 @@ public class UserProfile : MonoBehaviour
     public void Awake()
     {
         this.EnsureEventSystem();
-        XboxLiveDebugManager.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
         if (!XboxLiveUserManager.Instance.IsInitialized)
         {
             XboxLiveUserManager.Instance.Initialize();

@@ -316,6 +316,7 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                     if (loadedBuffer == null && XboxLiveDebugManager.Instance.DebugLogsOn)
                     {
                         Debug.LogFormat("An Exception Occured: Didn't find expected blob \"{0}\" in the loaded data.", blobName);
+                        return null;
                     }
 
                     resultBuffers.Add(blobName, loadedBuffer);

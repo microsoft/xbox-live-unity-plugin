@@ -20,7 +20,7 @@ public static class UnityComponentExtensions
     /// </remarks>
     public static void EnsureInCanvas(this Component component)
     {
-        if (component.GetComponentInParent<Canvas>() == null && XboxLiveDebugManager.Instance.DebugLogsOn)
+        if (component.GetComponentInParent<Canvas>() == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
         {
             Debug.LogErrorFormat("UI Object '{0}' ({1}) is not a child of a Canvas so it will not render.  Create a Canvas element and place the element inside it.", component.name, component.GetType().Name);
         }
@@ -36,7 +36,7 @@ public static class UnityComponentExtensions
     /// </remarks>
     public static void EnsureEventSystem(this Component component)
     {
-        if (Object.FindObjectOfType<EventSystem>() == null && XboxLiveDebugManager.Instance.DebugLogsOn)
+        if (Object.FindObjectOfType<EventSystem>() == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
         {
             Debug.LogErrorFormat("Interactive UI element '{0}' ({1}) requires an EventSystem component to function.  Create an EventSystem using 'GameObject > UI > EventSystem'.  A temporary event system will be created in the mean time.", component.name, component.GetType().Name);
 

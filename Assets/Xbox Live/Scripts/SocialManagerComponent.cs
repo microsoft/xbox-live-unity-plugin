@@ -36,7 +36,7 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
 
             foreach (SocialEvent socialEvent in socialEvents)
             {
-                if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                 {
                     Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
                 }
@@ -45,7 +45,7 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
         }
         catch (Exception e)
         {
-            if (XboxLiveDebugManager.Instance.DebugLogsOn)
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
                 Debug.Log("An Exception Occured: " + e.ToString());
             }

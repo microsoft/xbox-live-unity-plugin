@@ -32,7 +32,7 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
 
     private void Update()
     {
-        if (this.manager == null && XboxLiveDebugManager.Instance.DebugLogsOn)
+        if (this.manager == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
         {
             Debug.LogWarning("Somehow the manager got nulled out.");
             return;
@@ -40,7 +40,7 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
         List<StatEvent> events = this.manager.DoWork();
         foreach (StatEvent statEvent in events)
         {
-            if (XboxLiveDebugManager.Instance.DebugLogsOn)
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
                 Debug.LogFormat("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.LocalUser.Gamertag);
             }

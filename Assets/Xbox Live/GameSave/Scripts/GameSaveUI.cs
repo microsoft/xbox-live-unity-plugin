@@ -36,7 +36,7 @@ public class GameSaveUI : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        XboxLiveDebugManager.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
         this.logText = string.Empty;
         this.random = new System.Random();
         this.gameSaveHelper = new GameSaveHelper();

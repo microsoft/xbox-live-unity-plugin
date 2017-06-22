@@ -5,14 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class XboxLiveDebugManager : Singleton<XboxLiveDebugManager> {
+public class XboxLiveServicesSettings : Singleton<XboxLiveServicesSettings> {
 
     public bool DebugLogsOn = true;
 
     private void Awake()
     {
-        // Ensure that a XboxLiveDebugManager Instance has been created.
-        var manager = XboxLiveDebugManager.Instance;
+        // Ensure that a XboxLiveServicesSettings Instance has been created.
+        var manager = XboxLiveServicesSettings.Instance;
         DontDestroyOnLoad(this);
     }
 
@@ -22,9 +22,9 @@ public class XboxLiveDebugManager : Singleton<XboxLiveDebugManager> {
     /// </summary>
     public static void EnsureXboxLiveDebugManager()
     {
-        if (Object.FindObjectOfType<XboxLiveDebugManager>() == null)
+        if (Object.FindObjectOfType<XboxLiveServicesSettings>() == null)
         {
-            Debug.LogErrorFormat("Make sure to drag at least one instance of the XboxLiveDebugManager prefab on your initial scene.");
+            Debug.LogErrorFormat("Make sure to drag at least one instance of the XboxLiveServicesSettings prefab on your initial scene.");
         }
     }
 }

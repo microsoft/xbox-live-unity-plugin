@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4896899429925906}
   - component: {fileID: 114670622419244234}
   m_Layer: 0
-  m_Name: XboxLiveDebugManager
+  m_Name: XboxLiveServices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

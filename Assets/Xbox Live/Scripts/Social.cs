@@ -25,7 +25,7 @@ public class Social : MonoBehaviour
     private void Awake()
     {
         this.EnsureEventSystem();
-        XboxLiveDebugManager.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         SocialManagerComponent.Instance.EventProcessed += this.OnEventProcessed;
 
@@ -94,9 +94,10 @@ public class Social : MonoBehaviour
     private void RefreshSocialGroups()
     {
         XboxSocialUserGroup socialUserGroup;
-        if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup) && XboxLiveDebugManager.Instance.DebugLogsOn)
+        if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup) && XboxLiveServicesSettings.Instance.DebugLogsOn)
         {
             Debug.Log("An Exception Occured: Invalid Presence Filter selected");
+            return;
         }
 
         while (this.contentPanel.childCount > 0)
