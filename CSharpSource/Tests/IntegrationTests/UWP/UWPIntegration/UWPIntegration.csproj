@@ -137,11 +137,6 @@
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <Target Name="CopyCdllToAppx" AfterTargets="Build">
-    <Message Importance="high" Text="Copying C dll to Appx folder $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.dll $(TargetDir)AppX\" />    
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.pdb $(TargetDir)AppX\" />    
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
