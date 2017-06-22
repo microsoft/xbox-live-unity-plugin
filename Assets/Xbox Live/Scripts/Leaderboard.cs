@@ -59,10 +59,14 @@ public class Leaderboard : MonoBehaviour
     private void Awake()
     {
         this.EnsureEventSystem();
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
 
         if (this.stat == null)
         {
-            Debug.LogFormat("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.LogFormat("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
+            }
             return;
         }
 

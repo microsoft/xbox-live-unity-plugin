@@ -26,8 +26,7 @@ public class GameSaveUI : MonoBehaviour
     public Scrollbar ScrollBar;
     public RectTransform ScrollRect;
     public XboxLiveUserInfo XboxLiveUser;
-
-    private GUIStyle guiStyle;
+    
     private string logText;
     private System.Random random;
     private int gameData;
@@ -37,8 +36,8 @@ public class GameSaveUI : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
         this.logText = string.Empty;
-        this.guiStyle = new GUIStyle();
         this.random = new System.Random();
         this.gameSaveHelper = new GameSaveHelper();
         this.logLines = new List<string>();
@@ -76,7 +75,7 @@ public class GameSaveUI : MonoBehaviour
         }
         catch (Exception ex)
         {
-            this.LogLine("InitializeSaveSystem failed: " + ex.Message);
+            this.LogLine("Initializing Save System failed: " + ex.Message);
         }
     }
 

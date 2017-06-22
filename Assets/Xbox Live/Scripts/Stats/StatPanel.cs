@@ -26,7 +26,7 @@ public class StatPanel : MonoBehaviour
     private void Awake()
     {
         this.EnsureEventSystem();
-
+        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
         this.StatLabelText.text = string.Empty;
         this.StatValueText.text = string.Empty;
     }

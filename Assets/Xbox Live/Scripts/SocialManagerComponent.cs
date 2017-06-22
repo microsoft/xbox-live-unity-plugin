@@ -36,13 +36,19 @@ public class SocialManagerComponent : Singleton<SocialManagerComponent>
 
             foreach (SocialEvent socialEvent in socialEvents)
             {
-                Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                {
+                    Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
+                }
                 this.OnEventProcessed(socialEvent);
             }
         }
         catch (Exception e)
         {
-            Debug.LogError(e.ToString());
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.Log("An Exception Occured: " + e.ToString());
+            }
         }
     }
 
