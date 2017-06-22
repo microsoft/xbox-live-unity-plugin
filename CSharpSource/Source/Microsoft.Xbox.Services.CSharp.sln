@@ -4,9 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Xbox.Services.UWP.CSharp", "Microsoft.Xbox.Services.UWP.CSharp\Microsoft.Xbox.Services.UWP.CSharp.csproj", "{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8F96710E-5169-4917-8874-7DE248F4D243} = {8F96710E-5169-4917-8874-7DE248F4D243}
-	EndProjectSection
+    ProjectSection(ProjectDependencies) = postProject
+        {8F96710E-5169-4917-8874-7DE248F4D243} = {8F96710E-5169-4917-8874-7DE248F4D243}
+    EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Xbox.Services.Shared", "api\Microsoft.Xbox.Services.Shared.shproj", "{035E5E11-4A0B-4D1F-BA13-9B62CCAFB2B8}"
 EndProject
@@ -125,7 +125,6 @@ Global
 		{4C1806D5-7279-4DFC-8874-13D66D52A31B}.Release|x86.Build.0 = Release|x86
 		{4C1806D5-7279-4DFC-8874-13D66D52A31B}.Release|x86.Deploy.0 = Release|x86
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|Any CPU.Build.0 = Debug|Win32
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|ARM.ActiveCfg = Debug|ARM
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|ARM.Build.0 = Debug|ARM
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x64.ActiveCfg = Debug|x64
@@ -133,7 +132,6 @@ Global
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x86.ActiveCfg = Debug|Win32
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x86.Build.0 = Debug|Win32
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|Any CPU.ActiveCfg = Release|Win32
-		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|Any CPU.Build.0 = Release|Win32
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|ARM.ActiveCfg = Release|ARM
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|ARM.Build.0 = Release|ARM
 		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|x64.ActiveCfg = Release|x64
