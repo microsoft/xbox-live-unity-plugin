@@ -40,7 +40,7 @@ public class DoubleStat : StatBase<double>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsNumber(this.XboxLiveUser.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsNumber(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }
