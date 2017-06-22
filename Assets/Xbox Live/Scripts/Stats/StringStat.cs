@@ -29,7 +29,7 @@ public class StringStat : StatBase<string>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsString(this.XboxLiveUser.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsString(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }

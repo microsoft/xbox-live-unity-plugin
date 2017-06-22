@@ -25,8 +25,8 @@ public abstract class StatBase : MonoBehaviour
     /// <summary>
     /// The name of the stat that is published to the stats service.
     /// </summary>
-    [Tooltip("The name of the stat that is published to the stats service.")]
-    public string Name;
+    [Tooltip("The ID of the stat that is published to the stats service.")]
+    public string ID;
 
     /// <summary>
     /// A friendly name for the stat that can be used for display purposes.
@@ -59,7 +59,7 @@ public abstract class StatBase : MonoBehaviour
                 {
                     if (args.User.Gamertag == this.XboxLiveUser.User.Gamertag)
                     {
-                        this.HandleGetStat(args.User, this.Name);
+                        this.HandleGetStat(args.User, this.ID);
                     }
                 };
             this.LocalUserAddedSetup = true;
