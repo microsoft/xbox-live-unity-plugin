@@ -153,7 +153,7 @@ public class Leaderboard : MonoBehaviour
 
             query = new LeaderboardQuery
             {
-                StatName = this.stat.Name,
+                StatName = this.stat.ID,
                 SocialGroup = socialGroup,
                 SkipResultsToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
                 MaxItems = this.entryCount,
@@ -194,7 +194,7 @@ public class Leaderboard : MonoBehaviour
     /// <param name="result"></param>
     private void LoadResult(LeaderboardResult result)
     {
-        if (this.stat == null || this.stat.Name != result.NextQuery.StatName || this.socialGroup != result.NextQuery.SocialGroup)
+        if (this.stat == null || this.stat.ID != result.NextQuery.StatName || this.socialGroup != result.NextQuery.SocialGroup)
         {
             return;
         }

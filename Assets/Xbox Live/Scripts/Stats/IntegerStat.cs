@@ -45,7 +45,7 @@ public class IntegerStat : StatBase<int>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsInteger(this.XboxLiveUser.User, this.Name, value);
+                XboxLive.Instance.StatsManager.SetStatAsInteger(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }
