@@ -49,6 +49,7 @@ public class UserProfile : MonoBehaviour
     {
         this.EnsureEventSystem();
         XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
+       
         if (!XboxLiveUserManager.Instance.IsInitialized)
         {
             XboxLiveUserManager.Instance.Initialize();
@@ -132,7 +133,7 @@ public class UserProfile : MonoBehaviour
                             }
                             else
                             {
-                                if (XboxLiveDebugManager.Instance.DebugLogsOn)
+                                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                                 {
                                     Debug.Log("Exception occured: " + task.Exception.Message);
                                 }
