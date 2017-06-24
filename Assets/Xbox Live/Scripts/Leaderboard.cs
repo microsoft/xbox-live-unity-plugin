@@ -18,7 +18,7 @@ public class Leaderboard : MonoBehaviour
     public StatBase stat;
 
     public LeaderboardTypes leaderboardType;
-    
+
     [Range(1, 100)]
     public uint entryCount = 10;
 
@@ -111,7 +111,8 @@ public class Leaderboard : MonoBehaviour
             this.Refresh();
         }
 
-        if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton)) {
+        if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
+        {
             this.PreviousPage();
         }
 
@@ -120,7 +121,8 @@ public class Leaderboard : MonoBehaviour
             this.NextPage();
         }
 
-        if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton)) {
+        if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
+        {
             this.LastPage();
         }
 
@@ -129,7 +131,8 @@ public class Leaderboard : MonoBehaviour
             this.FirstPage();
         }
 
-        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0) {
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+        {
             var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
             this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
         }
@@ -187,7 +190,8 @@ public class Leaderboard : MonoBehaviour
         }
         else
         {
-            switch (leaderboardType) {
+            switch (leaderboardType)
+            {
                 case LeaderboardTypes.Global:
                     socialGroup = null;
                     break;
@@ -208,7 +212,7 @@ public class Leaderboard : MonoBehaviour
             };
 
             // Handle last page
-            if (this.totalPages > 0 && newPage ==  this.totalPages)
+            if (this.totalPages > 0 && newPage == this.totalPages)
             {
                 query.SkipResultsToRank = (newPage * this.entryCount) - 1;
                 newPage -= 1;
@@ -270,12 +274,12 @@ public class Leaderboard : MonoBehaviour
 
         foreach (LeaderboardRow row in this.leaderboardData.Rows)
         {
-           GameObject entryObject = this.entryObjectPool.GetObject();
-                LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
+            GameObject entryObject = this.entryObjectPool.GetObject();
+            LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
 
-                entry.Data = row;
+            entry.Data = row;
 
-                entryObject.transform.SetParent(this.contentPanel);
+            entryObject.transform.SetParent(this.contentPanel);
         }
 
         // Reset the scroll view to the top.
