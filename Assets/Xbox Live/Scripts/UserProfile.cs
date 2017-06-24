@@ -49,7 +49,7 @@ public class UserProfile : MonoBehaviour
     {
         this.EnsureEventSystem();
         XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
-       
+
         if (!XboxLiveUserManager.Instance.IsInitialized)
         {
             XboxLiveUserManager.Instance.Initialize();
@@ -59,10 +59,11 @@ public class UserProfile : MonoBehaviour
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        if (XboxLive.Instance.AppConfig == null)
+        if (XboxLive.Instance.AppConfig == null || XboxLive.Instance.AppConfig.AppId == null)
         {
             Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
             signInButton.interactable = false;
+            this.profileInfoPanel.SetActive(false);
             Text signInButtonText = signInButton.GetComponentInChildren<Text>(true);
             if (signInButtonText != null)
             {
@@ -75,6 +76,10 @@ public class UserProfile : MonoBehaviour
         {
             this.XboxLiveUser = Instantiate(this.XboxLiveUserPrefab);
             XboxLiveUserManager.Instance.UserForSingleUserMode = this.XboxLiveUser;
+            if (XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.AppId != null)
+            {
+                this.SignIn();
+            }
         }
 
         this.Refresh();
@@ -145,7 +150,7 @@ public class UserProfile : MonoBehaviour
            this.XboxLiveUser.Initialize();
         }
 #else
-        if (this.XboxLiveUser == null) 
+        if (this.XboxLiveUser == null)
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
@@ -223,7 +228,7 @@ public class UserProfile : MonoBehaviour
 
     private void Refresh()
     {
-        var isSignedIn = this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
+        var isSignedIn = this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }
