@@ -68,6 +68,7 @@ public class UserProfile : MonoBehaviour
             {
                 signInButtonText.fontSize = 16;
                 signInButtonText.text = "Xbox Live is not enabled.\nSee errors for detail.";
+                this.SignIn();
             }
         }
 
