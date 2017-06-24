@@ -54,8 +54,7 @@ public class Social : MonoBehaviour
 
     private void Update()
     {
-        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
-        {
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0){
             var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
             this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
         }
