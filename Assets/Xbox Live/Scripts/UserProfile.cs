@@ -18,7 +18,7 @@ public class UserProfile : MonoBehaviour
 {
     public XboxLiveUserInfo XboxLiveUser;
 
-    public string SignInKeyName;
+    public string InputControllerButton;
 
     private bool SignInCalledOnce;
 
@@ -106,7 +106,7 @@ public class UserProfile : MonoBehaviour
             this.StartCoroutine(this.SignInAsync());
         }
 
-        if (!this.SignInCalledOnce && !string.IsNullOrEmpty(this.SignInKeyName) && Input.GetKeyDown(this.SignInKeyName))
+        if (!this.SignInCalledOnce && !string.IsNullOrEmpty(this.InputControllerButton) && Input.GetKeyDown(this.InputControllerButton))
         {
             this.StartCoroutine(this.InitializeXboxLiveUser());
         }

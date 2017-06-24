@@ -18,9 +18,12 @@ public class Social : MonoBehaviour
     public Transform contentPanel;
     public ScrollRect scrollRect;
     public XboxLiveUserInfo XboxLiveUser;
+    public string toggleFilterControllerButton;
+    public string verticalScrollInputAxis;
 
     private Dictionary<int, XboxSocialUserGroup> socialUserGroups = new Dictionary<int, XboxSocialUserGroup>();
     private ObjectPool entryObjectPool;
+    public float scrollSpeedMultiplier = 0.1f;
 
     private void Awake()
     {
@@ -46,6 +49,22 @@ public class Social : MonoBehaviour
         if (this.XboxLiveUser == null)
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+        }
+    }
+
+    private void Update()
+    {
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+        {
+            var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
+            this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+        }
+
+        if (!string.IsNullOrEmpty(this.toggleFilterControllerButton) && Input.GetKeyDown(this.toggleFilterControllerButton)) {
+            switch (this.presenceFilterDropdown.value) {
+                case 0: this.presenceFilterDropdown.value = 1; break;
+                case 1: this.presenceFilterDropdown.value = 0; break;
+            }
         }
     }
 

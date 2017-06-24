@@ -26,6 +26,11 @@ public class GameSaveUI : MonoBehaviour
     public Scrollbar ScrollBar;
     public RectTransform ScrollRect;
     public XboxLiveUserInfo XboxLiveUser;
+    public string GenerateNewControllerButton;
+    public string SaveDataControllerButton;
+    public string LoadDataControllerButton;
+    public string GetInfoControllerButton;
+    public string DeleteContainerControllerButton;
     
     private string logText;
     private System.Random random;
@@ -93,6 +98,32 @@ public class GameSaveUI : MonoBehaviour
                 this.initializing = true;
                 this.InitializeSaveSystem();
             }
+        }
+
+
+        if (!string.IsNullOrEmpty(this.GenerateNewControllerButton) && Input.GetKeyDown(this.GenerateNewControllerButton))
+        {
+            this.GenerateData();
+        }
+
+        if (!string.IsNullOrEmpty(this.SaveDataControllerButton) && Input.GetKeyDown(this.SaveDataControllerButton))
+        {
+            this.SaveData();
+        }
+
+        if (!string.IsNullOrEmpty(this.LoadDataControllerButton) && Input.GetKeyDown(this.LoadDataControllerButton))
+        {
+            this.LoadData();
+        }
+
+        if (!string.IsNullOrEmpty(this.GetInfoControllerButton) && Input.GetKeyDown(this.GetInfoControllerButton))
+        {
+            this.GetContainerInfo();
+        }
+
+        if (!string.IsNullOrEmpty(this.DeleteContainerControllerButton) && Input.GetKeyDown(this.DeleteContainerControllerButton))
+        {
+            this.DeleteContainer();
         }
     }
 

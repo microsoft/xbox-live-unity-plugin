@@ -45,12 +45,25 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public Button lastButton;
 
-    
+    public string firstControllerButton;
+
+    public string lastControllerButton;
+
+    public string nextControllerButton;
+
+    public string prevControllerButton;
+
+    public string refreshControllerButton;
+
+    public string verticalScrollInputAxis;
+
     public Transform contentPanel;
 
     public ScrollRect scrollRect;
 
     public XboxLiveUserInfo XboxLiveUser;
+
+    public float scrollSpeedMultiplier = 0.1f;
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
@@ -77,6 +90,7 @@ public class Leaderboard : MonoBehaviour
         StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
         this.isLocalUserAdded = false;
     }
+
     private void Start()
     {
         if (this.XboxLiveUser == null)
@@ -88,6 +102,37 @@ public class Leaderboard : MonoBehaviour
     public void RequestFlushToService(bool isHighPriority)
     {
         StatsManagerComponent.Instance.RequestFlushToService(this.XboxLiveUser.User, isHighPriority);
+    }
+
+    void Update()
+    {
+        if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
+        {
+            this.Refresh();
+        }
+
+        if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton)) {
+            this.PreviousPage();
+        }
+
+        if (this.currentPage != this.totalPages && !string.IsNullOrEmpty(this.nextControllerButton) && Input.GetKeyDown(this.nextControllerButton))
+        {
+            this.NextPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton)) {
+            this.LastPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
+        {
+            this.FirstPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0) {
+            var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
+            this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+        }
     }
 
     public void Refresh()
@@ -102,7 +147,10 @@ public class Leaderboard : MonoBehaviour
 
     public void PreviousPage()
     {
-        this.UpdateData(this.currentPage - 1);
+        if (this.currentPage > 0)
+        {
+            this.UpdateData(this.currentPage - 1);
+        }
     }
 
     public void FirstPage()
@@ -222,12 +270,12 @@ public class Leaderboard : MonoBehaviour
 
         foreach (LeaderboardRow row in this.leaderboardData.Rows)
         {
-            GameObject entryObject = this.entryObjectPool.GetObject();
-            LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
+           GameObject entryObject = this.entryObjectPool.GetObject();
+                LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
 
-            entry.Data = row;
+                entry.Data = row;
 
-            entryObject.transform.SetParent(this.contentPanel);
+                entryObject.transform.SetParent(this.contentPanel);
         }
 
         // Reset the scroll view to the top.
