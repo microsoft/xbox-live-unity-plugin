@@ -18,7 +18,7 @@ public class Leaderboard : MonoBehaviour
     public StatBase stat;
 
     public LeaderboardTypes leaderboardType;
-    
+
     [Range(1, 100)]
     public uint entryCount = 10;
 
@@ -45,12 +45,25 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public Button lastButton;
 
-    
+    public string firstControllerButton;
+
+    public string lastControllerButton;
+
+    public string nextControllerButton;
+
+    public string prevControllerButton;
+
+    public string refreshControllerButton;
+
+    public string verticalScrollInputAxis;
+
     public Transform contentPanel;
 
     public ScrollRect scrollRect;
 
     public XboxLiveUserInfo XboxLiveUser;
+
+    public float scrollSpeedMultiplier = 0.1f;
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
@@ -77,6 +90,7 @@ public class Leaderboard : MonoBehaviour
         StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
         this.isLocalUserAdded = false;
     }
+
     private void Start()
     {
         if (this.XboxLiveUser == null)
@@ -88,6 +102,40 @@ public class Leaderboard : MonoBehaviour
     public void RequestFlushToService(bool isHighPriority)
     {
         StatsManagerComponent.Instance.RequestFlushToService(this.XboxLiveUser.User, isHighPriority);
+    }
+
+    void Update()
+    {
+        if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
+        {
+            this.Refresh();
+        }
+
+        if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
+        {
+            this.PreviousPage();
+        }
+
+        if (this.currentPage != this.totalPages && !string.IsNullOrEmpty(this.nextControllerButton) && Input.GetKeyDown(this.nextControllerButton))
+        {
+            this.NextPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
+        {
+            this.LastPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
+        {
+            this.FirstPage();
+        }
+
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+        {
+            var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
+            this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+        }
     }
 
     public void Refresh()
@@ -102,7 +150,10 @@ public class Leaderboard : MonoBehaviour
 
     public void PreviousPage()
     {
-        this.UpdateData(this.currentPage - 1);
+        if (this.currentPage > 0)
+        {
+            this.UpdateData(this.currentPage - 1);
+        }
     }
 
     public void FirstPage()
@@ -139,7 +190,8 @@ public class Leaderboard : MonoBehaviour
         }
         else
         {
-            switch (leaderboardType) {
+            switch (leaderboardType)
+            {
                 case LeaderboardTypes.Global:
                     socialGroup = null;
                     break;
@@ -160,7 +212,7 @@ public class Leaderboard : MonoBehaviour
             };
 
             // Handle last page
-            if (this.totalPages > 0 && newPage ==  this.totalPages)
+            if (this.totalPages > 0 && newPage == this.totalPages)
             {
                 query.SkipResultsToRank = (newPage * this.entryCount) - 1;
                 newPage -= 1;
