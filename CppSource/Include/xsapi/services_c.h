@@ -30,11 +30,6 @@ XSAPI_DLLEXPORT
 void
 xbl_thread_process_pending_async_op();
 
-XSAPI_DLLEXPORT
-bool
-XSAPI_CALL
-xbl_thread_is_async_op_pending();
-
 #if defined(__cplusplus)
 } // end extern "C"
 #endif // defined(__cplusplus)
