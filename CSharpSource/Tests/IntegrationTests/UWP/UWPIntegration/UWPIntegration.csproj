@@ -116,6 +116,8 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.dll" />
+    <Content Condition="'$(Configuration)' == 'Debug'" Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.pdb" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -138,9 +140,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <Target Name="CopyCdllToAppx" AfterTargets="Build">
-    <Message Importance="high" Text="Copying C dll to Appx folder $(TargetDir)AppX\" />
+    <Message Importance="high" Text="Copying C dll to Appx folder from $(ProjectDir)..\..\..\..\Libs\UWP\ to $(TargetDir)AppX\" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.dll $(TargetDir)AppX\" />    
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.pdb $(TargetDir)AppX\" />    
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.pdb $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.dll $(TargetDir)" />    
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Libs\UWP\*.pdb $(TargetDir)" />      
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
