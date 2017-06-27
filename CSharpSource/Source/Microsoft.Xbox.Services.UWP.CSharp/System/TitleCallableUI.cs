@@ -22,7 +22,10 @@ namespace Microsoft.Xbox.Services.System
             public XboxLiveResult xblResult;
         }
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void ShowProfileCardUICompletionRoutine(XboxLiveResult result, IntPtr completionRoutineContext);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void CheckGamingPrivilegeCompletionRoutine(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext);
 
         private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext);
