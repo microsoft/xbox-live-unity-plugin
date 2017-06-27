@@ -96,6 +96,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Stats\StatEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\AuthConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IUserImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\BlobQueryProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataResultInfo.cs" />
@@ -257,7 +258,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\GamingPrivilege.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\JsonSerialization.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\StringService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\TitleCallableUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\VerifyStringResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\VerifyStringResultCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveServicesSettings.cs" />
