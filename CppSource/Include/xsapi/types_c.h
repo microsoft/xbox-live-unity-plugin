@@ -103,7 +103,7 @@ typedef std::smatch smatch_t;
     #define XSAPI_DLLEXPORT __declspec(dllimport)
 #endif
 
-#define XSAPI_CALL __stdcall
+#define XSAPI_CALL __cdecl
 #define XSAPI_ASYNC_HANDLE int
 
 #define XBOX_LIVE_NAMESPACE xbox::services

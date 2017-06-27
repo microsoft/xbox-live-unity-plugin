@@ -60,14 +60,6 @@ void xbl_asyncop_set_info_in_new_handle(
     get_xsapi_singleton()->threadPool->set_async_op_ready();
 }
 
-bool
-XSAPI_CALL
-xbl_thread_is_async_op_pending()
-{
-    auto& map = get_xsapi_singleton()->asyncPendingQueue;
-    return !map.empty();
-}
-
 void
 xbl_thread_process_pending_async_op()
 {
