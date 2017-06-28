@@ -116,8 +116,14 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.dll" />
-    <Content Condition="'$(Configuration)' == 'Debug'" Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.pdb" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'x64'">
+    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.x64.dll" />
+    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.x64.pdb" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)' == 'x86'">
+    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.Win32.dll" />
+    <Content Include="$(ProjectDir)..\..\..\..\Libs\UWP\*.Win32.pdb" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
