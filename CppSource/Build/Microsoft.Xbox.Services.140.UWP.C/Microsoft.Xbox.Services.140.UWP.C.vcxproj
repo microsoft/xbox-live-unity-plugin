@@ -132,6 +132,9 @@
     <OutDir>$(ProjectDir)..\..\Binaries\$(Configuration)\$(Platform)\$(ProjectFolder)\</OutDir>
     <IntDir>$(ProjectDir)..\..\Obj\$(Configuration)\$(Platform)\$(ProjectFolder)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup>
+    <TargetName>$(ProjectName).$(Platform)</TargetName>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

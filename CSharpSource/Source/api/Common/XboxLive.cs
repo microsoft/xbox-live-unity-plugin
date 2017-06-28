@@ -35,13 +35,21 @@ namespace Microsoft.Xbox.Services
                 this.appConfig = null;
             }
 
+            // default for AnyCPU/x86
+            string fileName = @"Microsoft.Xbox.Services.140.UWP.C.Win32.dll";
+            if (IntPtr.Size == 8)
+            {
+                // Detect Process is 64bit
+                fileName = @"Microsoft.Xbox.Services.140.UWP.C.x64.dll";
+            }
+
             try
             {
-                xsapiNativeDll = LoadNativeDll(@"Microsoft.Xbox.Services.140.UWP.C.dll");
+                xsapiNativeDll = LoadNativeDll(fileName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new XboxException("Failed to load Microsoft.Xbox.Services.140.UWP.C.dll");
+                throw new XboxException("Failed to load " + fileName);
             }
         }
 
