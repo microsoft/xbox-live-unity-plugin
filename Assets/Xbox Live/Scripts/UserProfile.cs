@@ -186,7 +186,7 @@ public class UserProfile : MonoBehaviour
 
             if (!addLocalUserTask.Task.IsFaulted)
             {
-                    yield return this.LoadProfileInfo();
+				yield return this.LoadProfileInfo();
             }
         }
     }
