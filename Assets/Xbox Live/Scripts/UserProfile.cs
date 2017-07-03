@@ -186,7 +186,7 @@ public class UserProfile : MonoBehaviour
 
             if (!addLocalUserTask.Task.IsFaulted)
             {
-                yield return this.LoadProfileInfo();
+                    yield return this.LoadProfileInfo();
             }
         }
     }
@@ -198,19 +198,34 @@ public class UserProfile : MonoBehaviour
         var socialUser = group.GetUser(userId);
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
-        yield return www;
+        yield return null;
 
-        var t = www.texture;
-        var r = new Rect(0, 0, t.width, t.height);
-        this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
-        this.gamertag.text = this.XboxLiveUser.User.Gamertag;
-        this.gamerscore.text = socialUser.Gamerscore;
-
-        if (socialUser.PreferredColor != null)
+        try
         {
-            this.profileInfoPanel.GetComponent<Image>().color =
-                ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
-            this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+            if (www.isDone && string.IsNullOrEmpty(www.error))
+            {
+                var t = www.texture;
+                var r = new Rect(0, 0, t.width, t.height);
+                this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
+            }
+
+            this.gamertag.text = this.XboxLiveUser.User.Gamertag;
+            this.gamerscore.text = socialUser.Gamerscore;
+
+            if (socialUser.PreferredColor != null)
+            {
+                this.profileInfoPanel.GetComponent<Image>().color =
+                    ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+                this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.Log("There was an error while loading Profile Info. Exception: " + ex.Message);
+            }
         }
 
 
