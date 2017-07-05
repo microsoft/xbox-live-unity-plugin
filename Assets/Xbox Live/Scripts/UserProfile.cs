@@ -72,15 +72,23 @@ public class UserProfile : MonoBehaviour
             }
         }
 
-        if (XboxLiveUserManager.Instance.SingleUserModeEnabled && XboxLiveUserManager.Instance.UserForSingleUserMode == null)
+        if (XboxLiveUserManager.Instance.SingleUserModeEnabled)
         {
-            this.XboxLiveUser = Instantiate(this.XboxLiveUserPrefab);
-            XboxLiveUserManager.Instance.UserForSingleUserMode = this.XboxLiveUser;
-            if (XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.AppId != null)
+            if (XboxLiveUserManager.Instance.UserForSingleUserMode == null)
             {
-                this.SignIn();
+                XboxLiveUserManager.Instance.UserForSingleUserMode = Instantiate(this.XboxLiveUserPrefab);
+                this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
+                if (XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.AppId != null)
+                {
+                    this.SignIn();
+                }
+            }
+            else {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
+                this.StartCoroutine(this.LoadProfileInfo());
             }
         }
+
 
         this.Refresh();
     }
@@ -126,8 +134,9 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
 #if NETFX_CORE
-        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser != null) {
-            var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts};
+        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser != null)
+        {
+            var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts };
             autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
                     task =>
                         {
@@ -144,13 +153,20 @@ public class UserProfile : MonoBehaviour
                                 }
                             }
                         });
-        } 
-        else {
-           this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
-           this.XboxLiveUser.Initialize();
+        }
+        else
+        {
+            if (this.XboxLiveUser == null)
+            {
+                this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
+            }
+            if (this.XboxLiveUser.User == null)
+            {
+                this.XboxLiveUser.Initialize();
+            }
         }
 #else
-        if (this.XboxLiveUser == null)
+        if (XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser == null)
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
@@ -186,7 +202,7 @@ public class UserProfile : MonoBehaviour
 
             if (!addLocalUserTask.Task.IsFaulted)
             {
-				yield return this.LoadProfileInfo();
+                yield return this.LoadProfileInfo();
             }
         }
     }
