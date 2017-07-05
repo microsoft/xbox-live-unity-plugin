@@ -22,8 +22,6 @@ public class UserProfile : MonoBehaviour
 
     private bool SignInCalledOnce;
 
-    private bool LoadProfileCalledOnce;
-
     [HideInInspector]
     public GameObject signInPanel;
 
@@ -90,7 +88,6 @@ public class UserProfile : MonoBehaviour
             }
             else {
                 this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
-                this.LoadProfileCalledOnce = true;
                 this.StartCoroutine(this.LoadProfileInfo());
             }
         }
@@ -215,8 +212,6 @@ public class UserProfile : MonoBehaviour
 
     private IEnumerator LoadProfileInfo()
     {
-        this.LoadProfileCalledOnce = true;
-
         var userId = ulong.Parse(this.XboxLiveUser.User.XboxUserId);
         var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<ulong> { userId });
         var socialUser = group.GetUser(userId);
