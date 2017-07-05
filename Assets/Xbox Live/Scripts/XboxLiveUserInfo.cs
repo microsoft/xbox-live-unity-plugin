@@ -21,6 +21,10 @@ public class XboxLiveUserInfo : MonoBehaviour
     public Windows.System.User WindowsSystemUser { get; set; }
 #endif
 
+    public void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
     public void Start()
     {
         // Super simple check to determine if configuration is non-empty.  This is not a thorough check to determine if the configuration is valid.
