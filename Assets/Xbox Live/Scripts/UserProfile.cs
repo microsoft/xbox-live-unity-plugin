@@ -54,9 +54,6 @@ public class UserProfile : MonoBehaviour
         {
             XboxLiveUserManager.Instance.Initialize();
         }
-
-        this.gamertag.text = string.Empty;
-        this.gamerscore.text = string.Empty;
     }
 
     public void Start()
