@@ -72,7 +72,7 @@ public class Leaderboard : MonoBehaviour
     private void Awake()
     {
         this.EnsureEventSystem();
-        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
 
         if (this.stat == null)
         {

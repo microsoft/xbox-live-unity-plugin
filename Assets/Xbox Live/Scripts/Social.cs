@@ -28,7 +28,7 @@ public class Social : MonoBehaviour
     private void Awake()
     {
         this.EnsureEventSystem();
-        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         SocialManagerComponent.Instance.EventProcessed += this.OnEventProcessed;
 

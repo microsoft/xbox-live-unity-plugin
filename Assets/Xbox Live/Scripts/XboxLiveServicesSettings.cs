@@ -20,7 +20,7 @@ public class XboxLiveServicesSettings : Singleton<XboxLiveServicesSettings> {
     /// <summary>
     /// Ensures that there is an Xbox Live Debug Manager instance on the scene used to configure debug settings of Xbox Live Prefabs
     /// </summary>
-    public static void EnsureXboxLiveDebugManager()
+    public static void EnsureXboxLiveServicesSettings()
     {
         if (Object.FindObjectOfType<XboxLiveServicesSettings>() == null)
         {

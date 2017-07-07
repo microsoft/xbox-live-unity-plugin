@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NETFX_CORE
+#if ENABLE_WINMD_SUPPORT
 using System.Linq;
 using Windows.System;
 #endif
@@ -41,7 +41,7 @@ public class GameSaveUI : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
         this.logText = string.Empty;
         this.random = new System.Random();
         this.gameSaveHelper = new GameSaveHelper();
