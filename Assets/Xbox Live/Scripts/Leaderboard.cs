@@ -93,9 +93,15 @@ public class Leaderboard : MonoBehaviour
 
     private void Start()
     {
-        if (this.XboxLiveUser == null)
+        if (this.XboxLiveUser == null
+            && XboxLiveUserManager.Instance.SingleUserModeEnabled
+            && XboxLiveUserManager.Instance.GetSingleModeUser() != null
+            && XboxLiveUserManager.Instance.GetSingleModeUser().User != null
+            && XboxLiveUserManager.Instance.GetSingleModeUser().User.IsSignedIn)
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            this.isLocalUserAdded = true;
+            this.UpdateData(0);
         }
     }
 
