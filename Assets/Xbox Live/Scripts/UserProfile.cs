@@ -48,7 +48,7 @@ public class UserProfile : MonoBehaviour
     public void Awake()
     {
         this.EnsureEventSystem();
-        XboxLiveServicesSettings.EnsureXboxLiveDebugManager();
+        XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
 
         if (!XboxLiveUserManager.Instance.IsInitialized)
         {
@@ -133,7 +133,7 @@ public class UserProfile : MonoBehaviour
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-#if NETFX_CORE
+#if ENABLE_WINMD_SUPPORT
         if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser != null)
         {
             var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts };

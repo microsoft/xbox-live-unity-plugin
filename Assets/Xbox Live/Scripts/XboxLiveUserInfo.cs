@@ -9,7 +9,7 @@ using Microsoft.Xbox.Services;
 
 using UnityEngine;
 
-#if NETFX_Core
+#if ENABLE_WINMD_SUPPORT
 using Windows.System;
 #endif
 
@@ -17,7 +17,7 @@ public class XboxLiveUserInfo : MonoBehaviour
 {
     public XboxLiveUser User { get; private set; }
 
-#if NETFX_CORE
+#if ENABLE_WINMD_SUPPORT
     public Windows.System.User WindowsSystemUser { get; set; }
 #endif
 
@@ -50,7 +50,7 @@ public class XboxLiveUserInfo : MonoBehaviour
 
     public void Initialize()
     {
-#if NETFX_CORE
+#if ENABLE_WINMD_SUPPORT
         this.InitializeWithWindowsSystemUser();
 #else
         this.User = new XboxLiveUser();
@@ -59,7 +59,7 @@ public class XboxLiveUserInfo : MonoBehaviour
 
     private void InitializeWithWindowsSystemUser()
     {
-#if NETFX_CORE
+#if ENABLE_WINMD_SUPPORT
         if (this.WindowsSystemUser != null)
         {
             this.User = new XboxLiveUser(this.WindowsSystemUser);
