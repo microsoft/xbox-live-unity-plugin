@@ -15,11 +15,9 @@ namespace Microsoft.Xbox.Services.Presence
 
         private static IPresenceWriter instance;
         private static readonly object instanceLock = new object();
-        private readonly object syncRoot = new object();
 
-        private const int defaultHeartBeatDelayInMins = 2;
+        private const int defaultHeartBeatDelayInMins = 5;
         private bool writerInProgress;
-        private int heartBeatDelayInMins;
         private bool isCallInProgess;
         private bool stopTimerCalled;
         private Timer timer;
@@ -28,7 +26,6 @@ namespace Microsoft.Xbox.Services.Presence
         private PresenceWriter()
         {
             writerInProgress = false;
-            heartBeatDelayInMins = 0;
             isCallInProgess = false;
             usersBeingTrackedMap = new Dictionary<XboxLiveUser, UserPresenceWriterStatus>();
         }
