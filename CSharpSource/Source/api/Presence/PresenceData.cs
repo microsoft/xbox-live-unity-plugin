@@ -11,9 +11,16 @@ namespace Microsoft.Xbox.Services.Presence
     public class PresenceData
     {
         public PresenceData(string serviceConfigurationId, string presenceId, string[] presenceTokenIds) {
+            PresenceId = presenceId;
+            ServiceConfigurationId = serviceConfigurationId;
+            PresenceTokenIds = presenceTokenIds;
         }
         public PresenceData(string serviceConfigurationId, string presenceId) {
+            PresenceId = presenceId;
+            ServiceConfigurationId = serviceConfigurationId;
         }
+
+        public PresenceData() { }
 
         public IList<string> PresenceTokenIds
         {
