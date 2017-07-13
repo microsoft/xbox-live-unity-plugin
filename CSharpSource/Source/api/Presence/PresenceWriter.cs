@@ -48,7 +48,8 @@ namespace Microsoft.Xbox.Services.Presence
             }
         }
 
-        private void StartTimer() {
+        private void StartTimer() 
+		{
             this.timer = new Timer(
                 new TimerCallback(this.HandleTimeTrigger),
                 null,

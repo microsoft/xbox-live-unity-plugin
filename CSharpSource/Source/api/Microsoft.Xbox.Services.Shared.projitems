@@ -84,6 +84,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\MediaPresenceData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceActivityData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\SimplePresenceRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\UserPresenceWriterStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\IPrivacyService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\Models\PrivacySettingsRequest.cs" />

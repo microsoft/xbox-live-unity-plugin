@@ -59,11 +59,11 @@ namespace Microsoft.Xbox.Services
         }
 
         public IPresenceWriter PresenceWriter {
-            get {
+            get 
+			{
                 if (Instance.presenceWriter == null) {
                     Instance.presenceWriter = Presence.PresenceWriter.Instance;
                 }
-
                 return Instance.presenceWriter;
             }
         }
