@@ -124,7 +124,7 @@ namespace Microsoft.Xbox.Services.Presence
 
         public void AddUser(XboxLiveUser xboxLiveUser) {
             this.usersBeingTrackedMap.Add(xboxLiveUser, new UserPresenceWriterStatus() {
-                HeartBeatIntervalInMins = defaultHeartBeatDelayInMins,
+                HeartBeatIntervalInMins = 0.5f,
                 ShouldRemove = false});
         }
 
@@ -137,7 +137,7 @@ namespace Microsoft.Xbox.Services.Presence
             var httpRequest = XboxLiveHttpRequest.Create(HttpMethod.Post, UserPresenceBaseUri.ToString(), subQuery);
             httpRequest.ContractVersion = PresenceWriterApiContract;
             httpRequest.XboxLiveAPI = XboxLiveAPIName.SetPresenceHelper;
-            httpRequest.RequestBody = JsonSerialization.ToJson(new PresenceTitleRequest(isUserActiveInTitle, presenceData));
+            httpRequest.RequestBody = JsonSerialization.ToJson(new SimplePresenceRequest { State = isUserActiveInTitle? "active":"inactive"});
 
             return httpRequest.GetResponseWithAuth(user).ContinueWith(
                 responseTask => HandleSetPresenceResponse(user, responseTask.Result));
