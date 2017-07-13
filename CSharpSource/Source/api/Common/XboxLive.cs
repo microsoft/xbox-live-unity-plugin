@@ -5,6 +5,7 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
     using global::System.IO;
+    using Microsoft.Xbox.Services.Presence;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
 
@@ -15,6 +16,7 @@ namespace Microsoft.Xbox.Services
         private XboxLiveSettings settings;
         private IStatsManager statsManager;
         private ISocialManager socialManager;
+        private IPresenceWriter presenceWriter;
 
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
@@ -53,6 +55,16 @@ namespace Microsoft.Xbox.Services
             private set
             {
                 instance = null;
+            }
+        }
+
+        public IPresenceWriter PresenceWriter {
+            get 
+			{
+                if (Instance.presenceWriter == null) {
+                    Instance.presenceWriter = Presence.PresenceWriter.Instance;
+                }
+                return Instance.presenceWriter;
             }
         }
 

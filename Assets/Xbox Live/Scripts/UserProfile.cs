@@ -54,6 +54,9 @@ public class UserProfile : MonoBehaviour
         {
             XboxLiveUserManager.Instance.Initialize();
         }
+
+        XboxLive.Instance.PresenceWriter.StartWriter();
+
     }
 
     public void Start()
@@ -194,6 +197,7 @@ public class UserProfile : MonoBehaviour
         if (signInStatus == SignInStatus.Success)
         {
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
+            XboxLive.Instance.PresenceWriter.AddUser(this.XboxLiveUser.User);
             var addLocalUserTask =
                 XboxLive.Instance.SocialManager.AddLocalUser(
                     this.XboxLiveUser.User,
@@ -262,5 +266,10 @@ public class UserProfile : MonoBehaviour
         var isSignedIn = this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
+    }
+
+    private void OnApplicationQuit()
+    {
+        XboxLive.Instance.PresenceWriter.StopWriter();
     }
 }

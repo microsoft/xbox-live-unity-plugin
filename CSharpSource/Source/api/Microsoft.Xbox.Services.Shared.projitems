@@ -78,6 +78,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameServerPlatform\GameVariant.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameServerPlatform\QualityOfServiceServer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\LeaderboardStatType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\IPresenceWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\MockPresenceWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\MediaPresenceData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceActivityData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\SimplePresenceRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presence\UserPresenceWriterStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\IPrivacyService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\Models\PrivacySettingsRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceTitleType.cs" />
