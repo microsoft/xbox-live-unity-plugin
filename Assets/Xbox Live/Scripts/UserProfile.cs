@@ -137,7 +137,7 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
 #if ENABLE_WINMD_SUPPORT
-        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser != null)
+        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser == null)
         {
             var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts };
             autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
