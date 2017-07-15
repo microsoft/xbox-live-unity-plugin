@@ -207,13 +207,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
-      value: UserProfile (3)
+      value: UserProfile4
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: XboxLiveUser
       value: 
       objectReference: {fileID: 1639834287}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: AllowGuestAccounts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: InputControllerButton
+      value: joystick button 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
@@ -593,13 +603,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
-      value: UserProfile (1)
+      value: UserProfile2
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: XboxLiveUser
       value: 
       objectReference: {fileID: 567525396}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: InputControllerButton
+      value: joystick button 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
@@ -945,6 +960,15 @@ Prefab:
       propertyPath: XboxLiveUser
       value: 
       objectReference: {fileID: 1476567750}
+    - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
+      propertyPath: m_Name
+      value: UserProfile1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: InputControllerButton
+      value: joystick button 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
@@ -991,6 +1015,10 @@ Prefab:
     - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
+      propertyPath: m_Name
+      value: XboxLiveUser1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
@@ -1279,13 +1307,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
-      value: UserProfile (2)
+      value: UserProfile3
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: XboxLiveUser
       value: 
       objectReference: {fileID: 745702893}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: InputControllerButton
+      value: joystick button 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
