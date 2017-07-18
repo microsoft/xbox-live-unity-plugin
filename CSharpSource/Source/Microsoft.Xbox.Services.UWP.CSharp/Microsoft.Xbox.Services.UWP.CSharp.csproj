@@ -94,6 +94,11 @@
     <Compile Include="XboxLive.cs" />
     <EmbeddedResource Include="Properties\Microsoft.Xbox.Services._140.UWP.CSharp.rd.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
+    </SDKReference>
+  </ItemGroup>
   <!-- Nearly all of our source comes from the Services.Shared project -->
   <Import Project="$(BuildRoot)\Source\api\Microsoft.Xbox.Services.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

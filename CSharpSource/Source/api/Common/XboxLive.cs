@@ -37,22 +37,25 @@ namespace Microsoft.Xbox.Services
                 this.appConfig = null;
             }
 
+#if NETFX_CORE
             // default for AnyCPU/x86
-            string fileName = @"Microsoft.Xbox.Services.140.UWP.C.Win32.dll";
+            string fileName = @"\Microsoft.Xbox.Services.140.UWP.C.Win32.dll";
             if (IntPtr.Size == 8)
             {
                 // Detect Process is 64bit
-                fileName = @"Microsoft.Xbox.Services.140.UWP.C.x64.dll";
+                fileName = @"\Microsoft.Xbox.Services.140.UWP.C.x64.dll";
             }
 
             try
             {
-                xsapiNativeDll = LoadNativeDll(fileName);
+                string path = Directory.GetCurrentDirectory() + fileName;
+                xsapiNativeDll = LoadNativeDll(path);
             }
             catch (Exception)
             {
                 throw new XboxException("Failed to load " + fileName);
             }
+#endif
         }
 
         public static XboxLive Instance
