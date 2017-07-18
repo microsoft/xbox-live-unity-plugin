@@ -48,6 +48,11 @@ public abstract class StatBase : MonoBehaviour
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn)
+        {
+            this.HandleGetStat(this.XboxLiveUser.User, this.ID);
+        }
     }
 
     protected void Update()
