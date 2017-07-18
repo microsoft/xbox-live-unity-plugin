@@ -50,7 +50,14 @@ public class Social : MonoBehaviour
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn)
+        {
+            this.CreateDefaulSocialGraphs();
+            this.RefreshSocialGroups();
+        }
     }
+
 
     private void Update()
     {
