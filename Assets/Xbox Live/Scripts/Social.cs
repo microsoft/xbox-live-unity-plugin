@@ -50,7 +50,14 @@ public class Social : MonoBehaviour
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
         }
+
+        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn)
+        {
+            this.CreateDefaultSocialGraphs();
+            this.RefreshSocialGroups();
+        }
     }
+
 
     private void Update()
     {
@@ -81,7 +88,7 @@ public class Social : MonoBehaviour
                 case SocialEventType.LocalUserAdded:
                     if (socialEvent.Exception == null)
                     {
-                        this.CreateDefaulSocialGraphs();
+                        this.CreateDefaultSocialGraphs();
                     }
                     break;
                 case SocialEventType.SocialUserGroupLoaded:
@@ -105,7 +112,7 @@ public class Social : MonoBehaviour
         this.RefreshSocialGroups();
     }
 
-    private void CreateDefaulSocialGraphs()
+    private void CreateDefaultSocialGraphs()
     {
         XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.All, RelationshipFilter.Friends);
         this.socialUserGroups.Add(0, allSocialUserGroup);
