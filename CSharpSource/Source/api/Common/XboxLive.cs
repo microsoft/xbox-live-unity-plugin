@@ -38,14 +38,7 @@ namespace Microsoft.Xbox.Services
             }
 
 #if NETFX_CORE
-            // default for AnyCPU/x86
-            string fileName = @"\Microsoft.Xbox.Services.140.UWP.C.Win32.dll";
-            if (IntPtr.Size == 8)
-            {
-                // Detect Process is 64bit
-                fileName = @"\Microsoft.Xbox.Services.140.UWP.C.x64.dll";
-            }
-
+            string fileName = @"\Microsoft.Xbox.Services.140.UWP.C.dll";
             try
             {
                 string path = Directory.GetCurrentDirectory() + fileName;

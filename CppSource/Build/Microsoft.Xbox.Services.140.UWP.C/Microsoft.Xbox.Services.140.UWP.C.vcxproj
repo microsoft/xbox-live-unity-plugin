@@ -133,7 +133,7 @@
     <IntDir>$(ProjectDir)..\..\Obj\$(Configuration)\$(Platform)\$(ProjectFolder)\</IntDir>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetName>$(ProjectName).$(Platform)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -171,9 +171,15 @@
     <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets'))" />
   </Target>
   <Target Name="CopyLibsForCSharp" AfterTargets="Build">
-    <Message Importance="high" Text="Copying binaries to CSharp Libs folder $(ProjectDir)..\..\..\CSharpSource\Libs\UWP" />
-    <MakeDir Directories="$(ProjectDir)..\..\..\CSharpSource\Libs\UWP" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(ProjectDir)..\..\..\CSharpSource\Libs\UWP" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(ProjectDir)..\..\..\CSharpSource\Libs\UWP" />
+    <PropertyGroup Label="x86" Condition="'$(Platform.ToLower())' == 'win32' Or '$(Platform.ToLower())' == 'x86'">
+      <PluginPlatform>x86</PluginPlatform>
+    </PropertyGroup>
+    <PropertyGroup Label="!x86" Condition="'$(Platform.ToLower())' == 'x64' Or '$(Platform.ToLower())' == 'arm'">
+      <PluginPlatform>$(Platform)</PluginPlatform>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying binaries to CSharp Libs folder $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
+    <MakeDir Directories="$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
+    <Exec Command="xcopy /y /d $(OutDir)*.dll $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
+    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" Condition="'$(Configuration)' == 'Debug'"/>
   </Target>
 </Project>

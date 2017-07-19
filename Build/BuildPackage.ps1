@@ -71,7 +71,17 @@ Remove-Item $tempgameSavePackagePath
 Write-Host "Moving Readme.txt back into the Game Save folder ..."
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'README.txt')) -Destination $gameSaveAssetsPath 
 
-$exportAssetPath = "Assets\Xbox Live"
+
+Write-Host ""
+
+Write-Host "Moving Scenes into a temporary folder ..."
+$scenesAssetsPath = "Assets\Scenes"
+$tempScenesFolder = New-Item (Join-Path $externalFolder 'tempScenes') -type directory -force
+Copy-Item $scenesAssetsPath -Destination $tempScenesFolder -ErrorAction SilentlyContinue -recurse
+Remove-Item $scenesAssetsPath -recurse 
+Move-Item (Resolve-Path (Join-Path "Assets" 'Scenes.meta')) -Destination $tempScenesFolder
+
+$exportAssetPath = "Assets"
 $logFile = Join-Path $PSScriptRoot BuildPackage.log
 
 Write-Host ""
@@ -107,6 +117,11 @@ Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Scripts')) -Des
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Prefabs')) -Destination $gameSaveAssetsPath 
 Move-Item (Resolve-Path (Join-Path $tempGameSaveFolder 'GameSave\Examples')) -Destination $gameSaveAssetsPath 
 Remove-Item $tempGameSaveFolder -recurse
+
+Write-Host "Moving Scenes back into the Scenes folder ..."
+Move-Item (Resolve-Path (Join-Path $tempScenesFolder 'Scenes.meta')) -Destination "Assets" 
+Copy-Item $tempScenesFolder\Scenes -Destination "Assets" -ErrorAction SilentlyContinue -recurse
+Remove-Item $tempScenesFolder -recurse 
 
 if(!$unityProcess.HasExited)
 {
