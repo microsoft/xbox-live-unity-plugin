@@ -5,6 +5,8 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
     using global::System.IO;
+    using global::System.ComponentModel;
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Presence;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
@@ -13,6 +15,7 @@ namespace Microsoft.Xbox.Services
     {
         private bool disposed;
         private static XboxLive instance;
+        private static IntPtr xsapiNativeDll;
         private XboxLiveSettings settings;
         private IStatsManager statsManager;
         private ISocialManager socialManager;
@@ -33,6 +36,19 @@ namespace Microsoft.Xbox.Services
             {
                 this.appConfig = null;
             }
+
+#if NETFX_CORE
+            string fileName = @"\Microsoft.Xbox.Services.140.UWP.C.dll";
+            try
+            {
+                string path = Directory.GetCurrentDirectory() + fileName;
+                xsapiNativeDll = LoadNativeDll(path);
+            }
+            catch (Exception)
+            {
+                throw new XboxException("Failed to load " + fileName);
+            }
+#endif
         }
 
         public static XboxLive Instance
@@ -120,6 +136,54 @@ namespace Microsoft.Xbox.Services
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal static class NativeMethods
+        {
+            [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static extern IntPtr LoadLibrary(string lpFileName);
+
+            [DllImport("kernel32", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool FreeLibrary(IntPtr hModule);
+
+            [DllImport("kernel32")]
+            public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+        }
+
+        public static IntPtr LoadNativeDll(string fileName)
+        {
+            IntPtr nativeDll = NativeMethods.LoadLibrary(fileName);
+            if (nativeDll == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+
+            return nativeDll;
+        }
+
+        public T Invoke<T, T2>(params object[] args)
+        {
+            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T2).Name);
+            if (procAddress == IntPtr.Zero)
+            {
+                return default(T);
+            }
+
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T2));
+            return (T)function.DynamicInvoke(args);
+        }
+
+        public void Invoke<T>(params object[] args)
+        {
+            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T).Name);
+            if (procAddress == IntPtr.Zero)
+            {
+                return;
+            }
+
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T));
+            function.DynamicInvoke(args);
         }
     }
 }

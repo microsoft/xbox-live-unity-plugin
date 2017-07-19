@@ -86,12 +86,18 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\AccountProvider.cs" />
+    <Compile Include="System\TitleCallableUI.cs" />
     <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />
     <Compile Include="XboxLiveUser.cs" />
     <Compile Include="XboxLiveAppConfiguration.cs" />
     <Compile Include="XboxLive.cs" />
     <EmbeddedResource Include="Properties\Microsoft.Xbox.Services._140.UWP.CSharp.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
+    </SDKReference>
   </ItemGroup>
   <!-- Nearly all of our source comes from the Services.Shared project -->
   <Import Project="$(BuildRoot)\Source\api\Microsoft.Xbox.Services.Shared.projitems" Label="Shared" />
@@ -105,14 +111,26 @@
     <MakeDir Directories="$(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
     <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\external\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
   </Target>
   <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
-    <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
+    <Message Importance="high" Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
     <MakeDir Directories="$(SolutionDir)..\..\Assets\Xbox Live\libs" />
     <ItemGroup>
       <PluginFiles Include="$(PluginLayoutPath)\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\Assets\Xbox Live\libs\UWP" />
+  </Target>
+  <Target Name="CopyCDllsToUnityLibs" AfterTargets="Build">
+    <Message Importance="high" Text="Copying c dlls to Unity Plugins folder $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
+    <MakeDir Directories="$(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.dll $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.pdb $(SolutionDir)..\..\Assets\Plugins\$(Platform)" Condition="'$(Configuration)' == 'Debug'" />
+  </Target>
+  <Target Name="CopyCdllToAppx" AfterTargets="Build">
+    <Message Importance="high" Text="OutputPath: $(OutDir)" />
+    <Message Importance="high" Text="Copying C dll to Appx folder $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(PluginLayoutPath)*.dll $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(PluginLayoutPath)*.pdb $(TargetDir)AppX\" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>
