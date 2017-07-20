@@ -121,16 +121,16 @@
     </ItemGroup>
     <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\Assets\Xbox Live\libs\UWP" />
   </Target>
-  <Target Name="CopyCDllsToUnityLibs" AfterTargets="Build">
-    <Message Importance="high" Text="Copying c dlls to Unity Plugins folder $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
+  <Target Name="CopyCDllsToAssetsPlugins" AfterTargets="CopyToUnityLibs">
+    <Message Importance="high" Text="Copying c dlls to Assets Plugins folder $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
     <MakeDir Directories="$(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.dll $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
     <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.pdb $(SolutionDir)..\..\Assets\Plugins\$(Platform)" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
-  <Target Name="CopyCdllToAppx" AfterTargets="Build">
+  <Target Name="CopyCDllsToAppx" AfterTargets="CopyCDllsToAssetsPlugins">
     <Message Importance="high" Text="OutputPath: $(OutDir)" />
     <Message Importance="high" Text="Copying C dll to Appx folder $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(PluginLayoutPath)*.dll $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(PluginLayoutPath)*.pdb $(TargetDir)AppX\" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.dll $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.pdb $(TargetDir)AppX\" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>
