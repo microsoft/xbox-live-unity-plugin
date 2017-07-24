@@ -75,8 +75,8 @@ elseif($FromSource)
   {
     & $nugetCmd restore $sdkSln
 
-    Write-Host "Building (Platform:default) Xbox Live SDK... "
-    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
+    Write-Host "Building (Platform:x86) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x86"
     
     if(!$buildResult.BuildSucceeded)
     {
@@ -85,7 +85,7 @@ elseif($FromSource)
        Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
     }
     else {
-      Write-Host "SDK Build (Platform:default) Succeeded."
+      Write-Host "SDK Build (Platform:x86) Succeeded."
     }
     
     Write-Host "Building (Platform:x64) Xbox Live SDK... "
