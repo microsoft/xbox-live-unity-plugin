@@ -28,17 +28,20 @@
 #endif
 
 // STL includes
-#include <string>
-#include <map>
-#include <queue>
-#include <vector>
-#include <memory>
-#include <stdint.h>
-#include <thread>
-#include <mutex>
 #include <atomic>
+#include <cassert>
+#include <chrono>
 #include <cstdint>
-#include <assert.h>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
+#include <codecvt>
+#include <iomanip>
 
 #if UWP_API
 #include <collection.h>
@@ -55,3 +58,38 @@
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(x) sizeof(x) / sizeof(x[0])
 #endif
+
+#ifndef UNIT_TEST_SERVICES
+#define HC_ASSERT(x) assert(x);
+#else
+#define HC_ASSERT(x) if(!(x)) throw std::invalid_argument("");
+#endif
+
+#ifdef _WIN32
+typedef wchar_t char_t;
+#else
+typedef char char_t;
+#endif
+
+#if _MSC_VER <= 1800
+typedef std::chrono::system_clock chrono_clock_t;
+#else
+typedef std::chrono::steady_clock chrono_clock_t;
+#endif
+
+#define NAMESPACE_XBOX_HTTP_CLIENT_BEGIN                     namespace xbox { namespace httpclient {
+#define NAMESPACE_XBOX_HTTP_CLIENT_END                       }}
+
+
+
+typedef int32_t function_context;
+#include "xsapi/types_c.h"
+#include "xsapi/services_c.h"
+#include "mem.h"
+#include "httpClient/httpClient.h"
+#include "log.h"
+#include "taskargs.h"
+#include "utils.h"
+#include "asyncop.h"
+#include "singleton.h"
+#include "xbl_singleton.h"
