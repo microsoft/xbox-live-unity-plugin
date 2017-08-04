@@ -71,7 +71,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='StaticLibrary'">_NO_ASYNCRTIMP;_NO_PPLXIMP;_NO_XSAPIIMP;XSAPI_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='DynamicLibrary'">_XSAPIIMP_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(ConfigurationType)'=='DynamicLibrary'">HC_API_EXPORT;XBL_API_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/bigobj /Zm300 %(AdditionalOptions)</AdditionalOptions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
@@ -90,6 +90,10 @@
        $(ProjectDir)..\..\Include;
        $(ProjectDir)..\..\Source\System\WinRT;
        $(ProjectDir)..\..\Source\System;
+       $(ProjectDir)..\..\External\libHttpClient\Include;
+       $(ProjectDir)..\..\External\libHttpClient\Source;
+       $(ProjectDir)..\..\External\libHttpClient\Source\Common;
+       $(ProjectDir)..\..\External\libHttpClient\Source\Logger;
        %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <CompileAsWinRT>true</CompileAsWinRT>
@@ -136,23 +140,59 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\global_publics.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\mem.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\pch.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\settings_publics.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\singleton.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task_publics.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\utils.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcall.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallrequest.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallresponse.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\UWP\http_uwp.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\console_output.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\custom_output.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\debug_output.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_entry.cpp" />
+    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_output.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp" />
+    <ClCompile Include="..\..\Source\Services\Common\xbl_singleton.cpp" />
+    <ClCompile Include="..\..\Source\Services\Common\threadpool.cpp" />
     <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui_c.cpp" />
-    <ClCompile Include="..\..\Source\Services\System\asyncop.cpp" />
-    <ClCompile Include="..\..\Source\Services\System\singleton.cpp" />
-    <ClCompile Include="..\..\Source\Services\System\threadpool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\httpClient.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\types.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\buildver.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\pch.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\pch_common.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\task.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\httpcall.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
     <ClInclude Include="..\..\Include\xsapi\types_c.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\mem.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\singleton.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\utils.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\console_output.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\custom_output.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\debug_output.h" />
+    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\log.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch_common.h" />
-    <ClInclude Include="..\..\Source\Services\System\asyncop.h" />
-    <ClInclude Include="..\..\Source\Services\System\singleton.h" />
-    <ClInclude Include="..\..\Source\Services\System\threadpool.h" />
+    <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
+    <ClInclude Include="..\..\Source\Services\Common\xbl_singleton.h" />
+    <ClInclude Include="..\..\Source\Services\Common\threadpool.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -180,6 +220,6 @@
     <Message Importance="high" Text="Copying binaries to CSharp Libs folder $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
     <MakeDir Directories="$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
     <Exec Command="xcopy /y /d $(OutDir)*.dll $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" Condition="'$(Configuration)' == 'Debug'"/>
+    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>

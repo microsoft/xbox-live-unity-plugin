@@ -15,7 +15,6 @@ xbl_thread_pool::xbl_thread_pool() :
 {
     memset(m_hActiveThreads, 0, sizeof(HANDLE) * MAX_THREADS);
     m_stopRequestedHandle.set(CreateEvent(nullptr, true, false, nullptr));
-    m_readyHandle.set(CreateEvent(nullptr, false, false, nullptr));
 }
 
 long xbl_thread_pool::get_num_active_threads()
@@ -56,8 +55,8 @@ DWORD WINAPI xbox_live_thread_proc(LPVOID lpParam)
 {
     HANDLE hEvents[2] =
     {
-        get_xsapi_singleton()->threadPool->get_ready_handle(),
-        get_xsapi_singleton()->threadPool->get_stop_handle()
+        HCTaskGetPendingHandle(),
+        HCTaskGetCompletedHandle(0)
     };
 
     bool stop = false;
@@ -66,8 +65,12 @@ DWORD WINAPI xbox_live_thread_proc(LPVOID lpParam)
         DWORD dwResult = WaitForMultipleObjectsEx(2, hEvents, false, INFINITE, false);
         switch (dwResult)
         {
-        case WAIT_OBJECT_0: // ready
-            xbl_thread_process_pending_async_op();
+        case WAIT_OBJECT_0: // pending 
+            HCTaskProcessNextPendingTask();
+            break;
+
+        case WAIT_OBJECT_0 + 1: // completed
+            HCTaskProcessNextCompletedTask(0);
             break;
 
         default:

@@ -11,6 +11,22 @@ namespace Microsoft.Xbox.Services.System
     using global::System.Threading.Tasks;
     using Microsoft.Xbox.Services;
 
+    public class XboxLiveGlobal
+    {
+        private delegate void XBLGlobalInitialize();
+        private delegate void XBLGlobalCleanup();
+
+        public static void GlobalInitialize()
+        {
+            XboxLive.Instance.Invoke<XBLGlobalInitialize>();
+        }
+
+        public static void GlobalCleanup()
+        {
+            XboxLive.Instance.Invoke<XBLGlobalInitialize>();
+        }
+    }
+
     public class TitleCallableUI
     {
         [StructLayout(LayoutKind.Sequential)]

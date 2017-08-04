@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #pragma once
-
 #include "types_c.h"
 
 #if defined(__cplusplus)
@@ -101,21 +100,21 @@ typedef void(*TCUICheckGamingPrivilegeCompletionRoutine)(
     _In_opt_ void* completionRoutineContext
     );
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUIShowProfileCardUI(
     _In_ PCSTR_T targetXboxUserId,
     _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext
     );
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext
     );
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,

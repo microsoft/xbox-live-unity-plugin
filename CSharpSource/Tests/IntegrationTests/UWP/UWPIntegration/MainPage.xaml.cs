@@ -41,7 +41,13 @@ namespace UWPIntegration
         {
             this.InitializeComponent();
             this.user = new XboxLiveUser();
+            XboxLiveGlobal.GlobalInitialize();
             DoWork();
+        }
+
+        ~MainPage()
+        {
+            XboxLiveGlobal.GlobalCleanup();
         }
 
         public LeaderboardResult LeaderboardResult

@@ -1,15 +1,8 @@
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 #pragma once
 
-//#pragma warning(disable: 4265)
-//#pragma warning(disable: 4266)
 #pragma warning(disable: 4062)
-
-#include <string>
-#include <regex>
-#include <chrono>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -45,48 +38,38 @@
 #endif
 
 #if defined _WIN32
-  #ifdef _NO_XSAPIIMP
-    #define _XSAPIIMP
+  #ifdef XBL_API_NONE
+    #define XBL_API
     #if _MSC_VER >= 1900
-        #define _XSAPIIMP_DEPRECATED __declspec(deprecated)
+        #define XBL_API_DEPRECATED __declspec(deprecated)
     #else
-        #define _XSAPIIMP_DEPRECATED
+        #define XBL_API_DEPRECATED
     #endif
   #else
-    #ifdef _XSAPIIMP_EXPORT
-      #define _XSAPIIMP __declspec(dllexport)
-      #define _XSAPIIMP_DEPRECATED __declspec(dllexport, deprecated)
+    #ifdef XBL_API_EXPORT
+      #define XBL_API __declspec(dllexport)
+      #define XBL_API_DEPRECATED __declspec(dllexport, deprecated)
     #else
-      #define _XSAPIIMP __declspec(dllimport)
-      #define _XSAPIIMP_DEPRECATED __declspec(dllimport, deprecated)
+      #define XBL_API __declspec(dllimport)
+      #define XBL_API_DEPRECATED __declspec(dllimport, deprecated)
     #endif
   #endif
 #else
-  #if defined _NO_XSAPIIMP || __GNUC__ < 4
-     #define _XSAPIIMP
-     #define _XSAPIIMP_DEPRECATED __attribute__ ((deprecated))
+  #if defined _NOXBL_API || __GNUC__ < 4
+     #define XBL_API
+     #define XBL_API_DEPRECATED __attribute__ ((deprecated))
   #else
-    #define _XSAPIIMP __attribute__ ((visibility ("default")))
-    #define _XSAPIIMP_DEPRECATED __attribute__ ((visibility ("default"), deprecated))
+    #define XBL_API __attribute__ ((visibility ("default")))
+    #define XBL_API_DEPRECATED __attribute__ ((visibility ("default"), deprecated))
   #endif
 #endif
 
 #ifdef _WIN32
 typedef wchar_t CHAR_T;
 typedef LPCWSTR PCSTR_T;
-typedef wchar_t char_t;
-typedef std::wstring string_t;
-typedef std::wstringstream stringstream_t;
-typedef std::wregex regex_t;
-typedef std::wsmatch smatch_t;
 #else
 typedef char CHAR_T;
 typedef const char* PCSTR_T;
-typedef char char_t;
-typedef std::string string_t;
-typedef std::stringstream stringstream_t;
-typedef std::regex regex_t;
-typedef std::smatch smatch_t;
 #endif
 
 #ifndef _T
@@ -103,8 +86,4 @@ typedef std::smatch smatch_t;
     #define XSAPI_DLLEXPORT __declspec(dllimport)
 #endif
 
-#define XSAPI_CALL __cdecl
-#define XSAPI_ASYNC_HANDLE int
-
-#define XBOX_LIVE_NAMESPACE xbox::services
-
+#define XBL_CALLING_CONV __cdecl
