@@ -34,15 +34,17 @@ xbl_asyncop_write_result(_In_ HC_TASK_HANDLE taskHandle, _Out_ void* result)
 template<typename T1, typename T2, typename T3>
 void xbl_execute_callback_fn(
     _In_opt_ void* writeResultsRoutineContext,
-    _In_ HC_TASK_HANDLE taskHandle
-    )
+    _In_ HC_TASK_HANDLE taskHandle,
+    _In_opt_ void* completionRoutine,
+    _In_opt_ void* completionRoutineContext
+)
 {
     T1 result;
     xbl_asyncop_write_result<T1, T2>(taskHandle, &result);
-    T3 completeFn = (T3)taskHandle->completionRoutine;
+    T3 completeFn = (T3)completionRoutine;
     if (completeFn != nullptr)
     {
-        completeFn(result, taskHandle->completionRoutineContext);
+        completeFn(result, completionRoutineContext);
     }
     ClearTaskArgs(taskHandle);
 }

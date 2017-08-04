@@ -79,6 +79,10 @@ typedef std::chrono::steady_clock chrono_clock_t;
 
 #define NAMESPACE_XBOX_HTTP_CLIENT_BEGIN                     namespace xbox { namespace httpclient {
 #define NAMESPACE_XBOX_HTTP_CLIENT_END                       }}
+#define NAMESPACE_XBOX_HTTP_CLIENT_LOG_BEGIN                 namespace xbox { namespace httpclient { namespace log {
+#define NAMESPACE_XBOX_HTTP_CLIENT_LOG_END                   }}}
+#define NAMESPACE_XBOX_HTTP_CLIENT_TEST_BEGIN                namespace xbox { namespace httpclienttest {
+#define NAMESPACE_XBOX_HTTP_CLIENT_TEST_END                  }}
 
 
 
@@ -90,6 +94,6 @@ typedef int32_t function_context;
 #include "log.h"
 #include "taskargs.h"
 #include "utils.h"
-#include "asyncop.h"
+#include "task.h"
 #include "singleton.h"
 #include "xbl_singleton.h"

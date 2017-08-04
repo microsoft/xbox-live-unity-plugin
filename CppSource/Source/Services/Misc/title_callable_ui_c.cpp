@@ -3,6 +3,8 @@
 
 #include "pch.h"
 
+using namespace xbox::httpclient;
+
 void TCUIShowProfileCardUIExecute(
     _In_opt_ void* executionRoutineContext,
     _In_ HC_TASK_HANDLE taskHandle
