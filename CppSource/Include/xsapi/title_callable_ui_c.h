@@ -8,12 +8,6 @@
 extern "C" {
 #endif
 
-typedef struct XboxLiveResult
-{
-    int errorCode;
-    PCSTR_T errorMessage;
-} XboxLiveResult;
-
 /// <summary>List of gaming privilege that a user can have.</summary>
 typedef enum GAMING_PRIVILEGE
 {

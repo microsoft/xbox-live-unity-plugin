@@ -20,7 +20,7 @@ ExportedObj/
 *.tmp
 *.user
 *.userprefs
-*.pidb
+*.pdb
 *.booproj
 *.svd
 *.log
