@@ -67,6 +67,12 @@ Note: Ensure Unity was installed with Windows Store .NET Scripting Backend, and 
     .\Build\BuildPackage.ps1
     ```
 
+## Using the Xbox Live Unity Asset 
+
+See the docs at https://docs.microsoft.com/en-us/windows/uwp/xbox-live/get-started-with-creators/develop-creators-title-with-unity
+
+
+
 ## Using the Game Save Plugin
 
 When the ```.\Build\BuildPackage.ps1``` script is run, the `XboxLive.unitypackage` is generated. When that unity package is imported into a unity project, the `GameSave` folder within the `Xbox Live\Assets\Scripts\` folder will contain the `GameSave.unitypackage` which contains scripts for integrating with Connected Storage.
