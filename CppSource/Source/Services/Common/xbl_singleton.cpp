@@ -7,7 +7,7 @@
 static std::mutex g_xblSingletonLock;
 static std::unique_ptr<xsapi_singleton> g_xblSingleton;
 
-xsapi_singleton::xsapi_singleton() 
+xsapi_singleton::xsapi_singleton()
 {
     m_threadPool = std::make_unique<xbl_thread_pool>();
 }
@@ -44,6 +44,7 @@ XBLGlobalCleanup()
 {
     std::lock_guard<std::mutex> guard(g_xblSingletonLock);
     g_xblSingleton = nullptr;
+
     HCGlobalCleanup();
 }
 

@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\External\libHttpClient\Source\Common\global_publics.cpp" />
     <ClCompile Include="..\..\External\libHttpClient\Source\Common\mem.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\pch.cpp" />
     <ClCompile Include="..\..\External\libHttpClient\Source\Common\settings_publics.cpp" />
     <ClCompile Include="..\..\External\libHttpClient\Source\Common\singleton.cpp" />
     <ClCompile Include="..\..\External\libHttpClient\Source\Common\task.cpp" />
@@ -166,18 +165,20 @@
     <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\xbl_singleton.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\threadpool.cpp" />
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_c.cpp" />
     <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui_c.cpp" />
+    <ClCompile Include="..\..\Source\Shared\xbox_live_app_config_c.cpp" />
+    <ClCompile Include="..\..\Source\System\user_c.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\httpClient.h" />
     <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\types.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\buildver.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\pch.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\pch_common.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\Common\task.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\httpcall.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.h" />
+    <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\system_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
     <ClInclude Include="..\..\Include\xsapi\types_c.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\Common\mem.h" />
@@ -188,11 +189,15 @@
     <ClInclude Include="..\..\External\libHttpClient\Source\Logger\custom_output.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\Logger\debug_output.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\Logger\log.h" />
+    <ClInclude Include="..\..\Include\xsapi\xbox_live_app_config_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\xbox_live_context_c.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch_common.h" />
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbl_singleton.h" />
     <ClInclude Include="..\..\Source\Services\Common\threadpool.h" />
+    <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h" />
+    <ClInclude Include="..\..\Source\System\user_impl_c.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

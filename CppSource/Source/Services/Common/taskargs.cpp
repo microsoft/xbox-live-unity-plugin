@@ -3,17 +3,28 @@
 #include "pch.h"
 #include "taskargs.h"
 
-void StoreTaskArgs(_In_ HC_TASK_HANDLE taskHandle, _In_ std::shared_ptr<xbl_args> args)
+xbl_args_xbox_live_user_sign_in::xbl_args_xbox_live_user_sign_in(
+    _In_ XboxLiveUser* _user,
+    _In_ Platform::Object^ _coreDispatcher,
+    _In_opt_ bool _signInSilently
+    )
+    : user(_user),
+    coreDispatcher(_coreDispatcher),
+    signInSilently(_signInSilently)
 {
-    get_xsapi_singleton()->m_taskArgMap[taskHandle] = args;
 }
 
-std::shared_ptr<xbl_args> GetTaskArgs(_In_ HC_TASK_HANDLE taskHandle)
+xbl_args_xbox_live_user_get_token_and_signature::xbl_args_xbox_live_user_get_token_and_signature(
+    _In_ XboxLiveUser* _user,
+    _In_ PCSTR_T _httpMethod,
+    _In_ PCSTR_T _url,
+    _In_ PCSTR_T _headers,
+    _In_ PCSTR_T _requestBodyString
+    )
+    : user(_user),
+    httpMethod(_httpMethod),
+    url(_url),
+    headers(_headers),
+    requestBodyString(_requestBodyString)
 {
-    return get_xsapi_singleton()->m_taskArgMap[taskHandle];
-}
-
-void ClearTaskArgs(_In_ HC_TASK_HANDLE taskHandle)
-{
-    get_xsapi_singleton()->m_taskArgMap.erase(taskHandle);
 }

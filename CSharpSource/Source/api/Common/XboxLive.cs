@@ -24,6 +24,9 @@ namespace Microsoft.Xbox.Services
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
 
+        private delegate void XBLGlobalInitialize();
+        private delegate void XBLGlobalCleanup();
+
         private XboxLive()
         {
             this.settings = new XboxLiveSettings();
@@ -43,12 +46,19 @@ namespace Microsoft.Xbox.Services
             {
                 string path = Directory.GetCurrentDirectory() + fileName;
                 xsapiNativeDll = LoadNativeDll(path);
+
+                this.Invoke<XBLGlobalInitialize>();
             }
             catch (Exception)
             {
                 throw new XboxException("Failed to load " + fileName);
             }
 #endif
+        }
+
+        ~XboxLive()
+        {
+            this.Invoke<XBLGlobalInitialize>();
         }
 
         public static XboxLive Instance
@@ -162,6 +172,14 @@ namespace Microsoft.Xbox.Services
             return nativeDll;
         }
 
+        public static Int64 DefaultTaskGroupId
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        
         public T Invoke<T, T2>(params object[] args)
         {
             IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T2).Name);
@@ -170,7 +188,7 @@ namespace Microsoft.Xbox.Services
                 return default(T);
             }
 
-            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T2));
+            var function = Marshal.GetDelegateForFunctionPointer<T2>(procAddress) as Delegate;
             return (T)function.DynamicInvoke(args);
         }
 
@@ -182,7 +200,7 @@ namespace Microsoft.Xbox.Services
                 return;
             }
 
-            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T));
+            var function = Marshal.GetDelegateForFunctionPointer<T>(procAddress) as Delegate;
             function.DynamicInvoke(args);
         }
     }

@@ -64,12 +64,15 @@
   #endif
 #endif
 
+typedef int32 function_context;
 #ifdef _WIN32
 typedef wchar_t CHAR_T;
 typedef LPCWSTR PCSTR_T;
+typedef std::wstring string_t;
 #else
 typedef char CHAR_T;
 typedef const char* PCSTR_T;
+typedef std::string string_t;
 #endif
 
 #ifndef _T

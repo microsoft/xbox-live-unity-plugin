@@ -4,10 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWPMUAIntegration", "UWPMUAIntegration.csproj", "{28AFCA79-691F-4493-B639-D3CAD311189B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F96710E-5169-4917-8874-7DE248F4D243} = {8F96710E-5169-4917-8874-7DE248F4D243}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Xbox.Services.Shared", "..\..\..\..\Source\api\Microsoft.Xbox.Services.Shared.shproj", "{035E5E11-4A0B-4D1F-BA13-9B62CCAFB2B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Xbox.Services.UWP.CSharp", "..\..\..\..\Source\Microsoft.Xbox.Services.UWP.CSharp\Microsoft.Xbox.Services.UWP.CSharp.csproj", "{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Microsoft.Xbox.Services.140.UWP.C", "..\..\..\..\..\CppSource\Build\Microsoft.Xbox.Services.140.UWP.C\Microsoft.Xbox.Services.140.UWP.C.vcxproj", "{8F96710E-5169-4917-8874-7DE248F4D243}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -26,6 +31,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|Any CPU.Build.0 = Debug|x86
+		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|ARM.ActiveCfg = Debug|ARM
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|ARM.Build.0 = Debug|ARM
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -45,8 +52,8 @@ Global
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Release|x86.ActiveCfg = Release|x86
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Release|x86.Build.0 = Release|x86
 		{28AFCA79-691F-4493-B639-D3CAD311189B}.Release|x86.Deploy.0 = Release|x86
-		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|Any CPU.Build.0 = Debug|x86
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|ARM.Build.0 = Debug|Any CPU
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Debug|x64.ActiveCfg = Debug|x64
@@ -61,6 +68,21 @@ Global
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Release|x64.Build.0 = Release|x64
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Release|x86.ActiveCfg = Release|x86
 		{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}.Release|x86.Build.0 = Release|x86
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|Any CPU.Build.0 = Debug|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|ARM.ActiveCfg = Debug|ARM
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|ARM.Build.0 = Debug|ARM
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x64.ActiveCfg = Debug|x64
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x64.Build.0 = Debug|x64
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x86.ActiveCfg = Debug|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Debug|x86.Build.0 = Debug|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|Any CPU.ActiveCfg = Release|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|ARM.ActiveCfg = Release|ARM
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|ARM.Build.0 = Release|ARM
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|x64.ActiveCfg = Release|x64
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|x64.Build.0 = Release|x64
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|x86.ActiveCfg = Release|Win32
+		{8F96710E-5169-4917-8874-7DE248F4D243}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

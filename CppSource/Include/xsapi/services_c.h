@@ -8,7 +8,6 @@
 
 #include <windows.h>
 #include "types_c.h"
-#include "title_callable_ui_c.h"
 
 #if defined(__cplusplus)
 extern "C" {

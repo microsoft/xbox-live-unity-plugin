@@ -33,6 +33,7 @@
 #include <chrono>
 #include <cstdint>
 #include <map>
+#include <set>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -89,6 +90,11 @@ typedef std::chrono::steady_clock chrono_clock_t;
 typedef int32_t function_context;
 #include "xsapi/types_c.h"
 #include "xsapi/services_c.h"
+#include "xsapi/errors_c.h"
+#include "xsapi/system_c.h"
+#include "xsapi/title_callable_ui_c.h"
+#include "xsapi/xbox_live_context_c.h"
+#include "xsapi/xbox_live_app_config_c.h"
 #include "mem.h"
 #include "httpClient/httpClient.h"
 #include "log.h"

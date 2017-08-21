@@ -37,7 +37,7 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
     * Windows Store .NET Scripting Backend
 * [Visual Studio 2015](https://www.visualstudio.com/)
   * Any version of Visual Studio should work for this including Community Edition.
-  * Make sure to select everything under **Universal Windowsn App Development Tools** when installing.  You can modify the installation to include these features for an existing installation as well.
+  * Make sure to select everything under **Universal Windows App Development Tools** when installing.  You can modify the installation to include these features for an existing installation as well.
 * [Powershell](https://microsoft.com/powershell)
   * If you've never used powershell before make sure that you have [enabled powershell scripts to run](https://technet.microsoft.com/en-us/library/ee176961.aspx).
 * [Xbox Live Platform Extensions SDK](http://aka.ms/xblextsdk) 
@@ -56,6 +56,8 @@ If you're just looking to integrate Xbox Live functionality into your Unity game
     ```powershell
     .\Build\Setup.ps1
     ```
+
+Note: Ensure Unity was installed with Windows Store .NET Scripting Backend, and you have the Microsoft Visual Studio Tools for Unity installed.
 
 4. If you want to make any modifications to the scripts or prefabs in the package, open up the project (the `xbox-live-unity-plugin` folder) in Unity and make your changes.  
 

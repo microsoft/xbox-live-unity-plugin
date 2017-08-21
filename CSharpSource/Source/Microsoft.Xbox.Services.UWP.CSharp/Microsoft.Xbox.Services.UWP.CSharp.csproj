@@ -85,10 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System\AccountProvider.cs" />
     <Compile Include="System\TitleCallableUI.cs" />
     <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />
+    <Compile Include="System\XboxLiveCallbackContext.cs" />
     <Compile Include="XboxLiveUser.cs" />
     <Compile Include="XboxLiveAppConfiguration.cs" />
     <Compile Include="XboxLive.cs" />
