@@ -123,7 +123,8 @@ namespace Microsoft.Xbox.Services.System
                         m_xboxLiveUser_c,
                         coreDispatcherPtr,
                         (SignInCompletionRoutine)SignInComplete,
-                        (IntPtr)contextKey
+                        (IntPtr)contextKey,
+                        XboxLive.DefaultTaskGroupId
                         );
                 }
                 else
@@ -131,7 +132,8 @@ namespace Microsoft.Xbox.Services.System
                     XboxLive.Instance.Invoke<XboxLiveUserSignInSilently>(
                         m_xboxLiveUser_c,
                         (SignInCompletionRoutine)SignInComplete,
-                        (IntPtr)contextKey
+                        (IntPtr)contextKey,
+                        XboxLive.DefaultTaskGroupId
                         );
                 }
             });
@@ -194,7 +196,8 @@ namespace Microsoft.Xbox.Services.System
                     pHeaders,
                     pBody,
                     (GetTokenAndSignatureCompletionRoutine)GetTokenAndSignatureComplete,
-                    (IntPtr)contextKey
+                    (IntPtr)contextKey,
+                    XboxLive.DefaultTaskGroupId
                     );
             });
 
@@ -262,9 +265,9 @@ namespace Microsoft.Xbox.Services.System
 
         private delegate IntPtr XboxLiveUserCreate(IntPtr systemUser);
         private delegate void XboxLiveUserDelete(IntPtr xboxLiveUser_c);
-        private delegate void XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
-        private delegate void XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
-        private delegate void XboxLiveUserGetTokenAndSignature(IntPtr xboxLiveUser_c, IntPtr httpMethod, IntPtr url, IntPtr headers, IntPtr requestBodyString, GetTokenAndSignatureCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
+        private delegate void XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate void XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate void XboxLiveUserGetTokenAndSignature(IntPtr xboxLiveUser_c, IntPtr httpMethod, IntPtr url, IntPtr headers, IntPtr requestBodyString, GetTokenAndSignatureCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
         private delegate Int32 AddSignOutCompletedHandler(SignOutCompletedHandler handler);
         private delegate void RemoveSignOutCompletedHandler(Int32 functionContext);
 

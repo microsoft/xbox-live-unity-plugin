@@ -26,7 +26,8 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUIShowProfileCardUI(
     _In_ PCSTR_T targetXboxUserId,
     _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
     VerifyGlobalXsapiInit();
@@ -35,7 +36,7 @@ TCUIShowProfileCardUI(
     args->targetXboxUserId = targetXboxUserId;
 
     HC_TASK_HANDLE taskHandle = HCTaskCreate(
-        s_taskGroupId,
+        taskGroupId,
         TCUIShowProfileCardUIExecute, 
         static_cast<void*>(args),
         xbl_execute_callback_fn<xbl_args_tcui_show_profile_card_ui, TCUIShowProfileCardUICompletionRoutine>, 
@@ -66,7 +67,8 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
     VerifyGlobalXsapiInit();
@@ -75,7 +77,7 @@ TCUICheckGamingPrivilegeSilently(
     tcuiArgs->privilege = privilege;
 
     HC_TASK_HANDLE taskHandle = HCTaskCreate(
-        s_taskGroupId,
+        taskGroupId,
         TCUICheckGamingPrivilegeSilentlyExecute, 
         static_cast<void*>(tcuiArgs),
         xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, TCUICheckGamingPrivilegeCompletionRoutine>, 
@@ -113,7 +115,8 @@ TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
     VerifyGlobalXsapiInit();
@@ -123,7 +126,7 @@ TCUICheckGamingPrivilegeWithUI(
     tcuiArgs->friendlyMessage = friendlyMessage;
 
     HC_TASK_HANDLE taskHandle = HCTaskCreate(
-        s_taskGroupId,
+        taskGroupId,
         TCUICheckGamingPrivilegeWithUIExecute, 
         static_cast<void*>(tcuiArgs),
         xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, TCUICheckGamingPrivilegeCompletionRoutine>, 

@@ -41,7 +41,7 @@ typedef struct XboxLiveUser
     PCSTR_T privileges;
     bool isSignedIn;
 
-#if WINAPI_FAMILY && WINAPI_FAMILY==WINAPI_FAMILY_APP
+#if UWP_API
     PCSTR_T webAccountId;
     Windows::System::User^ windowsSystemUser;
 #endif
@@ -82,7 +82,7 @@ typedef struct TokenAndSignatureResult
 XSAPI_DLLEXPORT XboxLiveUser* XBL_CALLING_CONV
 XboxLiveUserCreate();
 
-#if WINAPI_FAMILY && WINAPI_FAMILY==WINAPI_FAMILY_APP
+#if UWP_API
 
 XSAPI_DLLEXPORT XboxLiveUser* XBL_CALLING_CONV
 XboxLiveUserCreateFromSystemUser(
@@ -105,14 +105,16 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveUserSignIn(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveUserSignInSilently(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 #if WINAPI_FAMILY && WINAPI_FAMILY==WINAPI_FAMILY_APP
@@ -122,7 +124,8 @@ XboxLiveUserSignInWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
@@ -130,7 +133,8 @@ XboxLiveUserSignInSilentlyWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 #endif
@@ -148,7 +152,8 @@ XboxLiveUserGetTokenAndSignature(
     _In_ PCSTR_T headers,
     _In_ PCSTR_T requestBodyString,
     _In_ GetTokenAndSignatureCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 typedef void(*SignOutCompletedHandler)(

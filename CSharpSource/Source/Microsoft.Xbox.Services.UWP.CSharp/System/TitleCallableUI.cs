@@ -26,9 +26,9 @@ namespace Microsoft.Xbox.Services.System
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void CheckGamingPrivilegeCompletionRoutine(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext);
 
-        private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext);
-        private delegate int TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
-        private delegate int TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext);
+        private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate int TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate int TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
 
         /// <summary>
         /// Shows UI displaying the profile card for a specified user.
@@ -51,7 +51,8 @@ namespace Microsoft.Xbox.Services.System
                 XboxLive.Instance.Invoke<int, TCUIShowProfileCardUI>(
                     pTargetXboxUserId,
                     (ShowProfileCardUICompletionRoutine)ShowProfileCardUIComplete,
-                    (IntPtr)contextKey
+                    (IntPtr)contextKey,
+                    XboxLive.DefaultTaskGroupId
                     );
             });
 
@@ -77,7 +78,8 @@ namespace Microsoft.Xbox.Services.System
                 XboxLive.Instance.Invoke<int, TCUICheckGamingPrivilegeSilently>(
                     privilege,
                     (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeSilentlyComplete,
-                    (IntPtr)contextKey
+                    (IntPtr)contextKey,
+                    XboxLive.DefaultTaskGroupId
                     );
             });
 
@@ -109,7 +111,8 @@ namespace Microsoft.Xbox.Services.System
                     privilege,
                     pFriendlyMessage,
                     (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeWithUIComplete,
-                    (IntPtr)contextKey
+                    (IntPtr)contextKey,
+                    XboxLive.DefaultTaskGroupId
                     );
             });
 

@@ -4,8 +4,6 @@
 #include "threadpool.h"
 #include "xbox_live_app_config_impl.h"
 
-const static uint64_t s_taskGroupId = 0;
-
 struct xsapi_singleton
 {
     xsapi_singleton();

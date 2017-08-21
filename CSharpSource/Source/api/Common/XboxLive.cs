@@ -172,6 +172,14 @@ namespace Microsoft.Xbox.Services
             return nativeDll;
         }
 
+        public static Int64 DefaultTaskGroupId
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        
         public T Invoke<T, T2>(params object[] args)
         {
             IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T2).Name);

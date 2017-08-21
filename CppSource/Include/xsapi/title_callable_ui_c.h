@@ -98,14 +98,16 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUIShowProfileCardUI(
     _In_ PCSTR_T targetXboxUserId,
     _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
@@ -113,7 +115,8 @@ TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     );
 
 #if defined(__cplusplus)

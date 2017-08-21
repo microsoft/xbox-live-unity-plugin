@@ -13,12 +13,6 @@ XboxLiveUserCreateFromSystemUser(
     _In_ Windows::System::User^ creationContext
     )
 {
-    // TODO improve error handling
-    if (creationContext == nullptr)
-    {
-        return nullptr;
-    }
-
     VerifyGlobalXsapiInit();
 
     auto cUser = new XboxLiveUser();
@@ -102,7 +96,8 @@ void XboxLiveUserSignInHelper(
     _In_ Platform::Object^ coreDispatcher,
     _In_ bool signInSilently,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
     VerifyGlobalXsapiInit();
@@ -110,7 +105,7 @@ void XboxLiveUserSignInHelper(
     auto args = new xbl_args_xbox_live_user_sign_in(user, coreDispatcher, signInSilently);
 
     HC_TASK_HANDLE taskHandle = HCTaskCreate(
-        s_taskGroupId,
+        taskGroupId,
         XboxLiveUserSignInExecute,
         static_cast<void*>(args),
         xbl_execute_callback_fn<xbl_args_xbox_live_user_sign_in, SignInCompletionRoutine>,
@@ -125,20 +120,22 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveUserSignIn(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    XboxLiveUserSignInHelper(user, nullptr, false, completionRoutine, completionRoutineContext);
+    XboxLiveUserSignInHelper(user, nullptr, false, completionRoutine, completionRoutineContext, taskGroupId);
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveUserSignInSilently(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    XboxLiveUserSignInHelper(user, nullptr, true, completionRoutine, completionRoutineContext);
+    XboxLiveUserSignInHelper(user, nullptr, true, completionRoutine, completionRoutineContext, taskGroupId);
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
@@ -146,10 +143,11 @@ XboxLiveUserSignInWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    XboxLiveUserSignInHelper(user, coreDispatcher, false, completionRoutine, completionRoutineContext);
+    XboxLiveUserSignInHelper(user, coreDispatcher, false, completionRoutine, completionRoutineContext, taskGroupId);
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
@@ -157,10 +155,11 @@ XboxLiveUserSignInSilentlyWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
 )
 {
-    XboxLiveUserSignInHelper(user, coreDispatcher, true, completionRoutine, completionRoutineContext);
+    XboxLiveUserSignInHelper(user, coreDispatcher, true, completionRoutine, completionRoutineContext, taskGroupId);
 }
 
 void XboxLiveUserGetTokenAndSignatureExecute(
@@ -222,7 +221,8 @@ XboxLiveUserGetTokenAndSignature(
     _In_ PCSTR_T headers,
     _In_ PCSTR_T requestBodyString,
     _In_ GetTokenAndSignatureCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
     VerifyGlobalXsapiInit();
@@ -235,7 +235,7 @@ XboxLiveUserGetTokenAndSignature(
         requestBodyString);
     
     HC_TASK_HANDLE taskHandle = HCTaskCreate(
-        s_taskGroupId,
+        taskGroupId,
         XboxLiveUserGetTokenAndSignatureExecute, 
         static_cast<void*>(args),
         xbl_execute_callback_fn<xbl_args_xbox_live_user_get_token_and_signature, GetTokenAndSignatureCompletionRoutine>, 
