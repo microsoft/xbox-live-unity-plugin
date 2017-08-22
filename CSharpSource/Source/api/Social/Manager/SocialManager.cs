@@ -22,6 +22,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         private readonly Dictionary<XboxLiveUser, HashSet<WeakReference>> userGroupsMap = new Dictionary<XboxLiveUser, HashSet<WeakReference>>(new XboxUserIdEqualityComparer());
 
         private Queue<SocialEvent> eventQueue = new Queue<SocialEvent>();
+        private static readonly List<SocialEvent> emptyEventList = new List<SocialEvent>();
 
         private SocialManager()
         {
@@ -180,13 +181,19 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public IList<SocialEvent> DoWork()
         {
-            Queue<SocialEvent> eventQueueSnapshot = this.eventQueue;
-            this.eventQueue = new Queue<SocialEvent>();
-
             List<SocialEvent> events;
             lock (this.syncRoot)
             {
-                events = eventQueueSnapshot.ToList();
+                if (this.eventQueue.Count > 0)
+                {
+                    events = this.eventQueue.ToList();
+                    this.eventQueue.Clear();
+                }
+                else
+                {
+                    events = emptyEventList;
+                }
+
                 foreach (SocialGraph graph in this.userGraphs.Values)
                 {
                     graph.DoWork(events);

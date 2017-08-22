@@ -13,6 +13,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     {
         private StatsValueDocument statValueDocument;
         private List<StatEvent> statEventList;
+        private static readonly List<StatEvent> emptyStatEventList = new List<StatEvent>();
         private MockLeaderboardService leaderboardService;
 
         internal MockStatsManager()
@@ -97,7 +98,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         public List<StatEvent> DoWork()
         {
-            var copyList = this.statEventList.ToList();
+            List<StatEvent> copyList = null;
+            if (this.statEventList.Count > 0)
+            {
+                copyList = this.statEventList.ToList();
+            }
+            else
+            {
+                copyList = emptyStatEventList;
+            }
 
             this.statValueDocument.DoWork();
             this.statEventList.Clear();
