@@ -20,6 +20,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         private readonly Dictionary<string, StatsValueDocument> userDocumentMap;
         private readonly List<StatEvent> eventList;
+        private static readonly List<StatEvent> emptyEventList = new List<StatEvent>();
         private readonly CallBufferTimer<XboxLiveUser> statTimer;
         private readonly CallBufferTimer<XboxLiveUser> statPriorityTimer;
 
@@ -241,7 +242,16 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         {
             lock (this.userDocumentMap)
             {
-                var copyList = this.eventList.ToList();
+                List<StatEvent> copyList = null;
+                if (this.eventList.Count > 0)
+                {
+                    copyList = this.eventList.ToList();
+                }
+                else
+                {
+                    copyList = emptyEventList;
+                }
+
                 foreach (var userContextPair in this.userDocumentMap)
                 {
                     userContextPair.Value.DoWork();

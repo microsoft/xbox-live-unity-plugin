@@ -15,6 +15,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         private static Random rng = new Random();
         private List<SocialEvent> events;
+        private static readonly List<SocialEvent> emptyEventsList = new List<SocialEvent>();
 
         internal MockSocialManager()
         {
@@ -132,9 +133,17 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public IList<SocialEvent> DoWork()
         {
-            List<SocialEvent> currentEvents = this.events;
-            this.events = new List<SocialEvent>();
-            return currentEvents;
+            List<SocialEvent> returnList = null;
+            if (this.events.Count > 0)
+            {
+                returnList = this.events;
+                this.events = new List<SocialEvent>();
+            }
+            else
+            {
+                returnList = emptyEventsList;
+            }
+            return returnList;
         }
 
         private static XboxSocialUser CreateUser(ulong id = 0)
