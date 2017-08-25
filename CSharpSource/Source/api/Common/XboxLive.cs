@@ -187,8 +187,11 @@ namespace Microsoft.Xbox.Services
             {
                 return default(T);
             }
-
+#if WINDOWS_UWP
             var function = Marshal.GetDelegateForFunctionPointer<T2>(procAddress) as Delegate;
+#else
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T2));
+#endif
             return (T)function.DynamicInvoke(args);
         }
 
@@ -199,8 +202,11 @@ namespace Microsoft.Xbox.Services
             {
                 return;
             }
-
+#if WINDOWS_UWP
             var function = Marshal.GetDelegateForFunctionPointer<T>(procAddress) as Delegate;
+#else
+            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T));
+#endif
             function.DynamicInvoke(args);
         }
     }
