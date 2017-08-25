@@ -8,27 +8,29 @@
 
 #include <windows.h>
 #include "types_c.h"
-#include "title_callable_ui_c.h"
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// Global APIs
 // 
-// Async Op APIs
-// 
 
-XSAPI_DLLEXPORT
-bool
-xbl_thread_is_async_op_done(_In_ XSAPI_ASYNC_HANDLE handle);
+/// <summary>
+/// Initializes the library instance.
+/// This must be called before any other method, except for HCMemSetFunctions() and HCMemGetFunctions()
+/// Should have a corresponding call to HCGlobalCleanup().
+/// </summary>
+XBL_API void XBL_CALLING_CONV
+XBLGlobalInitialize();
 
-XSAPI_DLLEXPORT
-bool
-xbl_thread_async_op_get_result(_In_ XSAPI_ASYNC_HANDLE handle, _Out_ void* result, _In_ int size);
-
-XSAPI_DLLEXPORT
-void
-xbl_thread_process_pending_async_op();
+/// <summary>
+/// Immediately reclaims all resources associated with the library.
+/// If you called HCMemSetFunctions(), call this before shutting down your app's memory manager.
+/// </summary>
+XBL_API void XBL_CALLING_CONV
+XBLGlobalCleanup();
 
 #if defined(__cplusplus)
 } // end extern "C"

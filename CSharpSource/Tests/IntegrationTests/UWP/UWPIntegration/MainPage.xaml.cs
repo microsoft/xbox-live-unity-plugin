@@ -35,13 +35,27 @@ namespace UWPIntegration
         private XboxSocialUserGroup xboxSocialUserGroupAll;
         private XboxSocialUserGroup xboxSocialUserGroupAllOnline;
         private XboxSocialUserGroup xboxSocialUserGroupFromList;
-        private readonly XboxLiveUser user;
+        private XboxLiveUser user;
 
         public MainPage()
         {
             this.InitializeComponent();
-            this.user = new XboxLiveUser();
+            InitializeUser();
             DoWork();
+        }
+
+        async void InitializeUser()
+        {
+            var allUser = await Windows.System.User.FindAllAsync();
+            var validSysUser = allUser.Where(user => (user.Type != Windows.System.UserType.LocalGuest || user.Type != Windows.System.UserType.RemoteGuest)).ToList();
+            if (validSysUser.Count > 0)
+            {
+                this.user = new XboxLiveUser(validSysUser[0]);
+            }
+            else
+            {
+                this.user = new XboxLiveUser();
+            }
         }
 
         public LeaderboardResult LeaderboardResult

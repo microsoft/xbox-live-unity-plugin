@@ -11,9 +11,10 @@ namespace UWPIntegration
     using Windows.UI.Xaml.Controls;
 
     using Microsoft.Xbox.Services;
+    using Microsoft.Xbox.Services.System;
     using Microsoft.Xbox.Services.Leaderboard;
     using Microsoft.Xbox.Services.Social.Manager;
-    using Microsoft.Xbox.Services.Stats.Manager;
+    using Microsoft.Xbox.Services.Statistics.Manager;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
@@ -94,7 +95,7 @@ namespace UWPIntegration
             var UIDispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
             await UIDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                Log($"User signed out, id:{args.User.SystemUser.NonRoamableId}");
+                Log($"User signed out, id:{args.User.WindowsSystemUser.NonRoamableId}");
             });
             
         }
@@ -104,7 +105,7 @@ namespace UWPIntegration
             var UIDispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
             await UIDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                Log($"User signed in callback, id:{args.User.SystemUser.NonRoamableId}");
+                Log($"User signed in callback, id:{args.User.WindowsSystemUser.NonRoamableId}");
             });
         }
     }

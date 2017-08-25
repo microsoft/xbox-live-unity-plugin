@@ -28,17 +28,21 @@
 #endif
 
 // STL includes
-#include <string>
-#include <map>
-#include <queue>
-#include <vector>
-#include <memory>
-#include <stdint.h>
-#include <thread>
-#include <mutex>
 #include <atomic>
+#include <cassert>
+#include <chrono>
 #include <cstdint>
-#include <assert.h>
+#include <map>
+#include <set>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
+#include <codecvt>
+#include <iomanip>
 
 #if UWP_API
 #include <collection.h>
@@ -55,3 +59,47 @@
 #ifndef ARRAYSIZE
 #define ARRAYSIZE(x) sizeof(x) / sizeof(x[0])
 #endif
+
+#ifndef UNIT_TEST_SERVICES
+#define HC_ASSERT(x) assert(x);
+#else
+#define HC_ASSERT(x) if(!(x)) throw std::invalid_argument("");
+#endif
+
+#ifdef _WIN32
+typedef wchar_t char_t;
+#else
+typedef char char_t;
+#endif
+
+#if _MSC_VER <= 1800
+typedef std::chrono::system_clock chrono_clock_t;
+#else
+typedef std::chrono::steady_clock chrono_clock_t;
+#endif
+
+#define NAMESPACE_XBOX_HTTP_CLIENT_BEGIN                     namespace xbox { namespace httpclient {
+#define NAMESPACE_XBOX_HTTP_CLIENT_END                       }}
+#define NAMESPACE_XBOX_HTTP_CLIENT_LOG_BEGIN                 namespace xbox { namespace httpclient { namespace log {
+#define NAMESPACE_XBOX_HTTP_CLIENT_LOG_END                   }}}
+#define NAMESPACE_XBOX_HTTP_CLIENT_TEST_BEGIN                namespace xbox { namespace httpclienttest {
+#define NAMESPACE_XBOX_HTTP_CLIENT_TEST_END                  }}
+
+
+
+typedef int32_t function_context;
+#include "xsapi/types_c.h"
+#include "xsapi/services_c.h"
+#include "xsapi/errors_c.h"
+#include "xsapi/system_c.h"
+#include "xsapi/title_callable_ui_c.h"
+#include "xsapi/xbox_live_context_c.h"
+#include "xsapi/xbox_live_app_config_c.h"
+#include "mem.h"
+#include "httpClient/httpClient.h"
+#include "log.h"
+#include "taskargs.h"
+#include "utils.h"
+#include "task.h"
+#include "singleton.h"
+#include "xbl_singleton.h"

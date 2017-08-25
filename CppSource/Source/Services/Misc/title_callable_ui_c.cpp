@@ -2,138 +2,138 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "../System/singleton.h"
-#include "../System/asyncop.h"
 
-struct xbl_args_tcui_show_profile_card_ui : public xbl_args
+using namespace xbox::services::system;
+using namespace xbox::httpclient;
+
+void TCUIShowProfileCardUIExecute(
+    _In_opt_ void* executionRoutineContext,
+    _In_ HC_TASK_HANDLE taskHandle
+    )
 {
-    PCSTR_T targetXboxUserId;
-    XboxLiveResult m_result;
-};
+    auto args = reinterpret_cast<xbl_args_tcui_show_profile_card_ui*>(executionRoutineContext);
+    auto result = title_callable_ui::show_profile_card_ui(string_t(args->targetXboxUserId)).get();
 
-struct xbl_args_tcui_check_gaming_privilege : public xbl_args
-{
-    GAMING_PRIVILEGE privilege;
-    PCSTR_T friendlyMessage;
-    TCUICheckGamingPrivilegeResult m_result;
-};
+    args->resultErrorMsg = to_utf16string(result.err_message());
+    args->result.errorCode = result.err().value();
+    args->result.errorMessage = args->resultErrorMsg.c_str();
 
-void 
-show_profile_card_ui_execute_routine(_In_ const std::shared_ptr<xsapi_async_info>& info)
-{
-    auto args = std::dynamic_pointer_cast<xbl_args_tcui_show_profile_card_ui>(info->args);
-    auto result = xbox::services::system::title_callable_ui::show_profile_card_ui(string_t(args->targetXboxUserId)).get();
-
-    XboxLiveResult xboxLiveResult;
-    xboxLiveResult.errorCode = result.err().value();
-    std::wstring errMessage = std::wstring(result.err_message().begin(), result.err_message().end());
-    xboxLiveResult.errorMessage = errMessage.c_str();
-
-    if (info->completionRoutine != nullptr)
-    {
-        TCUIShowProfileCardUICompletionRoutine callbackFn = static_cast<TCUIShowProfileCardUICompletionRoutine>(info->completionRoutine);
-        callbackFn(xboxLiveResult, info->completionRoutineContext);
-    }
+    HCTaskSetCompleted(taskHandle);
 }
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUIShowProfileCardUI(
     _In_ PCSTR_T targetXboxUserId,
     _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    std::shared_ptr<xsapi_async_info> info = std::make_shared<xsapi_async_info>();
-    info->executeRoutine = (xbl_async_op_execute_routine)show_profile_card_ui_execute_routine;
-    info->resultRoutine = (xbl_async_op_result_routine)xbl_asyncop_write_result<XboxLiveResult, xbl_args_tcui_show_profile_card_ui>;
-    auto tcuiArgs = std::make_shared<xbl_args_tcui_show_profile_card_ui>();
-    tcuiArgs->targetXboxUserId = targetXboxUserId;
-    info->args = tcuiArgs;
+    VerifyGlobalXsapiInit();
 
-    xbl_asyncop_set_info_in_new_handle(info, completionRoutineContext, static_cast<void*>(completionRoutine));
+    auto args = new xbl_args_tcui_show_profile_card_ui();
+    args->targetXboxUserId = targetXboxUserId;
+
+    HC_TASK_HANDLE taskHandle = HCTaskCreate(
+        taskGroupId,
+        TCUIShowProfileCardUIExecute, 
+        static_cast<void*>(args),
+        xbl_execute_callback_fn<xbl_args_tcui_show_profile_card_ui, TCUIShowProfileCardUICompletionRoutine>, 
+        static_cast<void*>(args),
+        static_cast<void*>(completionRoutine), 
+        completionRoutineContext,
+        true
+        );
 }
 
-
-void
-check_gaming_privilege_silently_execute_routine(_In_ const std::shared_ptr<xsapi_async_info>& info)
+void TCUICheckGamingPrivilegeSilentlyExecute(
+    _In_opt_ void* executionRoutineContext,
+    _In_ HC_TASK_HANDLE taskHandle
+    )
 {
-    auto args = std::dynamic_pointer_cast<xbl_args_tcui_check_gaming_privilege>(info->args);
-    auto result = xbox::services::system::title_callable_ui::check_gaming_privilege_silently((xbox::services::system::gaming_privilege)args->privilege);
+    auto args = reinterpret_cast<xbl_args_tcui_check_gaming_privilege*>(executionRoutineContext);
+    auto result = title_callable_ui::check_gaming_privilege_silently((gaming_privilege)args->privilege);
 
-    TCUICheckGamingPrivilegeResult checkGamingPrivilegeResult;
-    XboxLiveResult xboxLiveResult;
-    xboxLiveResult.errorCode = result.err().value();
-    std::wstring errMessage = std::wstring(result.err_message().begin(), result.err_message().end());
-    xboxLiveResult.errorMessage = errMessage.c_str();
+    args->resultErrorMsg = to_utf16string(result.err_message());
+    args->result.result.errorCode = result.err().value();
+    args->result.result.errorMessage = args->resultErrorMsg.c_str();
+    args->result.hasPrivilege = result.payload();
 
-    checkGamingPrivilegeResult.result = xboxLiveResult;
-    checkGamingPrivilegeResult.hasPrivilege = result.payload();
-
-    if (info->completionRoutine != nullptr)
-    {
-        TCUICheckGamingPrivilegeCompletionRoutine callbackFn = static_cast<TCUICheckGamingPrivilegeCompletionRoutine>(info->completionRoutine);
-        callbackFn(checkGamingPrivilegeResult, info->completionRoutineContext);
-    }
+    HCTaskSetCompleted(taskHandle);
 }
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    std::shared_ptr<xsapi_async_info> info = std::make_shared<xsapi_async_info>();
-    info->executeRoutine = (xbl_async_op_execute_routine)check_gaming_privilege_silently_execute_routine;
-    info->resultRoutine = (xbl_async_op_result_routine)xbl_asyncop_write_result<TCUICheckGamingPrivilegeResult, xbl_args_tcui_check_gaming_privilege>;
-    auto tcuiArgs = std::make_shared<xbl_args_tcui_check_gaming_privilege>();
-    tcuiArgs->privilege = privilege;
-    info->args = tcuiArgs;
+    VerifyGlobalXsapiInit();
 
-    xbl_asyncop_set_info_in_new_handle(info, completionRoutineContext, static_cast<void*>(completionRoutine));
+    auto tcuiArgs = new xbl_args_tcui_check_gaming_privilege();
+    tcuiArgs->privilege = privilege;
+
+    HC_TASK_HANDLE taskHandle = HCTaskCreate(
+        taskGroupId,
+        TCUICheckGamingPrivilegeSilentlyExecute, 
+        static_cast<void*>(tcuiArgs),
+        xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, TCUICheckGamingPrivilegeCompletionRoutine>, 
+        static_cast<void*>(tcuiArgs),
+        static_cast<void*>(completionRoutine),
+        completionRoutineContext,
+        true
+        );
 }
 
-void
-check_gaming_privilege_with_ui_execute_routine(_In_ const std::shared_ptr<xsapi_async_info>& info)
+
+void TCUICheckGamingPrivilegeWithUIExecute(
+    _In_opt_ void* executionRoutineContext,
+    _In_ HC_TASK_HANDLE taskHandle
+    )
+
 {
-    auto args = std::dynamic_pointer_cast<xbl_args_tcui_check_gaming_privilege>(info->args);
-    auto result = xbox::services::system::title_callable_ui::check_gaming_privilege_with_ui(
-        (xbox::services::system::gaming_privilege)args->privilege,
+    auto args = reinterpret_cast<xbl_args_tcui_check_gaming_privilege*>(executionRoutineContext);
+
+    auto result = title_callable_ui::check_gaming_privilege_with_ui(
+        (gaming_privilege)args->privilege,
         string_t(args->friendlyMessage)
         ).get();
 
-    TCUICheckGamingPrivilegeResult checkGamingPrivilegeResult;
-    XboxLiveResult xboxLiveResult;
-    xboxLiveResult.errorCode = result.err().value();
-    std::wstring errMessage = std::wstring(result.err_message().begin(), result.err_message().end());
-    xboxLiveResult.errorMessage = errMessage.c_str();
+    args->resultErrorMsg = to_utf16string(result.err_message());
+    args->result.result.errorCode = result.err().value();
+    args->result.result.errorMessage = args->resultErrorMsg.c_str();
+    args->result.hasPrivilege = result.payload();
 
-    checkGamingPrivilegeResult.result = xboxLiveResult;
-    checkGamingPrivilegeResult.hasPrivilege = result.payload();
-
-    if (info->completionRoutine != nullptr)
-    {
-        TCUICheckGamingPrivilegeCompletionRoutine callbackFn = static_cast<TCUICheckGamingPrivilegeCompletionRoutine>(info->completionRoutine);
-        callbackFn(checkGamingPrivilegeResult, info->completionRoutineContext);
-    }
+    HCTaskSetCompleted(taskHandle);
 }
 
-XSAPI_DLLEXPORT void XSAPI_CALL
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ PCSTR_T friendlyMessage,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
-    _In_opt_ void* completionRoutineContext
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
     )
 {
-    std::shared_ptr<xsapi_async_info> info = std::make_shared<xsapi_async_info>();
-    info->executeRoutine = (xbl_async_op_execute_routine)check_gaming_privilege_with_ui_execute_routine;
-    info->resultRoutine = (xbl_async_op_result_routine)xbl_asyncop_write_result<TCUICheckGamingPrivilegeResult, xbl_args_tcui_check_gaming_privilege>;
-    auto tcuiArgs = std::make_shared<xbl_args_tcui_check_gaming_privilege>();
+    VerifyGlobalXsapiInit();
+
+    auto tcuiArgs = new xbl_args_tcui_check_gaming_privilege();
     tcuiArgs->privilege = privilege;
     tcuiArgs->friendlyMessage = friendlyMessage;
-    info->args = tcuiArgs;
 
-    xbl_asyncop_set_info_in_new_handle(info, completionRoutineContext, static_cast<void*>(completionRoutine));
-
+    HC_TASK_HANDLE taskHandle = HCTaskCreate(
+        taskGroupId,
+        TCUICheckGamingPrivilegeWithUIExecute, 
+        static_cast<void*>(tcuiArgs),
+        xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, TCUICheckGamingPrivilegeCompletionRoutine>, 
+        static_cast<void*>(tcuiArgs),
+        static_cast<void*>(completionRoutine), 
+        completionRoutineContext,
+        true
+        );
 }
+

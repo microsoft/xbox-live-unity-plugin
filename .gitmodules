@@ -1,0 +1,3 @@
+[submodule "CppSource/External/libHttpClient"]
+	path = CppSource/External/libHttpClient
+	url = https://github.com/Microsoft/libHttpClient.git

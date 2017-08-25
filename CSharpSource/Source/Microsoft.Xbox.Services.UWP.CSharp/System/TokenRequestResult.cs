@@ -1,13 +1,9 @@
 ﻿
 namespace Microsoft.Xbox.Services.System
 {
-    using global::System;
-    using Windows.System;
-    using Windows.Security.Credentials;
-    using Windows.Security.Authentication.Web.Core;
-    using global::System.Threading.Tasks;
     using global::System.Collections.Generic;
     using global::System.Linq;
+    using Windows.Security.Authentication.Web.Core;
 
     internal class TokenRequestResult
     {
