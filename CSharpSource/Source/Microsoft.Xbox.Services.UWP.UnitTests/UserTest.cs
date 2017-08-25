@@ -46,33 +46,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             result.Properties.Add("Privileges", mockPrivileges);
 
             return result;
-        }
-
-        private Mock<AccountProvider> CreateMockAccountProvider(TokenRequestResult silentResult, TokenRequestResult uiResult)
-        {
-            var provider = new Mock<AccountProvider>();
-            if (silentResult != null)
-            {
-                provider
-                .Setup(o => o.GetTokenSilentlyAsync(It.IsAny<WebTokenRequest>()))
-                .ReturnsAsync(silentResult);
-            }
-
-            if (uiResult != null)
-            {
-                provider
-                .Setup(o => o.RequestTokenAsync(It.IsAny<WebTokenRequest>()))
-                .Callback(()=> 
-                {
-                    // Make sure it is called on the UI thread with a coreWindow.
-                    // Calling API can only be called on UI thread.
-                    var resourceContext = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView();
-                })
-                .ReturnsAsync(uiResult);
-            }
-
-            return provider;
-        }
+        }      
 
         [TestCleanup]
         public void Cleanup()
@@ -112,8 +86,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
                 signinEvent.Set();
             };
             var response = CreateSuccessTokenResponse();
-            user.Impl.Provider = CreateMockAccountProvider(response, null).Object;
-
+            
             // Create xbl user with system user
             var silentResult = await user.SignInSilentlyAsync();
             Assert.AreEqual(silentResult.Status, SignInStatus.Success);
@@ -144,8 +117,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             });
 
             var response = CreateSuccessTokenResponse();
-            user.Impl.Provider = CreateMockAccountProvider(null, response).Object;
-
+            
             var signinResult = await user.SignInAsync();
             Assert.AreEqual(signinResult.Status, SignInStatus.Success);
             Assert.IsTrue(user.IsSignedIn);
@@ -165,8 +137,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             var user = new XboxLiveUser();
             var result = new TokenRequestResult(null);
             result.ResponseStatus = WebTokenRequestStatus.UserInteractionRequired;
-            user.Impl.Provider = CreateMockAccountProvider(result, null).Object;
-
+            
             var signinResult = await user.SignInSilentlyAsync();
             Assert.AreEqual(signinResult.Status, SignInStatus.UserInteractionRequired);
             Assert.IsFalse(user.IsSignedIn);
@@ -179,8 +150,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             var user = new XboxLiveUser();
             var result = new TokenRequestResult(null);
             result.ResponseStatus = WebTokenRequestStatus.UserCancel;
-            user.Impl.Provider = CreateMockAccountProvider(null, result).Object;
-
+            
             var signinResult = await user.SignInAsync();
             Assert.AreEqual(signinResult.Status, SignInStatus.UserCancel);
             Assert.IsFalse(user.IsSignedIn);
@@ -195,8 +165,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             var result = new TokenRequestResult(null);
             result.ResponseStatus = WebTokenRequestStatus.ProviderError;
             result.ResponseError = new WebProviderError(mockErrorcode, mockErrorMessage);
-            user.Impl.Provider = CreateMockAccountProvider(result, result).Object;
-
+            
             // ProviderError will convert to exception
             try
             {
@@ -232,15 +201,7 @@ namespace Microsoft.Xbox.Services.UWP.UnitTests
             var successResponse = CreateSuccessTokenResponse();
             var errorResponse = new TokenRequestResult(null);
             errorResponse.ResponseStatus = WebTokenRequestStatus.UserInteractionRequired;
-
-            var provider = new Mock<AccountProvider>();
-            provider
-            .SetupSequence(o => o.GetTokenSilentlyAsync(It.IsAny<WebTokenRequest>()))
-            .ReturnsAsync(successResponse)
-            .ReturnsAsync(errorResponse);
-
-            user.Impl.Provider = provider.Object;
-
+                        
             var silentResult = await user.SignInSilentlyAsync();
             Assert.AreEqual(silentResult.Status, SignInStatus.Success);
             Assert.IsTrue(user.IsSignedIn);

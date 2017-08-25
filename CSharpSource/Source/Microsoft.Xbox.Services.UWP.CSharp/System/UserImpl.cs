@@ -35,7 +35,7 @@ namespace Microsoft.Xbox.Services.System
         {
             this.CreationContext = systemUser;
 
-            m_xboxLiveUser_c = XboxLive.Instance.Invoke<IntPtr, XboxLiveUserCreate>(
+            m_xboxLiveUser_c = XboxLive.Instance.Invoke<IntPtr, XboxLiveUserCreateFromSystemUser>(
                 this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext)
                 );
 
@@ -263,7 +263,7 @@ namespace Microsoft.Xbox.Services.System
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void SignOutCompletedHandler(IntPtr xboxLiveUser_c);
 
-        private delegate IntPtr XboxLiveUserCreate(IntPtr systemUser);
+        private delegate IntPtr XboxLiveUserCreateFromSystemUser(IntPtr systemUser);
         private delegate void XboxLiveUserDelete(IntPtr xboxLiveUser_c);
         private delegate void XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
         private delegate void XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
