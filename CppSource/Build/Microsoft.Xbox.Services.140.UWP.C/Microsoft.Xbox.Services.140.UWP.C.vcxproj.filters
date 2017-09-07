@@ -49,6 +49,9 @@
     <Filter Include="C++ Source\Shared">
       <UniqueIdentifier>{994762ae-76e5-4e26-aedb-03cbf6741127}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\SocialManager">
+      <UniqueIdentifier>{1667e718-3ef2-41d3-b71f-bcb11dc4b102}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -132,6 +135,12 @@
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h">
       <Filter>C++ Source\Services\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\social_manager_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SocialManager\social_manager_helper_c.h">
+      <Filter>C++ Source\SocialManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -214,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_c.cpp">
       <Filter>C++ Source\Services\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SocialManager\social_manager_c.cpp">
+      <Filter>C++ Source\SocialManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
