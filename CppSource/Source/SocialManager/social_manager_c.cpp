@@ -3,13 +3,14 @@
 
 #include "pch.h"
 #include "user_impl_c.h"
-#include "social_user_group_impl_c.h"
 #include "social_manager_helper_c.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::social::manager;
 using namespace xbox::httpclient;
+
+std::vector<XboxSocialUserGroup*> mGroups;
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 SocialManagerAddLocalUser(
@@ -34,9 +35,10 @@ SocialManagerRemoveLocalUser(
 }
 
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+// Kept here so it isn't garbage collected before managed code can read it
+std::vector<SocialEvent *> mEvents;
+XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Inout_ SocialEvent** events,
     _Inout_ int* numOfEvents
 	)
 {
@@ -45,12 +47,22 @@ SocialManagerDoWork(
     std::vector<social_event> socialEvents = social_manager::get_singleton_instance()->do_work();
 	
     *numOfEvents = socialEvents.size();
-    events = (SocialEvent **)malloc(sizeof(SocialEvent *) * (*numOfEvents));
 
-    for (int i = 0; i < *numOfEvents; i++)
-    {        
-        events[i] = CreateSocialEventFromCpp(socialEvents[i]);
+    mEvents.clear();
+
+    if (socialEvents.size() > 0) {
+        for (auto cEvent : socialEvents) {
+            mEvents.push_back(CreateSocialEventFromCpp(cEvent, mGroups));
+        }
+
+        for (auto socialUserGroup : mGroups) {
+            if (socialUserGroup != nullptr) {
+                socialUserGroup->pImpl->Refresh();
+            }
+        }
     }
+
+    return mEvents.data();
 }
 
 
@@ -69,6 +81,7 @@ SocialManagerCreateSocialUserGroupFromFilters(
 
 	auto socialUserGroup = new XboxSocialUserGroup();
 	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(cSocialUserGroup.payload(), socialUserGroup);
+    mGroups.push_back(socialUserGroup);
 	return socialUserGroup;
 }
 
@@ -92,7 +105,22 @@ SocialManagerCreateSocialUserGroupFromList(
 
 	auto socialUserGroup = new XboxSocialUserGroup();
 	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(result.payload(), socialUserGroup);
+    mGroups.push_back(socialUserGroup);
 	return socialUserGroup;
+}
+
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
+SocialManagerDestroySocialUserGroup(
+    _In_ XboxSocialUserGroup *group
+    )
+{
+    VerifyGlobalXsapiInit();
+
+    // Remove group from our local store of XboxSocialUserGroups
+    auto newEnd = std::remove(mGroups.begin(), mGroups.end(), group);
+    mGroups.erase(newEnd, mGroups.end());
+
+    social_manager::get_singleton_instance()->destroy_social_user_group(group->pImpl->m_cppSocialUserGroup);
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
@@ -104,11 +132,11 @@ SocialManagerUpdateSocialUserGroup(
 {
 	VerifyGlobalXsapiInit();
 
-    std::vector<string_t> usersVector = std::vector<string_t>(numOfUsers);
+    std::vector<string_t> usersVector = std::vector<string_t>();
 
     for (int i = 0; i < numOfUsers; i++)
     {
-        usersVector[i] = usersVector[i];
+        usersVector.push_back(users[i]);
     }
 
 	social_manager::get_singleton_instance()->update_social_user_group(group->pImpl->m_cppSocialUserGroup, usersVector);

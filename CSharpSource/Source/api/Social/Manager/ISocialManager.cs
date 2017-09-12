@@ -11,15 +11,18 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         IList<XboxLiveUser> LocalUsers { get; }
 
-        Task AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.None);
+        void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.None);
 
         void RemoveLocalUser(XboxLiveUser user);
 
-        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<ulong> userIds);
+        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<string> userIds);
 
         XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter);
 
         IList<SocialEvent> DoWork();
-        
+
+        void UpdateSocialUserGroup(XboxSocialUserGroup group, List<string> users);
+
+        void DestroySocialUserGroup(XboxSocialUserGroup group);
     }
 }

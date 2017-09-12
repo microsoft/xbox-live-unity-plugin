@@ -57,7 +57,6 @@ typedef enum SOCIAL_USER_GROUP_TYPE {
 typedef struct TitleHistory
 {
     bool userHasPlayed;
-    uint32 titleId;
     /// todo: find the c# type for m_lastTimeUserPlayed
 } TitleHistory;
 
@@ -106,11 +105,16 @@ typedef struct SocialEventArgs {
 
 } SocialEventArgs;
 
+typedef struct XboxUserIdContainer {
+    PCSTR_T xboxUserId;
+} XboxUserIdContainer;
+
 typedef struct SocialEvent
 {
     XboxLiveUser* user;
     SOCIAL_EVENT_TYPE eventType;
-    // XboxUserIdContainer usersAffected;
+    XboxUserIdContainer** usersAffected;
+    int numOfUsersAffected;
     SocialEventArgs* eventArgs;
     PCSTR_T err; // todo: convert to std::error_code&
     PCSTR_T err_message;
@@ -121,7 +125,7 @@ typedef struct XboxSocialUserGroup
 	XboxSocialUser** users;
     int numOfUsers;
 	SOCIAL_USER_GROUP_TYPE socialUserGroupType;
-	XboxSocialUser** usersTrackedBySocialUserGroup;
+	XboxUserIdContainer** usersTrackedBySocialUserGroup;
     int numOfUsersTrackedBySocialUserGroup;
     XboxLiveUser* localUser;
 	PRESENCE_FILTER presenceFilterOfGroup;
@@ -131,6 +135,10 @@ typedef struct XboxSocialUserGroup
 } XboxSocialUserGroup;
 // get_copy_of_users
 // get_users_from_xbox_user_ids
+
+typedef struct SocialUserGroupLoadedEventArgs : SocialEventArgs {
+    XboxSocialUserGroup* socialUserGroup;
+} SocialUserGroupLoadedEventArgs;
 
 typedef struct SocialManager
 {
@@ -148,11 +156,10 @@ SocialManagerRemoveLocalUser(
 	_In_ XboxLiveUser *user
 	);
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Inout_ SocialEvent** events,
     _Inout_ int* numOfEvents
-	);
+    );
 
 XSAPI_DLLEXPORT XboxSocialUserGroup* XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
@@ -167,6 +174,11 @@ SocialManagerCreateSocialUserGroupFromList(
     _In_ PCSTR_T* xboxUserIdList,
     _In_ int numOfXboxUserIds
 	);
+
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
+SocialManagerDestroySocialUserGroup(
+    _In_ XboxSocialUserGroup *group
+    );
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(

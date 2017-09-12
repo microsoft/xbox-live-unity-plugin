@@ -11,7 +11,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         public UserBuffer()
         {
             this.EventQueue = new InternalEventQueue();
-            this.SocialUserGraph = new Dictionary<ulong, XboxSocialUser>();
+            this.SocialUserGraph = new Dictionary<string, XboxSocialUser>();
         }
 
         public UserBuffer(IEnumerable<XboxSocialUser> users)
@@ -21,7 +21,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
         // TODO: This needs to be synchronized as well
-        public Dictionary<ulong, XboxSocialUser> SocialUserGraph { get; private set; }
+        public Dictionary<string, XboxSocialUser> SocialUserGraph { get; private set; }
 
         public InternalEventQueue EventQueue { get; private set; }
 
@@ -118,9 +118,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
         }
 
-        public void RemoveUsers(List<ulong> users)
+        public void RemoveUsers(List<string> users)
         {
-            foreach (ulong userId in users)
+            foreach (string userId in users)
             {
                 this.Inactive.SocialUserGraph.Remove(userId);
             }

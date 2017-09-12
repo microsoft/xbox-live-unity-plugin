@@ -59,7 +59,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
         }
 
-        public Dictionary<ulong, XboxSocialUser> ActiveBufferSocialGraph
+        public Dictionary<string, XboxSocialUser> ActiveBufferSocialGraph
         {
             get
             {
@@ -114,7 +114,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             });
         }
 
-        public Task AddUsers(IList<ulong> users)
+        public Task AddUsers(IList<string> users)
         {
             InternalSocialEvent socialEvent = new InternalSocialEvent(InternalSocialEventType.UsersAdded, users);
             this.internalEventQueue.Enqueue(socialEvent);
@@ -122,7 +122,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return socialEvent.Task;
         }
 
-        public Task RemoveUsers(IList<ulong> users)
+        public Task RemoveUsers(IList<string> users)
         {
             InternalSocialEvent socialEvent = new InternalSocialEvent(InternalSocialEventType.UsersRemoved, users);
             this.internalEventQueue.Enqueue(socialEvent);
@@ -247,7 +247,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 this.socialGraphState = SocialGraphState.Refresh;
 
                 // TODO: Fire a presence refresh for these users.
-                List<ulong> userIds = this.userBuffer.Inactive.SocialUserGraph.Keys.ToList();
+                List<string> userIds = this.userBuffer.Inactive.SocialUserGraph.Keys.ToList();
             }
             finally
             {
@@ -569,7 +569,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         private void ApplyTitlePresenceChangedEvent(InternalSocialEvent socialEvent, bool isFreshEvent)
         {
             var titlePresenceChanged = socialEvent.TitlePresenceArgs;
-            var xuid = Convert.ToUInt64(titlePresenceChanged.XboxUserId);
+            var xuid = titlePresenceChanged.XboxUserId;
 
             var eventUser = this.userBuffer.Inactive.SocialUserGraph[xuid];
             if (eventUser != null)
@@ -591,7 +591,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 IList<SocialManagerPresenceTitleRecord> presenceDetails = user.PresenceDetails;
                 UserPresenceState presenceState = user.PresenceState;
 
-                var xuid = Convert.ToUInt64(user.XboxUserId);
+                var xuid = user.XboxUserId;
                 var eventUser = this.userBuffer.Inactive.SocialUserGraph[xuid];
 
                 if (eventUser != null)

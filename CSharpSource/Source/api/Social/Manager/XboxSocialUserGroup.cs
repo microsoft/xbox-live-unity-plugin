@@ -6,56 +6,26 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Linq;
-
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Presence;
+    using static SocialManager;
 
     public class XboxSocialUserGroup : IEnumerable<XboxSocialUser>
     {
-        private const int MaxUsersFromList = 100;
+        // Pointer to the c object
+        internal IntPtr mSocialUserGroupPtr;
 
-        private readonly Dictionary<ulong, XboxSocialUser> users = new Dictionary<ulong, XboxSocialUser>();
+        // Properties
+        private XboxLiveUser mLocalUser;
+        private readonly Dictionary<string, XboxSocialUser> mUsers = new Dictionary<string, XboxSocialUser>();
+        private List<ulong> mTrackedUsers = new List<ulong>();
 
-        /// <summary>
-        /// Initialize an <see cref="XboxSocialUserGroup" />
-        /// </summary>
-        /// <param name="localUser">The user that this group belongs to.</param>
-        /// <param name="type">The type of SocialManager group.</param>
-        private XboxSocialUserGroup(XboxLiveUser localUser, SocialUserGroupType type)
+        int mVersion;
+
+        internal XboxSocialUserGroup(IntPtr cSocialUserGroup)
         {
-            this.SocialUserGroupType = type;
-        }
-
-        /// <summary>
-        /// Creates a list based XboxSocialUserGroup from a given set of user ids.
-        /// </summary>
-        /// <param name="localUser">The user who the group belongs to.</param>
-        /// <param name="userIds">The list of users to include in the group.</param>
-        internal XboxSocialUserGroup(XboxLiveUser localUser, ICollection<ulong> userIds)
-            : this(localUser, SocialUserGroupType.UserList)
-        {
-            if (userIds == null) throw new ArgumentNullException("userIds");
-            if (userIds.Count == 0) throw new ArgumentException("You must provide at least one user id to create a group.", "userIds");
-            if (userIds.Count > MaxUsersFromList) throw new ArgumentException(string.Format("You cannot provide more than {0} user ides to create a group.", MaxUsersFromList), "userIds");
-
-            foreach (var userId in userIds)
-            {
-                this.users[userId] = null;
-            }
-        }
-
-        /// <summary>
-        /// Creates a filter based XboxSocialUserGroup from a given set of filter parameters.
-        /// </summary>
-        /// <param name="localUser">The user who the group belongs to.</param>
-        /// <param name="presenceFilter">Indicates the presence of users who should be included in the group.</param>
-        /// <param name="relationshipFilter">Indicates the relationship to the local user of users who should be included in the group.</param>
-        /// <param name="titleId">The title id to filter users to.</param>
-        internal XboxSocialUserGroup(XboxLiveUser localUser, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter, uint titleId)
-            : this(localUser, SocialUserGroupType.Filter)
-        {
-            this.PresenceFilter = presenceFilter;
-            this.RelationshipFilter = relationshipFilter;
-            this.TitleId = titleId;
+            mSocialUserGroupPtr = cSocialUserGroup;
+            Refresh();
         }
 
         public SocialUserGroupType SocialUserGroupType { get; private set; }
@@ -64,13 +34,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public RelationshipFilter RelationshipFilter { get; private set; }
 
+        // todo: Was private in cpp, should remove? I think yes
         public uint TitleId { get; set; }
 
         public int Count
         {
             get
             {
-                return this.users.Count;
+                return this.mUsers.Count;
             }
         }
 
@@ -78,189 +49,105 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             get
             {
-                return this.users.Values.ToList();
+                if (mVersion != SocialManager.WorkDone)
+                    Refresh();
+
+                return this.mUsers.Values.ToList();
             }
         }
 
-        public XboxSocialUser GetUser(ulong userId)
+        public IList<ulong> UsersTrackedBySocialUserGroup
         {
+            get
+            {
+                if (mVersion != SocialManager.WorkDone)
+                    Refresh();
+
+                return this.mTrackedUsers;
+            }
+        }
+
+        public XboxSocialUser GetUser(string userId)
+        {
+            if (mVersion != SocialManager.WorkDone)
+                Refresh();
+
             XboxSocialUser user;
-            this.users.TryGetValue(userId, out user);
+            this.mUsers.TryGetValue(userId, out user);
             return user;
         }
 
         public IEnumerator<XboxSocialUser> GetEnumerator()
         {
-            return this.users.Values.GetEnumerator();
+            if (mVersion != SocialManager.WorkDone)
+                Refresh();
+
+            return this.mUsers.Values.GetEnumerator();
         }
 
         global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
         {
+            if (mVersion != SocialManager.WorkDone)
+                Refresh();
+
             return this.GetEnumerator();
         }
 
-        internal void InitializeGroup(IEnumerable<XboxSocialUser> users)
+        // For perf consider if we need an init method and a refresh method seperate
+        internal void Refresh()
         {
-            switch (this.SocialUserGroupType)
-            {
-                case SocialUserGroupType.Filter:
-                    foreach (XboxSocialUser user in users)
-                    {
+            mVersion = SocialManager.WorkDone;
+            var cSocialUserGroup = Marshal.PtrToStructure<XboxSocialUserGroup_c>(mSocialUserGroupPtr);
 
-                        if (!this.CheckRelationshipFilter(user, this.RelationshipFilter)) continue;
-                        if (this.CheckPresenceFilter(user, this.PresenceFilter))
-                        {
-                            this.AddOrUpdateUser(user);
-                        }
-                    }
-                    break;
-                case SocialUserGroupType.UserList:
-                    foreach (XboxSocialUser user in users)
-                    {
-                        if (this.users.ContainsKey(user.XboxUserId))
-                        {
-                            this.AddOrUpdateUser(user);
-                        }
-                    }
-                    break;
+            // Properties
+            SocialUserGroupType = cSocialUserGroup.SocialUserGroupType;
+            PresenceFilter = cSocialUserGroup.PresenceFilterOfGroup;
+            RelationshipFilter = cSocialUserGroup.RelationshipFilterOfGroup;
+
+            // Local User
+            if (mLocalUser == null)
+            {
+                mLocalUser = new XboxLiveUser(cSocialUserGroup.LocalUser);
             }
-        }
+            mLocalUser.Impl.UpdatePropertiesFromXboxLiveUser_c();
 
-        private void AddOrUpdateUser(XboxSocialUser user)
-        {
-            if (user == null)
+            // Users
+
+            // todo: for perf consider not removing everthing, but updating certain things and deleting the rest
+            mUsers.Clear();
+
+            if (cSocialUserGroup.NumOfUsers > 0)
             {
-                throw new ArgumentNullException("user");
-            }
+                IntPtr[] cUsersArray = new IntPtr[cSocialUserGroup.NumOfUsers];
 
-            this.users[user.XboxUserId] = user;
-        }
+                Marshal.Copy(cSocialUserGroup.Users, cUsersArray, 0, cSocialUserGroup.NumOfUsers);
 
-        private void RemoveUser(XboxSocialUser user)
-        {
-            this.users.Remove(user.XboxUserId);
-        }
 
-        internal void UpdateView(Dictionary<ulong, XboxSocialUser> userSnapshot, List<SocialEvent> events)
-        {
-            switch (this.SocialUserGroupType)
-            {
-                case SocialUserGroupType.Filter:
-                    this.UpdateFilteredView(userSnapshot, events);
-                    break;
-                case SocialUserGroupType.UserList:
-                    // We need to convert the keys to a list because we're modifying the collection.
-                    foreach (ulong userId in this.users.Keys.ToList())
-                    {
-                        XboxSocialUser user;
-                        // Check if there's an updated user in the snapshot.
-                        if (userSnapshot.TryGetValue(userId, out user))
-                        {
-                            this.AddOrUpdateUser(user);
-                        }
-                    }
-                    break;
-            }
-        }
-
-        private bool UpdateFilteredView(IDictionary<ulong, XboxSocialUser> users, IEnumerable<SocialEvent> events)
-        {
-            bool updated = false;
-            foreach (SocialEvent socialEvent in events)
-            {
-                switch (socialEvent.EventType)
+                for (int i = 0; i < cUsersArray.Count(); i++)
                 {
-                    case SocialEventType.PresenceChanged:
-                    case SocialEventType.ProfilesChanged:
-                    case SocialEventType.SocialRelationshipsChanged:
-                        foreach (ulong userId in socialEvent.UsersAffected)
-                        {
-                            XboxSocialUser user = users[userId];
-
-                            if (this.CheckRelationshipFilter(user, this.RelationshipFilter) && this.CheckPresenceFilter(user, this.PresenceFilter))
-                            {
-                                this.AddOrUpdateUser(user);
-                            }
-                            else
-                            {
-                                this.RemoveUser(user);
-                            }
-                        }
-                        break;
-                    case SocialEventType.UsersAddedToSocialGraph:
-                        foreach (ulong userId in socialEvent.UsersAffected)
-                        {
-                            XboxSocialUser user = users[userId];
-
-                            if (this.CheckRelationshipFilter(user, this.RelationshipFilter) && this.CheckPresenceFilter(user, this.PresenceFilter))
-                            {
-                                this.AddOrUpdateUser(user);
-                            }
-                        }
-                        break;
-                    case SocialEventType.UsersRemovedFromSocialGraph:
-                        foreach (ulong userId in socialEvent.UsersAffected)
-                        {
-                            XboxSocialUser user;
-                            if (this.users.TryGetValue(userId, out user))
-                            {
-                                this.RemoveUser(user);
-                            }
-                        }
-                        break;
-                    default:
-                        continue;
+                    var socialUser = new XboxSocialUser(cUsersArray[i]);
+                    mUsers[socialUser.XboxUserId] = socialUser; 
                 }
-
-                updated = true;
             }
 
-            return updated;
-        }
+            // Users Tracked
 
-        /// <summary>
-        /// Determines if the user should be included based on their presence.
-        /// </summary>
-        /// <param name="user">The user whose presence should be checked.</param>
-        /// <param name="presenceFilter">The presence filter to check against.</param>
-        /// <returns>True if the user should be included, false otherwise.</returns>
-        private bool CheckPresenceFilter(XboxSocialUser user, PresenceFilter presenceFilter)
-        {
-            switch (presenceFilter)
-            {
-                case PresenceFilter.All:
-                    return true;
-                case PresenceFilter.AllOffline:
-                    return user.PresenceState == UserPresenceState.Offline;
-                case PresenceFilter.AllOnline:
-                    return user.PresenceState == UserPresenceState.Online;
-                case PresenceFilter.AllTitle:
-                    return user.TitleHistory.HasUserPlayed;
-                case PresenceFilter.TitleOffline:
-                    return user.PresenceState == UserPresenceState.Offline && user.TitleHistory.HasUserPlayed;
-                case PresenceFilter.TitleOnline:
-                    return user.IsUserPlayingTitle(this.TitleId);
-                default:
-                    return false;
-            }
-        }
+            // todo: for perf consider whether this list is static or dynamic
+            mTrackedUsers.Clear();
 
-        /// <summary>
-        /// Determines if the user should be included based on their relationship.
-        /// </summary>
-        /// <param name="user">The user whose relationship should be checked.</param>
-        /// <param name="relationshipFilter">The relationship filter to check against.</param>
-        /// <returns>True if the user should be included, false otherwise.</returns>
-        private bool CheckRelationshipFilter(XboxSocialUser user, RelationshipFilter relationshipFilter)
-        {
-            switch (relationshipFilter)
+            if (cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup > 0)
             {
-                case RelationshipFilter.Friends:
-                    return user.IsFollowedByCaller;
-                case RelationshipFilter.Favorite:
-                    return user.IsFavorite;
-                default:
-                    throw new ArgumentOutOfRangeException("relationshipFilter", relationshipFilter, "Unexpected relationship filter value.");
+                IntPtr[] cTrackedUsers = new IntPtr[cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup];
+
+                Marshal.Copy(cSocialUserGroup.UsersTrackedBySocialUserGroup, cTrackedUsers, 0, cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup);
+
+
+                for (int i = 0; i < cTrackedUsers.Count(); i++)
+                {
+                    var cSocialUser = Marshal.PtrToStructure<XboxUserIdContainer_c>(cTrackedUsers[i]);
+                    var xboxUserId = ulong.Parse(cSocialUser.XboxUserId);
+                    mTrackedUsers.Add(xboxUserId);
+                }
             }
         }
     }

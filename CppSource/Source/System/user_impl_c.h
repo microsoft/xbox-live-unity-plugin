@@ -8,7 +8,7 @@ struct XboxLiveUserImpl
     XboxLiveUserImpl(
         _In_ Windows::System::User^ creationContext,
         _In_ XboxLiveUser *cUser
-        )
+    )
         : m_cUser(cUser)
     {
         if (creationContext != nullptr)
@@ -19,6 +19,15 @@ struct XboxLiveUserImpl
         {
             m_cppUser = std::make_shared<xbox::services::system::xbox_live_user>();
         }
+    }
+
+    XboxLiveUserImpl(
+        _In_ std::shared_ptr<xbox::services::system::xbox_live_user> creationContext,
+        _In_ XboxLiveUser *cUser
+    )
+        : m_cppUser(creationContext), m_cUser(cUser)
+    {
+        Refresh();
     }
 
     void Refresh()

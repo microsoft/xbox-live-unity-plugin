@@ -26,7 +26,7 @@ namespace Microsoft.Xbox.Services.System
         public AuthConfig AuthConfig { get; private set; } // TODO remove this
         public User CreationContext { get; private set; }
 
-        private IntPtr m_xboxLiveUser_c;
+        internal IntPtr m_xboxLiveUser_c;
         private int m_signOutHandlerContext;
 
         private static ConcurrentDictionary<IntPtr, UserImpl> s_xboxLiveUserInstanceMap = new ConcurrentDictionary<IntPtr, UserImpl>();
@@ -39,6 +39,17 @@ namespace Microsoft.Xbox.Services.System
                 this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext)
                 );
 
+            Init();
+        }
+
+        internal UserImpl(IntPtr cXboxLiveUser)
+        {
+            m_xboxLiveUser_c = cXboxLiveUser;
+            Init();
+        }
+
+        void Init()
+        {
             m_signOutHandlerContext = XboxLive.Instance.Invoke<Int32, AddSignOutCompletedHandler>(
                 (SignOutCompletedHandler)OnSignOutCompleted
                 );
@@ -233,7 +244,7 @@ namespace Microsoft.Xbox.Services.System
             }
         }
 
-        private void UpdatePropertiesFromXboxLiveUser_c()
+        internal void UpdatePropertiesFromXboxLiveUser_c()
         {
             var xboxLiveUser_c = Marshal.PtrToStructure<XboxLiveUser_c>(m_xboxLiveUser_c);
 

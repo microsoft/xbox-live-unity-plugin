@@ -31,6 +31,26 @@ namespace Microsoft.Xbox.Services
             this.userImpl = user;
         }
 
+        internal XboxLiveUser(global::System.IntPtr xboxLiveUserPtr)
+        {
+            var user = new UserImpl(xboxLiveUserPtr);
+
+            // The UserImpl monitors the underlying system for sign out events
+            // and notifies us that a user has been signed out.  We can then
+            // pass that event on the application with a concrete reference.
+            user.SignInCompleted += (sender, args) =>
+            {
+                OnSignInCompleted(this);
+            };
+            user.SignOutCompleted += (sender, args) =>
+            {
+                OnSignOutCompleted(this);
+            };
+
+            this.userImpl = user;
+            user.UpdatePropertiesFromXboxLiveUser_c();
+        }
+        
         public Windows.System.User WindowsSystemUser
         {
             get

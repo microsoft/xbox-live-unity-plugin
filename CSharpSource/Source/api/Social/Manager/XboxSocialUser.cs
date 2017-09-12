@@ -6,15 +6,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Linq;
-
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Presence;
-
-    using Newtonsoft.Json;
+    
+    using static SocialManager;
 
     public class XboxSocialUser
     {
-        [JsonProperty("xuid")]
-        public ulong XboxUserId { get; set; }
+        public string XboxUserId { get; set; }
 
         public string DisplayName { get; set; }
 
@@ -79,6 +78,31 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
 
             return changeType;
+        }
+
+        internal XboxSocialUser()
+        {
+
+        }
+
+        internal XboxSocialUser(IntPtr xboxSocialUserPtr)
+        {
+            XboxSocialUser_c cXboxSocialUser = Marshal.PtrToStructure<XboxSocialUser_c>(xboxSocialUserPtr);
+
+            XboxUserId = cXboxSocialUser.XboxUserId;
+            DisplayName = cXboxSocialUser.DisplayName;
+            RealName = cXboxSocialUser.RealName;
+            DisplayPicRaw = cXboxSocialUser.DisplayPicUrlRaw;
+            UseAvatar = Convert.ToBoolean(cXboxSocialUser.UseAvatar);
+            Gamertag = cXboxSocialUser.Gamertag;
+            Gamerscore = cXboxSocialUser.Gamerscore;
+            // todo: PreferredColor = new PreferredColor(cXboxSocialUser.PreferredColor);
+            IsFollowedByCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowedByCaller);
+            IsFollowingCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowingUser);
+            IsFavorite = Convert.ToBoolean(cXboxSocialUser.IsFavorite);
+            // todo: PresenceState = cXboxSocialUser.PresenceState;
+            // todo: PresenceDetails = cXboxSocialUser.PresenceDetails;
+            // todo: TitleHistory = new TitleHistory(cXboxSocialUser.TitleHistory);
         }
     }
 }

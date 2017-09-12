@@ -6,12 +6,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Linq;
+    using global::System.Runtime.InteropServices;
     using global::System.Threading.Tasks;
 
     using Microsoft.Xbox.Services.System;
 
     public class SocialManager : ISocialManager
     {
+        internal static int WorkDone;
         private static ISocialManager instance;
 
         private static readonly object instanceLock = new object();
@@ -23,8 +25,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         private Queue<SocialEvent> eventQueue = new Queue<SocialEvent>();
 
+        private List<XboxSocialUserGroup> mGroups;
+
         private SocialManager()
         {
+            mGroups = new List<XboxSocialUserGroup>();
         }
 
         internal static ISocialManager Instance
@@ -53,181 +58,279 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
         }
 
-        public Task AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
+        private delegate void SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel);
+        public void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            if (this.userGraphs.ContainsKey(user))
-            {
-                throw new XboxException("User already exists in graph.");
-            }
-
-            SocialGraph graph = new SocialGraph(user, extraDetailLevel);
-            return graph.Initialize().ContinueWith(
-                initializeTask =>
-                {
-                    if (initializeTask.IsFaulted)
-                    {
-                        this.eventQueue.Enqueue(new SocialEvent(SocialEventType.LocalUserAdded, user, null, null, initializeTask.Exception));
-                        return;
-                    }
-
-                    // Wait on the task to throw an exceptions.
-                    initializeTask.Wait();
-
-                    lock (this.syncRoot)
-                    {
-                        this.userGraphs[user] = graph;
-                        this.localUsers.Add(user);
-
-                        this.eventQueue.Enqueue(new SocialEvent(SocialEventType.LocalUserAdded, user));
-                    }
-                });
+            XboxLive.Instance.Invoke<SocialManagerAddLocalUser>(user.Impl.m_xboxLiveUser_c, extraDetailLevel);
         }
 
+        private delegate void SocialManagerRemoveLocalUser(IntPtr user);
         public void RemoveLocalUser(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
-
-            lock (this.syncRoot)
-            {
-                this.localUsers.Remove(user);
-                this.userGraphs.Remove(user);
-
-                this.eventQueue.Enqueue(new SocialEvent(SocialEventType.LocalUserRemoved, user));
-            }
+            
+            XboxLive.Instance.Invoke<SocialManagerRemoveLocalUser>(user.Impl.m_xboxLiveUser_c);
         }
-
+        
+        private delegate IntPtr SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter);
         public XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter)
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            SocialGraph userGraph;
-            if (!this.userGraphs.TryGetValue(user, out userGraph))
-            {
-                throw new ArgumentException("You must add a local user before you can create a social group for them.", "user");
-            }
-
-            XboxSocialUserGroup group = new XboxSocialUserGroup(user, presenceFilter, relationshipFilter, XboxLiveAppConfiguration.Instance.TitleId);
-            if (userGraph.IsInitialized)
-            {
-                group.InitializeGroup(userGraph.ActiveUsers);
-            }
-
-            this.AddUserGroup(user, group);
-
-            this.eventQueue.Enqueue(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
-
-            return group;
+            IntPtr socialUserGroupPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerCreateSocialUserGroupFromFilters>(user.Impl.m_xboxLiveUser_c, presenceFilter, relationshipFilter);
+            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(socialUserGroupPtr);
+            mGroups.Add(socialUserGroup);
+            
+            return socialUserGroup;
         }
 
-        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<ulong> userIds)
+        private delegate IntPtr SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size);
+        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<string> userIds)
         {
             if (user == null) throw new ArgumentNullException("user");
             if (userIds == null) throw new ArgumentNullException("userIds");
 
-            SocialGraph userGraph;
-            if (!this.userGraphs.TryGetValue(user, out userGraph))
+            List<IntPtr> userIdPtrs = new List<IntPtr>();
+            for (int i = 0; i < userIds.Count; i++)
             {
-                throw new ArgumentException("You must add a local user before you can create a social group for them.", "user");
+                IntPtr cXuid = Marshal.StringToHGlobalUni(userIds[i]);
+                userIdPtrs.Add(cXuid);
             }
+            IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * userIds.Count);
+            Marshal.Copy(userIdPtrs.ToArray(), 0, cUserIds, userIds.Count);
 
-            XboxSocialUserGroup group = new XboxSocialUserGroup(user, userIds);
-            if (userGraph.IsInitialized)
-            {
-                group.InitializeGroup(userGraph.ActiveUsers);
-            }
+            IntPtr socialUserGroupPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerCreateSocialUserGroupFromList>(user.Impl.m_xboxLiveUser_c, cUserIds, userIds.Count);
+            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(socialUserGroupPtr);
+            mGroups.Add(socialUserGroup);
 
-            this.AddUserGroup(user, group);
-
-            userGraph.AddUsers(userIds).ContinueWith(addUsersTask =>
-            {
-                this.eventQueue.Enqueue(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, userIds, group, addUsersTask.Exception));
-            });
-
-            return group;
+            return socialUserGroup;
         }
 
-        private void AddUserGroup(XboxLiveUser user, XboxSocialUserGroup group)
+        private delegate IntPtr SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size);
+        public void UpdateSocialUserGroup(XboxSocialUserGroup group, List<string> users)
         {
-            lock (this.syncRoot)
-            {
-                HashSet<WeakReference> userGroups;
-                if (!this.userGroupsMap.TryGetValue(user, out userGroups))
-                {
-                    this.userGroupsMap[user] = userGroups = new HashSet<WeakReference>();
-                }
 
-                WeakReference groupReference = new WeakReference(group);
-                userGroups.Add(groupReference);
+            List<IntPtr> userIds = new List<IntPtr>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                IntPtr cXuid = Marshal.StringToHGlobalUni(users[i]);
+                userIds.Add(cXuid);
             }
+            IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * users.Count);
+            Marshal.Copy(userIds.ToArray(), 0, cUserIds, users.Count);
+
+            XboxLive.Instance.Invoke<SocialManagerUpdateSocialUserGroup>(group.mSocialUserGroupPtr, cUserIds, users.Count);
+            group.Refresh();
         }
 
-        public void UpdateUserGroup(XboxLiveUser user, XboxSocialUserGroup group, List<ulong> users)
+        private delegate IntPtr SocialManagerDestroySocialUserGroup(IntPtr group);
+        public void DestroySocialUserGroup(XboxSocialUserGroup group)
         {
-            if (group.SocialUserGroupType != SocialUserGroupType.UserList)
-            {
-                throw new ArgumentException("You can only modify the user list for a UserList type social group.");
-            }
+            mGroups.Remove(group);
 
-            this.userGraphs[user].AddUsers(users).ContinueWith(
-                addUsersTask =>
-                {
-                    SocialEvent socialEvent = new SocialEvent(SocialEventType.SocialUserGroupUpdated, user, users);
-                    this.eventQueue.Enqueue(socialEvent);
-                });
+            XboxLive.Instance.Invoke<SocialManagerDestroySocialUserGroup>(group.mSocialUserGroupPtr);
         }
 
+        private delegate IntPtr SocialManagerDoWork(IntPtr numOfEvents);
         public IList<SocialEvent> DoWork()
         {
-            Queue<SocialEvent> eventQueueSnapshot = this.eventQueue;
-            this.eventQueue = new Queue<SocialEvent>();
+            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<int>());
+            IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerDoWork>(cNumOfEvents);
 
-            List<SocialEvent> events;
-            lock (this.syncRoot)
+            int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
+            Marshal.FreeHGlobal(cNumOfEvents);
+
+            List<SocialEvent> events = new List<SocialEvent>();
+
+            if (numOfEvents > 0)
             {
-                events = eventQueueSnapshot.ToList();
-                foreach (SocialGraph graph in this.userGraphs.Values)
+                WorkDone++;
+                IntPtr[] cEvents = new IntPtr[numOfEvents];
+                Marshal.Copy(eventsPtr, cEvents, 0, numOfEvents);
+                
+                foreach (IntPtr cEvent in cEvents)
                 {
-                    graph.DoWork(events);
+                    events.Add(new SocialEvent(cEvent, mGroups));
+                }
 
-                    HashSet<WeakReference> userGroups;
-                    if (!this.userGroupsMap.TryGetValue(graph.LocalUser, out userGroups))
+                foreach (XboxSocialUserGroup group in mGroups)
+                {
+                    if (group != null)
                     {
-                        continue;
-                    }
-
-                    // Grab the social groups for this user and update them.
-                    foreach (WeakReference groupReference in userGroups.ToList())
-                    {
-                        XboxSocialUserGroup group = groupReference.Target as XboxSocialUserGroup;
-                        // If the target is null that means the group has been disposed so we don't 
-                        // need to bother updating it anymore.
-                        if (group == null)
-                        {
-                            userGroups.Remove(groupReference);
-                            continue;
-                        }
-
-                        group.UpdateView(graph.ActiveBufferSocialGraph, events);
+                        group.Refresh();
                     }
                 }
             }
+
 
             return events;
         }
 
-        /// <summary>
-        /// Used by tests to reset the state of the SocialManager.
-        /// </summary>
-        internal static void Reset()
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct TitleHistory_c
         {
-            foreach (XboxLiveUser user in Instance.LocalUsers.ToList())
-            {
-                Instance.RemoveLocalUser(user);
-            }
+            [MarshalAs(UnmanagedType.U1)]
+            public byte UserHasPlayed;
 
-            instance = null;
+            // todo: m_lastTimeUserPlayed
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct PreferredColor_c
+        {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string PrimaryColor;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string SecondaryColor;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string TertiaryColor;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialManagerPresenceTitleRecord_c
+        {
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsTitleActive;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsBroadcasting;
+
+            // todo: presence_device_type
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int TitleId;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string PresenceText; 
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialManagerPresenceRecord_c
+        {
+            // todo: user_presence_state
+
+            // todo: presenceTitleRecords
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public int NumOfPresenceTitleRecords; 
+
+            // todo: is_user_playing_title
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct XboxSocialUser_c
+        {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string XboxUserId;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsFavorite;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsFollowingUser;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsFollowedByCaller;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string DisplayName;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string RealName;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string DisplayPicUrlRaw;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte UseAvatar;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string Gamerscore;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string Gamertag;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceRecord;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr TitleHistory;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PreferredColor;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialEvent_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr User;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public SocialEventType EventType;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersAffected;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsersAffected;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr EventArgs;
+
+            // todo
+            //[MarshalAs(UnmanagedType.SysInt)]
+            //public IntPtr Error;
+
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string ErrorMessage;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialUserGroupLoadedArgs_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr SocialUserGroup;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct XboxUserIdContainer_c
+        {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            public string XboxUserId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct XboxSocialUserGroup_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Users;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsers;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public SocialUserGroupType SocialUserGroupType;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersTrackedBySocialUserGroup;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsersTrackedBySocialUserGroup;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr LocalUser;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public PresenceFilter PresenceFilterOfGroup;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public RelationshipFilter RelationshipFilterOfGroup;
         }
     }
 }

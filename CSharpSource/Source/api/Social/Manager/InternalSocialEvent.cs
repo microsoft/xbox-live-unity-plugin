@@ -24,7 +24,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         public InternalSocialEvent(InternalSocialEventType eventType, IList<XboxSocialUser> usersAffected) : this(eventType)
         {
             this.UsersAffected = usersAffected;
-            IList<ulong> userList = new List<ulong>();
+            IList<string> userList = new List<string>();
             foreach (XboxSocialUser user in usersAffected)
             {
                 userList.Add(user.XboxUserId);
@@ -43,19 +43,19 @@ namespace Microsoft.Xbox.Services.Social.Manager
             this.TitlePresenceArgs = titlePresenceArgs;
         }
 
-        public InternalSocialEvent(InternalSocialEventType eventType, object errorInfo, IList<ulong> userList) : this(eventType)
+        public InternalSocialEvent(InternalSocialEventType eventType, object errorInfo, IList<string> userList) : this(eventType)
         {
             this.UserIdsAffected = userList;
         }
 
-        public InternalSocialEvent(InternalSocialEventType eventType, IList<ulong> userAddList) : this(eventType, userAddList, null)
+        public InternalSocialEvent(InternalSocialEventType eventType, IList<string> userAddList) : this(eventType, userAddList, null)
         {
             this.UserIdsAffected = userAddList;
         }
 
         internal InternalSocialEventType Type { get; private set; }
         internal IList<XboxSocialUser> UsersAffected { get; private set; }
-        internal IList<ulong> UserIdsAffected { get; private set; }
+        internal IList<string> UserIdsAffected { get; private set; }
         internal DevicePresenceChangeEventArgs DevicePresenceArgs { get; private set; }
         internal TitlePresenceChangeEventArgs TitlePresenceArgs { get; private set; }
 

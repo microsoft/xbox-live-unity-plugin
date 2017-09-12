@@ -24,11 +24,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public IList<XboxLiveUser> LocalUsers { get; private set; }
 
-        public Task AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
+        public void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
         {
             this.LocalUsers.Add(user);
             this.events.Add(new SocialEvent(SocialEventType.LocalUserAdded, user, null));
-            return Task.FromResult(true);
+            // Task.FromResult(true);
         }
 
         public void RemoveLocalUser(XboxLiveUser user)
@@ -36,75 +36,75 @@ namespace Microsoft.Xbox.Services.Social.Manager
             this.LocalUsers.Remove(user);
         }
 
-        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<ulong> userIds)
+        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<string> userIds)
         {
-            var group = new XboxSocialUserGroup(user, userIds);
+            //var group = new XboxSocialUserGroup(user, userIds);
 
-            // Create 'real' users for the userIds
-            var users = userIds
-                .Select(CreateUser)
-                .ToDictionary(u => u.XboxUserId);
+            //// Create 'real' users for the userIds
+            //var users = userIds
+            //    .Select(CreateUser)
+            //    .ToDictionary(u => u.XboxUserId);
 
-            group.InitializeGroup(users.Values);
-            group.UpdateView(users, new List<SocialEvent>());
-            this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
+            //group.InitializeGroup(users.Values);
+            //group.UpdateView(users, new List<SocialEvent>());
+            //this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
 
-            return group;
+            return null;
         }
 
         public XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter)
         {
-            var group = new XboxSocialUserGroup(user, presenceFilter, relationshipFilter, XboxLiveAppConfiguration.Instance.TitleId);
+            //var group = new XboxSocialUserGroup(user, presenceFilter, relationshipFilter, XboxLiveAppConfiguration.Instance.TitleId);
 
-            var users = Enumerable.Range(0, 5)
-                .Select(id =>
-                {
-                    var groupUser = CreateUser();
+            //var users = Enumerable.Range(0, 5)
+            //    .Select(id =>
+            //    {
+            //        var groupUser = CreateUser();
 
-                    switch (presenceFilter)
-                    {
-                        case PresenceFilter.AllOnline:
-                        case PresenceFilter.TitleOnline:
-                            InitUserForOnlinePresence(ref groupUser);
-                            break;
+            //        switch (presenceFilter)
+            //        {
+            //            case PresenceFilter.AllOnline:
+            //            case PresenceFilter.TitleOnline:
+            //                InitUserForOnlinePresence(ref groupUser);
+            //                break;
 
-                        case PresenceFilter.AllOffline:
-                        case PresenceFilter.TitleOffline:
-                            InitUserForOfflinePresence(ref groupUser);
-                            break;
+            //            case PresenceFilter.AllOffline:
+            //            case PresenceFilter.TitleOffline:
+            //                InitUserForOfflinePresence(ref groupUser);
+            //                break;
                         
-                        case PresenceFilter.AllTitle:
-                        case PresenceFilter.All:
-                            if (id % 2 == 0)
-                            {
-                                InitUserForOnlinePresence(ref groupUser);
-                            }
-                            else
-                            {
-                                InitUserForOfflinePresence(ref groupUser);
-                            }
-                            break;
-                    }
+            //            case PresenceFilter.AllTitle:
+            //            case PresenceFilter.All:
+            //                if (id % 2 == 0)
+            //                {
+            //                    InitUserForOnlinePresence(ref groupUser);
+            //                }
+            //                else
+            //                {
+            //                    InitUserForOfflinePresence(ref groupUser);
+            //                }
+            //                break;
+            //        }
 
-                    switch (relationshipFilter)
-                    {
-                        case RelationshipFilter.Friends:
-                            groupUser.IsFollowedByCaller = true;
-                            break;
-                        case RelationshipFilter.Favorite:
-                            groupUser.IsFollowedByCaller = true;
-                            groupUser.IsFavorite = true;
-                            break;
-                    }
+            //        switch (relationshipFilter)
+            //        {
+            //            case RelationshipFilter.Friends:
+            //                groupUser.IsFollowedByCaller = true;
+            //                break;
+            //            case RelationshipFilter.Favorite:
+            //                groupUser.IsFollowedByCaller = true;
+            //                groupUser.IsFavorite = true;
+            //                break;
+            //        }
 
-                    return groupUser;
-                }).ToDictionary(u => u.XboxUserId);
+            //        return groupUser;
+            //    }).ToDictionary(u => u.XboxUserId);
 
-            group.InitializeGroup(users.Values);
-            group.UpdateView(users, new List<SocialEvent>());
-            this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
+            //group.InitializeGroup(users.Values);
+            //group.UpdateView(users, new List<SocialEvent>());
+            //this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
 
-            return group;
+            return null;
         }
 
         private void InitUserForOfflinePresence(ref XboxSocialUser groupUser)
@@ -137,11 +137,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return currentEvents;
         }
 
-        private static XboxSocialUser CreateUser(ulong id = 0)
+        private static XboxSocialUser CreateUser(string id = "")
         {
-            if (id == 0)
+            if (id == "")
             {
-                id = (ulong)(rng.NextDouble() * ulong.MaxValue);
+                id = (rng.NextDouble() * ulong.MaxValue).ToString();
             }
 
             return new XboxSocialUser
@@ -159,6 +159,16 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     TertiaryColor = "105080"
                 },
             };
+        }
+
+        public void UpdateSocialUserGroup(XboxSocialUserGroup group, List<string> users)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DestroySocialUserGroup(XboxSocialUserGroup group)
+        {
+            throw new NotImplementedException();
         }
     }
 }
