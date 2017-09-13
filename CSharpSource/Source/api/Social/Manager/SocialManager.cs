@@ -10,21 +10,15 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System.Threading.Tasks;
 
     using Microsoft.Xbox.Services.System;
+    using Presence;
 
     public class SocialManager : ISocialManager
     {
-        internal static int WorkDone;
-        private static ISocialManager instance;
+        private static ISocialManager mInstance;
 
-        private static readonly object instanceLock = new object();
-        private readonly object syncRoot = new object();
+        private static readonly object mInstanceLock = new object();
 
-        private readonly List<XboxLiveUser> localUsers = new List<XboxLiveUser>();
-        private readonly Dictionary<XboxLiveUser, SocialGraph> userGraphs = new Dictionary<XboxLiveUser, SocialGraph>(new XboxUserIdEqualityComparer());
-        private readonly Dictionary<XboxLiveUser, HashSet<WeakReference>> userGroupsMap = new Dictionary<XboxLiveUser, HashSet<WeakReference>>(new XboxUserIdEqualityComparer());
-
-        private Queue<SocialEvent> eventQueue = new Queue<SocialEvent>();
-
+        private readonly List<XboxLiveUser> mLocalUsers = new List<XboxLiveUser>();
         private List<XboxSocialUserGroup> mGroups;
 
         private SocialManager()
@@ -36,17 +30,17 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             get
             {
-                if (instance == null)
+                if (mInstance == null)
                 {
-                    lock (instanceLock)
+                    lock (mInstanceLock)
                     {
-                        if (instance == null)
+                        if (mInstance == null)
                         {
-                            instance = XboxLive.UseMockServices ? new MockSocialManager() : (ISocialManager)new SocialManager();
+                            mInstance = XboxLive.UseMockServices ? new MockSocialManager() : (ISocialManager)new SocialManager();
                         }
                     }
                 }
-                return instance;
+                return mInstance;
             }
         }
 
@@ -54,27 +48,26 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             get
             {
-                return this.localUsers.AsReadOnly();
+                return this.mLocalUsers.AsReadOnly();
             }
         }
 
-        private delegate void SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel);
         public void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
         {
             if (user == null) throw new ArgumentNullException("user");
 
             XboxLive.Instance.Invoke<SocialManagerAddLocalUser>(user.Impl.m_xboxLiveUser_c, extraDetailLevel);
+            mLocalUsers.Add(user);
         }
 
-        private delegate void SocialManagerRemoveLocalUser(IntPtr user);
         public void RemoveLocalUser(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
             
             XboxLive.Instance.Invoke<SocialManagerRemoveLocalUser>(user.Impl.m_xboxLiveUser_c);
+            mLocalUsers.Remove(user);
         }
         
-        private delegate IntPtr SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter);
         public XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -86,7 +79,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return socialUserGroup;
         }
 
-        private delegate IntPtr SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size);
         public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<string> userIds)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -108,7 +100,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return socialUserGroup;
         }
 
-        private delegate IntPtr SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size);
         public void UpdateSocialUserGroup(XboxSocialUserGroup group, List<string> users)
         {
 
@@ -125,7 +116,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             group.Refresh();
         }
 
-        private delegate IntPtr SocialManagerDestroySocialUserGroup(IntPtr group);
         public void DestroySocialUserGroup(XboxSocialUserGroup group)
         {
             mGroups.Remove(group);
@@ -133,7 +123,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             XboxLive.Instance.Invoke<SocialManagerDestroySocialUserGroup>(group.mSocialUserGroupPtr);
         }
 
-        private delegate IntPtr SocialManagerDoWork(IntPtr numOfEvents);
         public IList<SocialEvent> DoWork()
         {
             IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<int>());
@@ -146,7 +135,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
             if (numOfEvents > 0)
             {
-                WorkDone++;
                 IntPtr[] cEvents = new IntPtr[numOfEvents];
                 Marshal.Copy(eventsPtr, cEvents, 0, numOfEvents);
                 
@@ -163,10 +151,17 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     }
                 }
             }
-
-
+            
             return events;
         }
+
+        private delegate void SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel);
+        private delegate void SocialManagerRemoveLocalUser(IntPtr user);
+        private delegate IntPtr SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter);
+        private delegate IntPtr SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size);
+        private delegate IntPtr SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size);
+        private delegate IntPtr SocialManagerDestroySocialUserGroup(IntPtr group);
+        private delegate IntPtr SocialManagerDoWork(IntPtr numOfEvents);
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct TitleHistory_c
@@ -174,7 +169,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U1)]
             public byte UserHasPlayed;
 
-            // todo: m_lastTimeUserPlayed
+            [MarshalAs(UnmanagedType.I8)]
+            public long LastTimeUserPlayed;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -200,10 +196,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U1)]
             public byte IsBroadcasting;
 
-            // todo: presence_device_type
+            [MarshalAs(UnmanagedType.U4)]
+            public PresenceDeviceType DeviceType;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public int TitleId;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint TitleId;
 
             [MarshalAs(UnmanagedType.LPWStr)]
             public string PresenceText; 
@@ -212,11 +209,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct SocialManagerPresenceRecord_c
         {
-            // todo: user_presence_state
-
-            // todo: presenceTitleRecords
+            [MarshalAs(UnmanagedType.U4)]
+            public UserPresenceState UserState;
 
             [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceTitleRecords;
+
+            [MarshalAs(UnmanagedType.I4)]
             public int NumOfPresenceTitleRecords; 
 
             // todo: is_user_playing_title
@@ -282,10 +281,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr EventArgs;
-
-            // todo
-            //[MarshalAs(UnmanagedType.SysInt)]
-            //public IntPtr Error;
+            
+            [MarshalAs(UnmanagedType.I4)]
+            public int ErrorCode;
 
             [MarshalAs(UnmanagedType.LPWStr)]
             public string ErrorMessage;

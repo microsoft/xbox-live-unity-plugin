@@ -4,10 +4,11 @@
 namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
-
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Presence;
 
     using Newtonsoft.Json;
+    using static SocialManager;
 
     public class SocialManagerPresenceTitleRecord : IEquatable<SocialManagerPresenceTitleRecord>
     {
@@ -24,6 +25,16 @@ namespace Microsoft.Xbox.Services.Social.Manager
             this.PresenceText = titleRecord.Presence;
         }
 
+        internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
+        {
+            SocialManagerPresenceTitleRecord_c cTitleRecord = Marshal.PtrToStructure<SocialManagerPresenceTitleRecord_c>(titleRecordPtr);
+            IsTitleActive = Convert.ToBoolean(cTitleRecord.IsTitleActive);
+            IsBroadcasting = Convert.ToBoolean(cTitleRecord.IsBroadcasting);
+            Device = cTitleRecord.DeviceType;
+            TitleId = cTitleRecord.TitleId;
+            PresenceText = cTitleRecord.PresenceText;
+        }
+
         public string State { get; set; }
 
         public uint TitleId { get; set; }
@@ -35,12 +46,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
         public bool IsBroadcasting { get; set; }
 
         public PresenceDeviceType Device { get; set; }
-
-        [JsonProperty("TitleType")]
+        
         public PresenceTitleType? Type { get; set; }
-
-
-        [JsonIgnore]
+                
         public bool IsTitleActive
         {
             get

@@ -49,9 +49,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             get
             {
-                if (mVersion != SocialManager.WorkDone)
-                    Refresh();
-
                 return this.mUsers.Values.ToList();
             }
         }
@@ -60,18 +57,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             get
             {
-                if (mVersion != SocialManager.WorkDone)
-                    Refresh();
-
                 return this.mTrackedUsers;
             }
         }
 
         public XboxSocialUser GetUser(string userId)
         {
-            if (mVersion != SocialManager.WorkDone)
-                Refresh();
-
             XboxSocialUser user;
             this.mUsers.TryGetValue(userId, out user);
             return user;
@@ -79,24 +70,17 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public IEnumerator<XboxSocialUser> GetEnumerator()
         {
-            if (mVersion != SocialManager.WorkDone)
-                Refresh();
-
             return this.mUsers.Values.GetEnumerator();
         }
 
         global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
         {
-            if (mVersion != SocialManager.WorkDone)
-                Refresh();
-
             return this.GetEnumerator();
         }
 
         // For perf consider if we need an init method and a refresh method seperate
         internal void Refresh()
         {
-            mVersion = SocialManager.WorkDone;
             var cSocialUserGroup = Marshal.PtrToStructure<XboxSocialUserGroup_c>(mSocialUserGroupPtr);
 
             // Properties

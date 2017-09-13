@@ -45,21 +45,20 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     UsersAffected.Add(cXuid.XboxUserId);
                 }
             }
-            
 
-            if (!string.IsNullOrEmpty(cSocialEvent.ErrorMessage))
-            {
-                Exception = new Exception(cSocialEvent.ErrorMessage);
-            }
+
+            ErrorCode = cSocialEvent.ErrorCode;
+            ErrorMessge = cSocialEvent.ErrorMessage;
         }
 
-        public SocialEvent(SocialEventType type, XboxLiveUser user, IList<string> usersAffected = null, XboxSocialUserGroup groupAffected = null, Exception exception = null)
+        public SocialEvent(SocialEventType type, XboxLiveUser user, IList<string> usersAffected = null, XboxSocialUserGroup groupAffected = null, int errorCode = 0, string errorMessage = "")
         {
             this.EventType = type;
             this.User = user;
             this.UsersAffected = usersAffected == null ? new List<string>() : usersAffected;
             this.GroupAffected = groupAffected;
-            this.Exception = exception;
+            this.ErrorCode = errorCode;
+            this.ErrorMessge = errorMessage;
         }
 
         public SocialEventType EventType { get; private set; }
@@ -69,7 +68,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
         public IList<string> UsersAffected { get; private set; }
 
         public XboxSocialUserGroup GroupAffected { get; private set; }
+        
+        public int ErrorCode { get; private set; }
 
-        public Exception Exception { get; private set; }
+        public string ErrorMessge { get; private set; }
     }
 }

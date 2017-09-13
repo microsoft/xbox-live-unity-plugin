@@ -13,7 +13,7 @@ SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
 
     cTitleRecord->isTitleActive = cppPresenceRecord.is_title_active();
     cTitleRecord->isBroadcasting = cppPresenceRecord.is_broadcasting();
-    // todo: cTitleRecord->deviceType = static_cast<PresenceDeviceType>(cppPresenceRecord.device_type());
+    cTitleRecord->deviceType = static_cast<PRESENCE_DEVICE_TYPE>(cppPresenceRecord.device_type());
     cTitleRecord->titleId = cppPresenceRecord.title_id();
     cTitleRecord->presenceText = cppPresenceRecord.presence_text();
 
@@ -26,6 +26,8 @@ SocialManagerPresenceRecord* CreateSocialManagerPresenceRecordFromCpp(
 {
     auto cPresenceRecord = new SocialManagerPresenceRecord();
 
+    cPresenceRecord->userState = static_cast<USER_PRESENCE_STATE>(cppPresenceRecord.user_state());
+
     auto records = cppPresenceRecord.presence_title_records();
     cPresenceRecord->numOfPresenceTitleRecords = records.size();
     cPresenceRecord->presenceTitleRecords = (SocialManagerPresenceTitleRecord **)malloc(sizeof(SocialManagerPresenceTitleRecord *) * cPresenceRecord->numOfPresenceTitleRecords);
@@ -37,6 +39,7 @@ SocialManagerPresenceRecord* CreateSocialManagerPresenceRecordFromCpp(
     return cPresenceRecord;
 }
 
+#include<time.h>
 XboxSocialUser* CreateXboxSocialUserFromCpp(
     _In_ xbox::services::social::manager::xbox_social_user* cppXboxSocialUser
 )
@@ -58,7 +61,10 @@ XboxSocialUser* CreateXboxSocialUserFromCpp(
     auto cppTitleHistory = cppXboxSocialUser->title_history();
     auto cTitleHistory = new TitleHistory();
     cTitleHistory->userHasPlayed = cppTitleHistory.has_user_played();
-    // todo: cTitleHistory->lastTimeUserPlayed = cppTitleHistory.last_time_user_played();
+    auto diffTime = utility::datetime().utc_now() - cppTitleHistory.last_time_user_played();
+    time_t currentTime = time(NULL);
+    currentTime -= diffTime;
+    cTitleHistory->lastTimeUserPlayed = currentTime;
     cXboxSocialUser->titleHistory = cTitleHistory;
 
     auto cppPreferredColor = cppXboxSocialUser->preferred_color();
@@ -147,11 +153,6 @@ SocialUserGroupLoadedEventArgs* CreateSocialUserGroupLoadedEventArgs(
         }
     }
 
-    // Should check if social user group already exists
-
-    //auto socialUserGroup = new XboxSocialUserGroup();
-    //socialUserGroup->pImpl = new XboxSocialUserGroupImpl(cppSocialUserGroupLoadedEventArgs->social_user_group(), socialUserGroup);
-
     auto args = new SocialUserGroupLoadedEventArgs();
     args->socialUserGroup = groupAffected;
 
@@ -183,9 +184,6 @@ SocialEvent* CreateSocialEventFromCpp(
     cSocialEvent->usersAffected = mUsersAffected.data();
     cSocialEvent->numOfUsersAffected = cppSocialEvent.users_affected().size();
 
-
-    // todo // review // cSocialEvent->eventArgs = cppSocialEvent.event_args();
-    // There's got to be a way to check if the downcast worked and create the event args that way vs checking for specific types
     try
     {
         auto cSocialUserGroupLoadedEventArgs = std::dynamic_pointer_cast<xbox::services::social::manager::social_user_group_loaded_event_args>(cppSocialEvent.event_args());
@@ -197,7 +195,8 @@ SocialEvent* CreateSocialEventFromCpp(
 
     }
 
-    // todo cSocialEvent->err = static_cast<ERROR_TYPES>(m_cppSocialEvent->err());
+    // todo: unsure if this is correct
+    cSocialEvent->err = cppSocialEvent.err().value();
 
     cSocialEvent->err_message = std::wstring (cppSocialEvent.err_message().begin(), cppSocialEvent.err_message().end()).data();
 

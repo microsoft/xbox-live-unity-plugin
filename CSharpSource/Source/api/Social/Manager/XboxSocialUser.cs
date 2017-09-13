@@ -85,6 +85,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         }
 
+        // todo refresh xbox social users on do_work
         internal XboxSocialUser(IntPtr xboxSocialUserPtr)
         {
             XboxSocialUser_c cXboxSocialUser = Marshal.PtrToStructure<XboxSocialUser_c>(xboxSocialUserPtr);
@@ -96,12 +97,23 @@ namespace Microsoft.Xbox.Services.Social.Manager
             UseAvatar = Convert.ToBoolean(cXboxSocialUser.UseAvatar);
             Gamertag = cXboxSocialUser.Gamertag;
             Gamerscore = cXboxSocialUser.Gamerscore;
-            // todo: PreferredColor = new PreferredColor(cXboxSocialUser.PreferredColor);
+            PreferredColor = new PreferredColor(cXboxSocialUser.PreferredColor);
             IsFollowedByCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowedByCaller);
             IsFollowingCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowingUser);
             IsFavorite = Convert.ToBoolean(cXboxSocialUser.IsFavorite);
-            // todo: PresenceState = cXboxSocialUser.PresenceState;
-            // todo: PresenceDetails = cXboxSocialUser.PresenceDetails;
+
+            SocialManagerPresenceRecord_c cPresenceRecord = Marshal.PtrToStructure<SocialManagerPresenceRecord_c>(cXboxSocialUser.PresenceRecord);
+            PresenceState = cPresenceRecord.UserState;
+
+            List<SocialManagerPresenceTitleRecord> titleRecords = new List<SocialManagerPresenceTitleRecord>();
+            IntPtr[] cTitleRecords = new IntPtr[cPresenceRecord.NumOfPresenceTitleRecords];
+            Marshal.Copy(cPresenceRecord.PresenceTitleRecords, cTitleRecords, 0, cPresenceRecord.NumOfPresenceTitleRecords);
+            foreach (IntPtr cTitleRecord in cTitleRecords)
+            {
+                titleRecords.Add(new SocialManagerPresenceTitleRecord(cTitleRecord));
+            }
+            PresenceDetails = titleRecords;
+            
             // todo: TitleHistory = new TitleHistory(cXboxSocialUser.TitleHistory);
         }
     }

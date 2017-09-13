@@ -6,6 +6,7 @@
 #include "types_c.h"
 #include "xsapi/errors_c.h"
 #include "xsapi/system_c.h"
+#include "xsapi/presence_c.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -22,13 +23,13 @@ typedef enum SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL {
 } SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL;
 
 typedef enum PRESENCE_FILTER {
-	UNKNOWN,
+	UNKNOWN_PRESENCE,
 	TITLE_ONLINE,
 	TITLE_OFFLINE,
 	ALL_ONLINE,
 	ALL_OFFLINE,
 	ALL_TITLE,
-	ALL
+	ALL_PF
 } PRESENCE_FILTER;
 
 typedef enum SOCIAL_EVENT_TYPE {
@@ -57,7 +58,7 @@ typedef enum SOCIAL_USER_GROUP_TYPE {
 typedef struct TitleHistory
 {
     bool userHasPlayed;
-    /// todo: find the c# type for m_lastTimeUserPlayed
+    time_t lastTimeUserPlayed;
 } TitleHistory;
 
 typedef struct PreferredColor
@@ -71,14 +72,14 @@ typedef struct SocialManagerPresenceTitleRecord
 {
     bool isTitleActive;
     bool isBroadcasting;
-    /// todo: presence_device_type enum
+    PRESENCE_DEVICE_TYPE deviceType;
     uint32 titleId;
     PCSTR_T presenceText;
 } SocialManagerPresenceTitleRecord;
 
 typedef struct SocialManagerPresenceRecord
 {
-    /// todo: user_presence_state enum
+    USER_PRESENCE_STATE userState;
     SocialManagerPresenceTitleRecord** presenceTitleRecords;
     int numOfPresenceTitleRecords;
     /// todo: is_user_playing_title
@@ -116,7 +117,7 @@ typedef struct SocialEvent
     XboxUserIdContainer** usersAffected;
     int numOfUsersAffected;
     SocialEventArgs* eventArgs;
-    PCSTR_T err; // todo: convert to std::error_code&
+    int err;
     PCSTR_T err_message;
 } SocialEvent;
 
@@ -133,8 +134,8 @@ typedef struct XboxSocialUserGroup
 
 	XboxSocialUserGroupImpl *pImpl;
 } XboxSocialUserGroup;
-// get_copy_of_users
-// get_users_from_xbox_user_ids
+// todo get_copy_of_users
+// todo get_users_from_xbox_user_ids
 
 typedef struct SocialUserGroupLoadedEventArgs : SocialEventArgs {
     XboxSocialUserGroup* socialUserGroup;
