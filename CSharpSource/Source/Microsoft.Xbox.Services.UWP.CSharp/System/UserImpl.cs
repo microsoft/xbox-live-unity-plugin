@@ -26,7 +26,7 @@ namespace Microsoft.Xbox.Services.System
         public AuthConfig AuthConfig { get; private set; } // TODO remove this
         public User CreationContext { get; private set; }
 
-        internal IntPtr m_xboxLiveUser_c;
+        private IntPtr m_xboxLiveUser_c;
         private int m_signOutHandlerContext;
 
         private static ConcurrentDictionary<IntPtr, UserImpl> s_xboxLiveUserInstanceMap = new ConcurrentDictionary<IntPtr, UserImpl>();
@@ -78,6 +78,8 @@ namespace Microsoft.Xbox.Services.System
                 XboxLive.Instance.Invoke<XboxLiveUserDelete>(m_xboxLiveUser_c);
             }
         }
+
+        internal IntPtr GetPtr() { return m_xboxLiveUser_c; }
 
         private static void OnSignOutCompleted(IntPtr xboxLiveUser_c)
         {

@@ -178,6 +178,7 @@
     <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\httpcall.h" />
     <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.h" />
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\presence_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Include\xsapi\social_manager_c.h" />
     <ClInclude Include="..\..\Include\xsapi\system_c.h" />

@@ -15,6 +15,7 @@ extern "C" {
 #if !XDK_API
 	
 struct XboxSocialUserGroupImpl;
+struct SocialManagerPresenceRecordImpl;
 
 typedef enum SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL {
 	NO_EXTRA_DETAIL,
@@ -82,8 +83,15 @@ typedef struct SocialManagerPresenceRecord
     USER_PRESENCE_STATE userState;
     SocialManagerPresenceTitleRecord** presenceTitleRecords;
     int numOfPresenceTitleRecords;
-    /// todo: is_user_playing_title
+
+    SocialManagerPresenceRecordImpl * pImpl;
 } SocialManagerPresenceRecord;
+
+XSAPI_DLLEXPORT bool XBL_CALLING_CONV
+SocialManagerPresenceRecordIsUserPlayingTitle(
+    _In_ SocialManagerPresenceRecord* presenceRecord,
+    _In_ uint32_t titleId
+    );
 
 typedef struct XboxSocialUser
 {

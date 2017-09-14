@@ -7,70 +7,78 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System.Collections.Generic;
     using global::System.Linq;
     using global::System.Runtime.InteropServices;
-    using Microsoft.Xbox.Services.Presence;
     using static SocialManager;
 
     public class XboxSocialUserGroup : IEnumerable<XboxSocialUser>
     {
         // Pointer to the c object
-        internal IntPtr mSocialUserGroupPtr;
+        private IntPtr m_socialUserGroupPtr;
 
         // Properties
-        private XboxLiveUser mLocalUser;
-        private readonly Dictionary<string, XboxSocialUser> mUsers = new Dictionary<string, XboxSocialUser>();
-        private List<ulong> mTrackedUsers = new List<ulong>();
+        private readonly Dictionary<string, XboxSocialUser> m_users = new Dictionary<string, XboxSocialUser>();
+        private List<string> m_trackedUsers = new List<string>();
 
-        int mVersion;
-
-        internal XboxSocialUserGroup(IntPtr cSocialUserGroup)
+        internal XboxSocialUserGroup(IntPtr socialUserGroupPtr)
         {
-            mSocialUserGroupPtr = cSocialUserGroup;
+            m_socialUserGroupPtr = socialUserGroupPtr;
             Refresh();
         }
 
+        public XboxLiveUser LocalUser { get; private set; }
+
         public SocialUserGroupType SocialUserGroupType { get; private set; }
 
-        public PresenceFilter PresenceFilter { get; private set; }
+        public PresenceFilter PresenceFilterOfGroup { get; private set; }
 
-        public RelationshipFilter RelationshipFilter { get; private set; }
-
-        // todo: Was private in cpp, should remove? I think yes
-        public uint TitleId { get; set; }
+        public RelationshipFilter RelationshipFilterOfGroup { get; private set; }
+        
 
         public int Count
         {
             get
             {
-                return this.mUsers.Count;
+                return this.m_users.Count;
             }
         }
 
-        public IList<XboxSocialUser> Users
+        public IReadOnlyList<XboxSocialUser> Users
         {
             get
             {
-                return this.mUsers.Values.ToList();
+                return this.m_users.Values.ToList();
             }
         }
 
-        public IList<ulong> UsersTrackedBySocialUserGroup
+        public IReadOnlyList<string> UsersTrackedBySocialUserGroup
         {
             get
             {
-                return this.mTrackedUsers;
+                return this.m_trackedUsers;
             }
         }
 
-        public XboxSocialUser GetUser(string userId)
+        public IReadOnlyList<XboxSocialUser> GetUsersFromXboxUserIds(IReadOnlyList<string> xboxUserIds)
         {
-            XboxSocialUser user;
-            this.mUsers.TryGetValue(userId, out user);
-            return user;
+            List<XboxSocialUser> users = new List<XboxSocialUser>();
+
+            foreach (string xboxUserId in xboxUserIds)
+            {
+                if (m_users.ContainsKey(xboxUserId))
+                {
+                    users.Add(m_users[xboxUserId]);
+                }
+                else
+                {
+                    // todo handle error
+                }
+            }
+
+            return users;
         }
 
         public IEnumerator<XboxSocialUser> GetEnumerator()
         {
-            return this.mUsers.Values.GetEnumerator();
+            return this.m_users.Values.GetEnumerator();
         }
 
         global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
@@ -78,27 +86,32 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return this.GetEnumerator();
         }
 
-        // For perf consider if we need an init method and a refresh method seperate
+        internal IntPtr GetPtr()
+        {
+            return m_socialUserGroupPtr;
+        }
+
+        // todo For perf consider if we need an init method and a refresh method seperate
         internal void Refresh()
         {
-            var cSocialUserGroup = Marshal.PtrToStructure<XboxSocialUserGroup_c>(mSocialUserGroupPtr);
+            var cSocialUserGroup = Marshal.PtrToStructure<XboxSocialUserGroup_c>(m_socialUserGroupPtr);
 
             // Properties
             SocialUserGroupType = cSocialUserGroup.SocialUserGroupType;
-            PresenceFilter = cSocialUserGroup.PresenceFilterOfGroup;
-            RelationshipFilter = cSocialUserGroup.RelationshipFilterOfGroup;
+            PresenceFilterOfGroup = cSocialUserGroup.PresenceFilterOfGroup;
+            RelationshipFilterOfGroup = cSocialUserGroup.RelationshipFilterOfGroup;
 
             // Local User
-            if (mLocalUser == null)
+            if (LocalUser == null)
             {
-                mLocalUser = new XboxLiveUser(cSocialUserGroup.LocalUser);
+                LocalUser = new XboxLiveUser(cSocialUserGroup.LocalUser);
             }
-            mLocalUser.Impl.UpdatePropertiesFromXboxLiveUser_c();
+            LocalUser.Impl.UpdatePropertiesFromXboxLiveUser_c();
 
             // Users
 
             // todo: for perf consider not removing everthing, but updating certain things and deleting the rest
-            mUsers.Clear();
+            m_users.Clear();
 
             if (cSocialUserGroup.NumOfUsers > 0)
             {
@@ -110,14 +123,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 for (int i = 0; i < cUsersArray.Count(); i++)
                 {
                     var socialUser = new XboxSocialUser(cUsersArray[i]);
-                    mUsers[socialUser.XboxUserId] = socialUser; 
+                    m_users[socialUser.XboxUserId] = socialUser; 
                 }
             }
 
             // Users Tracked
 
             // todo: for perf consider whether this list is static or dynamic
-            mTrackedUsers.Clear();
+            m_trackedUsers.Clear();
 
             if (cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup > 0)
             {
@@ -129,8 +142,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 for (int i = 0; i < cTrackedUsers.Count(); i++)
                 {
                     var cSocialUser = Marshal.PtrToStructure<XboxUserIdContainer_c>(cTrackedUsers[i]);
-                    var xboxUserId = ulong.Parse(cSocialUser.XboxUserId);
-                    mTrackedUsers.Add(xboxUserId);
+                    m_trackedUsers.Add(cSocialUser.XboxUserId);
                 }
             }
         }

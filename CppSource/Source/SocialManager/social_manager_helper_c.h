@@ -4,6 +4,7 @@
 #pragma once
 #include "pch.h"
 #include "user_impl_c.h"
+#include<time.h>
 
 SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
     _In_ xbox::services::social::manager::social_manager_presence_title_record cppPresenceRecord
@@ -20,26 +21,36 @@ SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
     return cTitleRecord;
 }
 
-SocialManagerPresenceRecord* CreateSocialManagerPresenceRecordFromCpp(
-    _In_ const xbox::services::social::manager::social_manager_presence_record cppPresenceRecord
-)
+
+struct SocialManagerPresenceRecordImpl
 {
-    auto cPresenceRecord = new SocialManagerPresenceRecord();
-
-    cPresenceRecord->userState = static_cast<USER_PRESENCE_STATE>(cppPresenceRecord.user_state());
-
-    auto records = cppPresenceRecord.presence_title_records();
-    cPresenceRecord->numOfPresenceTitleRecords = records.size();
-    cPresenceRecord->presenceTitleRecords = (SocialManagerPresenceTitleRecord **)malloc(sizeof(SocialManagerPresenceTitleRecord *) * cPresenceRecord->numOfPresenceTitleRecords);
-    for (int i = 0; i < cPresenceRecord->numOfPresenceTitleRecords; i++)
+    SocialManagerPresenceRecordImpl(
+        _In_ const xbox::services::social::manager::social_manager_presence_record creationContext,
+        _In_ SocialManagerPresenceRecord *cSocialUserGroup
+    ) : m_cppSocialManagerPresenceRecord(creationContext), m_cSocialManagerPresenceRecord(cSocialUserGroup)
     {
-        cPresenceRecord->presenceTitleRecords[i] = CreateSocialManagerPresenceTitleRecordFromCpp(records[i]);
+        Refresh();
     }
 
-    return cPresenceRecord;
-}
+    void Refresh() {
+        if (m_cSocialManagerPresenceRecord != nullptr) {
+            m_presenceState = static_cast<USER_PRESENCE_STATE>(m_cppSocialManagerPresenceRecord.user_state());
+            m_cSocialManagerPresenceRecord->userState = m_presenceState;
 
-#include<time.h>
+            m_titleRecords.clear();
+            for (auto cppTitleRecord : m_cppSocialManagerPresenceRecord.presence_title_records()) {
+                m_titleRecords.push_back(CreateSocialManagerPresenceTitleRecordFromCpp(cppTitleRecord));
+            }
+            m_cSocialManagerPresenceRecord->presenceTitleRecords = m_titleRecords.data();
+        }
+    }
+
+    USER_PRESENCE_STATE m_presenceState;
+    std::vector<SocialManagerPresenceTitleRecord *> m_titleRecords;
+    const xbox::services::social::manager::social_manager_presence_record m_cppSocialManagerPresenceRecord;
+    SocialManagerPresenceRecord* m_cSocialManagerPresenceRecord;
+};
+
 XboxSocialUser* CreateXboxSocialUserFromCpp(
     _In_ xbox::services::social::manager::xbox_social_user* cppXboxSocialUser
 )
@@ -56,7 +67,10 @@ XboxSocialUser* CreateXboxSocialUserFromCpp(
     cXboxSocialUser->useAvatar = cppXboxSocialUser->use_avatar();
     cXboxSocialUser->gamerscore = cppXboxSocialUser->gamerscore();
     cXboxSocialUser->gamertag = cppXboxSocialUser->gamertag();
-    cXboxSocialUser->presenceRecord = CreateSocialManagerPresenceRecordFromCpp(cppXboxSocialUser->presence_record());
+
+    auto socialManagerPresenceRecord = new SocialManagerPresenceRecord();
+    socialManagerPresenceRecord->pImpl = new SocialManagerPresenceRecordImpl(cppXboxSocialUser->presence_record(), socialManagerPresenceRecord);
+    cXboxSocialUser->presenceRecord = socialManagerPresenceRecord;
     
     auto cppTitleHistory = cppXboxSocialUser->title_history();
     auto cTitleHistory = new TitleHistory();
@@ -117,7 +131,7 @@ struct XboxSocialUserGroupImpl
                 m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
             }
             m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
-            
+
             m_localUser->pImpl->Refresh();
             m_cSocialUserGroup->localUser = m_localUser;
 

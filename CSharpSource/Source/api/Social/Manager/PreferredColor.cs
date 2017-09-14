@@ -24,7 +24,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
         public PreferredColor()
         {
-
         }
 
         protected bool Equals(PreferredColor other)

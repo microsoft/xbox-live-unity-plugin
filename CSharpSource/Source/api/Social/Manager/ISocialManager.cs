@@ -9,20 +9,22 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     public interface ISocialManager
     {
-        IList<XboxLiveUser> LocalUsers { get; }
+        IReadOnlyList<XboxLiveUser> LocalUsers { get; }
 
-        void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.None);
+        void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.NoExtraDetail);
 
         void RemoveLocalUser(XboxLiveUser user);
 
-        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<string> userIds);
+        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IReadOnlyList<string> xboxUserIdList);
 
         XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter);
 
-        IList<SocialEvent> DoWork();
+        IReadOnlyList<SocialEvent> DoWork();
 
-        void UpdateSocialUserGroup(XboxSocialUserGroup group, List<string> users);
+        void UpdateSocialUserGroup(XboxSocialUserGroup group, IReadOnlyList<string> users);
 
         void DestroySocialUserGroup(XboxSocialUserGroup group);
+
+        void SetRichPresencePollingStatus(XboxLiveUser user, bool shouldEnablePolling);
     }
 }

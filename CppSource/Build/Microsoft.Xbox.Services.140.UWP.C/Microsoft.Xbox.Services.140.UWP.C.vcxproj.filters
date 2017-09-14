@@ -141,6 +141,9 @@
     <ClInclude Include="..\..\Source\SocialManager\social_manager_helper_c.h">
       <Filter>C++ Source\SocialManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\presence_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">

@@ -20,21 +20,22 @@ namespace Microsoft.Xbox.Services.Social.Manager
             try
             {
                 SocialUserGroupLoadedArgs_c cArgs = Marshal.PtrToStructure<SocialUserGroupLoadedArgs_c>(cSocialEvent.EventArgs);
-
+                
                 foreach (XboxSocialUserGroup group in groups)
                 {
-                    if (cArgs.SocialUserGroup == group.mSocialUserGroupPtr)
+                    if (cArgs.SocialUserGroup == group.GetPtr())
                     {
-                        GroupAffected = group;
+                        EventArgs = new SocialUserGroupLoadedEventArgs(group);
                         break;
                     }
                 }
             }
             catch (Exception)
             {
+                // Event args weren't SocialUserGroupLoadedArgs
             }
 
-            UsersAffected = new List<string>();
+            List<string> usersAffected = new List<string>();
             if (cSocialEvent.NumOfUsersAffected > 0)
             {
                 IntPtr[] cUsersAffected = new IntPtr[cSocialEvent.NumOfUsersAffected];
@@ -42,33 +43,34 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 foreach (IntPtr cXuidPtr in cUsersAffected)
                 {
                     XboxUserIdContainer_c cXuid = Marshal.PtrToStructure<XboxUserIdContainer_c>(cXuidPtr);
-                    UsersAffected.Add(cXuid.XboxUserId);
+                    usersAffected.Add(cXuid.XboxUserId);
                 }
             }
-
-
+            UsersAffected = usersAffected;
+            
             ErrorCode = cSocialEvent.ErrorCode;
             ErrorMessge = cSocialEvent.ErrorMessage;
         }
 
-        public SocialEvent(SocialEventType type, XboxLiveUser user, IList<string> usersAffected = null, XboxSocialUserGroup groupAffected = null, int errorCode = 0, string errorMessage = "")
+        // todo do I need this method?
+        internal SocialEvent(SocialEventType type, XboxLiveUser user, IReadOnlyList<string> usersAffected = null, XboxSocialUserGroup groupAffected = null, int errorCode = 0, string errorMessage = "")
         {
             this.EventType = type;
             this.User = user;
             this.UsersAffected = usersAffected == null ? new List<string>() : usersAffected;
-            this.GroupAffected = groupAffected;
+            this.EventArgs = groupAffected == null ? null : new SocialUserGroupLoadedEventArgs(groupAffected);
             this.ErrorCode = errorCode;
             this.ErrorMessge = errorMessage;
         }
 
         public SocialEventType EventType { get; private set; }
+        
+        public SocialEventArgs EventArgs { get; private set; }
 
         public XboxLiveUser User { get; private set; }
 
-        public IList<string> UsersAffected { get; private set; }
-
-        public XboxSocialUserGroup GroupAffected { get; private set; }
-        
+        public IReadOnlyList<string> UsersAffected { get; private set; }
+                
         public int ErrorCode { get; private set; }
 
         public string ErrorMessge { get; private set; }

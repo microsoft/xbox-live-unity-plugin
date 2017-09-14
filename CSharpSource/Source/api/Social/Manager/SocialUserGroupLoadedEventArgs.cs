@@ -5,8 +5,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
 
-    public class SocialUserGroupLoadedEventArgs : EventArgs
+    public class SocialUserGroupLoadedEventArgs : SocialEventArgs
     {
+        internal SocialUserGroupLoadedEventArgs(XboxSocialUserGroup group)
+        {
+            SocialUserGroup = group;
+        }
+
         public XboxSocialUserGroup SocialUserGroup { get; private set; }
     }
 }

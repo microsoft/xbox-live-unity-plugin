@@ -10,7 +10,21 @@ using namespace xbox::services::system;
 using namespace xbox::services::social::manager;
 using namespace xbox::httpclient;
 
+// Kept here so it isn't garbage collected before managed code can read it
 std::vector<XboxSocialUserGroup*> mGroups;
+std::vector<SocialEvent *> mEvents;
+
+
+XSAPI_DLLEXPORT bool XBL_CALLING_CONV
+SocialManagerPresenceRecordIsUserPlayingTitle(
+    _In_ SocialManagerPresenceRecord* presenceRecord,
+    _In_ uint32_t titleId
+    )
+{
+    VerifyGlobalXsapiInit();
+
+    return presenceRecord->pImpl->m_cppSocialManagerPresenceRecord.is_user_playing_title(titleId);
+}
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 SocialManagerAddLocalUser(
@@ -35,8 +49,6 @@ SocialManagerRemoveLocalUser(
 }
 
 
-// Kept here so it isn't garbage collected before managed code can read it
-std::vector<SocialEvent *> mEvents;
 XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
     _Inout_ int* numOfEvents
@@ -152,4 +164,5 @@ SocialManagerSetRichPresencePollingStatus(
 	VerifyGlobalXsapiInit();
 	
 	social_manager::get_singleton_instance()->set_rich_presence_polling_status(user->pImpl->m_cppUser, shouldEnablePolling);
+    user->pImpl->Refresh();
 }
