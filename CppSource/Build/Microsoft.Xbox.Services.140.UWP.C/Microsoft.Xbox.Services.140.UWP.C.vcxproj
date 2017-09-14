@@ -224,7 +224,7 @@
     </PropertyGroup>
     <Message Importance="high" Text="Copying binaries to CSharp Libs folder $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
     <MakeDir Directories="$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>

@@ -109,9 +109,9 @@
     <Message Importance="high" Text="OutputPath: $(OutDir)" />
     <Message Importance="high" Text="Copying binaries to plugin layout path $(PluginLayoutPath)" />
     <MakeDir Directories="$(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\external\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(PluginLayoutPath)&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(PluginLayoutPath)&quot;" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\external\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll&quot; &quot;$(PluginLayoutPath)&quot;" />
   </Target>
   <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
     <Message Importance="high" Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
@@ -124,13 +124,13 @@
   <Target Name="CopyCDllsToAssetsPlugins" AfterTargets="CopyToUnityLibs">
     <Message Importance="high" Text="Copying c dlls to Assets Plugins folder $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
     <MakeDir Directories="$(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.dll $(SolutionDir)..\..\Assets\Plugins\$(Platform)" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.pdb $(SolutionDir)..\..\Assets\Plugins\$(Platform)" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\Plugins\$(Platform)\*.dll&quot; &quot;$(SolutionDir)..\..\Assets\Plugins\$(Platform)&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\Plugins\$(Platform)\*.pdb&quot; &quot;$(SolutionDir)..\..\Assets\Plugins\$(Platform)&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
   <Target Name="CopyCDllsToAppx" AfterTargets="CopyCDllsToAssetsPlugins">
     <Message Importance="high" Text="OutputPath: $(OutDir)" />
     <Message Importance="high" Text="Copying C dll to Appx folder $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.dll $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\Plugins\$(Platform)\*.pdb $(TargetDir)AppX\" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\Plugins\$(Platform)\*.dll&quot; &quot;$(TargetDir)AppX\&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\Plugins\$(Platform)\*.pdb&quot; &quot;$(TargetDir)AppX\&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>
