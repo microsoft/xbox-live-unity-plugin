@@ -79,8 +79,8 @@
   <Target Name="LayoutPlugin" AfterTargets="Build">
     <Message Importance="high" Text="Copying binaries to plugin layout path $(PluginLayoutPath)" />
     <MakeDir Directories="$(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(PluginLayoutPath)&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(PluginLayoutPath)&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
   <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
     <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
