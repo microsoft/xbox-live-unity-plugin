@@ -8,7 +8,7 @@ struct XboxLiveUserImpl
     XboxLiveUserImpl(
         _In_ Windows::System::User^ creationContext,
         _In_ XboxLiveUser *cUser
-    )
+        )
         : m_cUser(cUser)
     {
         if (creationContext != nullptr)

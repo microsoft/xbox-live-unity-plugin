@@ -17,7 +17,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         private static ISocialManager m_instance;
 
         private static readonly object m_instanceLock = new object();
-
+        
         private readonly List<XboxLiveUser> m_localUsers = new List<XboxLiveUser>();
         private readonly List<XboxSocialUserGroup> m_groups = new List<XboxSocialUserGroup>();
 
