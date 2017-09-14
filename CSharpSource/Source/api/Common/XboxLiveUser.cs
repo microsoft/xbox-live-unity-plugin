@@ -48,7 +48,7 @@ namespace Microsoft.Xbox.Services
                 signOutDelegates.Remove(value);
             }
         }
-
+        
         public string WebAccountId
         {
             get

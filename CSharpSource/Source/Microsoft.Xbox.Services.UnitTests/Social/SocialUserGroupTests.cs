@@ -22,75 +22,18 @@ namespace Microsoft.Xbox.Services.UnitTests.Social
         {
             this.user = new XboxLiveUser();
             MockXboxLiveData.Load(Environment.CurrentDirectory + "\\Social\\SocialUserGroupUT.json");
-            SocialManager.Instance.AddLocalUser(this.user, SocialManagerExtraDetailLevel.PreferredColor).Wait();
+            SocialManager.Instance.AddLocalUser(this.user, SocialManagerExtraDetailLevel.PreferredColorLevel);
         }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            SocialManager.Reset();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void CreateSocialGroupFromListWithNoUsers()
-        {
-            XboxSocialUserGroup group = new XboxSocialUserGroup(this.user, new List<ulong>());
-        }
-
-        [TestMethod]
-        public void CreateSocialGroupFromListWithOneUser()
-        {
-            List<ulong> userIds = Enumerable.Range(1, 10).Select(i => (ulong)i).ToList();
-            var users = userIds.Select(id => new XboxSocialUser { XboxUserId = id, Gamertag = "Gamer" + id }).ToDictionary(u => u.XboxUserId);
-
-            XboxSocialUserGroup group = new XboxSocialUserGroup(this.user, new List<ulong> { 123456789 });
-            Assert.AreEqual(0, group.Count);
-
-            group.UpdateView(users, null);
-            Assert.AreEqual(0, group.Count);
-
-            group.UpdateView(
-                new Dictionary<ulong, XboxSocialUser>
-                {
-                    [123456789] = new XboxSocialUser { XboxUserId = 123456789 }
-                },
-                null);
-            Assert.AreEqual(1, group.Count);
-        }
-
-        [TestMethod]
-        public void CreateSocialGroupFromListWithManyUsers()
-        {
-            List<ulong> userIds = Enumerable.Range(1, 20).Select(i => (ulong)i).ToList();
-            var users = userIds.Select(id => new XboxSocialUser { XboxUserId = id, Gamertag = "Gamer" + id }).ToDictionary(u => u.XboxUserId);
-
-            XboxSocialUserGroup group = new XboxSocialUserGroup(this.user, new List<ulong>(userIds));
-            Assert.AreEqual(0, group.Count);
-
-            // Update half the users
-            group.UpdateView(users.Values.Where(u => u.XboxUserId % 2 == 0).ToDictionary(u => u.XboxUserId), null);
-            Assert.AreEqual(10, group.Count);
-
-            // Then update the rest.
-            group.UpdateView(users, null);
-            Assert.AreEqual(20, group.Count);
-
-            // Ensure we don't accidentally double add anything.
-            group.UpdateView(users, null);
-            Assert.AreEqual(20, group.Count);
-        }
-
+        
         [TestMethod]
         public void CreateSocialGroupWithSelfFromSocialManager()
         {
-            ulong userId = ulong.Parse(this.user.XboxUserId);
-            var group = SocialManager.Instance.CreateSocialUserGroupFromList(this.user, new List<ulong> { userId });
+            var group = SocialManager.Instance.CreateSocialUserGroupFromList(this.user, new List<string> { this.user.XboxUserId });
             Assert.IsNotNull(group);
 
             DoWorkUntil(() => group.Count == 1);
 
-            Assert.AreEqual(userId, group.First().XboxUserId);
+            Assert.AreEqual(this.user.XboxUserId, group.First().XboxUserId);
         }
 
         [TestMethod]

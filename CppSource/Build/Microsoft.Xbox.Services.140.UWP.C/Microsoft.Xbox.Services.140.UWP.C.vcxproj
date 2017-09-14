@@ -168,7 +168,7 @@
     <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_c.cpp" />
     <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui_c.cpp" />
     <ClCompile Include="..\..\Source\Shared\xbox_live_app_config_c.cpp" />
-    <ClCompile Include="..\..\Source\SocialManager\social_manager_c.cpp" />
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp" />
     <ClCompile Include="..\..\Source\System\user_c.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -200,7 +200,7 @@
     <ClInclude Include="..\..\Source\Services\Common\xbl_singleton.h" />
     <ClInclude Include="..\..\Source\Services\Common\threadpool.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h" />
-    <ClInclude Include="..\..\Source\SocialManager\social_manager_helper_c.h" />
+    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h" />
     <ClInclude Include="..\..\Source\System\user_impl_c.h" />
   </ItemGroup>
   <ItemGroup>

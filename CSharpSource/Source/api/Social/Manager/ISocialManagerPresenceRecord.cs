@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
-namespace Microsoft.Xbox.Services.UnitTests.Social
+namespace Microsoft.Xbox.Services.Social.Manager
 {
-    class EventQueueTests
+    interface ISocialManagerPresenceRecord
     {
+        bool IsUserPlayingTitle(uint titleId);
     }
 }

@@ -1,27 +1,25 @@
 ﻿// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Xbox.Services.System;
-
 namespace Microsoft.Xbox.Services.Social.Manager
 {
+    using global::System.Collections.Generic;
+
     public interface ISocialManager
     {
-        IReadOnlyList<XboxLiveUser> LocalUsers { get; }
+        IList<XboxLiveUser> LocalUsers { get; }
 
         void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.NoExtraDetail);
 
         void RemoveLocalUser(XboxLiveUser user);
 
-        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IReadOnlyList<string> xboxUserIdList);
+        XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IList<string> xboxUserIdList);
 
         XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter);
 
-        IReadOnlyList<SocialEvent> DoWork();
+        IList<SocialEvent> DoWork();
 
-        void UpdateSocialUserGroup(XboxSocialUserGroup group, IReadOnlyList<string> users);
+        void UpdateSocialUserGroup(XboxSocialUserGroup group, IList<string> users);
 
         void DestroySocialUserGroup(XboxSocialUserGroup group);
 

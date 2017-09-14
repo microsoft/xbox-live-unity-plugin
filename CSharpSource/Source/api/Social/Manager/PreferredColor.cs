@@ -3,11 +3,10 @@
 // 
 using System;
 using System.Runtime.InteropServices;
-using static Microsoft.Xbox.Services.Social.Manager.SocialManager;
 
 namespace Microsoft.Xbox.Services.Social.Manager
 {
-    public class PreferredColor
+    public partial class PreferredColor
     {
         public string TertiaryColor { get; set; }
 
@@ -15,13 +14,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public string PrimaryColor { get; set; }
 
-        internal PreferredColor(IntPtr preferredColorPtr)
-        {
-            PreferredColor_c cPreferredColor = Marshal.PtrToStructure<PreferredColor_c>(preferredColorPtr);
-            PrimaryColor = cPreferredColor.PrimaryColor;
-            SecondaryColor = cPreferredColor.SecondaryColor;
-            TertiaryColor = cPreferredColor.TertiaryColor;
-        }
         public PreferredColor()
         {
         }

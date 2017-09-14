@@ -4,22 +4,11 @@
 namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
-    using global::System.Runtime.InteropServices;
-    using static SocialManager;
 
-    public class TitleHistory : IEquatable<TitleHistory>
+    public partial class TitleHistory : IEquatable<TitleHistory>
     {
         public TitleHistory()
         {
-        }
-
-        internal TitleHistory(IntPtr titleHistoryPtr)
-        {
-            TitleHistory_c cTitleHistory = Marshal.PtrToStructure<TitleHistory_c>(titleHistoryPtr);
-            HasUserPlayed = Convert.ToBoolean(cTitleHistory.UserHasPlayed);
-
-            // todo test
-            LastTimeUserPlayed = DateTimeOffset.FromUnixTimeSeconds(cTitleHistory.LastTimeUserPlayed);
         }
 
         public DateTimeOffset LastTimeUserPlayed { get; set; }

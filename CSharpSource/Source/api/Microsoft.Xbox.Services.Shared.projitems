@@ -90,6 +90,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\Models\PrivacySettingsRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceTitleType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared\IXboxWebsocketClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\ISocialManagerPresenceRecord.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\SocialManagerPresenceRecord.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Stats\LeaderboardResultEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Stats\Manager\StatEventType.cs" />

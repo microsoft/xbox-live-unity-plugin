@@ -14,7 +14,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     // todo update this method
     public class MockSocialManager : ISocialManager
     {
-        public IReadOnlyList<XboxLiveUser> LocalUsers
+        public IList<XboxLiveUser> LocalUsers
         {
             get
             {
@@ -32,7 +32,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             throw new NotImplementedException();
         }
 
-        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IReadOnlyList<string> xboxUserIdList)
+        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IList<string> xboxUserIdList)
         {
             throw new NotImplementedException();
         }
@@ -42,7 +42,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             throw new NotImplementedException();
         }
 
-        public IReadOnlyList<SocialEvent> DoWork()
+        public IList<SocialEvent> DoWork()
         {
             throw new NotImplementedException();
         }
@@ -57,7 +57,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             throw new NotImplementedException();
         }
 
-        public void UpdateSocialUserGroup(XboxSocialUserGroup group, IReadOnlyList<string> users)
+        public void UpdateSocialUserGroup(XboxSocialUserGroup group, IList<string> users)
         {
             throw new NotImplementedException();
         }

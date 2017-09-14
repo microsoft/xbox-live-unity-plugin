@@ -6,9 +6,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System;
     using global::System.Runtime.InteropServices;
     using Presence;
-    using static SocialManager;
 
-    public class SocialManagerPresenceTitleRecord : IEquatable<SocialManagerPresenceTitleRecord>
+    public partial class SocialManagerPresenceTitleRecord : IEquatable<SocialManagerPresenceTitleRecord>
     {
         public SocialManagerPresenceTitleRecord()
         {
@@ -21,16 +20,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             this.IsBroadcasting = titleRecord.BroadcastRecord.StartTime != DateTimeOffset.MinValue;
             this.IsTitleActive = titleRecord.IsTitleActive;
             this.PresenceText = titleRecord.Presence;
-        }
-
-        internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
-        {
-            SocialManagerPresenceTitleRecord_c cTitleRecord = Marshal.PtrToStructure<SocialManagerPresenceTitleRecord_c>(titleRecordPtr);
-            IsTitleActive = Convert.ToBoolean(cTitleRecord.IsTitleActive);
-            IsBroadcasting = Convert.ToBoolean(cTitleRecord.IsBroadcasting);
-            Device = cTitleRecord.DeviceType;
-            TitleId = cTitleRecord.TitleId;
-            PresenceText = cTitleRecord.PresenceText;
         }
         
         public uint TitleId { get; set; }
