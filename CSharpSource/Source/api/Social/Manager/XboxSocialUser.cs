@@ -30,5 +30,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
         public SocialManagerPresenceRecord PresenceRecord { get; set; }
 
         public TitleHistory TitleHistory { get; set; }
+
+        // Used for mock services
+        internal XboxSocialUser()
+        {
+
+        }
     }
 }

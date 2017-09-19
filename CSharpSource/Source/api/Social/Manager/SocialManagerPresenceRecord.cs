@@ -20,5 +20,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 return m_titleRecords.AsReadOnly();
             }
         }
+
+        // Used for mock services
+        internal SocialManagerPresenceRecord(UserPresenceState state, IList<SocialManagerPresenceTitleRecord> records)
+        {
+            UserState = state;
+            m_titleRecords = records == null ? new List<SocialManagerPresenceTitleRecord>() : (List<SocialManagerPresenceTitleRecord>)records;
+        }
     }
 }

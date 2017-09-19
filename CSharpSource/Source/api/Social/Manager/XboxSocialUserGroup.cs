@@ -43,7 +43,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 return this.m_trackedUsers;
             }
         }
-
+        
         public IList<XboxSocialUser> GetUsersFromXboxUserIds(IList<string> xboxUserIds)
         {
             List<XboxSocialUser> users = new List<XboxSocialUser>();
@@ -71,6 +71,27 @@ namespace Microsoft.Xbox.Services.Social.Manager
         global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+
+        // Used for mock services
+        internal XboxSocialUserGroup(XboxLiveUser localUser, SocialUserGroupType groupType = SocialUserGroupType.Filter, PresenceFilter presence = PresenceFilter.Unknown, RelationshipFilter relationship = RelationshipFilter.Friends, Dictionary<string, XboxSocialUser> users = null, List<string> trackedUsers = null)
+        {
+            LocalUser = localUser;
+            SocialUserGroupType = groupType;
+            PresenceFilterOfGroup = presence;
+            RelationshipFilterOfGroup = relationship;
+            m_users = users == null ? new Dictionary<string, XboxSocialUser>() : users;
+            m_trackedUsers = trackedUsers == null ? new List<string>() : trackedUsers;
+        }
+
+        internal void UpdateGroup(Dictionary<string, XboxSocialUser> users)
+        {
+            m_users.Clear();
+            foreach (string key in users.Keys)
+            {
+                m_users[key] = users[key];
+            }
         }
     }
 }
