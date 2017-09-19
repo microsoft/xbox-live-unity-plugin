@@ -86,7 +86,7 @@ public class Social : MonoBehaviour
             switch (socialEvent.EventType)
             {
                 case SocialEventType.LocalUserAdded:
-                    if (socialEvent.Exception == null)
+                    if (socialEvent.ErrorCode == 0)
                     {
                         this.CreateDefaultSocialGraphs();
                     }

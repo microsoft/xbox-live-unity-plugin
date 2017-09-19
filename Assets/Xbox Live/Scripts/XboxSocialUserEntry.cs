@@ -26,7 +26,7 @@ public class XboxSocialUserEntry : MonoBehaviour
         {
             this.data = value;
             this.gamertagText.text = this.data.Gamertag;
-            this.presenceText.text = this.data.PresenceState.ToString();
+            this.presenceText.text = this.data.PresenceRecord.UserState.ToString();
         }
     }
 }
