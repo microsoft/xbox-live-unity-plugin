@@ -91,6 +91,8 @@ typedef int32_t function_context;
 #include "xsapi/types_c.h"
 #include "xsapi/services_c.h"
 #include "xsapi/errors_c.h"
+#include "xsapi/leaderboard_c.h"
+#include "xsapi/stats_manager_c.h"
 #include "xsapi/system_c.h"
 #include "xsapi/title_callable_ui_c.h"
 #include "xsapi/xbox_live_context_c.h"

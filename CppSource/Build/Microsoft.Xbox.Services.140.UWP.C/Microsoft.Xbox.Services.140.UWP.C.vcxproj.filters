@@ -49,6 +49,12 @@
     <Filter Include="C++ Source\Shared">
       <UniqueIdentifier>{994762ae-76e5-4e26-aedb-03cbf6741127}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Stats">
+      <UniqueIdentifier>{3eddf9ef-fbdc-43a7-b305-e2d7472f7f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++ Source\Stats\Manager">
+      <UniqueIdentifier>{c97c6516-790d-4260-b21d-24385648e3d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -131,6 +137,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h">
       <Filter>C++ Source\Services\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h">
+      <Filter>C++ Public Includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
