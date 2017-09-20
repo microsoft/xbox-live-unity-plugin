@@ -26,12 +26,6 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         void RemoveLocalUser(XboxLiveUser user);
 
         /// <summary> 
-        /// Returns any events that have been processed
-        /// </summary>
-        /// <return>A list of events that have happened since previous do_work</return>
-        List<StatEvent> DoWork();
-
-        /// <summary> 
         /// Requests the current stat values to be uploaded to the service
         /// This will send immediately instead of automatically during a 30 second window
         /// </summary>
@@ -39,13 +33,19 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         void RequestFlushToService(XboxLiveUser user, bool isHighPriority = false);
 
         /// <summary> 
+        /// Returns any events that have been processed
+        /// </summary>
+        /// <return>A list of events that have happened since previous do_work</return>
+        IList<StatEvent> DoWork();
+        
+        /// <summary> 
         /// Replaces the numerical stat by the value. Can be positive or negative
         /// </summary>
         /// <param name="user">The local user whose stats to access</param>
         /// <param name="statName">The name of the statistic to modify</param>
         /// <param name="value">Value to replace the stat by</param>
         /// <return>Whether or not the setting was successful. Can fail if stat is not of numerical type. Will return updated stat</return>
-        void SetStatAsNumber(XboxLiveUser user, string statName, double value);
+        void SetStatisticNumberData(XboxLiveUser user, string statName, double value);
 
         /// <summary> 
         /// Replaces the numerical stat by the value. Can be positive or negative
@@ -54,7 +54,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <param name="statName">The name of the statistic to modify</param>
         /// <param name="value">Value to replace the stat by</param>
         /// <return>Whether or not the setting was successful. Can fail if stat is not of numerical type. Will return updated stat</return>
-        void SetStatAsInteger(XboxLiveUser user, string statName, Int64 value);
+        void SetStatisticIntegerData(XboxLiveUser user, string statName, Int64 value);
 
         /// <summary> 
         /// Replaces a string stat with the given value.
@@ -63,7 +63,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <param name="statName">The name of the statistic to modify</param>
         /// <param name="value">Value to replace the stat by</param>
         /// <return>Whether or not the setting was successful. Can fail if stat is not of string type. Will return updated stat</return>
-        void SetStatAsString(XboxLiveUser user, string statName, string value);
+        void SetStatisticStringData(XboxLiveUser user, string statName, string value);
 
         /// <summary> 
         /// Gets a stat value
@@ -79,7 +79,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <param name="user">The local user whose stats to access</param>
         /// <param name="statNameList">The list to fill with stat names</param>
         /// <return>Whether or not the setting was successful.</return>
-        List<string> GetStatNames(XboxLiveUser user);
+        IList<string> GetStatNames(XboxLiveUser user);
 
         /// <summary> 
         /// Deletes a stat. Will clear stat from service and social leaderboard information
@@ -98,6 +98,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <remarks>
         /// This stat needs to be configured on DevCenter for your title
         /// </remarks>
-        void GetLeaderboard(XboxLiveUser user, LeaderboardQuery query);
+        void GetLeaderboard(XboxLiveUser user, string statName, LeaderboardQuery query);
+
+        void GetSocialLeaderboard(XboxLiveUser user, string statName, string socialGroup, LeaderboardQuery query);
     }
 }
