@@ -34,11 +34,22 @@ namespace Microsoft.Xbox.Services.System
         public UserImpl(User systemUser)
         {
             this.CreationContext = systemUser;
-
+            
             m_xboxLiveUser_c = XboxLive.Instance.Invoke<IntPtr, XboxLiveUserCreateFromSystemUser>(
                 this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext)
                 );
 
+            Init();
+        }
+
+        internal UserImpl(IntPtr cXboxLiveUser)
+        {
+            m_xboxLiveUser_c = cXboxLiveUser;
+            Init();
+        }
+
+        void Init()
+        {
             m_signOutHandlerContext = XboxLive.Instance.Invoke<Int32, AddSignOutCompletedHandler>(
                 (SignOutCompletedHandler)OnSignOutCompleted
                 );
@@ -67,11 +78,13 @@ namespace Microsoft.Xbox.Services.System
                 XboxLive.Instance.Invoke<XboxLiveUserDelete>(m_xboxLiveUser_c);
             }
         }
+        
+        internal IntPtr GetPtr() { return m_xboxLiveUser_c; }
 
         private static void OnSignOutCompleted(IntPtr xboxLiveUser_c)
         {
             UserImpl @this = s_xboxLiveUserInstanceMap[xboxLiveUser_c];
-
+            
             if (!@this.IsSignedIn)
             {
                 return;
@@ -232,8 +245,8 @@ namespace Microsoft.Xbox.Services.System
                 contextObject.Dispose();
             }
         }
-
-        private void UpdatePropertiesFromXboxLiveUser_c()
+        
+        internal void UpdatePropertiesFromXboxLiveUser_c()
         {
             var xboxLiveUser_c = Marshal.PtrToStructure<XboxLiveUser_c>(m_xboxLiveUser_c);
 
@@ -262,7 +275,7 @@ namespace Microsoft.Xbox.Services.System
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void SignOutCompletedHandler(IntPtr xboxLiveUser_c);
-
+        
         private delegate IntPtr XboxLiveUserCreateFromSystemUser(IntPtr systemUser);
         private delegate void XboxLiveUserDelete(IntPtr xboxLiveUser_c);
         private delegate void XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);

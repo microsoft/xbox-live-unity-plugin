@@ -97,6 +97,8 @@ typedef int32_t function_context;
 #include "xsapi/title_callable_ui_c.h"
 #include "xsapi/xbox_live_context_c.h"
 #include "xsapi/xbox_live_app_config_c.h"
+#include "xsapi/social_manager_c.h"
+#include "xsapi/presence_c.h"
 #include "mem.h"
 #include "httpClient/httpClient.h"
 #include "log.h"

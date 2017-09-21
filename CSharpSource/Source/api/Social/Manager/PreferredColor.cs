@@ -1,15 +1,22 @@
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
+using System;
+using System.Runtime.InteropServices;
+
 namespace Microsoft.Xbox.Services.Social.Manager
 {
-    public class PreferredColor
+    public partial class PreferredColor
     {
         public string TertiaryColor { get; set; }
 
         public string SecondaryColor { get; set; }
 
         public string PrimaryColor { get; set; }
+
+        public PreferredColor()
+        {
+        }
 
         protected bool Equals(PreferredColor other)
         {

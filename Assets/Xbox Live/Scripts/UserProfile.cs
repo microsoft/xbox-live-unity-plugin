@@ -198,24 +198,15 @@ public class UserProfile : MonoBehaviour
         {
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
             XboxLive.Instance.PresenceWriter.AddUser(this.XboxLiveUser.User);
-            var addLocalUserTask =
-                XboxLive.Instance.SocialManager.AddLocalUser(
-                    this.XboxLiveUser.User,
-                    SocialManagerExtraDetailLevel.PreferredColor).AsCoroutine();
-            yield return addLocalUserTask;
-
-            if (!addLocalUserTask.Task.IsFaulted)
-            {
-                yield return this.LoadProfileInfo();
-            }
+            XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
+            yield return this.LoadProfileInfo();
         }
     }
 
     private IEnumerator LoadProfileInfo()
     {
-        var userId = ulong.Parse(this.XboxLiveUser.User.XboxUserId);
-        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<ulong> { userId });
-        var socialUser = group.GetUser(userId);
+        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
+        var socialUser = group.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return null;
