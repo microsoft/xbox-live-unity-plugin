@@ -26,44 +26,50 @@ SocialManagerPresenceRecordIsUserPlayingTitle(
     return presenceRecord->pImpl->m_cppSocialManagerPresenceRecord.is_user_playing_title(titleId);
 }
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerAddLocalUser(
-	_In_ XboxLiveUser *user,
-	_In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail
+    _In_ XboxLiveUser *user,
+    _In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
 
 	social_manager_extra_detail_level cExtraLevelDetail = static_cast<social_manager_extra_detail_level>(extraLevelDetail);
-	social_manager::get_singleton_instance()->add_local_user(user->pImpl->m_cppUser, cExtraLevelDetail);
+	auto result = social_manager::get_singleton_instance()->add_local_user(user->pImpl->m_cppUser, cExtraLevelDetail);
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
-	_In_ XboxLiveUser *user
+    _In_ XboxLiveUser *user,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
 
-	social_manager::get_singleton_instance()->remove_local_user(user->pImpl->m_cppUser);
+	auto result = social_manager::get_singleton_instance()->remove_local_user(user->pImpl->m_cppUser);
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }
 
 
 XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Inout_ int* numOfEvents
+    _Out_ int32* numOfEvents
 	)
 {
 	VerifyGlobalXsapiInit();
 
-    std::vector<social_event> socialEvents = social_manager::get_singleton_instance()->do_work();
+    std::vector<social_event> cppSocialEvents = social_manager::get_singleton_instance()->do_work();
 	
-    *numOfEvents = socialEvents.size();
-
     mEvents.clear();
 
-    if (socialEvents.size() > 0) {
-        for (auto cEvent : socialEvents) {
+    if (cppSocialEvents.size() > 0) {
+        for (auto cEvent : cppSocialEvents) {
             mEvents.push_back(CreateSocialEventFromCpp(cEvent, mGroups));
         }
 
@@ -74,34 +80,42 @@ SocialManagerDoWork(
         }
     }
 
+    *numOfEvents = mEvents.size();
     return mEvents.data();
 }
 
 
-XSAPI_DLLEXPORT XboxSocialUserGroup* XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
 	_In_ XboxLiveUser *user,
 	_In_ PRESENCE_FILTER presenceDetailLevel,
-	_In_ RELATIONSHIP_FILTER filter
+	_In_ RELATIONSHIP_FILTER filter,
+    _Out_ XboxSocialUserGroup** group,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
 
 	presence_filter cPresenceDetailLevel = static_cast<presence_filter>(presenceDetailLevel);
 	relationship_filter cFilter = static_cast<relationship_filter>(filter);
-	auto cSocialUserGroup = social_manager::get_singleton_instance()->create_social_user_group_from_filters(user->pImpl->m_cppUser, cPresenceDetailLevel, cFilter);
+	auto result = social_manager::get_singleton_instance()->create_social_user_group_from_filters(user->pImpl->m_cppUser, cPresenceDetailLevel, cFilter);
 
 	auto socialUserGroup = new XboxSocialUserGroup();
-	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(cSocialUserGroup.payload(), socialUserGroup);
+	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(result.payload(), socialUserGroup);
     mGroups.push_back(socialUserGroup);
-	return socialUserGroup;
+    *group = socialUserGroup;
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }
 
-XSAPI_DLLEXPORT XboxSocialUserGroup* XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
-	_In_ XboxLiveUser *user,
-	_In_ PCSTR_T* xboxUserIdList,
-    _In_ int numOfXboxUserIds
+    _In_ XboxLiveUser *user,
+    _In_ PCSTR_T* xboxUserIdList,
+    _In_ int numOfXboxUserIds,
+    _Out_ XboxSocialUserGroup** group,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
@@ -118,12 +132,16 @@ SocialManagerCreateSocialUserGroupFromList(
 	auto socialUserGroup = new XboxSocialUserGroup();
 	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(result.payload(), socialUserGroup);
     mGroups.push_back(socialUserGroup);
-	return socialUserGroup;
+    *group = socialUserGroup;
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerDestroySocialUserGroup(
-    _In_ XboxSocialUserGroup *group
+    _In_ XboxSocialUserGroup *group,
+    _Out_ PCSTR_T* errMessage
     )
 {
     VerifyGlobalXsapiInit();
@@ -132,14 +150,18 @@ SocialManagerDestroySocialUserGroup(
     auto newEnd = std::remove(mGroups.begin(), mGroups.end(), group);
     mGroups.erase(newEnd, mGroups.end());
 
-    social_manager::get_singleton_instance()->destroy_social_user_group(group->pImpl->m_cppSocialUserGroup);
+    auto result = social_manager::get_singleton_instance()->destroy_social_user_group(group->pImpl->m_cppSocialUserGroup);
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
-	_In_ XboxSocialUserGroup *group,
-	_In_ PCSTR_T* users,
-    _In_ int numOfUsers
+    _In_ XboxSocialUserGroup *group,
+    _In_ PCSTR_T* users,
+    _In_ int numOfUsers,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
@@ -151,18 +173,28 @@ SocialManagerUpdateSocialUserGroup(
         usersVector.push_back(users[i]);
     }
 
-	social_manager::get_singleton_instance()->update_social_user_group(group->pImpl->m_cppSocialUserGroup, usersVector);
+	auto result = social_manager::get_singleton_instance()->update_social_user_group(group->pImpl->m_cppSocialUserGroup, usersVector);
     group->pImpl->Refresh();
+
+    auto wErrMessage = std::wstring(result.err_message().size(), '\0');
+    std::copy(result.err_message().begin(), result.err_message().end(), wErrMessage.begin());
+    *errMessage = wErrMessage.data();
+
+    return result.err().value();
 }
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerSetRichPresencePollingStatus(
-	_In_ XboxLiveUser *user,
-	_In_ bool shouldEnablePolling
+    _In_ XboxLiveUser *user,
+    _In_ bool shouldEnablePolling,
+    _Out_ PCSTR_T* errMessage
 	)
 {
 	VerifyGlobalXsapiInit();
 	
-	social_manager::get_singleton_instance()->set_rich_presence_polling_status(user->pImpl->m_cppUser, shouldEnablePolling);
+	auto result = social_manager::get_singleton_instance()->set_rich_presence_polling_status(user->pImpl->m_cppUser, shouldEnablePolling);
     user->pImpl->Refresh();
+
+    *errMessage = std::wstring(result.err_message().begin(), result.err_message().end()).data();
+    return result.err().value();
 }

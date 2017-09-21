@@ -154,52 +154,61 @@ typedef struct SocialManager
 	PCSTR_T localUsers;
 } SocialManager;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerAddLocalUser(
 	_In_ XboxLiveUser *user,
-	_In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail
+	_In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
+    _Out_ PCSTR_T* errMessage
 	);
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
-	_In_ XboxLiveUser *user
+	_In_ XboxLiveUser *user,
+    _Out_ PCSTR_T* errMessage
 	);
 
 XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Inout_ int* numOfEvents
+    _Out_ int32* numOfEvents
     );
 
-XSAPI_DLLEXPORT XboxSocialUserGroup* XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
 	_In_ XboxLiveUser *user,
 	_In_ PRESENCE_FILTER presenceDetailLevel,
-	_In_ RELATIONSHIP_FILTER filter
+	_In_ RELATIONSHIP_FILTER filter,
+    _Out_ XboxSocialUserGroup** group,
+    _Out_ PCSTR_T* errMessage
 	);
 
-XSAPI_DLLEXPORT XboxSocialUserGroup* XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
     _In_ XboxLiveUser *user,
     _In_ PCSTR_T* xboxUserIdList,
-    _In_ int numOfXboxUserIds
+    _In_ int numOfXboxUserIds,
+    _Out_ XboxSocialUserGroup** group,
+    _Out_ PCSTR_T* errMessage
 	);
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerDestroySocialUserGroup(
-    _In_ XboxSocialUserGroup *group
+    _In_ XboxSocialUserGroup *group,
+    _Out_ PCSTR_T* errMessage
     );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
     _In_ XboxSocialUserGroup *group,
     _In_ PCSTR_T* users,
-    _In_ int numOfUsers
+    _In_ int numOfUsers,
+    _Out_ PCSTR_T* errMessage
 	);
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerSetRichPresencePollingStatus(
 	_In_ XboxLiveUser *user,
-	_In_ bool shouldEnablePolling
+	_In_ bool shouldEnablePolling,
+    _Out_ PCSTR_T* errMessage
 	);
 #endif //!XDK_API
 

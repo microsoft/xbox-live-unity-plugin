@@ -25,7 +25,21 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            XboxLive.Instance.Invoke<SocialManagerAddLocalUser>(user.Impl.GetPtr(), extraDetailLevel);
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerAddLocalUser>(user.Impl.GetPtr(), extraDetailLevel, cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
             m_localUsers.Add(user);
         }
 
@@ -33,7 +47,21 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            XboxLive.Instance.Invoke<SocialManagerRemoveLocalUser>(user.Impl.GetPtr());
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerRemoveLocalUser>(user.Impl.GetPtr(), cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
             m_localUsers.Remove(user);
         }
 
@@ -41,8 +69,25 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            IntPtr socialUserGroupPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerCreateSocialUserGroupFromFilters>(user.Impl.GetPtr(), presenceFilter, relationshipFilter);
-            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(socialUserGroupPtr);
+            // Allocates memory for returned objects
+            IntPtr cGroupPtr = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromFilters>(user.Impl.GetPtr(), presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
+            // Handles returned objects
+            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(Marshal.ReadIntPtr(cGroupPtr));
+            Marshal.FreeHGlobal(cGroupPtr);
             m_groups.Add(socialUserGroup);
 
             return socialUserGroup;
@@ -53,6 +98,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             if (user == null) throw new ArgumentNullException("user");
             if (xboxUserIdList == null) throw new ArgumentNullException("xboxUserIdList");
 
+            // Allocates memory for parameters
             List<IntPtr> userIdPtrs = new List<IntPtr>();
             for (int i = 0; i < xboxUserIdList.Count; i++)
             {
@@ -62,8 +108,32 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * xboxUserIdList.Count);
             Marshal.Copy(userIdPtrs.ToArray(), 0, cUserIds, xboxUserIdList.Count);
 
-            IntPtr socialUserGroupPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerCreateSocialUserGroupFromList>(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count);
-            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(socialUserGroupPtr);
+            // Allocates memory for returned objects
+            IntPtr cGroupPtr = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromList>(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
+            // Cleans up parameters
+            foreach (IntPtr ptr in userIdPtrs)
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+            Marshal.FreeHGlobal(cUserIds);
+
+            // Handles returned objects
+            XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(Marshal.ReadIntPtr(cGroupPtr));
+            Marshal.FreeHGlobal(cGroupPtr);
             m_groups.Add(socialUserGroup);
 
             return socialUserGroup;
@@ -74,31 +144,68 @@ namespace Microsoft.Xbox.Services.Social.Manager
             if (socialGroup == null) throw new ArgumentNullException("socialGroup");
             if (users == null) throw new ArgumentNullException("users");
 
-            List<IntPtr> userIds = new List<IntPtr>();
+            // Allocates memory for parameters
+            List<IntPtr> userIdPtrs = new List<IntPtr>();
             for (int i = 0; i < users.Count; i++)
             {
                 IntPtr cXuid = Marshal.StringToHGlobalUni(users[i]);
-                userIds.Add(cXuid);
+                userIdPtrs.Add(cXuid);
             }
             IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * users.Count);
-            Marshal.Copy(userIds.ToArray(), 0, cUserIds, users.Count);
+            Marshal.Copy(userIdPtrs.ToArray(), 0, cUserIds, users.Count);
+            
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
-            XboxLive.Instance.Invoke<SocialManagerUpdateSocialUserGroup>(socialGroup.GetPtr(), cUserIds, users.Count);
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerUpdateSocialUserGroup>(socialGroup.GetPtr(), cUserIds, users.Count, cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringUni(Marshal.ReadIntPtr(cErrMessage));
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
+            // Cleans up parameters
+            foreach (IntPtr ptr in userIdPtrs)
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+            Marshal.FreeHGlobal(cUserIds);
+
+            // Does local work
             socialGroup.Refresh();
         }
 
         public void DestroySocialUserGroup(XboxSocialUserGroup xboxSocialUserGroup)
         {
             if (xboxSocialUserGroup == null) throw new ArgumentNullException("xboxSocialUserGroup");
+            
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerDestroySocialUserGroup>(xboxSocialUserGroup.GetPtr(), cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+            
+            // Does local work
             m_groups.Remove(xboxSocialUserGroup);
-
-            XboxLive.Instance.Invoke<SocialManagerDestroySocialUserGroup>(xboxSocialUserGroup.GetPtr());
         }
 
         public IList<SocialEvent> DoWork()
         {
-            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<int>());
+            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
             IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerDoWork>(cNumOfEvents);
 
             int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
@@ -137,20 +244,35 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             if (user == null) throw new ArgumentNullException("user");
 
-            XboxLive.Instance.Invoke<SocialManagerSetRichPresencePollingStatus>(user.Impl.GetPtr(), shouldEnablePolling);
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerSetRichPresencePollingStatus>(user.Impl.GetPtr(), shouldEnablePolling, cErrMessage);
+            
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
+            // Does local work
             user.Impl.UpdatePropertiesFromXboxLiveUser_c();
         }
 
         // Marshalling
 
-        private delegate void SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel);
-        private delegate void SocialManagerRemoveLocalUser(IntPtr user);
-        private delegate IntPtr SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter);
-        private delegate IntPtr SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size);
-        private delegate IntPtr SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size);
-        private delegate IntPtr SocialManagerDestroySocialUserGroup(IntPtr group);
+        private delegate Int32 SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel, IntPtr errMessage);
+        private delegate Int32 SocialManagerRemoveLocalUser(IntPtr user, IntPtr errMessage);
+        private delegate Int32 SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter, IntPtr returnGroup, IntPtr errMessage);
+        private delegate Int32 SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size, IntPtr returnGroup, IntPtr errMessage);
+        private delegate Int32 SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size, IntPtr errMessage);
+        private delegate Int32 SocialManagerDestroySocialUserGroup(IntPtr group, IntPtr errMessage);
         private delegate IntPtr SocialManagerDoWork(IntPtr numOfEvents);
-        private delegate void SocialManagerSetRichPresencePollingStatus(IntPtr user, bool shouldEnablePolling);
+        private delegate Int32 SocialManagerSetRichPresencePollingStatus(IntPtr user, bool shouldEnablePolling, IntPtr errMessage);
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct TitleHistory_c
