@@ -12,13 +12,15 @@ extern "C" {
 typedef struct XboxLiveAppConfig
 {
     uint32_t titleId;
-    PCSTR_T scid;
-    PCSTR_T environment;
-    PCSTR_T sandbox;
+    PCSTR scid;
+    PCSTR environment;
+    PCSTR sandbox;
 } XboxLiveAppConfig;
 
-XSAPI_DLLEXPORT const XboxLiveAppConfig* XBL_CALLING_CONV
-GetXboxLiveAppConfigSingleton();
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+GetXboxLiveAppConfigSingleton(
+    _Out_ XboxLiveAppConfig const** ppConfig
+    );
 
 #if defined(__cplusplus)
 } // end extern "C"

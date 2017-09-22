@@ -66,6 +66,24 @@
     <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets')" />
     <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.05.20170517.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
+  </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -76,26 +94,7 @@
       <AdditionalOptions>/bigobj /Zm300 %(AdditionalOptions)</AdditionalOptions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories> 
-       $(ProjectDir);
-       $(ProjectDir)..\..\Source\Services\Common;
-       $(ProjectDir)..\..\Source\Services\Social;
-       $(ProjectDir)..\..\Source\Services\Multiplayer;
-       $(ProjectDir)..\..\Source\Services\Presence;
-       $(ProjectDir)..\..\Source\Services\Misc;
-       $(ProjectDir)..\..\Source\Services\Social\Manager;
-       $(ProjectDir)..\..\Source\Services\RealTimeActivity;
-       $(ProjectDir)..\..\Source\Shared;
-       $(ProjectDir)..\..\Source\Shared\WinRT;
-       $(ProjectDir)..\..\Include;
-       $(ProjectDir)..\..\Source\System\WinRT;
-       $(ProjectDir)..\..\Source\System;
-       $(ProjectDir)..\..\External\libHttpClient\Include;
-       $(ProjectDir)..\..\External\libHttpClient\Source;
-       $(ProjectDir)..\..\External\libHttpClient\Source\Common;
-       $(ProjectDir)..\..\External\libHttpClient\Source\Logger;
-       %(AdditionalIncludeDirectories)
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\Source\Services\Common;$(ProjectDir)..\..\Source\Services\Social;$(ProjectDir)..\..\Source\Services\Multiplayer;$(ProjectDir)..\..\Source\Services\Presence;$(ProjectDir)..\..\Source\Services\Misc;$(ProjectDir)..\..\Source\Services\Social\Manager;$(ProjectDir)..\..\Source\Services\RealTimeActivity;$(ProjectDir)..\..\Source\Shared;$(ProjectDir)..\..\Source\Shared\WinRT;$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Source\System\WinRT;$(ProjectDir)..\..\Source\System;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAsWinRT>true</CompileAsWinRT>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
@@ -140,67 +139,43 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\global_publics.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\mem.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\settings_publics.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\singleton.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task_publics.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\utils.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcall.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallrequest.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallresponse.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\UWP\http_uwp.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\console_output.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\custom_output.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\debug_output.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_entry.cpp" />
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_output.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\services_global.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp" />
-    <ClCompile Include="..\..\Source\Services\Common\xbl_singleton.cpp" />
-    <ClCompile Include="..\..\Source\Services\Common\threadpool.cpp" />
-    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_c.cpp" />
-    <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui_c.cpp" />
-    <ClCompile Include="..\..\Source\Shared\xbox_live_app_config_c.cpp" />
-    <ClCompile Include="..\..\Source\System\user_c.cpp" />
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context.cpp" />
+    <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui.cpp" />
+    <ClCompile Include="..\..\Source\Shared\singleton.cpp" />
+    <ClCompile Include="..\..\Source\Shared\threadpool.cpp" />
+    <ClCompile Include="..\..\Source\Shared\utils.cpp" />
+    <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp" />
+    <ClCompile Include="..\..\Source\System\user.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\httpClient.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\types.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\task.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\httpcall.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.h" />
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Include\xsapi\system_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
     <ClInclude Include="..\..\Include\xsapi\types_c.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\mem.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\singleton.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\utils.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\console_output.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\custom_output.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\debug_output.h" />
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\log.h" />
     <ClInclude Include="..\..\Include\xsapi\xbox_live_app_config_c.h" />
     <ClInclude Include="..\..\Include\xsapi\xbox_live_context_c.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch_common.h" />
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
-    <ClInclude Include="..\..\Source\Services\Common\xbl_singleton.h" />
-    <ClInclude Include="..\..\Source\Services\Common\threadpool.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h" />
-    <ClInclude Include="..\..\Source\System\user_impl_c.h" />
+    <ClInclude Include="..\..\Source\Shared\singleton.h" />
+    <ClInclude Include="..\..\Source\Shared\threadpool.h" />
+    <ClInclude Include="..\..\Source\Shared\utils.h" />
+    <ClInclude Include="..\..\Source\System\user_impl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\External\libHttpClient\Build\libHttpClient.140.UWP.C\libHttpClient.140.UWP.C.vcxproj">
+      <Project>{1b0dfb7f-2cd5-48de-80d4-5cc56c22aeee}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
