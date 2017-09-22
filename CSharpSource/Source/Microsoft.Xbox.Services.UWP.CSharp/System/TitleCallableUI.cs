@@ -26,9 +26,9 @@ namespace Microsoft.Xbox.Services.System
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void CheckGamingPrivilegeCompletionRoutine(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext);
 
-        private delegate int TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate int TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate int TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
 
         /// <summary>
         /// Shows UI displaying the profile card for a specified user.
@@ -45,10 +45,10 @@ namespace Microsoft.Xbox.Services.System
 
             Task.Run(() =>
             {
-                var pTargetXboxUserId = Marshal.StringToHGlobalUni(targetXboxUserId);
+                var pTargetXboxUserId = MarshalingHelpers.StringToHGlobalUtf8(targetXboxUserId);
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs, null, new List<IntPtr> { pTargetXboxUserId });
                 
-                XboxLive.Instance.Invoke<int, TCUIShowProfileCardUI>(
+                XboxLive.Instance.Invoke<XsapiResult, TCUIShowProfileCardUI>(
                     pTargetXboxUserId,
                     (ShowProfileCardUICompletionRoutine)ShowProfileCardUIComplete,
                     (IntPtr)contextKey,
@@ -75,7 +75,7 @@ namespace Microsoft.Xbox.Services.System
             {
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs);
 
-                XboxLive.Instance.Invoke<int, TCUICheckGamingPrivilegeSilently>(
+                XboxLive.Instance.Invoke<XsapiResult, TCUICheckGamingPrivilegeSilently>(
                     privilege,
                     (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeSilentlyComplete,
                     (IntPtr)contextKey,
@@ -104,10 +104,10 @@ namespace Microsoft.Xbox.Services.System
 
             Task.Run(() =>
             {
-                var pFriendlyMessage = Marshal.StringToHGlobalUni(friendlyMessage);
+                var pFriendlyMessage = MarshalingHelpers.StringToHGlobalUtf8(friendlyMessage);
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs, null, new List<IntPtr> { pFriendlyMessage });
 
-                XboxLive.Instance.Invoke<int, TCUICheckGamingPrivilegeWithUI>(
+                XboxLive.Instance.Invoke<XsapiResult, TCUICheckGamingPrivilegeWithUI>(
                     privilege,
                     pFriendlyMessage,
                     (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeWithUIComplete,

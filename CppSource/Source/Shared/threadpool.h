@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 #pragma once
 
-class xbl_thread_pool
+class xsapi_thread_pool
 {
 public:
-    xbl_thread_pool();
+    xsapi_thread_pool();
         
     void start_threads();
 
