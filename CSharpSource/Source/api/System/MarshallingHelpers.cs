@@ -19,8 +19,11 @@ namespace Microsoft.Xbox.Services
             Marshal.Copy(bytes, 0, pointer, bytes.Length);
 
             // Add null terminator
+#if DOTNET_3_5
+            Marshal.WriteByte(new IntPtr(pointer.ToInt64() + bytes.Length), 0);
+#else
             Marshal.WriteByte(IntPtr.Add(pointer, bytes.Length), 0);
-                        
+#endif
             return pointer;
         }
 
@@ -29,7 +32,11 @@ namespace Microsoft.Xbox.Services
             List<byte> rawBytes = new List<byte>();
             byte nextByte = byte.MaxValue;
 
+#if DOTNET_3_5
+            for (; nextByte != 0; utf8 = new IntPtr(utf8.ToInt64() + 1))
+#else
             for (; nextByte != 0; utf8 = IntPtr.Add(utf8, 1))
+#endif
             {
                 rawBytes.Add(nextByte = Marshal.ReadByte(utf8));
             }
