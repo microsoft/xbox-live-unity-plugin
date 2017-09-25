@@ -35,14 +35,14 @@ typedef enum SIGN_IN_STATUS
 
 typedef struct XboxLiveUser
 {
-    PCSTR_T xboxUserId; 
-    PCSTR_T gamertag;
-    PCSTR_T ageGroup;
-    PCSTR_T privileges;
+    PCSTR xboxUserId; 
+    PCSTR gamertag;
+    PCSTR ageGroup;
+    PCSTR privileges;
     bool isSignedIn;
 
 #if UWP_API
-    PCSTR_T webAccountId;
+    PCSTR webAccountId;
     Windows::System::User^ windowsSystemUser;
 #endif
     
@@ -62,15 +62,14 @@ typedef struct SignInResult
 
 typedef struct TokenAndSignatureResultPayload
 {
-    PCSTR_T token;
-    PCSTR_T signature;
-    PCSTR_T xboxUserId;
-    PCSTR_T gamertag;
-    PCSTR_T xboxUserHash;
-    PCSTR_T ageGroup;
-    PCSTR_T privileges;
-    PCSTR_T webAccountId;
-
+    PCSTR token;
+    PCSTR signature;
+    PCSTR xboxUserId;
+    PCSTR gamertag;
+    PCSTR xboxUserHash;
+    PCSTR ageGroup;
+    PCSTR privileges;
+    PCSTR webAccountId;
 } TokenAndSignatureResultPayload;
 
 typedef struct TokenAndSignatureResult
@@ -79,63 +78,66 @@ typedef struct TokenAndSignatureResult
     TokenAndSignatureResultPayload payload;
 } TokenAndSignatureResult;
 
-XSAPI_DLLEXPORT XboxLiveUser* XBL_CALLING_CONV
-XboxLiveUserCreate();
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+XboxLiveUserCreate(
+    _Out_ XboxLiveUser** ppUser
+    ) XSAPI_NOEXCEPT;
 
 #if UWP_API
 
-XSAPI_DLLEXPORT XboxLiveUser* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserCreateFromSystemUser(
-    _In_ Windows::System::User^ creationContext
-    );
+    _In_ Windows::System::User^ creationContext,
+    _Out_ XboxLiveUser** ppUser
+    ) XSAPI_NOEXCEPT;
 
 #endif
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveUserDelete(
-    _In_ XboxLiveUser *user
-    );
+    _In_ XboxLiveUser* user
+    ) XSAPI_NOEXCEPT;
 
 typedef void(*SignInCompletionRoutine)(
     _In_ SignInResult result,
     _In_opt_ void* context
     );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserSignIn(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserSignInSilently(
     _Inout_ XboxLiveUser* user,
     _In_ SignInCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
 #if WINAPI_FAMILY && WINAPI_FAMILY==WINAPI_FAMILY_APP
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserSignInWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserSignInSilentlyWithCoreDispatcher(
     _Inout_ XboxLiveUser* user,
     _In_ Platform::Object^ coreDispatcher,
     _In_ SignInCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
 #endif
 
@@ -144,17 +146,17 @@ typedef void(*GetTokenAndSignatureCompletionRoutine)(
     _In_opt_ void* context
     );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveUserGetTokenAndSignature(
     _Inout_ XboxLiveUser* user,
-    _In_ PCSTR_T httpMethod,
-    _In_ PCSTR_T url,
-    _In_ PCSTR_T headers,
-    _In_ PCSTR_T requestBodyString,
+    _In_ PCSTR httpMethod,
+    _In_ PCSTR url,
+    _In_ PCSTR headers,
+    _In_ PCSTR requestBodyString,
     _In_ GetTokenAndSignatureCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
 typedef void(*SignOutCompletedHandler)(
     _In_ XboxLiveUser* user
@@ -163,12 +165,12 @@ typedef void(*SignOutCompletedHandler)(
 XSAPI_DLLEXPORT function_context XBL_CALLING_CONV
 AddSignOutCompletedHandler(
     _In_ SignOutCompletedHandler signOutHandler
-    );
+    ) XSAPI_NOEXCEPT;
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 RemoveSignOutCompletedHandler(
     _In_ function_context context
-    );
+    ) XSAPI_NOEXCEPT;
 
 #endif //!XDK_API
 

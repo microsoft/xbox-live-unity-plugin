@@ -16,10 +16,10 @@ xbl_args_xbox_live_user_sign_in::xbl_args_xbox_live_user_sign_in(
 
 xbl_args_xbox_live_user_get_token_and_signature::xbl_args_xbox_live_user_get_token_and_signature(
     _In_ XboxLiveUser* _user,
-    _In_ PCSTR_T _httpMethod,
-    _In_ PCSTR_T _url,
-    _In_ PCSTR_T _headers,
-    _In_ PCSTR_T _requestBodyString
+    _In_ PCSTR _httpMethod,
+    _In_ PCSTR _url,
+    _In_ PCSTR _headers,
+    _In_ PCSTR _requestBodyString
     )
     : user(_user),
     httpMethod(_httpMethod),

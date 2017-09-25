@@ -2,6 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 #pragma once
 
+#include "xsapi/errors_c.h"
+#include "xsapi/title_callable_ui_c.h"
+#include "xsapi/system_c.h"
+
 template<typename T>
 struct xbl_args
 {
@@ -11,16 +15,15 @@ struct xbl_args
 
 struct xbl_args_tcui_show_profile_card_ui : public xbl_args<XboxLiveResult>
 {
-    PCSTR_T targetXboxUserId;
-
-    string_t resultErrorMsg;
+    PCSTR targetXboxUserId;
+    std::string resultErrorMsg;
 };
 
 struct xbl_args_tcui_check_gaming_privilege : public xbl_args<TCUICheckGamingPrivilegeResult>
 {
     GAMING_PRIVILEGE privilege;
-    string_t resultErrorMsg;
-    string_t friendlyMessage;
+    std::string resultErrorMsg;
+    std::string friendlyMessage;
 };
 
 struct xbl_args_xbox_live_user_sign_in : public xbl_args<SignInResult>
@@ -35,56 +38,38 @@ struct xbl_args_xbox_live_user_sign_in : public xbl_args<SignInResult>
     bool signInSilently;
     Platform::Object^ coreDispatcher;
 
-    string_t resultErrorMsg;
+    std::string resultErrorMsg;
 };
 
 struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<TokenAndSignatureResult>
 {
     xbl_args_xbox_live_user_get_token_and_signature(
         _In_ XboxLiveUser* user,
-        _In_ PCSTR_T httpMethod,
-        _In_ PCSTR_T url,
-        _In_ PCSTR_T headers,
-        _In_ PCSTR_T requestBodyString
+        _In_ PCSTR httpMethod,
+        _In_ PCSTR url,
+        _In_ PCSTR headers,
+        _In_ PCSTR requestBodyString
         );
 
     XboxLiveUser* user;
-    PCSTR_T httpMethod;
-    PCSTR_T url;
-    PCSTR_T headers;
-    PCSTR_T requestBodyString;
+    PCSTR httpMethod;
+    PCSTR url;
+    PCSTR headers;
+    PCSTR requestBodyString;
 
-    string_t token;
-    string_t signature;
-    string_t xboxUserId;
-    string_t gamertag;
-    string_t xboxUserHash;
-    string_t ageGroup;
-    string_t privileges;
-    string_t webAccountId;
+    std::string token;
+    std::string signature;
+    std::string xboxUserId;
+    std::string gamertag;
+    std::string xboxUserHash;
+    std::string ageGroup;
+    std::string privileges;
+    std::string webAccountId;
 
-    string_t resultErrorMsg;
+    std::string resultErrorMsg;
 };
 
 struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XboxLiveResult>
 {
-    string_t resultErrorMsg;
+    std::string resultErrorMsg;
 };
-
-template<typename T, typename T2>
-void xbl_execute_callback_fn(
-    _In_opt_ void* writeResultsRoutineContext,
-    _In_ HC_TASK_HANDLE taskHandle,
-    _In_opt_ void* completionRoutine,
-    _In_opt_ void* completionRoutineContext
-    )
-{
-    auto args = reinterpret_cast<T*>(writeResultsRoutineContext);
-      
-    T2 completeFn = (T2)completionRoutine;
-    if (completeFn != nullptr)
-    {
-        completeFn(args->result, completionRoutineContext);
-    }
-    delete args;
-}

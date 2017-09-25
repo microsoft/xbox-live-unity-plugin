@@ -1,38 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="C++ Public Includes">
-      <UniqueIdentifier>{b79b5071-f94f-443a-b903-1b604db21b8e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="C++ Source">
       <UniqueIdentifier>{e9e0bd97-69fe-4b02-9f7d-b3cfe9ba4124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient">
-      <UniqueIdentifier>{ae797221-f28c-478e-8af7-0f1c58bad52d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\Include">
-      <UniqueIdentifier>{65e98635-1bbf-4265-9cbf-57bcdab965f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source">
-      <UniqueIdentifier>{c2d7e929-ec62-42db-8ba5-eb2dfda22949}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\HTTP">
-      <UniqueIdentifier>{3a809cc3-35fb-4501-9c8d-9ce320c40697}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\HTTP\UWP">
-      <UniqueIdentifier>{2bed7ce4-79cb-4771-b392-5e7c18f00f8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\HTTP\Mock">
-      <UniqueIdentifier>{35c2c407-fbc7-49c6-96cf-6385cf15e4e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\Logger">
-      <UniqueIdentifier>{3733df0f-dd6d-49d7-a8b4-916faae72749}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\Common">
-      <UniqueIdentifier>{35c98194-81ee-40b7-81aa-4514e3d2c8d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libHttpClient\C++ Source\Common\UWP">
-      <UniqueIdentifier>{f471cdd8-562e-457a-a6f0-244f3cdcee88}</UniqueIdentifier>
     </Filter>
     <Filter Include="C++ Source\System">
       <UniqueIdentifier>{ea2d9fb0-5988-4a56-9f0d-ce6039746f26}</UniqueIdentifier>
@@ -48,6 +18,9 @@
     </Filter>
     <Filter Include="C++ Source\Shared">
       <UniqueIdentifier>{994762ae-76e5-4e26-aedb-03cbf6741127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++ Public Includes">
+      <UniqueIdentifier>{b79b5071-f94f-443a-b903-1b604db21b8e}</UniqueIdentifier>
     </Filter>
     <Filter Include="C++ Source\Social">
       <UniqueIdentifier>{b417d1c1-466f-48b9-ae38-84253e927859}</UniqueIdentifier>
@@ -78,56 +51,11 @@
     <ClInclude Include="..\..\Include\xsapi\types_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Common\threadpool.h">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Common\xbl_singleton.h">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\console_output.h">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\custom_output.h">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\debug_output.h">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Logger\log.h">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\mem.h">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.h">
-      <Filter>libHttpClient\C++ Source\Common\UWP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\utils.h">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\singleton.h">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\httpClient.h">
-      <Filter>libHttpClient\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Include\httpClient\types.h">
-      <Filter>libHttpClient\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\httpcall.h">
-      <Filter>libHttpClient\C++ Source\HTTP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.h">
-      <Filter>libHttpClient\C++ Source\HTTP\Mock</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h">
       <Filter>C++ Source\Services\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\system_c.h">
       <Filter>C++ Public Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\External\libHttpClient\Source\Common\task.h">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h">
       <Filter>C++ Public Includes</Filter>
@@ -135,14 +63,23 @@
     <ClInclude Include="..\..\Include\xsapi\xbox_live_context_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\System\user_impl_c.h">
-      <Filter>C++ Source\System</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\xbox_live_app_config_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h">
       <Filter>C++ Source\Services\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\utils.h">
+      <Filter>C++ Source\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\System\user_impl.h">
+      <Filter>C++ Source\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\threadpool.h">
+      <Filter>C++ Source\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\singleton.h">
+      <Filter>C++ Source\Shared</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\social_manager_c.h">
       <Filter>C++ Public Includes</Filter>
@@ -156,7 +93,6 @@
     <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h">
       <Filter>C++ Source\Stats\Manager</Filter>
     </ClInclude>
@@ -165,83 +101,32 @@
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui_c.cpp">
-      <Filter>C++ Source\Services\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\threadpool.cpp">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\xbl_singleton.cpp">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\console_output.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\custom_output.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\debug_output.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_entry.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Logger\log_output.cpp">
-      <Filter>libHttpClient\C++ Source\Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\mem.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\UWP\utils_uwp.cpp">
-      <Filter>libHttpClient\C++ Source\Common\UWP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\singleton.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\utils.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcall.cpp">
-      <Filter>libHttpClient\C++ Source\HTTP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallrequest.cpp">
-      <Filter>libHttpClient\C++ Source\HTTP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\httpcallresponse.cpp">
-      <Filter>libHttpClient\C++ Source\HTTP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\UWP\http_uwp.cpp">
-      <Filter>libHttpClient\C++ Source\HTTP\UWP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\HTTP\Mock\http_mock.cpp">
-      <Filter>libHttpClient\C++ Source\HTTP\Mock</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp">
       <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\System\user_c.cpp">
-      <Filter>C++ Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\global_publics.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\settings_publics.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\External\libHttpClient\Source\Common\task_publics.cpp">
-      <Filter>libHttpClient\C++ Source\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\xbox_live_app_config_c.cpp">
+    <ClCompile Include="..\..\Source\Shared\utils.cpp">
       <Filter>C++ Source\Shared</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_c.cpp">
+    <ClCompile Include="..\..\Source\System\user.cpp">
+      <Filter>C++ Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui.cpp">
+      <Filter>C++ Source\Services\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context.cpp">
       <Filter>C++ Source\Services\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp">
+      <Filter>C++ Source\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\threadpool.cpp">
+      <Filter>C++ Source\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\services_global.cpp">
+      <Filter>C++ Source\Services\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\singleton.cpp">
+      <Filter>C++ Source\Shared</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp">
       <Filter>C++ Source\Social\Manager</Filter>

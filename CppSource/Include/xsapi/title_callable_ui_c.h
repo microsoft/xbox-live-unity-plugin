@@ -3,6 +3,7 @@
 
 #pragma once
 #include "types_c.h"
+#include "errors_c.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -94,30 +95,30 @@ typedef void(*TCUICheckGamingPrivilegeCompletionRoutine)(
     _In_opt_ void* completionRoutineContext
     );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 TCUIShowProfileCardUI(
-    _In_ PCSTR_T targetXboxUserId,
+    _In_ PCSTR targetXboxUserId,
     _In_ TCUIShowProfileCardUICompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 TCUICheckGamingPrivilegeSilently(
     _In_ GAMING_PRIVILEGE privilege,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 TCUICheckGamingPrivilegeWithUI(
     _In_ GAMING_PRIVILEGE privilege,
-    _In_ PCSTR_T friendlyMessage,
+    _In_ PCSTR friendlyMessage,
     _In_ TCUICheckGamingPrivilegeCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-    );
+    ) XSAPI_NOEXCEPT;
 
 #if defined(__cplusplus)
 } // end extern "C"

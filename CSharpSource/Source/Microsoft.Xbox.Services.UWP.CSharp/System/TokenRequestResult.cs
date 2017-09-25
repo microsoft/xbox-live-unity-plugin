@@ -26,13 +26,14 @@ namespace Microsoft.Xbox.Services.System
                 this.ResponseStatus = result.ResponseStatus;
                 this.ResponseError = result.ResponseError;
 
-                var responseData = result.ResponseData?.FirstOrDefault();
-                if (responseData != null)
-                {
+                if (result.ResponseData != null && result.ResponseData.Count > 0)
+                { 
+                    var responseData = result.ResponseData.FirstOrDefault();
+                
                     this.Properties = responseData.Properties;
                     this.ProviderError = responseData.ProviderError;
                     this.Token = responseData.Token;
-                    this.WebAccountId = responseData.WebAccount.Id;
+                    this.WebAccountId = responseData.WebAccount?.Id;
                 }
             }
         }

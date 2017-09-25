@@ -14,7 +14,7 @@ struct XboxLiveContextImpl;
 
 typedef struct XboxLiveContext
 {
-    PCSTR_T xboxUserId;
+    PCSTR xboxUserId;
 
 #if XDK_API | XBOX_UWP
     Windows::Xbox::System::User^ user;
@@ -22,7 +22,7 @@ typedef struct XboxLiveContext
     XboxLiveUser *user;
 #endif
 
-    const XboxLiveAppConfig *appConfig;
+    XboxLiveAppConfig const *appConfig;
 
     // TODO add services
 

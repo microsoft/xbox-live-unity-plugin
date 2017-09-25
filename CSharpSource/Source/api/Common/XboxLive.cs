@@ -10,6 +10,7 @@ namespace Microsoft.Xbox.Services
     using Microsoft.Xbox.Services.Presence;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
+    using Microsoft.Xbox.Services.System;
 
     public partial class XboxLive : IDisposable
     {
@@ -24,7 +25,7 @@ namespace Microsoft.Xbox.Services
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
 
-        private delegate void XBLGlobalInitialize();
+        private delegate XsapiResult XBLGlobalInitialize();
         private delegate void XBLGlobalCleanup();
 
         private XboxLive()
@@ -47,7 +48,8 @@ namespace Microsoft.Xbox.Services
                 string path = Directory.GetCurrentDirectory() + fileName;
                 xsapiNativeDll = LoadNativeDll(path);
 
-                this.Invoke<XBLGlobalInitialize>();
+                var intializationResult = this.Invoke<XsapiResult, XBLGlobalInitialize>();
+                // TODO handle this better
             }
             catch (Exception)
             {
@@ -58,7 +60,7 @@ namespace Microsoft.Xbox.Services
 
         ~XboxLive()
         {
-            this.Invoke<XBLGlobalInitialize>();
+            this.Invoke<XBLGlobalCleanup>();
         }
 
         public static XboxLive Instance

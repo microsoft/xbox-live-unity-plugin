@@ -11,7 +11,7 @@ extern "C" {
 typedef struct XboxLiveResult
 {
     int errorCode;
-    PCSTR_T errorMessage;
+    PCSTR errorMessage;
 } XboxLiveResult;
 
 #if defined(__cplusplus)

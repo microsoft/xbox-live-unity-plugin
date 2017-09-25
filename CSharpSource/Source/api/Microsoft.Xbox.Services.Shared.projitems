@@ -98,6 +98,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Stats\StatEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\AuthConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IUserImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\MarshallingHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\BlobQueryProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataInfo.cs" />

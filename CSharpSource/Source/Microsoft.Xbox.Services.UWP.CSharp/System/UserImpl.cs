@@ -34,10 +34,17 @@ namespace Microsoft.Xbox.Services.System
         public UserImpl(User systemUser)
         {
             this.CreationContext = systemUser;
-            
-            m_xboxLiveUser_c = XboxLive.Instance.Invoke<IntPtr, XboxLiveUserCreateFromSystemUser>(
-                this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext)
+
+            var handle = GCHandle.Alloc(m_xboxLiveUser_c, GCHandleType.Pinned);
+            var ppUser = GCHandle.ToIntPtr(handle);
+
+            var xsapiResult = XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserCreateFromSystemUser>(
+                this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext),
+                ppUser
                 );
+
+            m_xboxLiveUser_c = Marshal.ReadIntPtr(ppUser);
+            handle.Free();
 
             Init();
         }
@@ -132,7 +139,7 @@ namespace Microsoft.Xbox.Services.System
 
                 if (showUI)
                 {
-                    XboxLive.Instance.Invoke<XboxLiveUserSignInWithCoreDispatcher>(
+                    XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserSignInWithCoreDispatcher>(
                         m_xboxLiveUser_c,
                         coreDispatcherPtr,
                         (SignInCompletionRoutine)SignInComplete,
@@ -142,7 +149,7 @@ namespace Microsoft.Xbox.Services.System
                 }
                 else
                 {
-                    XboxLive.Instance.Invoke<XboxLiveUserSignInSilently>(
+                    XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserSignInSilently>(
                         m_xboxLiveUser_c,
                         (SignInCompletionRoutine)SignInComplete,
                         (IntPtr)contextKey,
@@ -184,9 +191,9 @@ namespace Microsoft.Xbox.Services.System
 
             Task.Run(() =>
             {
-                IntPtr pHttpMethod = Marshal.StringToHGlobalUni(httpMethod);
-                IntPtr pUrl = Marshal.StringToHGlobalUni(url);
-                IntPtr pHeaders = Marshal.StringToHGlobalUni(headers);
+                IntPtr pHttpMethod = MarshalingHelpers.StringToHGlobalUtf8(httpMethod);
+                IntPtr pUrl = MarshalingHelpers.StringToHGlobalUtf8(url);
+                IntPtr pHeaders = MarshalingHelpers.StringToHGlobalUtf8(headers);
                 
                 IntPtr pBody = IntPtr.Zero;
                 if (body != null)
@@ -202,7 +209,7 @@ namespace Microsoft.Xbox.Services.System
                     null,
                     new List<IntPtr> { pHttpMethod, pUrl, pHeaders, pBody });
 
-                XboxLive.Instance.Invoke<XboxLiveUserGetTokenAndSignature>(
+                XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserGetTokenAndSignature>(
                     m_xboxLiveUser_c,
                     pHttpMethod,
                     pUrl,
@@ -250,12 +257,12 @@ namespace Microsoft.Xbox.Services.System
         {
             var xboxLiveUser_c = Marshal.PtrToStructure<XboxLiveUser_c>(m_xboxLiveUser_c);
 
-            this.XboxUserId = xboxLiveUser_c.XboxUserId;
-            this.Gamertag = xboxLiveUser_c.Gamertag;
-            this.AgeGroup = xboxLiveUser_c.AgeGroup;
-            this.Privileges = xboxLiveUser_c.Privileges;
+            this.XboxUserId = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.XboxUserId);
+            this.Gamertag = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.Gamertag);
+            this.AgeGroup = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.AgeGroup);
+            this.Privileges = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.Privileges);
             this.IsSignedIn = Convert.ToBoolean(xboxLiveUser_c.IsSignedIn);
-            this.WebAccountId = xboxLiveUser_c.WebAccountId;
+            this.WebAccountId = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.WebAccountId);
 
             if (xboxLiveUser_c.WindowsSystemUser != IntPtr.Zero)
             {
@@ -275,35 +282,34 @@ namespace Microsoft.Xbox.Services.System
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void SignOutCompletedHandler(IntPtr xboxLiveUser_c);
-        
-        private delegate IntPtr XboxLiveUserCreateFromSystemUser(IntPtr systemUser);
+        private delegate XsapiResult XboxLiveUserCreateFromSystemUser(IntPtr systemUser, IntPtr ppXboxLiveUser_c);
         private delegate void XboxLiveUserDelete(IntPtr xboxLiveUser_c);
-        private delegate void XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate void XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate void XboxLiveUserGetTokenAndSignature(IntPtr xboxLiveUser_c, IntPtr httpMethod, IntPtr url, IntPtr headers, IntPtr requestBodyString, GetTokenAndSignatureCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+        private delegate XsapiResult XboxLiveUserGetTokenAndSignature(IntPtr xboxLiveUser_c, IntPtr httpMethod, IntPtr url, IntPtr headers, IntPtr requestBodyString, GetTokenAndSignatureCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
         private delegate Int32 AddSignOutCompletedHandler(SignOutCompletedHandler handler);
         private delegate void RemoveSignOutCompletedHandler(Int32 functionContext);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct XboxLiveUser_c
         {
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
-            public string XboxUserId;
+            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public IntPtr XboxUserId;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
-            public string Gamertag;
+            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public IntPtr Gamertag;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
-            public string AgeGroup;
+            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public IntPtr AgeGroup;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
-            public string Privileges;
+            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public IntPtr Privileges;
 
             [MarshalAsAttribute(UnmanagedType.U1)]
             public byte IsSignedIn;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
-            public string WebAccountId;
+            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public IntPtr WebAccountId;
 
             [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr WindowsSystemUser;
@@ -325,28 +331,28 @@ namespace Microsoft.Xbox.Services.System
         [StructLayout(LayoutKind.Sequential)]
         private struct TokenAndSignatureResultPayload_c
         {
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string Token;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string Signature;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string XboxUserId;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string Gamertag;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string XboxUserHash;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string AgeGroup;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string Privileges;
 
-            [MarshalAsAttribute(UnmanagedType.LPWStr)]
+            [MarshalAsAttribute(UnmanagedType.LPStr)]
             public string WebAccountId;
         }
 
