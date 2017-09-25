@@ -57,15 +57,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 foreach (var stat in statMap)
                 {
                     StatValue statValue;
-                    if (stat.Value.Value is string)
-                    {
-                        statValue = new StatValue(stat.Key, stat.Value.Value, StatValueType.String);
-                    }
-                    else
-                    {
-                        statValue = new StatValue(stat.Key, stat.Value.Value, StatValueType.Number);
-                    }
-                    this.Stats.Add(stat.Key, statValue);
+                    //if (stat.Value.Value is string)
+                    //{
+                    //    statValue = new StatValue(stat.Key, stat.Value.Value, StatValueType.String);
+                    //}
+                    //else
+                    //{
+                    //    statValue = new StatValue(stat.Key, stat.Value.Value, StatValueType.Number);
+                    //}
+                    //this.Stats.Add(stat.Key, statValue);
                 }
             }
             else
@@ -164,15 +164,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                         {
                             case StatPendingEventType.StatChange:
                                 {
-                                    if (!this.Stats.ContainsKey(svdEvent.Name))
-                                    {
-                                        var statValue = new StatValue(svdEvent.Name, svdEvent.Value, svdEvent.Type);
-                                        this.Stats.Add(svdEvent.Name, statValue);
-                                    }
-                                    else
-                                    {
-                                        this.Stats[svdEvent.Name].SetStat(svdEvent.Value, svdEvent.Type);
-                                    }
+                                    //if (!this.Stats.ContainsKey(svdEvent.Name))
+                                    //{
+                                    //    var statValue = new StatValue(svdEvent.Name, svdEvent.Value, svdEvent.Type);
+                                    //    this.Stats.Add(svdEvent.Name, statValue);
+                                    //}
+                                    //else
+                                    //{
+                                    //    this.Stats[svdEvent.Name].SetStat(svdEvent.Value, svdEvent.Type);
+                                    //}
 
                                     this.IsDirty = true;
                                     break;

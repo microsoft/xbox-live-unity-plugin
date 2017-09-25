@@ -4,39 +4,25 @@
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     using global::System;
+    using global::System.Runtime.InteropServices;
+    using static Microsoft.Xbox.Services.Statistics.Manager.StatsManager;
 
     public class StatValue
     {
-        public string Name { get; set; }
-        public object Value { get; set; }
-        public StatValueType Type { get; set; }
-
-        internal StatValue(string name, object value, StatValueType type)
+        public string Name { get; private set; }
+        public double AsNumber { get; private set; }
+        public long AsInteger { get; private set; }
+        public string AsString { get; private set; }
+        public StatValueType Type { get; private set; }
+        
+        internal StatValue(IntPtr statValuePtr)
         {
-            this.Name = name;
-            this.Value = value;
-            this.Type = type;
-        }
-
-        public int AsInteger()
-        {
-            return Convert.ToInt32(this.Value.ToString());
-        }
-
-        public string AsString()
-        {
-            return this.Value.ToString();
-        }
-
-        public double AsNumber()
-        {
-            return Convert.ToDouble(this.Value.ToString());
-        }
-
-        internal void SetStat(object value, StatValueType type)
-        {
-            this.Value = value;
-            this.Type = type;
+            StatValue_c cStatValue = Marshal.PtrToStructure<StatValue_c>(statValuePtr);
+            Name = cStatValue.Name;
+            AsNumber = cStatValue.AsNumber;
+            AsInteger = cStatValue.AsInteger;
+            AsString = cStatValue.AsString;
+            Type = cStatValue.DataType;
         }
     }
 }

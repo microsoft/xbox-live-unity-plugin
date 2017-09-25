@@ -5,6 +5,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     public enum StatValueType
     {
+        Undefined,
         Number,
         String
     }

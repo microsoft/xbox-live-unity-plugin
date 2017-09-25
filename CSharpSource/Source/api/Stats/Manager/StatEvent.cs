@@ -4,20 +4,35 @@
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     using global::System;
+    using global::System.Runtime.InteropServices;
+    using static Microsoft.Xbox.Services.Statistics.Manager.StatsManager;
 
     public class StatEvent
     {
         public StatEventType EventType { get; private set; }
         public StatEventArgs EventArgs { get; private set; }
-        public XboxLiveUser LocalUser { get; private set; }
-        public Exception ErrorInfo { get; private set; }
+        public XboxLiveUser User { get; private set; }
+        public int ErrorCode { get; private set; }
+        public string ErrorMessage { get; private set; }
 
-        public StatEvent(StatEventType eventType, XboxLiveUser user, Exception errorInfo, StatEventArgs args)
+        public StatEvent(StatEventType eventType, XboxLiveUser user, StatEventArgs args)
         {
             this.EventType = eventType;
-            this.LocalUser = user;
-            this.ErrorInfo = errorInfo;
+            this.User = user;
             this.EventArgs = args;
+        }
+
+        internal StatEvent(IntPtr statEventPtr)
+        {
+            StatEvent_c cStatEvent = Marshal.PtrToStructure<StatEvent_c>(statEventPtr);
+
+            EventType = cStatEvent.EventType;
+            // todo event args
+
+            User = new XboxLiveUser(cStatEvent.LocalUser);
+
+            ErrorCode = cStatEvent.ErrorCode;
+            ErrorMessage = cStatEvent.ErrorMessage;
         }
     }
 }

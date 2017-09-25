@@ -205,9 +205,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public IList<SocialEvent> DoWork()
         {
-            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
-            IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerDoWork>(cNumOfEvents);
 
+            // Allocates memory for returned objects
+            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
+
+            // Invokes the c method
+            IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerDoWork>(cNumOfEvents);
+            
+            // Does local work
             int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
             Marshal.FreeHGlobal(cNumOfEvents);
 
@@ -223,7 +228,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     events.Add(new SocialEvent(cEvent, m_groups));
                 }
 
-                // Update Objects
+                // Refresh object
                 foreach (XboxSocialUserGroup group in m_groups)
                 {
                     if (group != null)

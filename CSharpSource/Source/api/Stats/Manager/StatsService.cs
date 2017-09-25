@@ -47,12 +47,12 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 }
             };
 
-            svdModel.Stats.Title = statValuePostDocument.Stats.ToDictionary(
-                stat => stat.Key,
-                stat => new Models.Stat()
-                {
-                    Value = stat.Value.Value
-                });
+            //svdModel.Stats.Title = statValuePostDocument.Stats.ToDictionary(
+            //    stat => stat.Key,
+            //    stat => new Models.Stat()
+            //    {
+            //        Value = stat.Value.Value
+            //    });
 
             req.RequestBody = JsonConvert.SerializeObject(svdModel, serializerSettings);
             req.XboxLiveAPI = XboxLiveAPIName.UpdateStatsValueDocument;

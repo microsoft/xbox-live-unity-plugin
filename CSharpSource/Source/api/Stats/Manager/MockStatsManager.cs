@@ -50,15 +50,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         public void AddLocalUser(XboxLiveUser user)
         {
-            this.LocalUsers.Add(user);
-            this.leaderboardService = new MockLeaderboardService();
-            this.statEventList.Add(new StatEvent(StatEventType.LocalUserAdded, user, null, new StatEventArgs()));
+            //this.LocalUsers.Add(user);
+            //this.leaderboardService = new MockLeaderboardService();
+            //this.statEventList.Add(new StatEvent(StatEventType.LocalUserAdded, user, null, new StatEventArgs()));
         }
 
         public void RemoveLocalUser(XboxLiveUser user)
         {
-            this.LocalUsers.Remove(user);
-            this.statEventList.Add(new StatEvent(StatEventType.LocalUserRemoved, user, null, new StatEventArgs()));
+            //this.LocalUsers.Remove(user);
+            //this.statEventList.Add(new StatEvent(StatEventType.LocalUserRemoved, user, null, new StatEventArgs()));
         }
 
         public StatValue GetStat(XboxLiveUser user, string statName)
@@ -122,13 +122,48 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
             this.leaderboardService.GetLeaderboardAsync(user, query).ContinueWith(responseTask =>
             {
-                this.statEventList.Add(
-                    new StatEvent(StatEventType.GetLeaderboardComplete,
-                        user,
-                        responseTask.Exception,
-                        new LeaderboardResultEventArgs(responseTask.Result)
-                    ));
+                //this.statEventList.Add(
+                //    new StatEvent(StatEventType.GetLeaderboardComplete,
+                //        user,
+                //        responseTask.Exception,
+                //        new LeaderboardResultEventArgs(responseTask.Result)
+                //    ));
             });
+        }
+
+        IList<StatEvent> IStatsManager.DoWork()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatisticNumberData(XboxLiveUser user, string statName, double value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatisticIntegerData(XboxLiveUser user, string statName, long value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetStatisticStringData(XboxLiveUser user, string statName, string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        IList<string> IStatsManager.GetStatNames(XboxLiveUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetLeaderboard(XboxLiveUser user, string statName, LeaderboardQuery query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetSocialLeaderboard(XboxLiveUser user, string statName, string socialGroup, LeaderboardQuery query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -156,6 +156,10 @@
     <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\services_c.h" />
+    <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h">
+      <Filter>C++ Source\Stats\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -241,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp">
       <Filter>C++ Source\Social\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp">
+      <Filter>C++ Source\Stats\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

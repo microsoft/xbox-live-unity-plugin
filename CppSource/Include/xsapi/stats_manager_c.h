@@ -20,10 +20,10 @@ typedef enum STAT_DATA_TYPE {
 } STAT_DATA_TYPE;
 
 typedef enum STAT_EVENT_TYPE {
-    LOCAL_USER_ADDED,
-    LOCAL_USER_REMOVED,
-    STAT_UPDATE_COMPLETE,
-    GET_LEADERBOARD_COMPLETE
+    LOCAL_USER_ADDED_STAT,
+    LOCAL_USER_REMOVED_STAT,
+    STAT_UPDATE_COMPLETE_STAT,
+    GET_LEADERBOARD_COMPLETE_STAT
 } STAT_EVENT_TYPE;
 
 typedef struct StatValue
@@ -57,81 +57,94 @@ typedef struct StatsManager
 {
 } StatsManager;
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerAddLocalUser(
-    _In_ XboxLiveUser* user
+    _In_ XboxLiveUser* user,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerRemoveLocalUser(
-    _In_ XboxLiveUser* user
+    _In_ XboxLiveUser* user,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerRequestFlushToService(
     _In_ XboxLiveUser* user,
-    _In_ bool isHighPriority
+    _In_ bool isHighPriority,
+    _Out_ PCSTR_T* errMessage
 );
 
 XSAPI_DLLEXPORT StatEvent** XBL_CALLING_CONV
 StatsManagerDoWork(
-    _Inout_ int64 numOfEvents
+    _Inout_ int32 *numOfEvents
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerSetStatAsNumber(
     _In_ XboxLiveUser* user,
     _In_ PCSTR_T statName,
-    _In_ double statValue
+    _In_ double statValue,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerSetStatAsInteger(
     _In_ XboxLiveUser* user,
     _In_ PCSTR_T statName,
-    _In_ int64 statValue
+    _In_ int64 statValue,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerSetStatAsString(
     _In_ XboxLiveUser* user,
     _In_ PCSTR_T statName,
-    _In_ PCSTR_T statValue
+    _In_ PCSTR_T statValue,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetStatNames(
     _In_ XboxLiveUser* user,
-    _Inout_ PCSTR_T* statNameList
+    _Inout_ PCSTR_T** statNameList,
+    _Inout_ int32* statNameListSize,
+    _Inout_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT StatValue* XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetStat(
     _In_ XboxLiveUser* user,
-    _In_ PCSTR_T statName
+    _In_ PCSTR_T statName,
+    _Out_ StatValue** statValue,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerDeleteStat(
     _In_ XboxLiveUser* user,
-    _In_ PCSTR_T statName
+    _In_ PCSTR_T statName,
+    _Out_ PCSTR_T* errMessage
 );
 
 // todo _XSAPIIMP stats_manager();
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetLeaderboard(
     _In_ XboxLiveUser* user,
     _In_ PCSTR_T statName,
-    _In_ LeaderboardQuery* query
+    _In_ LeaderboardQuery* query,
+    _Out_ PCSTR_T* errMessage
 );
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetSocialLeaderboard(
     _In_ XboxLiveUser* user,
     _In_ PCSTR_T statName,
     _In_ PCSTR_T socialGroup,
-    _In_ LeaderboardQuery* query
+    _In_ LeaderboardQuery* query,
+    _Out_ PCSTR_T* errMessage
 );
 #endif //!XDK_API
 
