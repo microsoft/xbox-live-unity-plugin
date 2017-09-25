@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
+#include "xsapi/leaderboard_c.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;
@@ -31,10 +32,10 @@ struct LeaderboardQueryImpl
         m_order = static_cast<SORT_ORDER>(m_cppQuery.order());
         m_cQuery->order = m_order;
 
-        m_statName = m_cppQuery.stat_name().c_str();
+        m_statName = utils::to_utf8string(m_cppQuery.stat_name()).data();
         m_cQuery->statName = m_statName;
 
-        m_socialGroup = m_cppQuery.social_group().c_str();
+        m_socialGroup = utils::to_utf8string(m_cppQuery.social_group()).data();
         m_cQuery->socialGroup = m_socialGroup;
 
         m_hasNext = m_cppQuery.has_next();
@@ -45,8 +46,8 @@ struct LeaderboardQueryImpl
     uint32 m_skipResultToRank;
     uint32 m_maxItems;
     SORT_ORDER m_order;
-    PCSTR_T m_statName;
-    PCSTR_T m_socialGroup;
+    PCSTR m_statName;
+    PCSTR m_socialGroup;
     bool m_hasNext;
     leaderboard_query m_cppQuery;
     LeaderboardQuery* m_cQuery;

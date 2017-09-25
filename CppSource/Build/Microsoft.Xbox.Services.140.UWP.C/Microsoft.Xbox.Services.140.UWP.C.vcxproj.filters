@@ -34,6 +34,9 @@
     <Filter Include="C++ Source\Stats\Manager">
       <UniqueIdentifier>{c97c6516-790d-4260-b21d-24385648e3d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Leaderboard">
+      <UniqueIdentifier>{160dc85c-4697-401d-8f2a-a951298c01b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -81,20 +84,26 @@
     <ClInclude Include="..\..\Source\Shared\singleton.h">
       <Filter>C++ Source\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\xsapi\social_manager_c.h">
+    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h">
+      <Filter>C++ Source\Social\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h">
+      <Filter>C++ Source\Stats\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Leaderboard\leaderboard_helper_c.h">
+      <Filter>C++ Source\Leaderboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\leaderboard_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\presence_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h">
-      <Filter>C++ Source\Social\Manager</Filter>
+    <ClInclude Include="..\..\Include\xsapi\social_manager_c.h">
+      <Filter>C++ Public Includes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h">
       <Filter>C++ Public Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h">
-      <Filter>C++ Source\Stats\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp">
       <Filter>C++ Source\Stats\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_c.cpp">
+      <Filter>C++ Source\Leaderboard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

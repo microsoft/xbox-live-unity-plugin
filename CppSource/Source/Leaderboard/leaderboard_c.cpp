@@ -10,7 +10,7 @@ LeaderboardQuerySetSkipResultToMe(
     _In_ bool skipResultToMe
 )
 {
-    VerifyGlobalXsapiInit();
+    verify_global_init();
 
     leaderboardQuery->pImpl->m_cppQuery.set_skip_result_to_me(skipResultToMe);
 }
@@ -20,7 +20,7 @@ LeaderboardQuerySetSkipResultToRank(
     _In_ uint32 skipResultToRank
 )
 {
-    VerifyGlobalXsapiInit();
+    verify_global_init();
 
     leaderboardQuery->pImpl->m_cppQuery.set_skip_result_to_rank(skipResultToRank);
 }
@@ -31,7 +31,7 @@ LeaderboardQuerySetMaxItems(
     _In_ uint32 maxItems
 )
 {
-    VerifyGlobalXsapiInit();
+    verify_global_init();
 
     leaderboardQuery->pImpl->m_cppQuery.set_max_items(maxItems);
 }
@@ -42,7 +42,7 @@ LeaderboardQuerySetOrder(
     _In_ SORT_ORDER order
 )
 {
-    VerifyGlobalXsapiInit();
+    verify_global_init();
 
     leaderboardQuery->pImpl->m_cppQuery.set_order(static_cast<sort_order>(order));
 }

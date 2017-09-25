@@ -30,17 +30,17 @@ typedef enum SORT_ORDER {
 
 typedef struct LeaderboardColumn
 {
-    PCSTR_T statName;
+    PCSTR statName;
     LEADERBOARD_STAT_TYPE statType;
 } LeaderboardColumn;
 
 typedef struct LeaderboardRow
 {
-    PCSTR_T gamertag;
-    PCSTR_T xboxUserId;
+    PCSTR gamertag;
+    PCSTR xboxUserId;
     double percentile;
     uint32 rank;
-    PCSTR_T* columnValues;
+    PCSTR* columnValues;
 } LeaderboardRow;
 
 typedef struct LeaderboardQuery
@@ -49,8 +49,8 @@ typedef struct LeaderboardQuery
     uint32 skipResultToRank;
     uint32 maxItems;
     SORT_ORDER order;
-    PCSTR_T statName;
-    PCSTR_T socialGroup;
+    PCSTR statName;
+    PCSTR socialGroup;
     bool hasNext;
 
     LeaderboardQueryImpl* pImpl;

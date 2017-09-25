@@ -64,9 +64,9 @@ typedef struct TitleHistory
 
 typedef struct PreferredColor
 {
-    PCSTR_T primaryColor;
-    PCSTR_T secondaryColor;
-    PCSTR_T tertiaryColor;
+    PCSTR primaryColor;
+    PCSTR secondaryColor;
+    PCSTR tertiaryColor;
 } PreferredColor;
 
 typedef struct SocialManagerPresenceTitleRecord
@@ -75,7 +75,7 @@ typedef struct SocialManagerPresenceTitleRecord
     bool isBroadcasting;
     PRESENCE_DEVICE_TYPE deviceType;
     uint32 titleId;
-    PCSTR_T presenceText;
+    PCSTR presenceText;
 } SocialManagerPresenceTitleRecord;
 
 typedef struct SocialManagerPresenceRecord
@@ -95,16 +95,16 @@ SocialManagerPresenceRecordIsUserPlayingTitle(
 
 typedef struct XboxSocialUser
 {
-    PCSTR_T xboxUserId;
+    PCSTR xboxUserId;
     bool isFavorite;
     bool isFollowingUser;
     bool isFollowedByCaller;
-    PCSTR_T displayName;
-    PCSTR_T realName;
-    PCSTR_T displayPicUrlRaw;
+    PCSTR displayName;
+    PCSTR realName;
+    PCSTR displayPicUrlRaw;
     bool useAvatar;
-    PCSTR_T gamerscore;
-    PCSTR_T gamertag;
+    PCSTR gamerscore;
+    PCSTR gamertag;
     SocialManagerPresenceRecord *presenceRecord;
     TitleHistory *titleHistory;
     PreferredColor *preferredColor;
@@ -115,7 +115,7 @@ typedef struct SocialEventArgs {
 } SocialEventArgs;
 
 typedef struct XboxUserIdContainer {
-    PCSTR_T xboxUserId;
+    PCSTR xboxUserId;
 } XboxUserIdContainer;
 
 typedef struct SocialEvent
@@ -126,7 +126,7 @@ typedef struct SocialEvent
     int numOfUsersAffected;
     SocialEventArgs* eventArgs;
     int err;
-    PCSTR_T err_message;
+    PCSTR err_message;
 } SocialEvent;
 
 typedef struct XboxSocialUserGroup
@@ -151,20 +151,20 @@ typedef struct SocialUserGroupLoadedEventArgs : SocialEventArgs {
 
 typedef struct SocialManager
 {
-	PCSTR_T localUsers;
+    PCSTR localUsers;
 } SocialManager;
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerAddLocalUser(
 	_In_ XboxLiveUser *user,
 	_In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
 	_In_ XboxLiveUser *user,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 
 XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
@@ -178,37 +178,37 @@ SocialManagerCreateSocialUserGroupFromFilters(
 	_In_ PRESENCE_FILTER presenceDetailLevel,
 	_In_ RELATIONSHIP_FILTER filter,
     _Out_ XboxSocialUserGroup** group,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
     _In_ XboxLiveUser *user,
-    _In_ PCSTR_T* xboxUserIdList,
+    _In_ PCSTR* xboxUserIdList,
     _In_ int numOfXboxUserIds,
     _Out_ XboxSocialUserGroup** group,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerDestroySocialUserGroup(
     _In_ XboxSocialUserGroup *group,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
     );
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
     _In_ XboxSocialUserGroup *group,
-    _In_ PCSTR_T* users,
+    _In_ PCSTR* users,
     _In_ int numOfUsers,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerSetRichPresencePollingStatus(
 	_In_ XboxLiveUser *user,
 	_In_ bool shouldEnablePolling,
-    _Out_ PCSTR_T* errMessage
+    _Out_ PCSTR* errMessage
 	);
 #endif //!XDK_API
 

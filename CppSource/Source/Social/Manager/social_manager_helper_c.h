@@ -2,8 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #pragma once
-#include "pch.h"
-#include "user_impl_c.h"
+#include "xsapi/social_manager_c.h"
 #include<time.h>
 
 SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
@@ -16,7 +15,7 @@ SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
     cTitleRecord->isBroadcasting = cppPresenceRecord.is_broadcasting();
     cTitleRecord->deviceType = static_cast<PRESENCE_DEVICE_TYPE>(cppPresenceRecord.device_type());
     cTitleRecord->titleId = cppPresenceRecord.title_id();
-    cTitleRecord->presenceText = cppPresenceRecord.presence_text();
+    cTitleRecord->presenceText = utils::to_utf8string(cppPresenceRecord.presence_text()).c_str();
 
     return cTitleRecord;
 }
@@ -57,16 +56,16 @@ XboxSocialUser* CreateXboxSocialUserFromCpp(
 {
     auto cXboxSocialUser = new XboxSocialUser();
 
-    cXboxSocialUser->xboxUserId = cppXboxSocialUser->xbox_user_id();
+    cXboxSocialUser->xboxUserId = utils::to_utf8string(std::wstring(cppXboxSocialUser->xbox_user_id())).c_str();
     cXboxSocialUser->isFavorite = cppXboxSocialUser->is_favorite();
     cXboxSocialUser->isFollowingUser = cppXboxSocialUser->is_following_user();
     cXboxSocialUser->isFollowedByCaller = cppXboxSocialUser->is_followed_by_caller();
-    cXboxSocialUser->displayName = cppXboxSocialUser->display_name();
-    cXboxSocialUser->realName = cppXboxSocialUser->real_name();
-    cXboxSocialUser->displayPicUrlRaw = cppXboxSocialUser->display_pic_url_raw();
+    cXboxSocialUser->displayName = utils::to_utf8string(std::wstring(cppXboxSocialUser->display_name())).c_str();
+    cXboxSocialUser->realName = utils::to_utf8string(std::wstring(cppXboxSocialUser->real_name())).c_str();
+    cXboxSocialUser->displayPicUrlRaw = utils::to_utf8string(std::wstring(cppXboxSocialUser->display_pic_url_raw())).c_str();
     cXboxSocialUser->useAvatar = cppXboxSocialUser->use_avatar();
-    cXboxSocialUser->gamerscore = cppXboxSocialUser->gamerscore();
-    cXboxSocialUser->gamertag = cppXboxSocialUser->gamertag();
+    cXboxSocialUser->gamerscore = utils::to_utf8string(std::wstring(cppXboxSocialUser->gamerscore())).c_str();
+    cXboxSocialUser->gamertag = utils::to_utf8string(std::wstring(cppXboxSocialUser->gamertag())).c_str();
 
     auto socialManagerPresenceRecord = new SocialManagerPresenceRecord();
     socialManagerPresenceRecord->pImpl = new SocialManagerPresenceRecordImpl(cppXboxSocialUser->presence_record(), socialManagerPresenceRecord);
@@ -83,9 +82,9 @@ XboxSocialUser* CreateXboxSocialUserFromCpp(
 
     auto cppPreferredColor = cppXboxSocialUser->preferred_color();
     auto cPreferredColor = new PreferredColor();
-    cPreferredColor->primaryColor = cppPreferredColor.primary_color();
-    cPreferredColor->secondaryColor = cppPreferredColor.secondary_color();
-    cPreferredColor->tertiaryColor = cppPreferredColor.tertiary_color();
+    cPreferredColor->primaryColor = utils::to_utf8string(cppPreferredColor.primary_color()).c_str();
+    cPreferredColor->secondaryColor = utils::to_utf8string(cppPreferredColor.secondary_color()).c_str();
+    cPreferredColor->tertiaryColor = utils::to_utf8string(cppPreferredColor.tertiary_color()).c_str();
     cXboxSocialUser->preferredColor = cPreferredColor;
     
     return cXboxSocialUser;
@@ -127,7 +126,7 @@ struct XboxSocialUserGroupImpl
             m_usersTrackedBySocialUserGroup.clear();
             for (auto cppUserIdContainer : cppTrackedUsers) {
                 auto cUserIdContainer = new XboxUserIdContainer();
-                cUserIdContainer->xboxUserId = cppUserIdContainer.xbox_user_id();
+                cUserIdContainer->xboxUserId = utils::to_utf8string(cppUserIdContainer.xbox_user_id()).c_str();
                 m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
             }
             m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
@@ -192,7 +191,7 @@ SocialEvent* CreateSocialEventFromCpp(
     for (auto user : cppSocialEvent.users_affected())
     {
         auto container = new XboxUserIdContainer();
-        container->xboxUserId = user.xbox_user_id();
+        container->xboxUserId = utils::to_utf8string(user.xbox_user_id()).data();
         mUsersAffected.push_back(container);
     }
     cSocialEvent->usersAffected = mUsersAffected.data();
@@ -212,7 +211,7 @@ SocialEvent* CreateSocialEventFromCpp(
     // todo: unsure if this is correct
     cSocialEvent->err = cppSocialEvent.err().value();
 
-    cSocialEvent->err_message = std::wstring (cppSocialEvent.err_message().begin(), cppSocialEvent.err_message().end()).data();
+    cSocialEvent->err_message = cppSocialEvent.err_message().data();
 
     return cSocialEvent;
 }
