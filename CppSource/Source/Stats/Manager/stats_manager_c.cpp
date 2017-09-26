@@ -122,7 +122,8 @@ StatsManagerSetStatAsString(
 
 // todo move
 std::vector<utility::string_t> cppStatNameList;
-std::vector<PCSTR> cStatNameList;
+std::vector<std::string> cStatNameStringList;
+std::vector<PCSTR> cStatNameCharList;
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetStatNames(
     _In_ XboxLiveUser* user,
@@ -136,14 +137,19 @@ StatsManagerGetStatNames(
     cppStatNameList.clear();
     auto result = stats_manager::get_singleton_instance()->get_stat_names(user->pImpl->m_cppUser, cppStatNameList);
     
-    cStatNameList.clear();
+    cStatNameStringList.resize(cppStatNameList.size());
+    cStatNameCharList.clear();
+    const char* lastcstr;
+    const char* lastdata;
     for (size_t i = 0; i < cppStatNameList.size(); i++)
     {
-        cStatNameList.push_back(utils::to_utf8string(cppStatNameList[i]).data());
+        auto name = utils::to_utf8string(cppStatNameList.at(i));
+        cStatNameStringList[i] = name;
+        cStatNameCharList.push_back(cStatNameStringList[i].c_str());
     }
 
-    *statNameList = cStatNameList.data();
-    *statNameListSize = cStatNameList.size();
+    *statNameList = cStatNameCharList.data();
+    *statNameListSize = cStatNameCharList.size();
 
     *errMessage = result.err_message().c_str();
     return result.err().value();

@@ -277,7 +277,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetStat>(user.Impl.GetPtr(), cStatName, cStatValue, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringUni(cErrMessage);
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -328,7 +328,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
                 for (int i = 0; i < statListSize; i++)
                 {
-                    statList.Add(Marshal.PtrToStringUni(cStatList[i]));
+                    statList.Add(Marshal.PtrToStringAnsi(cStatList[i]));
                 }
             }
             Marshal.FreeHGlobal(cStatListPtr);
