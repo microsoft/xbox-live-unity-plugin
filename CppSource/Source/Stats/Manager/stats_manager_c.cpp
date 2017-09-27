@@ -10,6 +10,8 @@ using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::stats::manager;
 
+xbox_live_result<void> cppVoidResult;
+
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerAddLocalUser(
     _In_ XboxLiveUser* user,
@@ -18,10 +20,10 @@ StatsManagerAddLocalUser(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->add_local_user(user->pImpl->m_cppUser);
+    cppVoidResult = stats_manager::get_singleton_instance()->add_local_user(user->pImpl->m_cppUser);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
@@ -32,10 +34,10 @@ StatsManagerRemoveLocalUser(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->remove_local_user(user->pImpl->m_cppUser);
+    cppVoidResult = stats_manager::get_singleton_instance()->remove_local_user(user->pImpl->m_cppUser);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
@@ -47,10 +49,10 @@ StatsManagerRequestFlushToService(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->request_flush_to_service(user->pImpl->m_cppUser, isHighPriority);
+    cppVoidResult = stats_manager::get_singleton_instance()->request_flush_to_service(user->pImpl->m_cppUser, isHighPriority);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 std::vector<StatEvent *> cEvents;
@@ -68,12 +70,12 @@ StatsManagerDoWork(
         cEvents.push_back(CreateStatEventFromCpp(cppEvent));
     }
     *numOfEvents = cEvents.size();
-
+    
     return cEvents.data();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsNumber(
+StatsManagerSetStatisticNumberData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ double statValue,
@@ -82,14 +84,14 @@ StatsManagerSetStatAsNumber(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->set_stat_as_number(user->pImpl->m_cppUser, utils::to_utf16string(statName), statValue);
+    cppVoidResult = stats_manager::get_singleton_instance()->set_stat_as_number(user->pImpl->m_cppUser, utils::to_utf16string(statName), statValue);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsInteger(
+StatsManagerSetStatisticIntegerData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ int64 statValue,
@@ -98,14 +100,14 @@ StatsManagerSetStatAsInteger(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->set_stat_as_integer(user->pImpl->m_cppUser, utils::to_utf16string(statName), statValue);
+    cppVoidResult = stats_manager::get_singleton_instance()->set_stat_as_integer(user->pImpl->m_cppUser, utils::to_utf16string(statName), statValue);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsString(
+StatsManagerSetStatisticStringData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ PCSTR statValue,
@@ -114,10 +116,10 @@ StatsManagerSetStatAsString(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->set_stat_as_string(user->pImpl->m_cppUser, utils::to_utf16string(statName), utils::to_utf16string(statValue));
+    cppVoidResult = stats_manager::get_singleton_instance()->set_stat_as_string(user->pImpl->m_cppUser, utils::to_utf16string(statName), utils::to_utf16string(statValue));
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 // todo move
@@ -135,7 +137,7 @@ StatsManagerGetStatNames(
     verify_global_init();
 
     cppStatNameList.clear();
-    auto result = stats_manager::get_singleton_instance()->get_stat_names(user->pImpl->m_cppUser, cppStatNameList);
+    cppVoidResult = stats_manager::get_singleton_instance()->get_stat_names(user->pImpl->m_cppUser, cppStatNameList);
     
     cStatNameStringList.resize(cppStatNameList.size());
     cStatNameCharList.clear();
@@ -151,10 +153,12 @@ StatsManagerGetStatNames(
     *statNameList = cStatNameCharList.data();
     *statNameListSize = cStatNameCharList.size();
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
+// todo move
+xbox_live_result<stat_value> cppStatValueResult;
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 StatsManagerGetStat(
     _In_ XboxLiveUser* user,
@@ -165,11 +169,11 @@ StatsManagerGetStat(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->get_stat(user->pImpl->m_cppUser, utils::to_utf16string(statName));
-    *statValue = CreateStatValueFromCpp(result.payload());
+    cppStatValueResult = stats_manager::get_singleton_instance()->get_stat(user->pImpl->m_cppUser, utils::to_utf16string(statName));
+    *statValue = CreateStatValueFromCpp(cppStatValueResult.payload());
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppStatValueResult.err_message().c_str();
+    return cppStatValueResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
@@ -181,10 +185,10 @@ StatsManagerDeleteStat(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->delete_stat(user->pImpl->m_cppUser, utils::to_utf16string(statName));
+    cppVoidResult = stats_manager::get_singleton_instance()->delete_stat(user->pImpl->m_cppUser, utils::to_utf16string(statName));
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 // todo _XSAPIIMP stats_manager();
@@ -199,10 +203,10 @@ StatsManagerGetLeaderboard(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->get_leaderboard(user->pImpl->m_cppUser, utils::to_utf16string(statName), query->pImpl->m_cppQuery);
+    cppVoidResult = stats_manager::get_singleton_instance()->get_leaderboard(user->pImpl->m_cppUser, utils::to_utf16string(statName), query->pImpl->m_cppQuery);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
@@ -216,8 +220,8 @@ StatsManagerGetSocialLeaderboard(
 {
     verify_global_init();
 
-    auto result = stats_manager::get_singleton_instance()->get_social_leaderboard(user->pImpl->m_cppUser, utils::to_utf16string(statName), utils::to_utf16string(socialGroup), query->pImpl->m_cppQuery);
+    cppVoidResult = stats_manager::get_singleton_instance()->get_social_leaderboard(user->pImpl->m_cppUser, utils::to_utf16string(statName), utils::to_utf16string(socialGroup), query->pImpl->m_cppQuery);
 
-    *errMessage = result.err_message().c_str();
-    return result.err().value();
+    *errMessage = cppVoidResult.err_message().c_str();
+    return cppVoidResult.err().value();
 }

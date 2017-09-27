@@ -49,7 +49,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerAddLocalUser>(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -73,7 +73,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerRemoveLocalUser>(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -97,7 +97,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerRequestFlushToService>(user.Impl.GetPtr(), isHighPriority, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -153,7 +153,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticNumberData>(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -172,7 +172,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticIntegerData>(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -191,7 +191,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticStringData>(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -212,7 +212,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerDeleteStat>(user.Impl.GetPtr(), statName, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -233,7 +233,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = 0; // todo XboxLive.Instance.Invoke<Int32, StatsManagerGetLeaderboard>(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -254,7 +254,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = 0; // todo XboxLive.Instance.Invoke<Int32, StatsManagerGetSocialLeaderboard>(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr() cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -271,13 +271,13 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             // Allocates memory for returned objects
             IntPtr cStatValue = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
-            IntPtr cStatName = Marshal.StringToHGlobalUni(statName);
+            IntPtr cStatName = Marshal.StringToHGlobalAnsi(statName);
 
             // Invokes the c method
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetStat>(user.Impl.GetPtr(), cStatName, cStatValue, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringUni(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -306,7 +306,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetStatNames>(user.Impl.GetPtr(), cStatListPtr, cStatListSize, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -339,7 +339,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct StatValue_c
         {
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string Name;
 
             [MarshalAs(UnmanagedType.R8)]
@@ -348,7 +348,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             [MarshalAs(UnmanagedType.I8)]
             public long AsInteger;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string AsString;
 
             [MarshalAs(UnmanagedType.U4)]

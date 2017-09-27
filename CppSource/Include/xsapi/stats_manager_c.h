@@ -12,6 +12,8 @@ extern "C" {
 #endif
 
 #if !XDK_API
+struct StatEventImpl;
+struct StatValueImpl;
 
 typedef enum STAT_DATA_TYPE {
     UNDEFINED,
@@ -33,6 +35,8 @@ typedef struct StatValue
     int64 asInteger;
     PCSTR asString;
     STAT_DATA_TYPE dataType;
+
+    StatValueImpl* pImpl;
 } StatValue;
 
 typedef struct StatEventArgs
@@ -47,12 +51,14 @@ typedef struct LeaderboardResultEventArgs : StatEventArgs
 
 typedef struct StatEvent
 {
-    // todo error_info
+    // todo eventArgs
     STAT_EVENT_TYPE eventType;
     StatEventArgs* eventArgs;
     XboxLiveUser* localUser;
     int32 errorCode;
     PCSTR errorMessage;
+
+    StatEventImpl* pImpl;
 } StatEvent;
 
 typedef struct StatsManager
@@ -84,7 +90,7 @@ StatsManagerDoWork(
 );
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsNumber(
+StatsManagerSetStatisticNumberData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ double statValue,
@@ -92,7 +98,7 @@ StatsManagerSetStatAsNumber(
 );
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsInteger(
+StatsManagerSetStatisticIntegerData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ int64 statValue,
@@ -100,7 +106,7 @@ StatsManagerSetStatAsInteger(
 );
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
-StatsManagerSetStatAsString(
+StatsManagerSetStatisticStringData(
     _In_ XboxLiveUser* user,
     _In_ PCSTR statName,
     _In_ PCSTR statValue,
