@@ -27,7 +27,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             StatEvent_c cStatEvent = Marshal.PtrToStructure<StatEvent_c>(statEventPtr);
 
             EventType = cStatEvent.EventType;
-            // todo event args
+
+            try
+            {
+                EventArgs = new LeaderboardResultEventArgs(cStatEvent.EventArgs);
+            }
+            catch (Exception)
+            {
+                // not LeaderboardResultEventArgs
+            }
 
             User = new XboxLiveUser(cStatEvent.LocalUser);
 

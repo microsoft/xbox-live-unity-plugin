@@ -3,6 +3,8 @@
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
+    using global::System;
+    using global::System.Runtime.InteropServices;
     using Newtonsoft.Json;
 
     public class LeaderboardColumn
@@ -12,5 +14,24 @@ namespace Microsoft.Xbox.Services.Leaderboard
 
         [JsonProperty("statName")]
         public string StatisticName { get; set; }
+
+        internal LeaderboardColumn(IntPtr leaderboardColumnPtr)
+        {
+            LeaderboardColumn_c cColumn = Marshal.PtrToStructure<LeaderboardColumn_c>(leaderboardColumnPtr);
+
+            StatisticType = cColumn.StatType;
+            StatisticName = cColumn.StatName;
+        }
+
+        // todo move
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LeaderboardColumn_c
+        {
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string StatName;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public LeaderboardStatType StatType;
+        }
     }
 }

@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "xsapi/stats_manager_c.h"
+#include "../Leaderboard/leaderboard_helper_c.h"
 #include "user_impl.h"
 
 using namespace xbox::services;
@@ -52,6 +53,34 @@ StatValue *CreateStatValueFromCpp(
     return cStatValue;
 }
 
+struct LeaderboardResultEventArgsImpl {
+    LeaderboardResultEventArgsImpl(
+        _In_ std::shared_ptr<leaderboard_result_event_args> creationContext,
+        _In_ LeaderboardResultEventArgs* cEventArgs
+    ) : m_cEventArgs(cEventArgs), m_cppEventArgs(creationContext)
+    {
+        auto result = m_cppEventArgs->result();
+        
+        m_result = CreateLeaderboardResultFromCpp(result.payload());
+        m_cEventArgs->result = m_result;
+    }
+
+    LeaderboardResult* m_result;
+
+    std::shared_ptr<leaderboard_result_event_args> m_cppEventArgs;
+    LeaderboardResultEventArgs* m_cEventArgs;
+};
+
+LeaderboardResultEventArgs* CreateLeaderboardResultEventArgs(
+    _In_ std::shared_ptr<leaderboard_result_event_args> cppArgs
+)
+{
+    auto cppResult = cppArgs->result();
+    auto args = new LeaderboardResultEventArgs();
+    args->pImpl = new LeaderboardResultEventArgsImpl(cppArgs, args);
+    return args;
+}
+
 struct StatEventImpl 
 {
     StatEventImpl(
@@ -63,6 +92,20 @@ struct StatEventImpl
         m_cStatEvent->eventType = m_eventType;
 
         // todo event args
+
+        m_args = nullptr;
+        if (m_cppStatEvent.event_args()) {
+            try
+            {
+                auto cppEventArgs = std::dynamic_pointer_cast<leaderboard_result_event_args>(m_cppStatEvent.event_args());
+                m_args = CreateLeaderboardResultEventArgs(cppEventArgs);
+            }
+            catch (const std::exception&)
+            {
+                // not leaderboard_result_event_args
+            }
+        }
+        m_cStatEvent->eventArgs = m_args;
 
         m_localUser = new XboxLiveUser();
         m_localUser->pImpl = new XboxLiveUserImpl(m_cppStatEvent.local_user(), m_localUser);
@@ -78,7 +121,7 @@ struct StatEventImpl
     }
 
     STAT_EVENT_TYPE m_eventType;
-    // todo event args
+    StatEventArgs *m_args;
     XboxLiveUser *m_localUser;
     xbox_live_result<void> m_errorInfo;
     std::error_code m_errorCode;

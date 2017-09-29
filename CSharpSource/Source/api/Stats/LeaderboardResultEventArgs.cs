@@ -3,7 +3,10 @@
 
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
+    using global::System;
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Leaderboard;
+    using static Microsoft.Xbox.Services.Statistics.Manager.StatsManager;
 
     public class LeaderboardResultEventArgs : StatEventArgs
     {
@@ -12,6 +15,12 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         public LeaderboardResultEventArgs(LeaderboardResult result)
         {
             this.Result = result;
+        }
+
+        internal LeaderboardResultEventArgs(IntPtr leaderboardResultEventArgsPtr)
+        {
+            LeaderboardResultEventArgs_c cArgs = Marshal.PtrToStructure<LeaderboardResultEventArgs_c>(leaderboardResultEventArgsPtr);
+            Result = new LeaderboardResult(cArgs.Result);
         }
     }
 }

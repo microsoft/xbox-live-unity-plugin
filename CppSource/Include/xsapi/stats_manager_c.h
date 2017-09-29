@@ -14,6 +14,7 @@ extern "C" {
 #if !XDK_API
 struct StatEventImpl;
 struct StatValueImpl;
+struct LeaderboardResultEventArgsImpl;
 
 typedef enum STAT_DATA_TYPE {
     UNDEFINED,
@@ -47,6 +48,8 @@ typedef struct StatEventArgs
 typedef struct LeaderboardResultEventArgs : StatEventArgs
 {
     LeaderboardResult* result;
+
+    LeaderboardResultEventArgsImpl* pImpl;
 } LeaderboardResultEventArgs;
 
 typedef struct StatEvent

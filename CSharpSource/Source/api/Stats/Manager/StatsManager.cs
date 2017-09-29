@@ -230,7 +230,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = 0; // todo XboxLive.Instance.Invoke<Int32, StatsManagerGetLeaderboard>(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
+            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetLeaderboard>(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -251,7 +251,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = 0; // todo XboxLive.Instance.Invoke<Int32, StatsManagerGetSocialLeaderboard>(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr() cErrMessage);
+            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetSocialLeaderboard>(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -370,8 +370,15 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             [MarshalAs(UnmanagedType.I4)]
             public int ErrorCode;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string ErrorMessage;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LeaderboardResultEventArgs_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Result;
         }
     }
 }

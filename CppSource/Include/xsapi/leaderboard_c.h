@@ -11,6 +11,8 @@ extern "C" {
 #endif
 
 #if !XDK_API
+struct LeaderboardColumnImpl;
+struct LeaderboardRowImpl;
 struct LeaderboardQueryImpl;
 struct LeaderboardResultImpl;
 
@@ -32,6 +34,8 @@ typedef struct LeaderboardColumn
 {
     PCSTR statName;
     LEADERBOARD_STAT_TYPE statType;
+
+    LeaderboardColumnImpl* pImpl;
 } LeaderboardColumn;
 
 typedef struct LeaderboardRow
@@ -41,6 +45,9 @@ typedef struct LeaderboardRow
     double percentile;
     uint32 rank;
     PCSTR* columnValues;
+    uint32 columnValuesSize;
+
+    LeaderboardRowImpl* pImpl;
 } LeaderboardRow;
 
 typedef struct LeaderboardQuery
@@ -56,6 +63,9 @@ typedef struct LeaderboardQuery
     LeaderboardQueryImpl* pImpl;
 } LeaderboardQuery;
 
+XSAPI_DLLEXPORT LeaderboardQuery* XBL_CALLING_CONV
+LeaderboardQueryCreate(
+);
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
     _In_ LeaderboardQuery* leaderboardQuery,
@@ -81,11 +91,16 @@ typedef struct LeaderboardResult
 {
     uint32 totalRowCount;
     LeaderboardColumn** columns;
+    uint32 columnsSize;
     LeaderboardRow** rows;
-    bool hasNext;
+    uint32 rowsSize;
 
     LeaderboardResultImpl* pImpl;
 } LeaderboardResult;
+
+XSAPI_DLLEXPORT bool XBL_CALLING_CONV
+LeaderboardResultHasNext(
+);
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
 XSAPI_DLLEXPORT LeaderboardResult XBL_CALLING_CONV
