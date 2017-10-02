@@ -81,6 +81,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="nuget.config" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

@@ -32,9 +32,11 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             {
                 EventArgs = new LeaderboardResultEventArgs(cStatEvent.EventArgs);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // not LeaderboardResultEventArgs
+                // todo remove
+                string a = e.Message;
             }
 
             User = new XboxLiveUser(cStatEvent.LocalUser);

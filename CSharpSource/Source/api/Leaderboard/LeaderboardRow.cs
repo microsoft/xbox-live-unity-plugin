@@ -27,11 +27,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
             Gamertag = cRow.Gamertag;
 
             ColumnValues = new List<string>();
-            IntPtr[] cValues = new IntPtr[cRow.ColumnValuesSize];
-            Marshal.Copy(cRow.ColumnValues, cValues, 0, cRow.ColumnValuesSize);
-            for (int i = 0; i < cRow.ColumnValuesSize; i++)
+            if (cRow.ColumnValuesSize > 0)
             {
-                ColumnValues.Add(Marshal.PtrToStringAnsi(cValues[i]));
+                IntPtr[] cValues = new IntPtr[cRow.ColumnValuesSize];
+                Marshal.Copy(cRow.ColumnValues, cValues, 0, cRow.ColumnValuesSize);
+                for (int i = 0; i < cRow.ColumnValuesSize; i++)
+                {
+                    ColumnValues.Add(Marshal.PtrToStringAnsi(cValues[i]));
+                }
             }
         }
 
@@ -64,13 +67,13 @@ namespace Microsoft.Xbox.Services.Leaderboard
         [StructLayout(LayoutKind.Sequential)]
         internal struct LeaderboardRow_c
         {
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string Gamertag;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string XboxUserId;
 
-            [MarshalAs(UnmanagedType.R4)]
+            [MarshalAs(UnmanagedType.R8)]
             public double Percentile;
 
             [MarshalAs(UnmanagedType.I4)]

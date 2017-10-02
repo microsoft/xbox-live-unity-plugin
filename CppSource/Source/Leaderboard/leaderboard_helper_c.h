@@ -56,9 +56,10 @@ struct LeaderboardRowImpl {
         m_rank = m_cppLeaderboardRow.rank();
         m_cLeaderboardRow->rank = m_rank;
 
-        // todo do I need 2 vectors one for std::string and one for PCSTR
-        for (auto value : m_cppLeaderboardRow.column_values()) {
-            m_columnValues.push_back(utils::to_utf8string(value).c_str());
+        // todo do I need 2 vectors one for std::string and one for PCSTR // yes
+        for (size_t i = 0; i < m_cppLeaderboardRow.column_values().size(); i++) {
+            m_columnValuesStrs.push_back(utils::to_utf8string(m_cppLeaderboardRow.column_values()[i]));
+            m_columnValues.push_back(m_columnValuesStrs[i].c_str());
         }
         m_cLeaderboardRow->columnValues = m_columnValues.data();
         m_cLeaderboardRow->columnValuesSize = m_columnValues.size();
@@ -68,6 +69,7 @@ struct LeaderboardRowImpl {
     std::string m_xboxUserId;
     double m_percentile;
     uint32 m_rank;
+    std::vector<std::string> m_columnValuesStrs;
     std::vector<PCSTR> m_columnValues;
 
     leaderboard_row m_cppLeaderboardRow;
