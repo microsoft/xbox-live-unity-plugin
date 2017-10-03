@@ -110,11 +110,11 @@ struct LeaderboardQueryImpl
         m_order = static_cast<SORT_ORDER>(m_cppQuery.order());
         m_cQuery->order = m_order;
 
-        m_statName = utils::to_utf8string(m_cppQuery.stat_name()).data();
-        m_cQuery->statName = m_statName;
+        m_statName = utils::to_utf8string(m_cppQuery.stat_name());
+        m_cQuery->statName = m_statName.c_str();
 
-        m_socialGroup = utils::to_utf8string(m_cppQuery.social_group()).data();
-        m_cQuery->socialGroup = m_socialGroup;
+        m_socialGroup = utils::to_utf8string(m_cppQuery.social_group());
+        m_cQuery->socialGroup = m_socialGroup.c_str();
 
         m_hasNext = m_cppQuery.has_next();
         m_cQuery->hasNext = m_hasNext;
@@ -148,12 +148,22 @@ struct LeaderboardQueryImpl
     uint32 m_skipResultToRank;
     uint32 m_maxItems;
     SORT_ORDER m_order;
-    PCSTR m_statName;
-    PCSTR m_socialGroup;
+    std::string m_statName;
+    std::string m_socialGroup;
     bool m_hasNext;
     leaderboard_query m_cppQuery;
     LeaderboardQuery* m_cQuery;
 };
+
+inline LeaderboardQuery* CreateLeaderboardQueryFromCpp(
+    _In_ leaderboard_query query
+)
+{
+    auto leaderboardQuery = new LeaderboardQuery();
+    leaderboardQuery->pImpl = new LeaderboardQueryImpl(query, leaderboardQuery);
+
+    return leaderboardQuery;
+}
 
 struct LeaderboardResultImpl {
     LeaderboardResultImpl(

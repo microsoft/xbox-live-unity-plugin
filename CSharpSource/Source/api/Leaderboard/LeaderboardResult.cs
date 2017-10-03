@@ -6,6 +6,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Runtime.InteropServices;
+    using global::System.Threading.Tasks;
+    using Microsoft.Xbox.Services.System;
 
     public class LeaderboardResult
     {
@@ -63,6 +65,75 @@ namespace Microsoft.Xbox.Services.Leaderboard
         {
             return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
         }
+
+//#if !XBOX_LIVE_CREATORS_SDK
+//        public class GetNextResult
+//        {
+//            public LeaderboardResult NextResult;
+//        }
+
+//        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+//        private delegate void GetNextCompletionRoutine(GetNextResult_c result, IntPtr context);
+
+//        [StructLayout(LayoutKind.Sequential)]
+//        internal struct GetNextResultPayload_c
+//        {
+//            [MarshalAs(UnmanagedType.SysInt)]
+//            public IntPtr NextResult;
+//        }
+
+//        [StructLayout(LayoutKind.Sequential)]
+//        private struct GetNextResult_c
+//        {
+//            public XboxLiveResult result;
+//            public GetNextResultPayload_c payload;
+//        }
+
+//        private delegate XsapiResult LeaderboardResultGetNext(IntPtr leaderboardResult, UInt32 maxItems, GetNextCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
+//        public Task<LeaderboardResult> GetNext(UInt32 maxItems)
+//        {
+//            var tcs = new TaskCompletionSource<LeaderboardResult>();
+
+//            Task.Run(() =>
+//            {
+//                int contextKey = XboxLiveCallbackContext<LeaderboardResult, LeaderboardResult>.CreateContext(
+//                    this,
+//                    tcs,
+//                    null,
+//                    null);
+
+//                XboxLive.Instance.Invoke<XsapiResult, LeaderboardResultGetNext>(
+//                    m_leaderboardResultPtr, 
+//                    maxItems, 
+//                    (GetNextCompletionRoutine)GetNextComplete, 
+//                    (IntPtr)contextKey, 
+//                    XboxLive.DefaultTaskGroupId
+//                    );
+//            });
+            
+//            return tcs.Task;
+//        }
+
+//        private static void GetNextComplete(GetNextResult_c result, IntPtr context)
+//        {
+//            int contextKey = context.ToInt32();
+//            XboxLiveCallbackContext<LeaderboardResult, LeaderboardResult> contextObject;
+//            if (XboxLiveCallbackContext<LeaderboardResult, LeaderboardResult>.TryRemove(contextKey, out contextObject))
+//            {
+//                if (result.result.errorCode == 0)
+//                {
+//                    LeaderboardResult nextResult = new LeaderboardResult(result.payload.NextResult);
+
+//                    contextObject.TaskCompletionSource.SetResult(nextResult);
+//                }
+//                else
+//                {
+//                    contextObject.TaskCompletionSource.SetException(new Exception(result.result.errorMessage));
+//                }
+//                contextObject.Dispose();
+//            }
+//        }
+//#endif
 
         private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, UInt32 maxItems, IntPtr nextQuery, IntPtr errMessage);
         public LeaderboardQuery GetNextQuery(UInt32 maxItems)

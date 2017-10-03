@@ -5,6 +5,7 @@
 #include "xsapi/errors_c.h"
 #include "xsapi/title_callable_ui_c.h"
 #include "xsapi/system_c.h"
+#include "xsapi/leaderboard_c.h"
 
 template<typename T>
 struct xbl_args
@@ -71,5 +72,20 @@ struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<TokenAn
 
 struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XboxLiveResult>
 {
+    std::string resultErrorMsg;
+};
+
+struct xbl_args_leaderboard_result_get_next : public xbl_args<GetNextResult>
+{
+    xbl_args_leaderboard_result_get_next(
+        _In_ LeaderboardResult* leaderboard,
+        _In_ uint32 maxItems
+    );
+
+    LeaderboardResult* leaderboard;
+    uint32 maxItems;
+
+    LeaderboardResult* nextResult;
+
     std::string resultErrorMsg;
 };

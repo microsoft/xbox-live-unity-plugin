@@ -100,17 +100,42 @@ typedef struct LeaderboardResult
 
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
+    _In_ LeaderboardResult* leaderboardResult
 );
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
-XSAPI_DLLEXPORT LeaderboardResult XBL_CALLING_CONV
+typedef struct GetNextResultPayload
+{
+    LeaderboardResult* nextResult;
+} GetNextResultPayload;
+
+typedef struct GetNextResult
+{
+    XboxLiveResult result;
+    GetNextResultPayload payload;
+} GetNextResult;
+
+typedef void(*GetNextCompletionRoutine)(
+    _In_ GetNextResult result,
+    _In_opt_ void* context
+    );
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNext(
-    _In_ uint32 maxItems
+    _In_ LeaderboardResult* leaderboardResult,
+    _In_ uint32 maxItems,
+    _In_ GetNextCompletionRoutine completionRoutine,
+    _In_opt_ void* completionRoutineContext,
+    _In_ uint64_t taskGroupId
 );
 #endif
-XSAPI_DLLEXPORT LeaderboardQuery XBL_CALLING_CONV
+
+XSAPI_DLLEXPORT int XBL_CALLING_CONV
 LeaderboardResultGetNextQuery(
-    _In_ uint32 maxItems
+    _In_ LeaderboardResult* leaderboardResult,
+    _In_ uint32 maxItems,
+    _Out_ LeaderboardQuery** nextQuery,
+    _Out_ PCSTR* errMessage
 );
 
 typedef struct LeaderboardService
