@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
@@ -20,6 +21,19 @@ namespace Microsoft.Xbox.Services.Leaderboard
             m_leaderboardQueryPtr = XboxLive.Instance.Invoke<IntPtr, LeaderboardQueryCreate>();
         }
 
+        internal LeaderboardQuery(IntPtr leaderboardQueryPtr)
+        {
+            m_leaderboardQueryPtr = leaderboardQueryPtr;
+            LeaderboardQuery_c cLeaderboardQuery = Marshal.PtrToStructure<LeaderboardQuery_c>(leaderboardQueryPtr);
+            SkipResultToMe = cLeaderboardQuery.SkipResultToMe;
+            SkipResultToRank = cLeaderboardQuery.SkipResultToRank;
+            MaxItems = cLeaderboardQuery.maxItems;
+            Order = cLeaderboardQuery.Order;
+            StatName = cLeaderboardQuery.StatName;
+            SocialGroup = cLeaderboardQuery.SocialGroup;
+            HasNext = cLeaderboardQuery.HasNext;
+        }
+
         /// <summary>
         /// Create a continuation query from an existing query combined with a continuation token.
         /// </summary>
@@ -28,6 +42,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         public LeaderboardQuery(LeaderboardQuery query, string continuationToken)
         {
             // todo needs XboxLive.Instance.Invoke<IntPtr, LeaderboardQueryCreate>();?
+            // todo need to have this method or nah
 
             this.StatName = query.StatName;
             this.SocialGroup = query.SocialGroup;
@@ -35,7 +50,6 @@ namespace Microsoft.Xbox.Services.Leaderboard
             this.Order = query.Order;
             this.SkipResultToRank = query.SkipResultToRank;
             this.SkipResultToMe = query.SkipResultToMe;
-            this.ContinuationToken = continuationToken;
         }
 
         public string StatName { get; private set; }
@@ -90,9 +104,9 @@ namespace Microsoft.Xbox.Services.Leaderboard
             }
         }
 
-        bool m_skipResultToRank;
+        uint m_skipResultToRank;
         private delegate void LeaderboardQuerySetSkipResultToRank(IntPtr leaderboardQuery, UInt32 setSkipResultToRank);
-        public bool SkipResultToRank
+        public uint SkipResultToRank
         {
             get
             {
@@ -105,22 +119,32 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 XboxLive.Instance.Invoke<LeaderboardQuerySetSkipResultToRank>(m_leaderboardQueryPtr, m_skipResultToRank);
             }
         }
+        
+        public bool HasNext { get; private set; }
 
-        // todo update?
-        internal string ContinuationToken { get; private set; }
-
-        // todo update?
-        public bool HasNext
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LeaderboardQuery_c
         {
-            get
-            {
-                return !string.IsNullOrEmpty(this.ContinuationToken);
-            }
-        }
+            [MarshalAs(UnmanagedType.Bool)]
+            public bool SkipResultToMe;
 
-        internal void Refresh()
-        {
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 SkipResultToRank;
 
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 maxItems;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public SortOrder Order;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string StatName;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string SocialGroup;
+
+            [MarshalAs(UnmanagedType.Bool)]
+            public bool HasNext;
         }
     }
 }

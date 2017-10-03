@@ -243,9 +243,10 @@ namespace UWPIntegration
         {
             if (!this.User.IsSignedIn) return;
 
-            if (this.LeaderboardResult.HasNext)
+            if (this.LeaderboardResult.HasNext())
             {
-                this.StatsManager.GetLeaderboard(this.User, this.LeaderboardResult.NextQuery.StatName, this.LeaderboardResult.NextQuery);
+                LeaderboardQuery nextQuery = this.LeaderboardResult.GetNextQuery(3);
+                this.StatsManager.GetLeaderboard(this.User, nextQuery.StatName, nextQuery);
             }
         }
 
@@ -297,7 +298,7 @@ namespace UWPIntegration
                             LeaderboardResult result = ((LeaderboardResultEventArgs)ev.EventArgs).Result;
                             this.LeaderboardResult = result;
 
-                            NextLbBtn.IsEnabled = result.HasNext;
+                            NextLbBtn.IsEnabled = result.HasNext();
                         }
                     }
 

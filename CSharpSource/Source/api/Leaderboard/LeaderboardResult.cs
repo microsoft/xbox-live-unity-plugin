@@ -19,8 +19,10 @@ namespace Microsoft.Xbox.Services.Leaderboard
             this.NextQuery = nextQuery;
         }
 
+        IntPtr m_leaderboardResultPtr;
         internal LeaderboardResult(IntPtr leaderboardResultPtr)
         {
+            m_leaderboardResultPtr = leaderboardResultPtr;
             LeaderboardResult_c cResult = Marshal.PtrToStructure<LeaderboardResult_c>(leaderboardResultPtr);
 
             TotalRowCount = cResult.TotalRowCount;
@@ -47,17 +49,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 }
             }
         }
-
-        public bool HasNext
-        {
-            get
-            {
-                // todo fix
-                return false;
-                // return this.NextQuery.HasNext;
-            }
-        }
-
+        
         public IList<LeaderboardRow> Rows { get; internal set; }
 
         public IList<LeaderboardColumn> Columns { get; internal set; }
@@ -65,6 +57,38 @@ namespace Microsoft.Xbox.Services.Leaderboard
         public uint TotalRowCount { get; internal set; }
 
         public LeaderboardQuery NextQuery { get; internal set; }
+
+        private delegate bool LeaderboardResultHasNext(IntPtr leaderboard);
+        public bool HasNext()
+        {
+            return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
+        }
+
+        private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, UInt32 maxItems, IntPtr nextQuery, IntPtr errMessage);
+        public LeaderboardQuery GetNextQuery(UInt32 maxItems)
+        {
+            // Allocates memory for returned objects
+            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            IntPtr cNextQuery = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+
+            // Invokes the c method
+            int errCode = XboxLive.Instance.Invoke<Int32, LeaderboardResultGetNextQuery>(m_leaderboardResultPtr, maxItems, cNextQuery, cErrMessage);
+
+            // Handles error
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
+            Marshal.FreeHGlobal(cErrMessage);
+
+            if (errCode > 0)
+            {
+                // todo do something
+            }
+
+            // Does local work
+            LeaderboardQuery nextQuery = new LeaderboardQuery(Marshal.ReadIntPtr(cNextQuery));
+            Marshal.FreeHGlobal(cNextQuery);
+
+            return nextQuery;
+        }
 
         // todo move
         [StructLayout(LayoutKind.Sequential)]
