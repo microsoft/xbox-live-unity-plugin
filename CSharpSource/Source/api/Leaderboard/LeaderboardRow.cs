@@ -12,12 +12,6 @@ namespace Microsoft.Xbox.Services.Leaderboard
 {
     public class LeaderboardRow
     {
-        //todo remove
-        public LeaderboardRow()
-        {
-
-        }
-
         internal LeaderboardRow(IntPtr leaderboardRowPtr)
         {
             LeaderboardRow_c cRow = Marshal.PtrToStructure<LeaderboardRow_c>(leaderboardRowPtr);
@@ -26,24 +20,24 @@ namespace Microsoft.Xbox.Services.Leaderboard
             XboxUserId = cRow.XboxUserId;
             Gamertag = cRow.Gamertag;
 
-            ColumnValues = new List<string>();
+            Values = new List<string>();
             if (cRow.ColumnValuesSize > 0)
             {
                 IntPtr[] cValues = new IntPtr[cRow.ColumnValuesSize];
                 Marshal.Copy(cRow.ColumnValues, cValues, 0, cRow.ColumnValuesSize);
                 for (int i = 0; i < cRow.ColumnValuesSize; i++)
                 {
-                    ColumnValues.Add(Marshal.PtrToStringAnsi(cValues[i]));
+                    Values.Add(Marshal.PtrToStringAnsi(cValues[i]));
                 }
             }
         }
 
-        public IList<string> ColumnValues
+        public IList<string> Values
         {
             get; internal set;
         }
 
-        public int Rank
+        public uint Rank
         {
             get; internal set;
         }
@@ -76,14 +70,24 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.R8)]
             public double Percentile;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public Int32 Rank;
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 Rank;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr ColumnValues;
 
             [MarshalAs(UnmanagedType.I4)]
             public Int32 ColumnValuesSize;
+        }
+
+        // Used for mock services
+        internal LeaderboardRow(IList<string> values, uint rank, double percentile, string xboxUserId, string gamertag)
+        {
+            Values = values;
+            Rank = rank;
+            Percentile = percentile;
+            XboxUserId = xboxUserId;
+            Gamertag = gamertag;
         }
     }
 }

@@ -5,24 +5,30 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     using global::System;
     using global::System.Runtime.InteropServices;
-    using static Microsoft.Xbox.Services.Statistics.Manager.StatsManager;
+    using static Microsoft.Xbox.Services.Statistics.Manager.StatisticManager;
 
-    public class StatValue
+    public class StatisticValue
     {
-        public string Name { get; private set; }
-        public double AsNumber { get; private set; }
-        public long AsInteger { get; private set; }
-        public string AsString { get; private set; }
-        public StatValueType Type { get; private set; }
+        public string Name { get; internal set; }
+        public double AsNumber { get; internal set; }
+        public long AsInteger { get; internal set; }
+        public string AsString { get; internal set; }
+        public StatisticDataType DataType { get; internal set; }
         
-        internal StatValue(IntPtr statValuePtr)
+        internal StatisticValue(IntPtr statValuePtr)
         {
             StatValue_c cStatValue = Marshal.PtrToStructure<StatValue_c>(statValuePtr);
             Name = cStatValue.Name;
             AsNumber = cStatValue.AsNumber;
             AsInteger = cStatValue.AsInteger;
             AsString = cStatValue.AsString;
-            Type = cStatValue.DataType;
+            DataType = cStatValue.DataType;
+        }
+
+        // Used for mock services
+        internal StatisticValue()
+        {
+
         }
     }
 }

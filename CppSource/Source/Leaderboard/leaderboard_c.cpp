@@ -136,7 +136,6 @@ xbox_live_result<leaderboard_query> cppLeaderboardQueryResult;
 XSAPI_DLLEXPORT int XBL_CALLING_CONV
 LeaderboardResultGetNextQuery(
     _In_ LeaderboardResult* leaderboardResult,
-    _In_ uint32 maxItems,
     _Out_ LeaderboardQuery** nextQuery,
     _Out_ PCSTR* errMessage
 )

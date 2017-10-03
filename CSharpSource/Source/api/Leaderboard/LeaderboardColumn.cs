@@ -33,5 +33,12 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.I4)]
             public LeaderboardStatType StatType;
         }
+
+        // Used for mock services
+        internal LeaderboardColumn(LeaderboardStatType type, string name)
+        {
+            StatisticType = type;
+            StatisticName = name;
+        }
     }
 }

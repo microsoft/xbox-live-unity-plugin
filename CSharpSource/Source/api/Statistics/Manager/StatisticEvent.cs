@@ -5,24 +5,17 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     using global::System;
     using global::System.Runtime.InteropServices;
-    using static Microsoft.Xbox.Services.Statistics.Manager.StatsManager;
+    using static Microsoft.Xbox.Services.Statistics.Manager.StatisticManager;
 
-    public class StatEvent
+    public class StatisticEvent
     {
-        public StatEventType EventType { get; private set; }
-        public StatEventArgs EventArgs { get; private set; }
+        public StatisticEventType EventType { get; private set; }
+        public StatisticEventArgs EventArgs { get; private set; }
         public XboxLiveUser User { get; private set; }
         public int ErrorCode { get; private set; }
         public string ErrorMessage { get; private set; }
-
-        public StatEvent(StatEventType eventType, XboxLiveUser user, StatEventArgs args)
-        {
-            this.EventType = eventType;
-            this.User = user;
-            this.EventArgs = args;
-        }
-
-        internal StatEvent(IntPtr statEventPtr)
+        
+        internal StatisticEvent(IntPtr statEventPtr)
         {
             StatEvent_c cStatEvent = Marshal.PtrToStructure<StatEvent_c>(statEventPtr);
 
@@ -35,14 +28,20 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             catch (Exception e)
             {
                 // not LeaderboardResultEventArgs
-                // todo remove
-                string a = e.Message;
             }
 
             User = new XboxLiveUser(cStatEvent.LocalUser);
 
             ErrorCode = cStatEvent.ErrorCode;
             ErrorMessage = cStatEvent.ErrorMessage;
+        }
+
+        // Used for mock services
+        internal StatisticEvent(StatisticEventType type, XboxLiveUser user, StatisticEventArgs args)
+        {
+            EventType = type;
+            EventArgs = args;
+            User = user;
         }
     }
 }

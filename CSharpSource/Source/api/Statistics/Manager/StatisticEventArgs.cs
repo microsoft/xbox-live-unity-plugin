@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
-
-    public class StatEventArgs
+    public interface StatisticEventArgs
     {
     }
 }

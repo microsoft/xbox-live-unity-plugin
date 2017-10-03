@@ -73,7 +73,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
                     Percentile = row.Percentile,
                     Rank = row.Rank,
                     XboxUserId = row.XboxUserId,
-                    ColumnValues = row.Value != null ? new List<string> { row.Value } : row.Values,
+                    Values = row.Value != null ? new List<string> { row.Value } : row.Values,
                 };
                 rows.Add(newRow);
             }

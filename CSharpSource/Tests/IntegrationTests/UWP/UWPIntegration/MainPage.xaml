@@ -53,7 +53,7 @@
                                 <Run Text="{Binding Gamertag}"/>
                             </TextBlock>
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" >
-                                <Run FontSize="20" Text="{Binding ColumnValues[0]}"/>
+                                <Run FontSize="20" Text="{Binding Values[0]}"/>
                             </TextBlock>
                       </Grid>
                     </DataTemplate>

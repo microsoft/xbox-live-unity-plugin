@@ -3,7 +3,7 @@
 
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
-    public enum StatValueType
+    public enum StatisticDataType
     {
         Undefined,
         Number,

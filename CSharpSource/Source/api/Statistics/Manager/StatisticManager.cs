@@ -1,3 +1,4 @@
+
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -12,14 +13,14 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     using Microsoft.Xbox.Services.Leaderboard;
     using Microsoft.Xbox.Services.Shared;
 
-    public class StatsManager : IStatsManager
+    public class StatisticManager : IStatisticManager
     {
         private static readonly object instanceLock = new object();
-        private static IStatsManager instance;
+        private static IStatisticManager instance;
 
         private readonly List<XboxLiveUser> m_localUsers = new List<XboxLiveUser>();
 
-        internal static IStatsManager Instance
+        internal static IStatisticManager Instance
         {
             get
             {
@@ -29,7 +30,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                     {
                         if (instance == null)
                         {
-                            instance = XboxLive.UseMockServices ? new MockStatsManager() : (IStatsManager)new StatsManager();
+                            instance = XboxLive.UseMockServices ? new MockStatisticManager() : (IStatisticManager)new StatisticManager();
                         }
                     }
                 }
@@ -107,7 +108,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         private delegate IntPtr StatsManagerDoWork(IntPtr numOfEvents);
-        public IList<StatEvent> DoWork()
+        public IList<StatisticEvent> DoWork()
         {
             // Allocates memory for returned objects
             IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
@@ -119,7 +120,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
             Marshal.FreeHGlobal(cNumOfEvents);
 
-            List<StatEvent> events = new List<StatEvent>();
+            List<StatisticEvent> events = new List<StatisticEvent>();
 
             if (numOfEvents > 0)
             {
@@ -128,7 +129,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
                 foreach (IntPtr cEvent in cEvents)
                 {
-                    events.Add(new StatEvent(cEvent));
+                    events.Add(new StatisticEvent(cEvent));
                 }
 
                 // Refresh objects
@@ -201,7 +202,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         private delegate Int32 StatsManagerDeleteStat(IntPtr user, string statName, IntPtr errMessage);
-        public void DeleteStat(XboxLiveUser user, string statName)
+        public void DeleteStatistic(XboxLiveUser user, string statName)
         {
             if (user == null) throw new ArgumentNullException("user");
 
@@ -264,7 +265,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         private delegate Int32 StatsManagerGetStat(IntPtr user, IntPtr statName, IntPtr statValue, IntPtr errMessage);
-        public StatValue GetStat(XboxLiveUser user, string statName)
+        public StatisticValue GetStatistic(XboxLiveUser user, string statName)
         {
             if (user == null) throw new ArgumentNullException("user");
 
@@ -286,14 +287,14 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
 
             // Handles returned objects
-            StatValue statValue = new StatValue(Marshal.ReadIntPtr(cStatValue));
+            StatisticValue statValue = new StatisticValue(Marshal.ReadIntPtr(cStatValue));
             Marshal.FreeHGlobal(cStatValue);
 
             return statValue;
         }
 
         private delegate Int32 StatsManagerGetStatNames(IntPtr user, IntPtr statNameList, IntPtr statNameListSize, IntPtr errMessage);
-        public IList<string> GetStatNames(XboxLiveUser user)
+        public IList<string> GetStatisticNames(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
 
@@ -352,14 +353,14 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             public string AsString;
 
             [MarshalAs(UnmanagedType.U4)]
-            public StatValueType DataType;
+            public StatisticDataType DataType;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct StatEvent_c
         {
             [MarshalAs(UnmanagedType.U4)]
-            public StatEventType EventType;
+            public StatisticEventType EventType;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr EventArgs;

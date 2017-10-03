@@ -18,7 +18,7 @@ namespace Microsoft.Xbox.Services
         private static XboxLive instance;
         private static IntPtr xsapiNativeDll;
         private XboxLiveSettings settings;
-        private IStatsManager statsManager;
+        private IStatisticManager statsManager;
         private ISocialManager socialManager;
         private IPresenceWriter presenceWriter;
 
@@ -108,13 +108,13 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        public IStatsManager StatsManager
+        public IStatisticManager StatsManager
         {
             get
             {
                 if (Instance.statsManager == null)
                 {
-                    Instance.statsManager = Statistics.Manager.StatsManager.Instance;
+                    Instance.statsManager = Statistics.Manager.StatisticManager.Instance;
                 }
                 return Instance.statsManager;
             }

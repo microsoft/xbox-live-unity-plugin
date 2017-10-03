@@ -57,13 +57,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
         public IList<LeaderboardColumn> Columns { get; internal set; }
 
         public uint TotalRowCount { get; internal set; }
-
-        public LeaderboardQuery NextQuery { get; internal set; }
-
+        
         private delegate bool LeaderboardResultHasNext(IntPtr leaderboard);
-        public bool HasNext()
+        public bool HasNext
         {
-            return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
+            get
+            {
+                return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
+            }
         }
 
 //#if !XBOX_LIVE_CREATORS_SDK
@@ -90,7 +91,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
 //        }
 
 //        private delegate XsapiResult LeaderboardResultGetNext(IntPtr leaderboardResult, UInt32 maxItems, GetNextCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-//        public Task<LeaderboardResult> GetNext(UInt32 maxItems)
+//        public Task<LeaderboardResult> GetNextAsync(uint maxItems)
 //        {
 //            var tcs = new TaskCompletionSource<LeaderboardResult>();
 
@@ -135,15 +136,15 @@ namespace Microsoft.Xbox.Services.Leaderboard
 //        }
 //#endif
 
-        private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, UInt32 maxItems, IntPtr nextQuery, IntPtr errMessage);
-        public LeaderboardQuery GetNextQuery(UInt32 maxItems)
+        private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, IntPtr nextQuery, IntPtr errMessage);
+        public LeaderboardQuery GetNextQuery()
         {
             // Allocates memory for returned objects
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
             IntPtr cNextQuery = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, LeaderboardResultGetNextQuery>(m_leaderboardResultPtr, maxItems, cNextQuery, cErrMessage);
+            int errCode = XboxLive.Instance.Invoke<Int32, LeaderboardResultGetNextQuery>(m_leaderboardResultPtr, cNextQuery, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -179,6 +180,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
 
             [MarshalAs(UnmanagedType.U4)]
             public Int32 RowsSize;
+        }
+
+        // Used for mock services
+        internal LeaderboardResult(IList<LeaderboardRow> rows, IList<LeaderboardColumn> cols, uint totalRowCount)
+        {
+            Rows = rows;
+            Columns = cols;
+            TotalRowCount = totalRowCount;
         }
     }
 }
