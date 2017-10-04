@@ -11,16 +11,6 @@ namespace Microsoft.Xbox.Services.Leaderboard
 
     public class LeaderboardResult
     {
-        public LeaderboardResult(uint totalRowCount, IList<LeaderboardColumn> columns, IList<LeaderboardRow> rows, LeaderboardQuery nextQuery)
-        {
-            if(nextQuery == null) throw new ArgumentNullException("nextQuery");
-
-            this.TotalRowCount = totalRowCount;
-            this.Columns = columns;
-            this.Rows = rows;
-            this.NextQuery = nextQuery;
-        }
-
         IntPtr m_leaderboardResultPtr;
         internal LeaderboardResult(IntPtr leaderboardResultPtr)
         {

@@ -71,7 +71,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 {
                     Gamertag = row.Gamertag,
                     Percentile = row.Percentile,
-                    Rank = row.Rank,
+                    Rank = (uint)row.Rank,
                     XboxUserId = row.XboxUserId,
                     Values = row.Value != null ? new List<string> { row.Value } : row.Values,
                 };
@@ -79,7 +79,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             }
 
             LeaderboardQuery nextQuery = new LeaderboardQuery(query, lbResponse.PagingInfo != null ? lbResponse.PagingInfo.ContinuationToken : null);
-            LeaderboardResult result = new LeaderboardResult(lbResponse.LeaderboardInfo.TotalCount, columns, rows, nextQuery);
+            LeaderboardResult result = new LeaderboardResult(rows, columns, lbResponse.LeaderboardInfo.TotalCount);
             return result;
         }
 

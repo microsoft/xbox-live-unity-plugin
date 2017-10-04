@@ -89,5 +89,10 @@ namespace Microsoft.Xbox.Services.Leaderboard
             XboxUserId = xboxUserId;
             Gamertag = gamertag;
         }
+
+        internal LeaderboardRow()
+        {
+
+        }
     }
 }

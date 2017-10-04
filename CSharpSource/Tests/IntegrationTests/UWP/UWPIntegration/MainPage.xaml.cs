@@ -115,7 +115,7 @@ namespace UWPIntegration
             get { return this.user; }
         }
 
-        public IStatsManager StatsManager
+        public IStatisticManager StatsManager
         {
             get { return XboxLive.Instance.StatsManager; }
         }
@@ -243,9 +243,9 @@ namespace UWPIntegration
         {
             if (!this.User.IsSignedIn) return;
 
-            if (this.LeaderboardResult.HasNext())
+            if (this.LeaderboardResult.HasNext)
             {
-                LeaderboardQuery nextQuery = this.LeaderboardResult.GetNextQuery(3);
+                LeaderboardQuery nextQuery = this.LeaderboardResult.GetNextQuery();
                 this.StatsManager.GetLeaderboard(this.User, nextQuery.StatName, nextQuery);
             }
         }
@@ -290,33 +290,33 @@ namespace UWPIntegration
                 {
                     // Perform the long running do work task on a background thread.
                     var statsDoWorkTask = Task.Run(() => { return this.StatsManager.DoWork(); });
-                    IList<StatEvent> statsEvents = await statsDoWorkTask;
-                    foreach (StatEvent ev in statsEvents)
+                    IList<StatisticEvent> statsEvents = await statsDoWorkTask;
+                    foreach (StatisticEvent ev in statsEvents)
                     {
-                        if (ev.EventType == StatEventType.GetLeaderboardComplete)
+                        if (ev.EventType == StatisticEventType.GetLeaderboardComplete)
                         {
                             LeaderboardResult result = ((LeaderboardResultEventArgs)ev.EventArgs).Result;
                             this.LeaderboardResult = result;
 
-                            NextLbBtn.IsEnabled = result.HasNext();
+                            NextLbBtn.IsEnabled = result.HasNext;
                         }
                     }
 
-                    var statNames = this.StatsManager.GetStatNames(this.User);
+                    var statNames = this.StatsManager.GetStatisticNames(this.User);
                     if (statNames.Count > 0)
                     {
                         foreach (var stat in statNames)
                         {
                             if (string.Equals(stat, "headshots"))
                             {
-                                this.headshots = this.StatsManager.GetStat(this.User, "headshots").AsInteger;
+                                this.headshots = this.StatsManager.GetStatistic(this.User, "headshots").AsInteger;
                             }
                             else if (string.Equals(stat, "jumps"))
                             {
-                                this.jumps = this.StatsManager.GetStat(this.User, "jumps").AsInteger;
+                                this.jumps = this.StatsManager.GetStatistic(this.User, "jumps").AsInteger;
                             }
                         }
-                        this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStat(this.User, n)).Select(s => $"{s.Name} ({s.Type}) = {GetStatValue(s)}"));
+                        this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStatistic(this.User, n)).Select(s => $"{s.Name} ({s.DataType}) = {GetStatValue(s)}"));
                     }
 
                     var socialDoWorkTask = Task.Run(() => { return this.SocialManager.DoWork(); });
@@ -335,13 +335,13 @@ namespace UWPIntegration
             }
         }
 
-        object GetStatValue(StatValue value)
+        object GetStatValue(StatisticValue value)
         {
-            switch (value.Type)
+            switch (value.DataType)
             {
-                case StatValueType.Number:
+                case StatisticDataType.Number:
                     return value.AsInteger;
-                case StatValueType.String:
+                case StatisticDataType.String:
                     return value.AsString;
                 default:
                     return value.AsNumber;

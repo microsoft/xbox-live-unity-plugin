@@ -29,13 +29,13 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 {
                     Gamertag = row.Gamertag,
                     Percentile = row.Percentile,
-                    Rank = row.Rank,
+                    Rank = (uint)row.Rank,
                     XboxUserId = row.XboxUserId,
                     Values = row.Value != null ? new List<string> { row.Value } : row.Values
                 }).ToList();
 
             // Create a result with an 'empty' next query so that it won't have paiging.
-            LeaderboardResult result = new LeaderboardResult(lbResponse.LeaderboardInfo.TotalCount, columns, rows, new LeaderboardQuery(query, null));
+            LeaderboardResult result = new LeaderboardResult(rows, columns, lbResponse.LeaderboardInfo.TotalCount);
             return result;
         }
     }
