@@ -3,60 +3,17 @@
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
-    using global::System;
     using global::System.Collections.Generic;
-    using global::System.Runtime.InteropServices;
-    using global::System.Threading.Tasks;
-    using Microsoft.Xbox.Services.System;
 
-    public class LeaderboardResult
-    {
-        IntPtr m_leaderboardResultPtr;
-        internal LeaderboardResult(IntPtr leaderboardResultPtr)
-        {
-            m_leaderboardResultPtr = leaderboardResultPtr;
-            LeaderboardResult_c cResult = Marshal.PtrToStructure<LeaderboardResult_c>(leaderboardResultPtr);
-
-            TotalRowCount = cResult.TotalRowCount;
-
-            Columns = new List<LeaderboardColumn>();
-            if (cResult.ColumnsSize > 0)
-            {
-                IntPtr[] cColumns = new IntPtr[cResult.ColumnsSize];
-                Marshal.Copy(cResult.Columns, cColumns, 0, cResult.ColumnsSize);
-                for (int i = 0; i < cResult.ColumnsSize; i++)
-                {
-                    Columns.Add(new LeaderboardColumn(cColumns[i]));
-                }
-            }
-
-            Rows = new List<LeaderboardRow>();
-            if (cResult.RowsSize > 0)
-            {
-                IntPtr[] cRows = new IntPtr[cResult.RowsSize];
-                Marshal.Copy(cResult.Rows, cRows, 0, cResult.RowsSize);
-                for (int i = 0; i < cResult.RowsSize; i++)
-                {
-                    Rows.Add(new LeaderboardRow(cRows[i]));
-                }
-            }
-        }
-        
+    public partial class LeaderboardResult : ILeaderboardResult
+    {        
         public IList<LeaderboardRow> Rows { get; internal set; }
 
         public IList<LeaderboardColumn> Columns { get; internal set; }
 
         public uint TotalRowCount { get; internal set; }
-        
-        private delegate bool LeaderboardResultHasNext(IntPtr leaderboard);
-        public bool HasNext
-        {
-            get
-            {
-                return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
-            }
-        }
-
+             
+// todo remove for ID sdk
 //#if !XBOX_LIVE_CREATORS_SDK
 //        public class GetNextResult
 //        {
@@ -125,53 +82,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
 //            }
 //        }
 //#endif
-
-        private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, IntPtr nextQuery, IntPtr errMessage);
-        public LeaderboardQuery GetNextQuery()
-        {
-            // Allocates memory for returned objects
-            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
-            IntPtr cNextQuery = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
-
-            // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, LeaderboardResultGetNextQuery>(m_leaderboardResultPtr, cNextQuery, cErrMessage);
-
-            // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
-            Marshal.FreeHGlobal(cErrMessage);
-
-            if (errCode > 0)
-            {
-                // todo do something
-            }
-
-            // Does local work
-            LeaderboardQuery nextQuery = new LeaderboardQuery(Marshal.ReadIntPtr(cNextQuery));
-            Marshal.FreeHGlobal(cNextQuery);
-
-            return nextQuery;
-        }
-
-        // todo move
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardResult_c
-        {
-            [MarshalAs(UnmanagedType.U4)]
-            public UInt32 TotalRowCount;
-
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr Columns;
-
-            [MarshalAs(UnmanagedType.U4)]
-            public Int32 ColumnsSize;
-
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr Rows;
-
-            [MarshalAs(UnmanagedType.U4)]
-            public Int32 RowsSize;
-        }
-
+        
         // Used for mock services
         internal LeaderboardResult(IList<LeaderboardRow> rows, IList<LeaderboardColumn> cols, uint totalRowCount)
         {

@@ -63,8 +63,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Leaderboard\LeaderboardQuery.cs" />
+    <Compile Include="Leaderboard\LeaderboardResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocialManagerImpl.cs" />
     <Compile Include="Social\Manager\SocialManagerPresenceRecord.cs" />
     <Compile Include="System\TitleCallableUI.cs" />
     <Compile Include="System\UserImpl.cs" />
@@ -75,6 +76,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(BuildRoot)\Source\api\Microsoft.Xbox.Services.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
