@@ -32,7 +32,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerAddLocalUser>(user.Impl.GetPtr(), extraDetailLevel, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -54,7 +54,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerRemoveLocalUser>(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -77,7 +77,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromFilters>(user.Impl.GetPtr(), presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -116,7 +116,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromList>(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -191,7 +191,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerDestroySocialUserGroup>(xboxSocialUserGroup.GetPtr(), cErrMessage);
 
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
@@ -256,7 +256,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerSetRichPresencePollingStatus>(user.Impl.GetPtr(), shouldEnablePolling, cErrMessage);
             
             // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(cErrMessage);
+            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
             if (errCode > 0)
