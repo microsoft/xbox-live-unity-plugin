@@ -10,12 +10,32 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
         {
-            SocialManager.SocialManagerPresenceTitleRecord_c cTitleRecord = Marshal.PtrToStructure<SocialManager.SocialManagerPresenceTitleRecord_c>(titleRecordPtr);
+            SocialManagerPresenceTitleRecord_c cTitleRecord = Marshal.PtrToStructure<SocialManagerPresenceTitleRecord_c>(titleRecordPtr);
             IsTitleActive = Convert.ToBoolean(cTitleRecord.IsTitleActive);
             IsBroadcasting = Convert.ToBoolean(cTitleRecord.IsBroadcasting);
             Device = cTitleRecord.DeviceType;
             TitleId = cTitleRecord.TitleId;
             PresenceText = cTitleRecord.PresenceText;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialManagerPresenceTitleRecord_c
+        {
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsTitleActive;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public byte IsBroadcasting;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public PresenceDeviceType DeviceType;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public uint TitleId;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string PresenceText;
         }
     }
 }

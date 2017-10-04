@@ -6,7 +6,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
     using global::System.Runtime.InteropServices;
-    using static Microsoft.Xbox.Services.Social.Manager.SocialManager;
 
     public partial class PreferredColor
     {
@@ -16,6 +15,20 @@ namespace Microsoft.Xbox.Services.Social.Manager
             PrimaryColor = cPreferredColor.PrimaryColor;
             SecondaryColor = cPreferredColor.SecondaryColor;
             TertiaryColor = cPreferredColor.TertiaryColor;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct PreferredColor_c
+        {
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string PrimaryColor;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string SecondaryColor;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string TertiaryColor;
         }
     }
 }

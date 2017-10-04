@@ -26,7 +26,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         // todo For perf consider if we need an init method and a refresh method seperate
         internal void Refresh()
         {
-            var cSocialUserGroup = Marshal.PtrToStructure<SocialManager.XboxSocialUserGroup_c>(m_socialUserGroupPtr);
+            var cSocialUserGroup = Marshal.PtrToStructure<XboxSocialUserGroup_c>(m_socialUserGroupPtr);
 
             // Properties
             SocialUserGroupType = cSocialUserGroup.SocialUserGroupType;
@@ -77,6 +77,34 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     m_trackedUsers.Add(cSocialUser.XboxUserId);
                 }
             }
+        }
+        
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct XboxSocialUserGroup_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Users;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsers;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public SocialUserGroupType SocialUserGroupType;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersTrackedBySocialUserGroup;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsersTrackedBySocialUserGroup;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr LocalUser;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public PresenceFilter PresenceFilterOfGroup;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public RelationshipFilter RelationshipFilterOfGroup;
         }
     }
 }

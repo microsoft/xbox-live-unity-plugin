@@ -9,11 +9,21 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal TitleHistory(IntPtr titleHistoryPtr)
         {
-            SocialManager.TitleHistory_c cTitleHistory = Marshal.PtrToStructure<SocialManager.TitleHistory_c>(titleHistoryPtr);
+            TitleHistory_c cTitleHistory = Marshal.PtrToStructure<TitleHistory_c>(titleHistoryPtr);
             HasUserPlayed = Convert.ToBoolean(cTitleHistory.UserHasPlayed);
 
             // todo test
             LastTimeUserPlayed = DateTimeOffset.FromUnixTimeSeconds(cTitleHistory.LastTimeUserPlayed);
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct TitleHistory_c
+    {
+        [MarshalAs(UnmanagedType.U1)]
+        public byte UserHasPlayed;
+
+        [MarshalAs(UnmanagedType.I8)]
+        public long LastTimeUserPlayed;
     }
 }

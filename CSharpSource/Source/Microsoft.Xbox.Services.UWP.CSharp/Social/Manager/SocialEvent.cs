@@ -9,7 +9,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal SocialEvent(IntPtr socialEventPtr, IList<XboxSocialUserGroup> groups)
         {
-            SocialManager.SocialEvent_c cSocialEvent = Marshal.PtrToStructure<SocialManager.SocialEvent_c>(socialEventPtr);
+            SocialEvent_c cSocialEvent = Marshal.PtrToStructure<SocialEvent_c>(socialEventPtr);
             EventType = cSocialEvent.EventType;
 
             User = new XboxLiveUser(cSocialEvent.User);
@@ -47,6 +47,31 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
             ErrorCode = cSocialEvent.ErrorCode;
             ErrorMessge = cSocialEvent.ErrorMessage;
+        }
+        
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialEvent_c
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr User;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public SocialEventType EventType;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersAffected;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfUsersAffected;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr EventArgs;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int ErrorCode;
+
+            [MarshalAs(UnmanagedType.LPStr)]
+            public string ErrorMessage;
         }
     }
 }

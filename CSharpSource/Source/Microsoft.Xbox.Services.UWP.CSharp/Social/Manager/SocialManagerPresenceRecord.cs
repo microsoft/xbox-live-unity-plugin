@@ -12,7 +12,7 @@
         {
             this.m_socialManagerPresenceRecordPtr = socialManagerPresenceRecordPtr;
 
-            SocialManager.SocialManagerPresenceRecord_c cPresenceRecord = Marshal.PtrToStructure<SocialManager.SocialManagerPresenceRecord_c>(socialManagerPresenceRecordPtr);
+            SocialManagerPresenceRecord_c cPresenceRecord = Marshal.PtrToStructure<SocialManagerPresenceRecord_c>(socialManagerPresenceRecordPtr);
             UserState = cPresenceRecord.UserState;
 
             m_titleRecords = new List<SocialManagerPresenceTitleRecord>();
@@ -53,6 +53,19 @@
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return this.Equals((SocialManagerPresenceRecord)obj);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SocialManagerPresenceRecord_c
+        {
+            [MarshalAs(UnmanagedType.U4)]
+            public UserPresenceState UserState;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceTitleRecords;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public int NumOfPresenceTitleRecords;
         }
     }
 }
