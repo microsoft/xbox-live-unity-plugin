@@ -102,7 +102,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             List<IntPtr> userIdPtrs = new List<IntPtr>();
             for (int i = 0; i < xboxUserIdList.Count; i++)
             {
-                IntPtr cXuid = Marshal.StringToHGlobalUni(xboxUserIdList[i]);
+                IntPtr cXuid = Marshal.StringToHGlobalAnsi(xboxUserIdList[i]);
                 userIdPtrs.Add(cXuid);
             }
             IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * xboxUserIdList.Count);
@@ -292,13 +292,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct PreferredColor_c
         {
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string PrimaryColor;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string SecondaryColor;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string TertiaryColor;
         }
 
@@ -318,7 +318,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U4)]
             public uint TitleId;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string PresenceText;
         }
 
@@ -338,7 +338,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct XboxSocialUser_c
         {
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string XboxUserId;
 
             [MarshalAs(UnmanagedType.U1)]
@@ -350,22 +350,22 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U1)]
             public byte IsFollowedByCaller;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string DisplayName;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string RealName;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string DisplayPicUrlRaw;
 
             [MarshalAs(UnmanagedType.U1)]
             public byte UseAvatar;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string Gamerscore;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string Gamertag;
 
             [MarshalAs(UnmanagedType.SysInt)]
@@ -399,7 +399,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.I4)]
             public int ErrorCode;
 
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string ErrorMessage;
         }
 
@@ -413,7 +413,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct XboxUserIdContainer_c
         {
-            [MarshalAs(UnmanagedType.LPWStr)]
+            [MarshalAs(UnmanagedType.LPStr)]
             public string XboxUserId;
         }
 

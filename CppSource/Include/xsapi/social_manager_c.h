@@ -14,6 +14,11 @@ extern "C" {
 
 #if !XDK_API
 	
+struct PreferredColorImpl;
+struct SocialManagerPresenceTitleRecordImpl;
+struct XboxUserIdContainerImpl;
+struct SocialEventImpl;
+struct XboxSocialUserImpl;
 struct XboxSocialUserGroupImpl;
 struct SocialManagerPresenceRecordImpl;
 
@@ -67,6 +72,8 @@ typedef struct PreferredColor
     PCSTR primaryColor;
     PCSTR secondaryColor;
     PCSTR tertiaryColor;
+
+    PreferredColorImpl* pImpl;
 } PreferredColor;
 
 typedef struct SocialManagerPresenceTitleRecord
@@ -76,6 +83,8 @@ typedef struct SocialManagerPresenceTitleRecord
     PRESENCE_DEVICE_TYPE deviceType;
     uint32 titleId;
     PCSTR presenceText;
+
+    SocialManagerPresenceTitleRecordImpl* pImpl;
 } SocialManagerPresenceTitleRecord;
 
 typedef struct SocialManagerPresenceRecord
@@ -108,6 +117,8 @@ typedef struct XboxSocialUser
     SocialManagerPresenceRecord *presenceRecord;
     TitleHistory *titleHistory;
     PreferredColor *preferredColor;
+
+    XboxSocialUserImpl* pImpl;
 } XboxSocialUser;
 
 typedef struct SocialEventArgs {
@@ -116,6 +127,8 @@ typedef struct SocialEventArgs {
 
 typedef struct XboxUserIdContainer {
     PCSTR xboxUserId;
+
+    XboxUserIdContainerImpl* pImpl;
 } XboxUserIdContainer;
 
 typedef struct SocialEvent
@@ -126,7 +139,9 @@ typedef struct SocialEvent
     int numOfUsersAffected;
     SocialEventArgs* eventArgs;
     int err;
-    PCSTR err_message;
+    PCSTR errMessage;
+
+    SocialEventImpl* pImpl;
 } SocialEvent;
 
 typedef struct XboxSocialUserGroup
