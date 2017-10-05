@@ -13,9 +13,9 @@ using namespace xbox::services::stats::manager;
 struct StatValueImpl
 {
     StatValueImpl(
-        _In_ stat_value creationContext,
+        _In_ stat_value cppStatValue,
         _In_ StatValue *cStatValue
-    ) : m_cStatValue(cStatValue), m_cppStatValue(creationContext)
+    ) : m_cStatValue(cStatValue), m_cppStatValue(cppStatValue)
     {
         m_name = utils::to_utf8string(m_cppStatValue.name());
         m_cStatValue->name = m_name.c_str();
@@ -55,9 +55,9 @@ StatValue *CreateStatValueFromCpp(
 
 struct LeaderboardResultEventArgsImpl {
     LeaderboardResultEventArgsImpl(
-        _In_ std::shared_ptr<leaderboard_result_event_args> creationContext,
+        _In_ std::shared_ptr<leaderboard_result_event_args> cppEventArgs,
         _In_ LeaderboardResultEventArgs* cEventArgs
-    ) : m_cEventArgs(cEventArgs), m_cppEventArgs(creationContext)
+    ) : m_cEventArgs(cEventArgs), m_cppEventArgs(cppEventArgs)
     {
         auto result = m_cppEventArgs->result();
         
@@ -84,15 +84,13 @@ LeaderboardResultEventArgs* CreateLeaderboardResultEventArgs(
 struct StatEventImpl 
 {
     StatEventImpl(
-        _In_ stat_event creationContext,
+        _In_ stat_event cppStatEvent,
         _In_ StatEvent *cStatEvent
-    ) : m_cStatEvent(cStatEvent), m_cppStatEvent(creationContext)
+    ) : m_cStatEvent(cStatEvent), m_cppStatEvent(cppStatEvent)
     {
         m_eventType = static_cast<STAT_EVENT_TYPE>(m_cppStatEvent.event_type());
         m_cStatEvent->eventType = m_eventType;
-
-        // todo event args
-
+        
         m_args = nullptr;
         if (m_cppStatEvent.event_args()) {
             try

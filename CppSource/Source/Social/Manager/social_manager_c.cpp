@@ -32,11 +32,11 @@ SocialManagerAddLocalUser(
     _In_ XboxLiveUser *user,
     _In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
 
-	social_manager_extra_detail_level cExtraLevelDetail = static_cast<social_manager_extra_detail_level>(extraLevelDetail);
+    social_manager_extra_detail_level cExtraLevelDetail = static_cast<social_manager_extra_detail_level>(extraLevelDetail);
     mVoidResult = social_manager::get_singleton_instance()->add_local_user(user->pImpl->m_cppUser, cExtraLevelDetail);
 
     *errMessage = mVoidResult.err_message().c_str();
@@ -47,7 +47,7 @@ XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
     _In_ XboxLiveUser *user,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
 
@@ -61,21 +61,25 @@ SocialManagerRemoveLocalUser(
 XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
 SocialManagerDoWork(
     _Out_ int32* numOfEvents
-	)
+    )
 {
     verify_global_init();
 
     std::vector<social_event> cppSocialEvents = social_manager::get_singleton_instance()->do_work();
-	
+    
     mEvents.clear();
 
-    if (cppSocialEvents.size() > 0) {
-        for (auto cEvent : cppSocialEvents) {
+    if (cppSocialEvents.size() > 0) 
+    {
+        for (auto cEvent : cppSocialEvents) 
+        {
             mEvents.push_back(CreateSocialEventFromCpp(cEvent, mGroups));
         }
 
-        for (auto socialUserGroup : mGroups) {
-            if (socialUserGroup != nullptr) {
+        for (auto socialUserGroup : mGroups) 
+        {
+            if (socialUserGroup != nullptr) 
+            {
                 socialUserGroup->pImpl->Refresh();
             }
         }
@@ -88,21 +92,21 @@ SocialManagerDoWork(
 
 XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
-	_In_ XboxLiveUser *user,
-	_In_ PRESENCE_FILTER presenceDetailLevel,
-	_In_ RELATIONSHIP_FILTER filter,
+    _In_ XboxLiveUser *user,
+    _In_ PRESENCE_FILTER presenceDetailLevel,
+    _In_ RELATIONSHIP_FILTER filter,
     _Out_ XboxSocialUserGroup** group,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
 
-	presence_filter cPresenceDetailLevel = static_cast<presence_filter>(presenceDetailLevel);
-	relationship_filter cFilter = static_cast<relationship_filter>(filter);
+    presence_filter cPresenceDetailLevel = static_cast<presence_filter>(presenceDetailLevel);
+    relationship_filter cFilter = static_cast<relationship_filter>(filter);
     mGroupResult = social_manager::get_singleton_instance()->create_social_user_group_from_filters(user->pImpl->m_cppUser, cPresenceDetailLevel, cFilter);
 
-	auto socialUserGroup = new XboxSocialUserGroup();
-	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(mGroupResult.payload(), socialUserGroup);
+    auto socialUserGroup = new XboxSocialUserGroup();
+    socialUserGroup->pImpl = new XboxSocialUserGroupImpl(mGroupResult.payload(), socialUserGroup);
     mGroups.push_back(socialUserGroup);
     *group = socialUserGroup;
 
@@ -117,7 +121,7 @@ SocialManagerCreateSocialUserGroupFromList(
     _In_ int numOfXboxUserIds,
     _Out_ XboxSocialUserGroup** group,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
 
@@ -130,8 +134,8 @@ SocialManagerCreateSocialUserGroupFromList(
 
     mGroupResult = social_manager::get_singleton_instance()->create_social_user_group_from_list(user->pImpl->m_cppUser, xboxUserIdVector);
 
-	auto socialUserGroup = new XboxSocialUserGroup();
-	socialUserGroup->pImpl = new XboxSocialUserGroupImpl(mGroupResult.payload(), socialUserGroup);
+    auto socialUserGroup = new XboxSocialUserGroup();
+    socialUserGroup->pImpl = new XboxSocialUserGroupImpl(mGroupResult.payload(), socialUserGroup);
     mGroups.push_back(socialUserGroup);
     *group = socialUserGroup;
 
@@ -163,7 +167,7 @@ SocialManagerUpdateSocialUserGroup(
     _In_ PCSTR* users,
     _In_ int numOfUsers,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
 
@@ -187,10 +191,10 @@ SocialManagerSetRichPresencePollingStatus(
     _In_ XboxLiveUser *user,
     _In_ bool shouldEnablePolling,
     _Out_ PCSTR* errMessage
-	)
+    )
 {
     verify_global_init();
-	
+    
     mVoidResult = social_manager::get_singleton_instance()->set_rich_presence_polling_status(user->pImpl->m_cppUser, shouldEnablePolling);
     user->pImpl->Refresh();
 

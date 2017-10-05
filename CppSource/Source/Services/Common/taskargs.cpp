@@ -29,7 +29,6 @@ xbl_args_xbox_live_user_get_token_and_signature::xbl_args_xbox_live_user_get_tok
 {
 }
 
-
 xbl_args_leaderboard_result_get_next::xbl_args_leaderboard_result_get_next(
     _In_ LeaderboardResult* _leaderboard,
     _In_ uint32 _maxItems

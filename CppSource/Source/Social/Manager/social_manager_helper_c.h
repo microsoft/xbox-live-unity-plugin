@@ -54,20 +54,23 @@ SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
 struct SocialManagerPresenceRecordImpl
 {
     SocialManagerPresenceRecordImpl(
-        _In_ const social_manager_presence_record creationContext,
-        _In_ SocialManagerPresenceRecord *cSocialUserGroup
-    ) : m_cppSocialManagerPresenceRecord(creationContext), m_cSocialManagerPresenceRecord(cSocialUserGroup)
+        _In_ const social_manager_presence_record cppPresenceRecord,
+        _In_ SocialManagerPresenceRecord *cPresenceRecord
+    ) : m_cppSocialManagerPresenceRecord(cppPresenceRecord), m_cSocialManagerPresenceRecord(cPresenceRecord)
     {
         Refresh();
     }
 
-    void Refresh() {
-        if (m_cSocialManagerPresenceRecord != nullptr) {
+    void Refresh() 
+    {
+        if (m_cSocialManagerPresenceRecord != nullptr) 
+        {
             m_presenceState = static_cast<USER_PRESENCE_STATE>(m_cppSocialManagerPresenceRecord.user_state());
             m_cSocialManagerPresenceRecord->userState = m_presenceState;
 
             m_titleRecords.clear();
-            for (auto cppTitleRecord : m_cppSocialManagerPresenceRecord.presence_title_records()) {
+            for (auto cppTitleRecord : m_cppSocialManagerPresenceRecord.presence_title_records()) 
+            {
                 m_titleRecords.push_back(CreateSocialManagerPresenceTitleRecordFromCpp(cppTitleRecord));
             }
             m_cSocialManagerPresenceRecord->presenceTitleRecords = m_titleRecords.data();
@@ -210,14 +213,15 @@ struct XboxUserIdContainerImpl
 struct XboxSocialUserGroupImpl
 {
     XboxSocialUserGroupImpl(
-        _In_ std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> creationContext,
+        _In_ std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> cppSocialUserGroup,
         _In_ XboxSocialUserGroup *cSocialUserGroup
-    ) : m_cppSocialUserGroup(creationContext), m_cSocialUserGroup(cSocialUserGroup)
+    ) : m_cppSocialUserGroup(cppSocialUserGroup), m_cSocialUserGroup(cSocialUserGroup)
     {
         Init();
     }
 
-    void Init() {
+    void Init() 
+    {
         m_localUser = new XboxLiveUser();
         m_localUser->pImpl = new XboxLiveUserImpl(m_cppSocialUserGroup->local_user()->windows_system_user(), m_localUser);
 
@@ -225,12 +229,15 @@ struct XboxSocialUserGroupImpl
     }
 
     // Sets the c object's properties to the cpp object's properties
-    void Refresh() {
-        if (m_cSocialUserGroup != nullptr) {
+    void Refresh() 
+    {
+        if (m_cSocialUserGroup != nullptr) 
+        {
             const std::vector<xbox::services::social::manager::xbox_social_user *> cppUsers = m_cppSocialUserGroup->users();
             m_users.clear();
             m_numOfUsers = cppUsers.size();
-            for (auto cppUser : cppUsers) {
+            for (auto cppUser : cppUsers) 
+            {
                 m_users.push_back(CreateXboxSocialUserFromCpp(cppUser));
             }
             m_cSocialUserGroup->users = m_users.data();
@@ -241,7 +248,8 @@ struct XboxSocialUserGroupImpl
 
             auto cppTrackedUsers = m_cppSocialUserGroup->users_tracked_by_social_user_group();
             m_usersTrackedBySocialUserGroup.clear();
-            for (auto cppUserIdContainer : cppTrackedUsers) {
+            for (auto cppUserIdContainer : cppTrackedUsers) 
+            {
                 auto cUserIdContainer = new XboxUserIdContainer();
                 cUserIdContainer->pImpl = new XboxUserIdContainerImpl(cppUserIdContainer, cUserIdContainer);
                 m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
@@ -277,7 +285,8 @@ SocialUserGroupLoadedEventArgs* CreateSocialUserGroupLoadedEventArgs(
 )
 {
     XboxSocialUserGroup* groupAffected = new XboxSocialUserGroup();
-    for (auto group : groups) {
+    for (auto group : groups) 
+    {
         if (group->pImpl->m_cppSocialUserGroup == cppSocialUserGroupLoadedEventArgs->social_user_group()) {
             groupAffected = group;
         }

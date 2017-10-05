@@ -56,8 +56,8 @@ struct LeaderboardRowImpl {
         m_rank = m_cppLeaderboardRow.rank();
         m_cLeaderboardRow->rank = m_rank;
 
-        // todo do I need 2 vectors one for std::string and one for PCSTR // yes
-        for (size_t i = 0; i < m_cppLeaderboardRow.column_values().size(); i++) {
+        for (size_t i = 0; i < m_cppLeaderboardRow.column_values().size(); i++) 
+        {
             m_columnValuesStrs.push_back(utils::to_utf8string(m_cppLeaderboardRow.column_values()[i]));
             m_columnValues.push_back(m_columnValuesStrs[i].c_str());
         }
@@ -120,25 +120,29 @@ struct LeaderboardQueryImpl
         m_cQuery->hasNext = m_hasNext;
     }
 
-    void SetSkipResultToMe(bool skipResultToMe) {
+    void SetSkipResultToMe(bool skipResultToMe) 
+    {
         m_skipResultToMe = skipResultToMe;
         m_cQuery->skipResultToMe = m_skipResultToMe;
         m_cppQuery.set_skip_result_to_me(m_skipResultToMe);
     }
 
-    void SetSkipResultToRank(uint32 skipResultToRank) {
+    void SetSkipResultToRank(uint32 skipResultToRank) 
+    {
         m_skipResultToRank = skipResultToRank;
         m_cQuery->skipResultToRank = m_skipResultToRank;
         m_cppQuery.set_skip_result_to_rank(m_skipResultToRank);
     }
 
-    void SetMaxItems(uint32 maxItems) {
+    void SetMaxItems(uint32 maxItems) 
+    {
         m_maxItems = maxItems;
         m_cQuery->maxItems = m_maxItems;
         m_cppQuery.set_max_items(m_maxItems);
     }
 
-    void SetOrder(SORT_ORDER order) {
+    void SetOrder(SORT_ORDER order) 
+    {
         m_order = order;
         m_cQuery->order = m_order;
         m_cppQuery.set_order(static_cast<sort_order>(m_order));
@@ -151,6 +155,7 @@ struct LeaderboardQueryImpl
     std::string m_statName;
     std::string m_socialGroup;
     bool m_hasNext;
+
     leaderboard_query m_cppQuery;
     LeaderboardQuery* m_cQuery;
 };

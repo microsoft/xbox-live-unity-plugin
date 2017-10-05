@@ -16,7 +16,8 @@ struct LeaderboardRowImpl;
 struct LeaderboardQueryImpl;
 struct LeaderboardResultImpl;
 
-typedef enum LEADERBOARD_STAT_TYPE {
+typedef enum LEADERBOARD_STAT_TYPE 
+{
     STAT_UINT64,
     STAT_BOOLEAN,
     STAT_DOUBLE,
@@ -25,7 +26,8 @@ typedef enum LEADERBOARD_STAT_TYPE {
     STAT_OTHER
 } LEADERBOARD_STAT_TYPE;
 
-typedef enum SORT_ORDER {
+typedef enum SORT_ORDER 
+{
     ASCENDING,
     DESCENDING
 } SORT_ORDER;

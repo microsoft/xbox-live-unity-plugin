@@ -16,13 +16,15 @@ struct StatEventImpl;
 struct StatValueImpl;
 struct LeaderboardResultEventArgsImpl;
 
-typedef enum STAT_DATA_TYPE {
+typedef enum STAT_DATA_TYPE 
+{
     UNDEFINED,
     NUMBER,
     STRING
 } STAT_DATA_TYPE;
 
-typedef enum STAT_EVENT_TYPE {
+typedef enum STAT_EVENT_TYPE 
+{
     LOCAL_USER_ADDED_STAT,
     LOCAL_USER_REMOVED_STAT,
     STAT_UPDATE_COMPLETE_STAT,

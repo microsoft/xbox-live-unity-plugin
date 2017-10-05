@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// 
+
 namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
@@ -8,7 +8,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
     public partial class XboxSocialUser
     {
-        // todo refresh xbox social users on do_work
         internal XboxSocialUser(IntPtr xboxSocialUserPtr)
         {
             XboxSocialUser_c cXboxSocialUser = Marshal.PtrToStructure<XboxSocialUser_c>(xboxSocialUserPtr);
