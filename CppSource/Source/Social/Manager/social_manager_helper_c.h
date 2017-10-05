@@ -255,6 +255,7 @@ struct XboxSocialUserGroupImpl
                 m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
             }
             m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
+            m_cSocialUserGroup->numOfUsersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.size();
 
             m_localUser->pImpl->Refresh();
             m_cSocialUserGroup->localUser = m_localUser;
