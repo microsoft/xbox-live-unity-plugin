@@ -101,6 +101,9 @@
     <ClCompile Include="..\..\Source\Shared\singleton.cpp">
       <Filter>C++ Source\Shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
+      <Filter>C++ Source\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

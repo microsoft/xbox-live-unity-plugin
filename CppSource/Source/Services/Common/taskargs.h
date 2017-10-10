@@ -13,45 +13,45 @@ struct xbl_args
     virtual ~xbl_args() {}
 };
 
-struct xbl_args_tcui_show_profile_card_ui : public xbl_args<XboxLiveResult>
+struct xbl_args_tcui_show_profile_card_ui : public xbl_args<XSAPI_RESULT_INFO>
 {
     PCSTR targetXboxUserId;
     std::string resultErrorMsg;
 };
 
-struct xbl_args_tcui_check_gaming_privilege : public xbl_args<TCUICheckGamingPrivilegeResult>
+struct xbl_args_tcui_check_gaming_privilege : public xbl_args<XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT>
 {
-    GAMING_PRIVILEGE privilege;
+    XSAPI_GAMING_PRIVILEGE privilege;
     std::string resultErrorMsg;
     std::string friendlyMessage;
 };
 
-struct xbl_args_xbox_live_user_sign_in : public xbl_args<SignInResult>
+struct xbl_args_xbox_live_user_sign_in : public xbl_args<XSAPI_SIGN_IN_RESULT>
 {
     xbl_args_xbox_live_user_sign_in(
-        _In_ XboxLiveUser* user,
+        _In_ XSAPI_XBOX_LIVE_USER* pUser,
         _In_ Platform::Object^ coreDispatcher,
         _In_opt_ bool signInSilently = false
         );
 
-    XboxLiveUser* user;
+    XSAPI_XBOX_LIVE_USER* pUser;
     bool signInSilently;
     Platform::Object^ coreDispatcher;
 
     std::string resultErrorMsg;
 };
 
-struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<TokenAndSignatureResult>
+struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<XSAPI_TOKEN_AND_SIGNATURE_RESULT>
 {
     xbl_args_xbox_live_user_get_token_and_signature(
-        _In_ XboxLiveUser* user,
+        _In_ XSAPI_XBOX_LIVE_USER* pUser,
         _In_ PCSTR httpMethod,
         _In_ PCSTR url,
         _In_ PCSTR headers,
         _In_ PCSTR requestBodyString
         );
 
-    XboxLiveUser* user;
+    XSAPI_XBOX_LIVE_USER* pUser;
     PCSTR httpMethod;
     PCSTR url;
     PCSTR headers;
@@ -69,7 +69,7 @@ struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<TokenAn
     std::string resultErrorMsg;
 };
 
-struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XboxLiveResult>
+struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XSAPI_RESULT_INFO>
 {
     std::string resultErrorMsg;
 };

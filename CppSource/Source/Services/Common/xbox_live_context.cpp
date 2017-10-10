@@ -8,43 +8,45 @@
 
 using namespace xbox::services;
 
-struct XboxLiveContextImpl
+struct XSAPI_XBOX_LIVE_CONTEXT_IMPL
 {
-    XboxLiveContextImpl(
-        _In_ XboxLiveUser *user,
-        _In_ XboxLiveContext *cContext
+public:
+    XSAPI_XBOX_LIVE_CONTEXT_IMPL(
+        _In_ XSAPI_XBOX_LIVE_USER* pUser,
+        _In_ XSAPI_XBOX_LIVE_CONTEXT* pXboxLiveContext
         ) 
-        : m_cContext(cContext),
-        m_cppContext(user->pImpl->m_cppUser)
+        : m_pXboxLiveContext(pXboxLiveContext),
+        m_cppContext(pUser->pImpl->cppUser())
     {
-         GetXboxLiveAppConfigSingleton(&(cContext->appConfig));
+        GetXboxLiveAppConfigSingleton(&m_pXboxLiveContext->pAppConfig);
     }
 
-    XboxLiveContext *m_cContext;
+private:
+    XSAPI_XBOX_LIVE_CONTEXT* m_pXboxLiveContext;
     xbox_live_context m_cppContext;
 };
 
-XSAPI_DLLEXPORT XboxLiveContext* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_XBOX_LIVE_CONTEXT* XBL_CALLING_CONV
 XboxLiveContextCreate(
-    XboxLiveUser *user
+    XSAPI_XBOX_LIVE_USER* pUser
     )
 {
     // TODO improve error handling
-    if (user == nullptr)
+    if (pUser == nullptr)
     {
         return nullptr;
     }
 
     verify_global_init();
 
-    auto context = new XboxLiveContext();
-    context->pImpl = new XboxLiveContextImpl(user, context);
+    auto context = new XSAPI_XBOX_LIVE_CONTEXT();
+    context->pImpl = new XSAPI_XBOX_LIVE_CONTEXT_IMPL(pUser, context);
     return context;
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveContextDelete(
-    XboxLiveContext *context
+    XSAPI_XBOX_LIVE_CONTEXT *context
     )
 {
     delete context->pImpl;

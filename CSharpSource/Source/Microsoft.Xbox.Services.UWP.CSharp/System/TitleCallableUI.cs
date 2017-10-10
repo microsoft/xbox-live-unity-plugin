@@ -11,25 +11,6 @@ namespace Microsoft.Xbox.Services.System
 
     public class TitleCallableUI
     {
-        [StructLayout(LayoutKind.Sequential)]
-        private struct CheckGamingPrivilegeResult
-        {
-            [MarshalAsAttribute(UnmanagedType.U1)]
-            public bool hasPrivilege;
-
-            public XboxLiveResult xblResult;
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void ShowProfileCardUICompletionRoutine(XboxLiveResult result, IntPtr completionRoutineContext);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void CheckGamingPrivilegeCompletionRoutine(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext);
-
-        private delegate XsapiResult TCUIShowProfileCardUI(IntPtr targetXboxUserId, ShowProfileCardUICompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate XsapiResult TCUICheckGamingPrivilegeSilently(GamingPrivilege privilege, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate XsapiResult TCUICheckGamingPrivilegeWithUI(GamingPrivilege privilege, IntPtr friendlyMessage, CheckGamingPrivilegeCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-
         /// <summary>
         /// Shows UI displaying the profile card for a specified user.
         /// </summary>
@@ -47,13 +28,12 @@ namespace Microsoft.Xbox.Services.System
             {
                 var pTargetXboxUserId = MarshalingHelpers.StringToHGlobalUtf8(targetXboxUserId);
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs, null, new List<IntPtr> { pTargetXboxUserId });
-                
-                XboxLive.Instance.Invoke<XsapiResult, TCUIShowProfileCardUI>(
-                    pTargetXboxUserId,
-                    (ShowProfileCardUICompletionRoutine)ShowProfileCardUIComplete,
-                    (IntPtr)contextKey,
-                    XboxLive.DefaultTaskGroupId
-                    );
+
+                var result = TCUIShowProfileCardUI(pTargetXboxUserId, ShowProfileCardUIComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    tcs.SetException(new XboxException(result));
+                }
             });
 
             return tcs.Task;
@@ -75,12 +55,11 @@ namespace Microsoft.Xbox.Services.System
             {
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs);
 
-                XboxLive.Instance.Invoke<XsapiResult, TCUICheckGamingPrivilegeSilently>(
-                    privilege,
-                    (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeSilentlyComplete,
-                    (IntPtr)contextKey,
-                    XboxLive.DefaultTaskGroupId
-                    );
+                var result = TCUICheckGamingPrivilegeSilently(privilege, CheckGamingPrivilegeSilentlyComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    tcs.SetException(new XboxException(result));
+                }
             });
 
             tcs.Task.Wait();
@@ -107,19 +86,19 @@ namespace Microsoft.Xbox.Services.System
                 var pFriendlyMessage = MarshalingHelpers.StringToHGlobalUtf8(friendlyMessage);
                 int contextKey = XboxLiveCallbackContext<TitleCallableUI, bool>.CreateContext(null, tcs, null, new List<IntPtr> { pFriendlyMessage });
 
-                XboxLive.Instance.Invoke<XsapiResult, TCUICheckGamingPrivilegeWithUI>(
-                    privilege,
-                    pFriendlyMessage,
-                    (CheckGamingPrivilegeCompletionRoutine)CheckGamingPrivilegeWithUIComplete,
-                    (IntPtr)contextKey,
-                    XboxLive.DefaultTaskGroupId
-                    );
+                var result = TCUICheckGamingPrivilegeWithUI(privilege, pFriendlyMessage,
+                    CheckGamingPrivilegeWithUIComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
+
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    tcs.SetException(new XboxException(result));
+                }
             });
 
             return tcs.Task;
         }
 
-        private static void ShowProfileCardUIComplete(XboxLiveResult result, IntPtr completionRoutineContext)
+        private static void ShowProfileCardUIComplete(XSAPI_RESULT_INFO result, IntPtr completionRoutineContext)
         {
             int contextKey = completionRoutineContext.ToInt32();
 
@@ -131,7 +110,7 @@ namespace Microsoft.Xbox.Services.System
             }
         }
 
-        private static void CheckGamingPrivilegeSilentlyComplete(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext)
+        private static void CheckGamingPrivilegeSilentlyComplete(TCUI_CHECK_GAMING_PRIVILEGE_RESULT result, IntPtr completionRoutineContext)
         {
             int contextKey = completionRoutineContext.ToInt32();
 
@@ -143,7 +122,7 @@ namespace Microsoft.Xbox.Services.System
             }      
         }
 
-        private static void CheckGamingPrivilegeWithUIComplete(CheckGamingPrivilegeResult result, IntPtr completionRoutineContext)
+        private static void CheckGamingPrivilegeWithUIComplete(TCUI_CHECK_GAMING_PRIVILEGE_RESULT result, IntPtr completionRoutineContext)
         {
             int contextKey = completionRoutineContext.ToInt32();
 
@@ -154,5 +133,42 @@ namespace Microsoft.Xbox.Services.System
                 context.Dispose();
             }
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct TCUI_CHECK_GAMING_PRIVILEGE_RESULT
+        {
+            [MarshalAsAttribute(UnmanagedType.U1)]
+            public bool hasPrivilege;
+
+            public XSAPI_RESULT_INFO xblResult;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE(XSAPI_RESULT_INFO result, IntPtr completionRoutineContext);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT(TCUI_CHECK_GAMING_PRIVILEGE_RESULT result, IntPtr completionRoutineContext);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT TCUIShowProfileCardUI(
+            IntPtr targetXboxUserId, 
+            XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT TCUICheckGamingPrivilegeSilently(
+            GamingPrivilege privilege, 
+            XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT TCUICheckGamingPrivilegeWithUI(
+            GamingPrivilege privilege, 
+            IntPtr friendlyMessage, 
+            XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
     }
 }

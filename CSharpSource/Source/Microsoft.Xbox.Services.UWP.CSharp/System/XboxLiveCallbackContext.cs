@@ -14,7 +14,7 @@ namespace Microsoft.Xbox.Services.System
     {
         public T Context;
 
-        public TaskCompletionSource<T2> TaskCompletionSource;      
+        public TaskCompletionSource<T2> TaskCompletionSource;
 
         public List<IntPtr> PointersToRelease;
         public List<IntPtr> PointersToFree;

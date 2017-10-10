@@ -4,6 +4,7 @@
 namespace Microsoft.Xbox.Services
 {
     using global::System;
+    using Microsoft.Xbox.Services.System;
 
     public class XboxException : Exception
     {
@@ -21,6 +22,11 @@ namespace Microsoft.Xbox.Services
         }
 
         public XboxException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        internal XboxException(XSAPI_RESULT result)
+            : base(string.Format("Xbox Services flat C API returned error {0}", result.ToString("g")))
         {
         }
     }

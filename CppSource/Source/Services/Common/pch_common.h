@@ -63,7 +63,7 @@ typedef std::chrono::system_clock chrono_clock_t;
 typedef std::chrono::steady_clock chrono_clock_t;
 #endif
 
-typedef int32_t function_context;
+typedef int32_t FUNCTION_CONTEXT;
 
 // libHttpClient
 #include "httpClient/httpClient.h"
@@ -71,6 +71,7 @@ typedef int32_t function_context;
 #include "httpClient/trace.h"
 
 #include "xsapi/types_c.h"
+#include "xsapi/errors_c.h"
 #include "xsapi/services_c.h"
 #include "utils.h"
 #include "singleton.h"

@@ -8,40 +8,34 @@
 extern "C" {
 #endif
 
-struct XboxLiveUser;
-struct XboxLiveAppConfig;
-struct XboxLiveContextImpl;
+struct XSAPI_XBOX_LIVE_USER;
+struct XSAPI_XBOX_LIVE_APP_CONFIG;
+struct XSAPI_XBOX_LIVE_CONTEXT_IMPL;
 
-typedef struct XboxLiveContext
+typedef struct XSAPI_XBOX_LIVE_CONTEXT
 {
     PCSTR xboxUserId;
-
 #if XDK_API | XBOX_UWP
     Windows::Xbox::System::User^ user;
 #else
-    XboxLiveUser *user;
+    XSAPI_XBOX_LIVE_USER* pUser;
 #endif
-
-    XboxLiveAppConfig const *appConfig;
-
-    // TODO add services
-
-    XboxLiveContextImpl *pImpl;
-
-} XboxLiveContext;
+    CONST XSAPI_XBOX_LIVE_APP_CONFIG* pAppConfig;
+    XSAPI_XBOX_LIVE_CONTEXT_IMPL* pImpl;
+} XSAPI_XBOX_LIVE_CONTEXT;
 
 #if !(XDK_API | XBOX_UWP)
 
-XSAPI_DLLEXPORT XboxLiveContext* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_XBOX_LIVE_CONTEXT* XBL_CALLING_CONV
 XboxLiveContextCreate(
-    XboxLiveUser *user
+    XSAPI_XBOX_LIVE_USER* pUser
     );
 
 #endif
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveContextDelete(
-    XboxLiveContext *context
+    XSAPI_XBOX_LIVE_CONTEXT* pContext
     );
 
 #if defined(__cplusplus)

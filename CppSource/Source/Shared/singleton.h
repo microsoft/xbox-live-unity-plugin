@@ -5,8 +5,8 @@
 #include "threadpool.h"
 #include "xbox_live_app_config_impl.h"
 
-struct XboxLiveUser;
-struct XboxLiveAppConfig;
+struct XSAPI_XBOX_LIVE_USER;
+struct XSAPI_XBOX_LIVE_APP_CONFIG;
 
 struct xsapi_singleton
 {
@@ -17,10 +17,10 @@ struct xsapi_singleton
     std::unique_ptr<xsapi_thread_pool> m_threadPool;
 
     std::mutex m_usersLock;
-    std::map<std::string, XboxLiveUser*> m_signedInUsers;
+    std::map<std::string, XSAPI_XBOX_LIVE_USER*> m_signedInUsers;
 
-    std::shared_ptr<XboxLiveAppConfig> m_appConfigSingleton;
-    std::unique_ptr<XboxLiveAppConfigImpl> m_appConfigImplSingleton;
+    std::shared_ptr<XSAPI_XBOX_LIVE_APP_CONFIG> m_appConfigSingleton;
+    std::unique_ptr<XBOX_LIVE_APP_CONFIG_IMPL> m_appConfigImplSingleton;
 };
 
 xsapi_singleton* get_xsapi_singleton(_In_ bool createIfRequired = false);

@@ -151,6 +151,7 @@
     <ClCompile Include="..\..\Source\Shared\utils.cpp" />
     <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp" />
     <ClCompile Include="..\..\Source\System\user.cpp" />
+    <ClCompile Include="..\..\Source\System\user_impl_c.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
