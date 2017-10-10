@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "xsapi/xbox_live_app_config_c.h"
 
-XboxLiveAppConfigImpl::XboxLiveAppConfigImpl()
+XBOX_LIVE_APP_CONFIG_IMPL::XBOX_LIVE_APP_CONFIG_IMPL()
 {
     auto singleton = get_xsapi_singleton();
     std::lock_guard<std::mutex> lock(singleton->m_singletonLock);
@@ -23,13 +23,13 @@ XboxLiveAppConfigImpl::XboxLiveAppConfigImpl()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 GetXboxLiveAppConfigSingleton(
-    _Out_  XboxLiveAppConfig const** ppConfig
+    _Out_  CONST XSAPI_XBOX_LIVE_APP_CONFIG** ppConfig
     ) XSAPI_NOEXCEPT
 try
 {
     if (ppConfig == nullptr)
     {
-        return XSAPI_E_INVALIDARG;
+        return XSAPI_RESULT_E_HC_INVALIDARG;
     }
     
     auto singleton = get_xsapi_singleton();
@@ -37,11 +37,11 @@ try
 
     if (singleton->m_appConfigSingleton == nullptr)
     {
-        singleton->m_appConfigSingleton = std::make_shared<XboxLiveAppConfig>();
-        singleton->m_appConfigImplSingleton = std::make_unique<XboxLiveAppConfigImpl>();
+        singleton->m_appConfigSingleton = std::make_shared<XSAPI_XBOX_LIVE_APP_CONFIG>();
+        singleton->m_appConfigImplSingleton = std::make_unique<XBOX_LIVE_APP_CONFIG_IMPL>();
     }
     *ppConfig = singleton->m_appConfigSingleton.get();
    
-    return XSAPI_OK;
+    return XSAPI_RESULT_OK;
 }
 CATCH_RETURN()

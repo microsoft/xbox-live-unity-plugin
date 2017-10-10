@@ -26,31 +26,27 @@ namespace Microsoft.Xbox.Services.System
         public AuthConfig AuthConfig { get; private set; } // TODO remove this
         public User CreationContext { get; private set; }
 
-        private IntPtr m_xboxLiveUser_c;
-        private int m_signOutHandlerContext;
+        private IntPtr xboxLiveUserPtr;
+        private int signOutHandlerContext;
 
-        private static ConcurrentDictionary<IntPtr, UserImpl> s_xboxLiveUserInstanceMap = new ConcurrentDictionary<IntPtr, UserImpl>();
+        private static ConcurrentDictionary<IntPtr, UserImpl> xboxLiveUserInstanceMap = new ConcurrentDictionary<IntPtr, UserImpl>();
 
         public UserImpl(User systemUser)
         {
             this.CreationContext = systemUser;
 
-            var handle = GCHandle.Alloc(m_xboxLiveUser_c, GCHandleType.Pinned);
-            var ppUser = GCHandle.ToIntPtr(handle);
-
-            var xsapiResult = XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserCreateFromSystemUser>(
+            var forceInit = XboxLive.Instance;
+            var result = XboxLiveUserCreateFromSystemUser(
                 this.CreationContext == null ? IntPtr.Zero : Marshal.GetIUnknownForObject(this.CreationContext),
-                ppUser
-                );
+                out xboxLiveUserPtr);
 
-            m_xboxLiveUser_c = Marshal.ReadIntPtr(ppUser);
-            handle.Free();
+            if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+            {
+                throw new XboxException(result);
+            }
 
-            m_signOutHandlerContext = XboxLive.Instance.Invoke<Int32, AddSignOutCompletedHandler>(
-                (SignOutCompletedHandler)OnSignOutCompleted
-                );
-
-            s_xboxLiveUserInstanceMap[m_xboxLiveUser_c] = this;
+            signOutHandlerContext = AddSignOutCompletedHandler(OnSignOutCompleted);
+            xboxLiveUserInstanceMap[xboxLiveUserPtr] = this;
 
             // TODO: This config is broken.
             var appConfig = XboxLiveAppConfiguration.Instance;
@@ -65,19 +61,17 @@ namespace Microsoft.Xbox.Services.System
 
         ~UserImpl()
         {
-            XboxLive.Instance.Invoke<RemoveSignOutCompletedHandler>(
-                m_signOutHandlerContext
-                );
+            RemoveSignOutCompletedHandler(signOutHandlerContext);
 
-            if (null != m_xboxLiveUser_c)
+            if (null != xboxLiveUserPtr)
             {
-                XboxLive.Instance.Invoke<XboxLiveUserDelete>(m_xboxLiveUser_c);
+                XboxLiveUserDelete(xboxLiveUserPtr);
             }
         }
 
         private static void OnSignOutCompleted(IntPtr xboxLiveUser_c)
         {
-            UserImpl @this = s_xboxLiveUserInstanceMap[xboxLiveUser_c];
+            UserImpl @this = xboxLiveUserInstanceMap[xboxLiveUser_c];
 
             if (!@this.IsSignedIn)
             {
@@ -124,31 +118,35 @@ namespace Microsoft.Xbox.Services.System
                     showUI ? new List<IntPtr> { coreDispatcherPtr } : null,
                     null);
 
+                XSAPI_RESULT result = XSAPI_RESULT.XSAPI_RESULT_OK;
                 if (showUI)
                 {
-                    XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserSignInWithCoreDispatcher>(
-                        m_xboxLiveUser_c,
-                        coreDispatcherPtr,
-                        (SignInCompletionRoutine)SignInComplete,
-                        (IntPtr)contextKey,
-                        XboxLive.DefaultTaskGroupId
-                        );
+                    result = XboxLiveUserSignInWithCoreDispatcher(
+                        xboxLiveUserPtr, 
+                        coreDispatcherPtr, 
+                        SignInComplete, 
+                        (IntPtr)contextKey, 
+                        XboxLive.DefaultTaskGroupId);
                 }
                 else
                 {
-                    XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserSignInSilently>(
-                        m_xboxLiveUser_c,
-                        (SignInCompletionRoutine)SignInComplete,
-                        (IntPtr)contextKey,
-                        XboxLive.DefaultTaskGroupId
-                        );
+                    result = XboxLiveUserSignInSilently(
+                        xboxLiveUserPtr, 
+                        SignInComplete, 
+                        (IntPtr)contextKey, 
+                        XboxLive.DefaultTaskGroupId);
+                }
+
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    throw new XboxException(result);
                 }
             });
 
             return tcs.Task;
         }
 
-        private static void SignInComplete(SignInResult_c result, IntPtr context)
+        private static void SignInComplete(SIGN_IN_RESULT result, IntPtr context)
         {
             int contextKey = context.ToInt32();
 
@@ -158,18 +156,17 @@ namespace Microsoft.Xbox.Services.System
                 UserImpl @this = contextObject.Context;
                 if (result.result.errorCode == 0)
                 {
-                    @this.UpdatePropertiesFromXboxLiveUser_c();
+                    @this.UpdatePropertiesFromXboxLiveUserPtr();
                     @this.SignInCompleted(@this, new EventArgs());
 
                     contextObject.TaskCompletionSource.SetResult(new SignInResult(result.payload.status));
                 }
                 else
                 {
-                    contextObject.TaskCompletionSource.SetException(new Exception(result.result.errorMessage));
-                }                
-                
+                    contextObject.TaskCompletionSource.SetException(new Exception(MarshalingHelpers.Utf8ToString(result.result.errorMessage)));
+                }
                 contextObject.Dispose();
-            }            
+            }
         }
 
         public Task<TokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
@@ -196,22 +193,25 @@ namespace Microsoft.Xbox.Services.System
                     null,
                     new List<IntPtr> { pHttpMethod, pUrl, pHeaders, pBody });
 
-                XboxLive.Instance.Invoke<XsapiResult, XboxLiveUserGetTokenAndSignature>(
-                    m_xboxLiveUser_c,
-                    pHttpMethod,
-                    pUrl,
-                    pHeaders,
+                var result = XboxLiveUserGetTokenAndSignature(xboxLiveUserPtr, 
+                    pHttpMethod, 
+                    pUrl, 
+                    pHeaders, 
                     pBody,
-                    (GetTokenAndSignatureCompletionRoutine)GetTokenAndSignatureComplete,
-                    (IntPtr)contextKey,
-                    XboxLive.DefaultTaskGroupId
-                    );
+                    GetTokenAndSignatureComplete, 
+                    (IntPtr)contextKey, 
+                    XboxLive.DefaultTaskGroupId);
+
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    throw new XboxException(result);
+                }
             });
 
             return tcs.Task;
         }
 
-        private static void GetTokenAndSignatureComplete(TokenAndSignatureResult_c result, IntPtr context)
+        private static void GetTokenAndSignatureComplete(TOKEN_AND_SIGNATURE_RESULT result, IntPtr context)
         {
             int contextKey = context.ToInt32();
 
@@ -222,38 +222,38 @@ namespace Microsoft.Xbox.Services.System
                 {
                     contextObject.TaskCompletionSource.SetResult(new TokenAndSignatureResult
                     {
-                        WebAccountId = result.payload.WebAccountId,
-                        Privileges = result.payload.Privileges,
-                        AgeGroup = result.payload.AgeGroup,
-                        Gamertag = result.payload.Gamertag,
-                        XboxUserId = result.payload.XboxUserId,
-                        Signature = result.payload.Signature,
-                        Token = result.payload.Token
+                        WebAccountId = MarshalingHelpers.Utf8ToString(result.payload.WebAccountId),
+                        Privileges = MarshalingHelpers.Utf8ToString(result.payload.Privileges),
+                        AgeGroup = MarshalingHelpers.Utf8ToString(result.payload.AgeGroup),
+                        Gamertag = MarshalingHelpers.Utf8ToString(result.payload.Gamertag),
+                        XboxUserId = MarshalingHelpers.Utf8ToString(result.payload.XboxUserId),
+                        Signature = MarshalingHelpers.Utf8ToString(result.payload.Signature),
+                        Token = MarshalingHelpers.Utf8ToString(result.payload.Token)
                         //TokenRequestResultStatus = tokenResult.ResponseStatus
                     });
                 }
                 else
                 {
-                    contextObject.TaskCompletionSource.SetException(new Exception(result.result.errorMessage));
+                    contextObject.TaskCompletionSource.SetException(new Exception(MarshalingHelpers.Utf8ToString(result.result.errorMessage)));
                 }
                 contextObject.Dispose();
             }
         }
 
-        private void UpdatePropertiesFromXboxLiveUser_c()
+        private void UpdatePropertiesFromXboxLiveUserPtr()
         {
-            var xboxLiveUser_c = Marshal.PtrToStructure<XboxLiveUser_c>(m_xboxLiveUser_c);
+            var xboxLiveUserStruct = Marshal.PtrToStructure<XBOX_LIVE_USER>(xboxLiveUserPtr);
 
-            this.XboxUserId = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.XboxUserId);
-            this.Gamertag = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.Gamertag);
-            this.AgeGroup = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.AgeGroup);
-            this.Privileges = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.Privileges);
-            this.IsSignedIn = Convert.ToBoolean(xboxLiveUser_c.IsSignedIn);
-            this.WebAccountId = MarshalingHelpers.Utf8ToString(xboxLiveUser_c.WebAccountId);
+            this.XboxUserId = MarshalingHelpers.Utf8ToString(xboxLiveUserStruct.XboxUserId);
+            this.Gamertag = MarshalingHelpers.Utf8ToString(xboxLiveUserStruct.Gamertag);
+            this.AgeGroup = MarshalingHelpers.Utf8ToString(xboxLiveUserStruct.AgeGroup);
+            this.Privileges = MarshalingHelpers.Utf8ToString(xboxLiveUserStruct.Privileges);
+            this.IsSignedIn = Convert.ToBoolean(xboxLiveUserStruct.IsSignedIn);
+            this.WebAccountId = MarshalingHelpers.Utf8ToString(xboxLiveUserStruct.WebAccountId);
 
-            if (xboxLiveUser_c.WindowsSystemUser != IntPtr.Zero)
+            if (xboxLiveUserStruct.WindowsSystemUser != IntPtr.Zero)
             {
-                var user = Marshal.GetObjectForIUnknown(xboxLiveUser_c.WindowsSystemUser);
+                var user = Marshal.GetObjectForIUnknown(xboxLiveUserStruct.WindowsSystemUser);
                 if (user is Windows.System.User)
                 {
                     this.CreationContext = user as User;
@@ -262,93 +262,98 @@ namespace Microsoft.Xbox.Services.System
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void SignInCompletionRoutine(SignInResult_c result, IntPtr context);
+        private delegate void XSAPI_SIGN_IN_COMPLETION_ROUTINE(SIGN_IN_RESULT result, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void GetTokenAndSignatureCompletionRoutine(TokenAndSignatureResult_c result, IntPtr context);
+        private delegate void XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE(TOKEN_AND_SIGNATURE_RESULT result, IntPtr context);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void SignOutCompletedHandler(IntPtr xboxLiveUser_c);
+        private delegate void XSAPI_SIGN_OUT_COMPLETED_HANDLER(IntPtr xboxLiveUserPtr);
 
-        private delegate XsapiResult XboxLiveUserCreateFromSystemUser(IntPtr systemUser, IntPtr ppXboxLiveUser_c);
-        private delegate void XboxLiveUserDelete(IntPtr xboxLiveUser_c);
-        private delegate XsapiResult XboxLiveUserSignInWithCoreDispatcher(IntPtr xboxLiveUser_c, IntPtr coreDispatcher, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate XsapiResult XboxLiveUserSignInSilently(IntPtr xboxLiveUser_c, SignInCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate XsapiResult XboxLiveUserGetTokenAndSignature(IntPtr xboxLiveUser_c, IntPtr httpMethod, IntPtr url, IntPtr headers, IntPtr requestBodyString, GetTokenAndSignatureCompletionRoutine completionRoutine, IntPtr completionRoutineContext, Int64 taskGroupId);
-        private delegate Int32 AddSignOutCompletedHandler(SignOutCompletedHandler handler);
-        private delegate void RemoveSignOutCompletedHandler(Int32 functionContext);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT XboxLiveUserCreateFromSystemUser(
+            IntPtr systemUser, 
+            out IntPtr xboxLiveUserPtr);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern void XboxLiveUserDelete(IntPtr xboxLiveUserPtr);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT XboxLiveUserSignInWithCoreDispatcher(
+            IntPtr xboxLiveUserPtr, 
+            IntPtr coreDispatcher, 
+            XSAPI_SIGN_IN_COMPLETION_ROUTINE completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT XboxLiveUserSignInSilently(
+            IntPtr xboxLiveUserPtr, 
+            XSAPI_SIGN_IN_COMPLETION_ROUTINE completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT XboxLiveUserGetTokenAndSignature(
+            IntPtr xboxLiveUserPtr, 
+            IntPtr httpMethod,
+            IntPtr url, 
+            IntPtr headers, 
+            IntPtr requestBodyString, 
+            XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE completionRoutine, 
+            IntPtr completionRoutineContext, 
+            Int64 taskGroupId);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern Int32 AddSignOutCompletedHandler(XSAPI_SIGN_OUT_COMPLETED_HANDLER handler);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern void RemoveSignOutCompletedHandler(Int32 functionContext);
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct XboxLiveUser_c
+        private struct XBOX_LIVE_USER
         {
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr XboxUserId;
-
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr Gamertag;
-
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr AgeGroup;
-
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr Privileges;
-
             [MarshalAsAttribute(UnmanagedType.U1)]
-            public byte IsSignedIn;
-
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
+            public bool IsSignedIn;
             public IntPtr WebAccountId;
-
-            [MarshalAsAttribute(UnmanagedType.SysInt)]
             public IntPtr WindowsSystemUser;
         };
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct SignInResultPayload_c
+        private struct SIGN_IN_RESULT_PAYLOAD
         {
             public SignInStatus status;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct SignInResult_c
+        private struct SIGN_IN_RESULT
         {
-            public XboxLiveResult result;
-            public SignInResultPayload_c payload;
+            public XSAPI_RESULT_INFO result;
+            public SIGN_IN_RESULT_PAYLOAD payload;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct TokenAndSignatureResultPayload_c
+        private struct TOKEN_AND_SIGNATURE_RESULT_PAYLOAD
         {
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string Token;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string Signature;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string XboxUserId;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string Gamertag;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string XboxUserHash;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string AgeGroup;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string Privileges;
-
-            [MarshalAsAttribute(UnmanagedType.LPStr)]
-            public string WebAccountId;
+            public IntPtr Token;
+            public IntPtr Signature;
+            public IntPtr XboxUserId;
+            public IntPtr Gamertag;
+            public IntPtr XboxUserHash;
+            public IntPtr AgeGroup;
+            public IntPtr Privileges;
+            public IntPtr WebAccountId;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct TokenAndSignatureResult_c
+        private struct TOKEN_AND_SIGNATURE_RESULT
         {
-            public XboxLiveResult result;
-            public TokenAndSignatureResultPayload_c payload;
+            public XSAPI_RESULT_INFO result;
+            public TOKEN_AND_SIGNATURE_RESULT_PAYLOAD payload;
         }
     }
 }

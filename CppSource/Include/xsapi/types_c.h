@@ -80,28 +80,8 @@
 
 #define XBL_CALLING_CONV __cdecl
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-typedef enum XSAPI_RESULT
-{
-    XSAPI_OK = 0,
-    XSAPI_E_FAIL = -1,
-    XSAPI_E_POINTER = -2,
-    XSAPI_E_INVALIDARG = -3,
-    XSAPI_E_OUTOFMEMORY = -4,
-    XSAPI_E_BUFFERTOOSMALL = -5,
-    XSAPI_E_NOTINITIALIZED = -6,
-    XSAPI_E_FEATURENOTPRESENT = -7
-} XSAPI_RESULT;
-
 #ifdef __cplusplus
 #define XSAPI_NOEXCEPT noexcept
 #else
 #define XSAPI_NOEXCEPT
 #endif
-
-#if defined(__cplusplus)
-} // end extern "C"
-#endif // defined(__cplusplus)

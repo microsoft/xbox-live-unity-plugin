@@ -4,24 +4,24 @@
 #include "taskargs.h"
 
 xbl_args_xbox_live_user_sign_in::xbl_args_xbox_live_user_sign_in(
-    _In_ XboxLiveUser* _user,
+    _In_ XSAPI_XBOX_LIVE_USER* _pUser,
     _In_ Platform::Object^ _coreDispatcher,
     _In_opt_ bool _signInSilently
     )
-    : user(_user),
+    : pUser(_pUser),
     coreDispatcher(_coreDispatcher),
     signInSilently(_signInSilently)
 {
 }
 
 xbl_args_xbox_live_user_get_token_and_signature::xbl_args_xbox_live_user_get_token_and_signature(
-    _In_ XboxLiveUser* _user,
+    _In_ XSAPI_XBOX_LIVE_USER* _pUser,
     _In_ PCSTR _httpMethod,
     _In_ PCSTR _url,
     _In_ PCSTR _headers,
     _In_ PCSTR _requestBodyString
     )
-    : user(_user),
+    : pUser(_pUser),
     httpMethod(_httpMethod),
     url(_url),
     headers(_headers),
