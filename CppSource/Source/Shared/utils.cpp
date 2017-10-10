@@ -113,3 +113,9 @@ XSAPI_RESULT utils::xsapi_result_from_hc_result(HC_RESULT hcr)
     // TODO make this is a bit more robust
     return static_cast<XSAPI_RESULT>(hcr);
 }
+
+template<typename T>
+static XSAPI_RESULT xsapi_result_from_xbox_live_result(xbox::services::xbox_live_result<T> result)
+{
+    return result.err().value() == 0 ? XSAPI_RESULT::XSAPI_OK : XSAPI_RESULT::XSAPI_E_FAIL;
+}

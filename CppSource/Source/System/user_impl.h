@@ -24,10 +24,10 @@ struct XboxLiveUserImpl
     }
 
     XboxLiveUserImpl(
-        _In_ std::shared_ptr<xbox::services::system::xbox_live_user> creationContext,
+        _In_ std::shared_ptr<xbox::services::system::xbox_live_user> cppUser,
         _In_ XboxLiveUser *cUser
     )
-        : m_cppUser(creationContext), m_cUser(cUser)
+        : m_cppUser(cppUser), m_cUser(cUser)
     {
         Refresh();
     }

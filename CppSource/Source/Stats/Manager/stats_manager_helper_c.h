@@ -10,53 +10,47 @@ using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::stats::manager;
 
-struct StatValueImpl
+struct XSAPI_STAT_VALUE_IMPL
 {
-    StatValueImpl(
+    XSAPI_STAT_VALUE_IMPL(
         _In_ stat_value cppStatValue,
-        _In_ StatValue *cStatValue
+        _In_ XSAPI_STAT_VALUE *cStatValue
     ) : m_cStatValue(cStatValue), m_cppStatValue(cppStatValue)
     {
         m_name = utils::to_utf8string(m_cppStatValue.name());
         m_cStatValue->name = m_name.c_str();
 
-        m_asNumber = m_cppStatValue.as_number();
-        m_cStatValue->asNumber = m_asNumber;
+        m_cStatValue->asNumber = m_cppStatValue.as_number();
 
-        m_asInteger = m_cppStatValue.as_integer();
         m_cStatValue->asInteger = m_cppStatValue.as_integer();
 
         m_asString = utils::to_utf8string(m_cppStatValue.as_string());
         m_cStatValue->asString = m_asString.c_str();
 
-        m_dataType = static_cast<STAT_DATA_TYPE>(m_cppStatValue.data_type());
-        m_cStatValue->dataType = m_dataType;
+        m_cStatValue->dataType = static_cast<XSAPI_STAT_DATA_TYPE>(m_cppStatValue.data_type());
     }
 
     std::string m_name;
-    double m_asNumber;
-    int64 m_asInteger;
     std::string m_asString;
-    STAT_DATA_TYPE m_dataType;
 
     stat_value m_cppStatValue;
-    StatValue *m_cStatValue;
+    XSAPI_STAT_VALUE *m_cStatValue;
 };
 
-StatValue *CreateStatValueFromCpp(
+XSAPI_STAT_VALUE *CreateStatValueFromCpp(
     _In_ stat_value cppStatValue
 )
 {
-    auto cStatValue = new StatValue();
-    cStatValue->pImpl = new StatValueImpl(cppStatValue, cStatValue);
+    auto cStatValue = new XSAPI_STAT_VALUE();
+    cStatValue->pImpl = new XSAPI_STAT_VALUE_IMPL(cppStatValue, cStatValue);
 
     return cStatValue;
 }
 
-struct LeaderboardResultEventArgsImpl {
-    LeaderboardResultEventArgsImpl(
+struct XSAPI_LEADERBOARD_RESULT_EVENT_ARGS_IMPL {
+    XSAPI_LEADERBOARD_RESULT_EVENT_ARGS_IMPL(
         _In_ std::shared_ptr<leaderboard_result_event_args> cppEventArgs,
-        _In_ LeaderboardResultEventArgs* cEventArgs
+        _In_ XSAPI_LEADERBOARD_RESULT_EVENT_ARGS* cEventArgs
     ) : m_cEventArgs(cEventArgs), m_cppEventArgs(cppEventArgs)
     {
         auto result = m_cppEventArgs->result();
@@ -65,30 +59,30 @@ struct LeaderboardResultEventArgsImpl {
         m_cEventArgs->result = m_result;
     }
 
-    LeaderboardResult* m_result;
+    XSAPI_LEADERBOARD_RESULT* m_result;
 
     std::shared_ptr<leaderboard_result_event_args> m_cppEventArgs;
-    LeaderboardResultEventArgs* m_cEventArgs;
+    XSAPI_LEADERBOARD_RESULT_EVENT_ARGS* m_cEventArgs;
 };
 
-LeaderboardResultEventArgs* CreateLeaderboardResultEventArgs(
+XSAPI_LEADERBOARD_RESULT_EVENT_ARGS* CreateLeaderboardResultEventArgs(
     _In_ std::shared_ptr<leaderboard_result_event_args> cppArgs
 )
 {
     auto cppResult = cppArgs->result();
-    auto args = new LeaderboardResultEventArgs();
-    args->pImpl = new LeaderboardResultEventArgsImpl(cppArgs, args);
+    auto args = new XSAPI_LEADERBOARD_RESULT_EVENT_ARGS();
+    args->pImpl = new XSAPI_LEADERBOARD_RESULT_EVENT_ARGS_IMPL(cppArgs, args);
     return args;
 }
 
-struct StatEventImpl 
+struct XSAPI_STAT_EVENT_IMPL 
 {
-    StatEventImpl(
+    XSAPI_STAT_EVENT_IMPL(
         _In_ stat_event cppStatEvent,
-        _In_ StatEvent *cStatEvent
+        _In_ XSAPI_STAT_EVENT *cStatEvent
     ) : m_cStatEvent(cStatEvent), m_cppStatEvent(cppStatEvent)
     {
-        m_eventType = static_cast<STAT_EVENT_TYPE>(m_cppStatEvent.event_type());
+        m_eventType = static_cast<XSAPI_STAT_EVENT_TYPE>(m_cppStatEvent.event_type());
         m_cStatEvent->eventType = m_eventType;
         
         m_args = nullptr;
@@ -118,23 +112,23 @@ struct StatEventImpl
         m_cStatEvent->errorMessage = m_errorMessage.c_str();
     }
 
-    STAT_EVENT_TYPE m_eventType;
-    StatEventArgs *m_args;
+    XSAPI_STAT_EVENT_TYPE m_eventType;
+    XSAPI_STAT_EVENT_ARGS *m_args;
     XboxLiveUser *m_localUser;
     xbox_live_result<void> m_errorInfo;
     std::error_code m_errorCode;
     std::string m_errorMessage;
 
     stat_event m_cppStatEvent;
-    StatEvent *m_cStatEvent;
+    XSAPI_STAT_EVENT *m_cStatEvent;
 };
 
-StatEvent *CreateStatEventFromCpp(
+XSAPI_STAT_EVENT *CreateStatEventFromCpp(
     _In_ stat_event cppEvent
 ) 
 {
-    auto cEvent = new StatEvent();
-    cEvent->pImpl = new StatEventImpl(cppEvent, cEvent);
+    auto cEvent = new XSAPI_STAT_EVENT();
+    cEvent->pImpl = new XSAPI_STAT_EVENT_IMPL(cppEvent, cEvent);
 
     return cEvent;
 }

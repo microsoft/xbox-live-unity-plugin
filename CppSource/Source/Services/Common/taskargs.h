@@ -75,17 +75,17 @@ struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XboxLiveResult>
     std::string resultErrorMsg;
 };
 
-struct xbl_args_leaderboard_result_get_next : public xbl_args<GetNextResult>
+struct xbl_args_leaderboard_result_get_next : public xbl_args<XSAPI_GET_NEXT_RESULT>
 {
     xbl_args_leaderboard_result_get_next(
-        _In_ LeaderboardResult* leaderboard,
+        _In_ XSAPI_LEADERBOARD_RESULT* leaderboard,
         _In_ uint32 maxItems
     );
 
-    LeaderboardResult* leaderboard;
+    XSAPI_LEADERBOARD_RESULT* leaderboard;
     uint32 maxItems;
 
-    LeaderboardResult* nextResult;
+    XSAPI_LEADERBOARD_RESULT* nextResult;
 
     std::string resultErrorMsg;
 };

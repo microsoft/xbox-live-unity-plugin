@@ -14,99 +14,99 @@ extern "C" {
 
 #if !XDK_API
     
-struct PreferredColorImpl;
-struct SocialManagerPresenceTitleRecordImpl;
-struct XboxUserIdContainerImpl;
-struct SocialEventImpl;
-struct XboxSocialUserImpl;
-struct XboxSocialUserGroupImpl;
-struct SocialManagerPresenceRecordImpl;
+struct XSAPI_PREFERRED_COLOR_IMPL;
+struct XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL;
+struct XSAPI_XBOX_USER_ID_CONTAINER_IMPL;
+struct XSAPI_SOCIAL_EVENT_IMPL;
+struct XSAPI_XBOX_SOCIAL_USER_IMPL;
+struct XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL;
+struct XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL;
 
-typedef enum SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL {
-    NO_EXTRA_DETAIL,
-    TITLE_HISTORY_LEVEL = 0x1,
-    PREFERRED_COLOR_LEVEL = 0x2,
-} SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL;
+typedef enum XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL {
+    XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL_NO_EXTRA_DETAIL,
+    XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL_TITLE_HISTORY_LEVEL = 0x1,
+    XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL_PREFERRED_COLOR_LEVEL = 0x2,
+} XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL;
 
-typedef enum PRESENCE_FILTER 
+typedef enum XSAPI_PRESENCE_FILTER
 {
-    UNKNOWN_PRESENCE,
-    TITLE_ONLINE,
-    TITLE_OFFLINE,
-    ALL_ONLINE,
-    ALL_OFFLINE,
-    ALL_TITLE,
-    ALL_PF
-} PRESENCE_FILTER;
+    XSAPI_PRESENCE_FILTER_UNKNOWN,
+    XSAPI_PRESENCE_FILTER_TITLE_ONLINE,
+    XSAPI_PRESENCE_FILTER_TITLE_OFFLINE,
+    XSAPI_PRESENCE_FILTER_ALL_ONLINE,
+    XSAPI_PRESENCE_FILTER_ALL_OFFLINE,
+    XSAPI_PRESENCE_FILTER_ALL_TITLE,
+    XSAPI_PRESENCE_FILTER_ALL
+} XSAPI_PRESENCE_FILTER;
 
-typedef enum SOCIAL_EVENT_TYPE 
+typedef enum XSAPI_SOCIAL_EVENT_TYPE
 {
-    USERS_ADDED_TO_SOCIAL_GRAPH_SOCIAL,
-    USERS_REMOVED_FROM_SOCIAL_GRAPH_SOCIAL,
-    PRESENCE_CHANGED_SOCIAL,
-    PROFILES_CHANGED_SOCIAL,
-    SOCIAL_RELATIONSHIPS_CHANGED_SOCIAL,
-    LOCAL_USER_ADDED_SOCIAL,
-    LOCAL_USER_REMOVED_SOCIAL,
-    SOCIAL_USER_GROUP_LOADED_SOCIAL,
-    SOCIAL_USER_GROUP_UPDATED_SOCIAL,
-    UNKNOWN_EVENT_SOCIAL
-} SOCIAL_EVENT_TYPE;
+    XSAPI_SOCIAL_EVENT_TYPE_USERS_ADDED_TO_SOCIAL_GRAPH,
+    XSAPI_SOCIAL_EVENT_TYPE_USERS_REMOVED_FROM_SOCIAL_GRAPH,
+    XSAPI_SOCIAL_EVENT_TYPE_PRESENCE_CHANGED,
+    XSAPI_SOCIAL_EVENT_TYPE_PROFILES_CHANGED,
+    XSAPI_SOCIAL_EVENT_TYPE_SOCIAL_RELATIONSHIPS,
+    XSAPI_SOCIAL_EVENT_TYPE_LOCAL_USER_ADDED,
+    XSAPI_SOCIAL_EVENT_TYPE_LOCAL_USER_REMOVED,
+    XSAPI_SOCIAL_EVENT_TYPE_SOCIAL_USER_GROUP_LOADED,
+    XSAPI_SOCIAL_EVENT_TYPE_SOCIAL_USER_GROUP_UPDATED,
+    XSAPI_SOCIAL_EVENT_TYPE_UNKNOWN_EVENT
+} XSAPI_SOCIAL_EVENT_TYPE;
 
-typedef enum RELATIONSHIP_FILTER 
+typedef enum XSAPI_RELATIONSHIP_FILTER 
 {
-    FRIENDS,
-    FAVORITE
-} RELATIONSHIP_FILTER;
+    XSAPI_RELATIONSHIP_FILTER_FRIENDS,
+    XSAPI_RELATIONSHIP_FILTER_FAVORITE
+} XSAPI_RELATIONSHIP_FILTER;
 
-typedef enum SOCIAL_USER_GROUP_TYPE 
+typedef enum XSAPI_SOCIAL_USER_GROUP_TYPE 
 {
-    FILTER_TYPE,
-    USER_LIST_TYPE
-} SOCIAL_USER_GROUP_TYPE;
+    XSAPI_SOCIAL_USER_GROUP_TYPE_FILTER_TYPE,
+    XSAPI_SOCIAL_USER_GROUP_TYPE_USER_LIST_TYPE
+} XSAPI_SOCIAL_USER_GROUP_TYPE;
 
-typedef struct TitleHistory
+typedef struct XSAPI_TITLE_HISTORY
 {
     bool userHasPlayed;
     time_t lastTimeUserPlayed;
-} TitleHistory;
+} XSAPI_TITLE_HISTORY;
 
-typedef struct PreferredColor
+typedef struct XSAPI_PREFERRED_COLOR
 {
     PCSTR primaryColor;
     PCSTR secondaryColor;
     PCSTR tertiaryColor;
 
-    PreferredColorImpl* pImpl;
-} PreferredColor;
+    XSAPI_PREFERRED_COLOR_IMPL* pImpl;
+} XSAPI_PREFERRED_COLOR;
 
-typedef struct SocialManagerPresenceTitleRecord
+typedef struct XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD
 {
     bool isTitleActive;
     bool isBroadcasting;
-    PRESENCE_DEVICE_TYPE deviceType;
-    uint32 titleId;
+    XSAPI_PRESENCE_DEVICE_TYPE deviceType;
+    uint32_t titleId;
     PCSTR presenceText;
 
-    SocialManagerPresenceTitleRecordImpl* pImpl;
-} SocialManagerPresenceTitleRecord;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL* pImpl;
+} XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD;
 
-typedef struct SocialManagerPresenceRecord
+typedef struct XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD
 {
-    USER_PRESENCE_STATE userState;
-    SocialManagerPresenceTitleRecord** presenceTitleRecords;
+    XSAPI_USER_PRESENCE_STATE userState;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD** presenceTitleRecords;
     int numOfPresenceTitleRecords;
 
-    SocialManagerPresenceRecordImpl * pImpl;
-} SocialManagerPresenceRecord;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL * pImpl;
+} XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD;
 
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 SocialManagerPresenceRecordIsUserPlayingTitle(
-    _In_ SocialManagerPresenceRecord* presenceRecord,
+    _In_ XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD* presenceRecord,
     _In_ uint32_t titleId
     );
 
-typedef struct XboxSocialUser
+typedef struct XSAPI_XBOX_SOCIAL_USER
 {
     PCSTR xboxUserId;
     bool isFavorite;
@@ -118,114 +118,114 @@ typedef struct XboxSocialUser
     bool useAvatar;
     PCSTR gamerscore;
     PCSTR gamertag;
-    SocialManagerPresenceRecord *presenceRecord;
-    TitleHistory *titleHistory;
-    PreferredColor *preferredColor;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD* presenceRecord;
+    XSAPI_TITLE_HISTORY* titleHistory;
+    XSAPI_PREFERRED_COLOR* preferredColor;
 
-    XboxSocialUserImpl* pImpl;
-} XboxSocialUser;
+    XSAPI_XBOX_SOCIAL_USER_IMPL* pImpl;
+} XSAPI_XBOX_SOCIAL_USER;
 
-typedef struct SocialEventArgs
+typedef struct XSAPI_SOCIAL_EVENT_ARGS
 {
-} SocialEventArgs;
+} XSAPI_SOCIAL_EVENT_ARGS;
 
-typedef struct XboxUserIdContainer 
+typedef struct XSAPI_XBOX_USER_ID_CONTAINER 
 {
     PCSTR xboxUserId;
 
-    XboxUserIdContainerImpl* pImpl;
-} XboxUserIdContainer;
+    XSAPI_XBOX_USER_ID_CONTAINER_IMPL* pImpl;
+} XSAPI_XBOX_USER_ID_CONTAINER;
 
-typedef struct SocialEvent
+typedef struct XSAPI_SOCIAL_EVENT
 {
     XboxLiveUser* user;
-    SOCIAL_EVENT_TYPE eventType;
-    XboxUserIdContainer** usersAffected;
-    int numOfUsersAffected;
-    SocialEventArgs* eventArgs;
-    int err;
+    XSAPI_SOCIAL_EVENT_TYPE eventType;
+    XSAPI_XBOX_USER_ID_CONTAINER** usersAffected;
+    uint32_t numOfUsersAffected;
+    XSAPI_SOCIAL_EVENT_ARGS* eventArgs;
+    int32_t err;
     PCSTR errMessage;
 
-    SocialEventImpl* pImpl;
-} SocialEvent;
+    XSAPI_SOCIAL_EVENT_IMPL* pImpl;
+} XSAPI_SOCIAL_EVENT;
 
-typedef struct XboxSocialUserGroup
+typedef struct XSAPI_XBOX_SOCIAL_USER_GROUP
 {
-    XboxSocialUser** users;
-    int numOfUsers;
-    SOCIAL_USER_GROUP_TYPE socialUserGroupType;
-    XboxUserIdContainer** usersTrackedBySocialUserGroup;
-    int numOfUsersTrackedBySocialUserGroup;
+    XSAPI_XBOX_SOCIAL_USER** users;
+    uint32_t numOfUsers;
+    XSAPI_SOCIAL_USER_GROUP_TYPE socialUserGroupType;
+    XSAPI_XBOX_USER_ID_CONTAINER** usersTrackedBySocialUserGroup;
+    uint32_t numOfUsersTrackedBySocialUserGroup;
     XboxLiveUser* localUser;
-    PRESENCE_FILTER presenceFilterOfGroup;
-    RELATIONSHIP_FILTER relationshipFilterOfGroup;
+    XSAPI_PRESENCE_FILTER presenceFilterOfGroup;
+    XSAPI_RELATIONSHIP_FILTER relationshipFilterOfGroup;
 
-    XboxSocialUserGroupImpl *pImpl;
-} XboxSocialUserGroup;
-// todo get_copy_of_users
+    XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL *pImpl;
+} XSAPI_XBOX_SOCIAL_USER_GROUP;
 // todo get_users_from_xbox_user_ids
 
-typedef struct SocialUserGroupLoadedEventArgs : SocialEventArgs 
+typedef struct XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS : XSAPI_SOCIAL_EVENT_ARGS 
 {
-    XboxSocialUserGroup* socialUserGroup;
-} SocialUserGroupLoadedEventArgs;
+    XSAPI_XBOX_SOCIAL_USER_GROUP* socialUserGroup;
+} XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS;
 
-typedef struct SocialManager
+// todo set
+typedef struct XSAPI_SOCIAL_MANAGER
 {
     PCSTR localUsers;
-} SocialManager;
+} XSAPI_SOCIAL_MANAGER;
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerAddLocalUser(
     _In_ XboxLiveUser *user,
-    _In_ SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
+    _In_ XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
     _In_ XboxLiveUser *user,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT SocialEvent** XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_SOCIAL_EVENT** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Out_ int32* numOfEvents
+    _Out_ int32_t* socialEventsSize
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
     _In_ XboxLiveUser *user,
-    _In_ PRESENCE_FILTER presenceDetailLevel,
-    _In_ RELATIONSHIP_FILTER filter,
-    _Out_ XboxSocialUserGroup** group,
+    _In_ XSAPI_PRESENCE_FILTER presenceDetailLevel,
+    _In_ XSAPI_RELATIONSHIP_FILTER filter,
+    _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
     _In_ XboxLiveUser *user,
     _In_ PCSTR* xboxUserIdList,
-    _In_ int numOfXboxUserIds,
-    _Out_ XboxSocialUserGroup** group,
+    _In_ int32_t xboxUserIdListSize,
+    _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerDestroySocialUserGroup(
-    _In_ XboxSocialUserGroup *group,
+    _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *group,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
-    _In_ XboxSocialUserGroup *group,
+    _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *group,
     _In_ PCSTR* users,
-    _In_ int numOfUsers,
+    _In_ uint32_t usersSize,
     _Out_ PCSTR* errMessage
     );
 
-XSAPI_DLLEXPORT int32 XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerSetRichPresencePollingStatus(
     _In_ XboxLiveUser *user,
     _In_ bool shouldEnablePolling,

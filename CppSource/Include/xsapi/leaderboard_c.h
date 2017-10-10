@@ -11,138 +11,138 @@ extern "C" {
 #endif
 
 #if !XDK_API
-struct LeaderboardColumnImpl;
-struct LeaderboardRowImpl;
-struct LeaderboardQueryImpl;
-struct LeaderboardResultImpl;
+struct XSAPI_LEADERBOARD_COLUMN_IMPL;
+struct XSAPI_LEADERBOARD_ROW_IMPL;
+struct XSAPI_LEADERBOARD_QUERY_IMPL;
+struct XSAPI_LEADERBOARD_RESULT_IMPL;
 
-typedef enum LEADERBOARD_STAT_TYPE 
+typedef enum XSAPI_LEADERBOARD_STAT_TYPE 
 {
-    STAT_UINT64,
-    STAT_BOOLEAN,
-    STAT_DOUBLE,
-    STAT_STRING,
-    STAT_DATETIME,
-    STAT_OTHER
-} LEADERBOARD_STAT_TYPE;
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_UINT64,
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_BOOLEAN,
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_DOUBLE,
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_STRING,
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_DATETIME,
+    XSAPI_LEADERBOARD_STAT_TYPE_STAT_OTHER
+} XSAPI_LEADERBOARD_STAT_TYPE;
 
-typedef enum SORT_ORDER 
+typedef enum XSAPI_SORT_ORDER
 {
-    ASCENDING,
-    DESCENDING
-} SORT_ORDER;
+    XSAPI_SORT_ORDER_ASCENDING,
+    XSAPI_SORT_ORDER_DESCENDING
+} XSAPI_SORT_ORDER;
 
-typedef struct LeaderboardColumn
+typedef struct XSAPI_LEADERBOARD_COLUMN
 {
     PCSTR statName;
-    LEADERBOARD_STAT_TYPE statType;
+    XSAPI_LEADERBOARD_STAT_TYPE statType;
 
-    LeaderboardColumnImpl* pImpl;
-} LeaderboardColumn;
+    XSAPI_LEADERBOARD_COLUMN_IMPL* pImpl;
+} XSAPI_LEADERBOARD_COLUMN;
 
-typedef struct LeaderboardRow
+typedef struct XSAPI_LEADERBOARD_ROW
 {
     PCSTR gamertag;
     PCSTR xboxUserId;
     double percentile;
-    uint32 rank;
+    uint32_t rank;
     PCSTR* columnValues;
     uint32 columnValuesSize;
 
-    LeaderboardRowImpl* pImpl;
-} LeaderboardRow;
+    XSAPI_LEADERBOARD_ROW_IMPL* pImpl;
+} XSAPI_LEADERBOARD_ROW;
 
-typedef struct LeaderboardQuery
+typedef struct XSAPI_LEADERBOARD_QUERY
 {
     bool skipResultToMe;
-    uint32 skipResultToRank;
-    uint32 maxItems;
-    SORT_ORDER order;
+    uint32_t skipResultToRank;
+    uint32_t maxItems;
+    XSAPI_SORT_ORDER order;
     PCSTR statName;
     PCSTR socialGroup;
     bool hasNext;
 
-    LeaderboardQueryImpl* pImpl;
-} LeaderboardQuery;
+    XSAPI_LEADERBOARD_QUERY_IMPL* pImpl;
+} XSAPI_LEADERBOARD_QUERY;
 
-XSAPI_DLLEXPORT LeaderboardQuery* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_LEADERBOARD_QUERY* XBL_CALLING_CONV
 LeaderboardQueryCreate(
 );
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
-    _In_ LeaderboardQuery* leaderboardQuery,
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ bool skipResultToMe
 );
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToRank(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ uint32 skipResultToRank
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ uint32_t skipResultToRank
 );
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ uint32 maxItems
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ uint32_t maxItems
 );
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ SORT_ORDER order
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ XSAPI_SORT_ORDER order
 );
 
-typedef struct LeaderboardResult
+typedef struct XSAPI_LEADERBOARD_RESULT
 {
-    uint32 totalRowCount;
-    LeaderboardColumn** columns;
-    uint32 columnsSize;
-    LeaderboardRow** rows;
-    uint32 rowsSize;
+    uint32_t totalRowCount;
+    XSAPI_LEADERBOARD_COLUMN** columns;
+    uint32_t columnsSize;
+    XSAPI_LEADERBOARD_ROW** rows;
+    uint32_t rowsSize;
 
-    LeaderboardResultImpl* pImpl;
-} LeaderboardResult;
+    XSAPI_LEADERBOARD_RESULT_IMPL* pImpl;
+} XSAPI_LEADERBOARD_RESULT;
 
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
-    _In_ LeaderboardResult* leaderboardResult
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult
 );
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
-typedef struct GetNextResultPayload
+typedef struct XSAPI_GET_NEXT_RESULT_PAYLOAD
 {
-    LeaderboardResult* nextResult;
-} GetNextResultPayload;
+    XSAPI_LEADERBOARD_RESULT* nextResult;
+} XSAPI_GET_NEXT_RESULT_PAYLOAD;
 
-typedef struct GetNextResult
+typedef struct XSAPI_GET_NEXT_RESULT
 {
     XboxLiveResult result;
-    GetNextResultPayload payload;
-} GetNextResult;
+    XSAPI_GET_NEXT_RESULT_PAYLOAD payload;
+} XSAPI_GET_NEXT_RESULT;
 
 typedef void(*GetNextCompletionRoutine)(
-    _In_ GetNextResult result,
+    _In_ XSAPI_GET_NEXT_RESULT result,
     _In_opt_ void* context
     );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNext(
-    _In_ LeaderboardResult* leaderboardResult,
-    _In_ uint32 maxItems,
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
+    _In_ uint32_t maxItems,
     _In_ GetNextCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
 );
 #endif
 
-XSAPI_DLLEXPORT int XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNextQuery(
-    _In_ LeaderboardResult* leaderboardResult,
-    _Out_ LeaderboardQuery** nextQuery,
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
+    _Out_ XSAPI_LEADERBOARD_QUERY** nextQuery,
     _Out_ PCSTR* errMessage
 );
 
-typedef struct LeaderboardService
+typedef struct XSAPI_LEADERBOARD_SERVICE
 {
     // todo implement
-} LeaderboardService;
+} XSAPI_LEADERBOARD_SERVICE;
 #endif //!XDK_API
 
 #if defined(__cplusplus)

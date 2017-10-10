@@ -10,38 +10,37 @@ using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::leaderboard;
 
-struct LeaderboardColumnImpl {
-    LeaderboardColumnImpl(
+struct XSAPI_LEADERBOARD_COLUMN_IMPL {
+    XSAPI_LEADERBOARD_COLUMN_IMPL(
         _In_ leaderboard_column cppLeaderboardColumn,
-        _In_ LeaderboardColumn* cLeaderboardColumn
+        _In_ XSAPI_LEADERBOARD_COLUMN* cLeaderboardColumn
     ) : m_cLeaderboardColumn(cLeaderboardColumn), m_cppLeaderboardColumn(cppLeaderboardColumn)
     {
         m_statName = utils::to_utf8string(m_cppLeaderboardColumn.stat_name());
         m_cLeaderboardColumn->statName = m_statName.c_str();
 
-        m_statType = static_cast<LEADERBOARD_STAT_TYPE>(m_cppLeaderboardColumn.stat_type());
+        m_cLeaderboardColumn->statType = static_cast<XSAPI_LEADERBOARD_STAT_TYPE>(m_cppLeaderboardColumn.stat_type());
     }
 
     std::string m_statName;
-    LEADERBOARD_STAT_TYPE m_statType;
 
     leaderboard_column m_cppLeaderboardColumn;
-    LeaderboardColumn* m_cLeaderboardColumn;
+    XSAPI_LEADERBOARD_COLUMN* m_cLeaderboardColumn;
 };
 
-inline LeaderboardColumn* CreateLeaderboardColumnFromCpp(
+inline XSAPI_LEADERBOARD_COLUMN* CreateLeaderboardColumnFromCpp(
     _In_ leaderboard_column cppLeaderboardColumn
 ) 
 {
-    auto leaderboardColumn = new LeaderboardColumn();
-    leaderboardColumn->pImpl = new LeaderboardColumnImpl(cppLeaderboardColumn, leaderboardColumn);
+    auto leaderboardColumn = new XSAPI_LEADERBOARD_COLUMN();
+    leaderboardColumn->pImpl = new XSAPI_LEADERBOARD_COLUMN_IMPL(cppLeaderboardColumn, leaderboardColumn);
     return leaderboardColumn;
 }
 
-struct LeaderboardRowImpl {
-    LeaderboardRowImpl(
+struct XSAPI_LEADERBOARD_ROW_IMPL {
+    XSAPI_LEADERBOARD_ROW_IMPL(
         _In_ leaderboard_row cppLeaderboardRow,
-        _In_ LeaderboardRow* cLeaderboardRow
+        _In_ XSAPI_LEADERBOARD_ROW* cLeaderboardRow
     ) : m_cLeaderboardRow(cLeaderboardRow), m_cppLeaderboardRow(cppLeaderboardRow)
     {
         m_gamertag = utils::to_utf8string(m_cppLeaderboardRow.gamertag());
@@ -73,24 +72,24 @@ struct LeaderboardRowImpl {
     std::vector<PCSTR> m_columnValues;
 
     leaderboard_row m_cppLeaderboardRow;
-    LeaderboardRow* m_cLeaderboardRow;
+    XSAPI_LEADERBOARD_ROW* m_cLeaderboardRow;
 };
 
-inline LeaderboardRow* CreateLeaderboardRowFromCpp(
+inline XSAPI_LEADERBOARD_ROW* CreateLeaderboardRowFromCpp(
     _In_ leaderboard_row cppLeaderboardRow
 )
 {
-    auto leaderboardRow = new LeaderboardRow();
-    leaderboardRow->pImpl = new LeaderboardRowImpl(cppLeaderboardRow, leaderboardRow);
+    auto leaderboardRow = new XSAPI_LEADERBOARD_ROW();
+    leaderboardRow->pImpl = new XSAPI_LEADERBOARD_ROW_IMPL(cppLeaderboardRow, leaderboardRow);
     return leaderboardRow;
 }
 
 
-struct LeaderboardQueryImpl
+struct XSAPI_LEADERBOARD_QUERY_IMPL
 {
-    LeaderboardQueryImpl(
+    XSAPI_LEADERBOARD_QUERY_IMPL(
         _In_ leaderboard_query creationContext,
-        _In_ LeaderboardQuery* cQuery
+        _In_ XSAPI_LEADERBOARD_QUERY* cQuery
     ) : m_cQuery(cQuery), m_cppQuery(creationContext)
     {
         Refresh();
@@ -98,17 +97,13 @@ struct LeaderboardQueryImpl
 
     void Refresh()
     {
-        m_skipResultToMe = m_cppQuery.skip_result_to_me();
-        m_cQuery->skipResultToMe = m_skipResultToMe;
+        m_cQuery->skipResultToMe = m_cppQuery.skip_result_to_me();
 
-        m_skipResultToRank = m_cppQuery.skip_result_to_rank();
-        m_cQuery->skipResultToRank = m_skipResultToRank;
+        m_cQuery->skipResultToRank = m_cppQuery.skip_result_to_rank();
 
-        m_maxItems = m_cppQuery.max_items();
-        m_cQuery->maxItems = m_maxItems;
+        m_cQuery->maxItems = m_cppQuery.max_items();
 
-        m_order = static_cast<SORT_ORDER>(m_cppQuery.order());
-        m_cQuery->order = m_order;
+        m_cQuery->order = static_cast<XSAPI_SORT_ORDER>(m_cppQuery.order());
 
         m_statName = utils::to_utf8string(m_cppQuery.stat_name());
         m_cQuery->statName = m_statName.c_str();
@@ -122,58 +117,50 @@ struct LeaderboardQueryImpl
 
     void SetSkipResultToMe(bool skipResultToMe) 
     {
-        m_skipResultToMe = skipResultToMe;
-        m_cQuery->skipResultToMe = m_skipResultToMe;
-        m_cppQuery.set_skip_result_to_me(m_skipResultToMe);
+        m_cQuery->skipResultToMe = skipResultToMe;
+        m_cppQuery.set_skip_result_to_me(skipResultToMe);
     }
 
     void SetSkipResultToRank(uint32 skipResultToRank) 
     {
-        m_skipResultToRank = skipResultToRank;
-        m_cQuery->skipResultToRank = m_skipResultToRank;
-        m_cppQuery.set_skip_result_to_rank(m_skipResultToRank);
+        m_cQuery->skipResultToRank = skipResultToRank;
+        m_cppQuery.set_skip_result_to_rank(skipResultToRank);
     }
 
     void SetMaxItems(uint32 maxItems) 
     {
-        m_maxItems = maxItems;
-        m_cQuery->maxItems = m_maxItems;
-        m_cppQuery.set_max_items(m_maxItems);
+        m_cQuery->maxItems = maxItems;
+        m_cppQuery.set_max_items(maxItems);
     }
 
-    void SetOrder(SORT_ORDER order) 
+    void SetOrder(XSAPI_SORT_ORDER order)
     {
-        m_order = order;
-        m_cQuery->order = m_order;
-        m_cppQuery.set_order(static_cast<sort_order>(m_order));
+        m_cQuery->order = order;
+        m_cppQuery.set_order(static_cast<sort_order>(order));
     }
 
-    bool m_skipResultToMe;
-    uint32 m_skipResultToRank;
-    uint32 m_maxItems;
-    SORT_ORDER m_order;
     std::string m_statName;
     std::string m_socialGroup;
     bool m_hasNext;
 
     leaderboard_query m_cppQuery;
-    LeaderboardQuery* m_cQuery;
+    XSAPI_LEADERBOARD_QUERY* m_cQuery;
 };
 
-inline LeaderboardQuery* CreateLeaderboardQueryFromCpp(
+inline XSAPI_LEADERBOARD_QUERY* CreateLeaderboardQueryFromCpp(
     _In_ leaderboard_query query
 )
 {
-    auto leaderboardQuery = new LeaderboardQuery();
-    leaderboardQuery->pImpl = new LeaderboardQueryImpl(query, leaderboardQuery);
+    auto leaderboardQuery = new XSAPI_LEADERBOARD_QUERY();
+    leaderboardQuery->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(query, leaderboardQuery);
 
     return leaderboardQuery;
 }
 
-struct LeaderboardResultImpl {
-    LeaderboardResultImpl(
+struct XSAPI_LEADERBOARD_RESULT_IMPL {
+    XSAPI_LEADERBOARD_RESULT_IMPL(
         _In_ leaderboard_result cppLeaderboardResult,
-        _In_ LeaderboardResult* cLeaderboardResult
+        _In_ XSAPI_LEADERBOARD_RESULT* cLeaderboardResult
     ) : m_cLeaderboardResult(cLeaderboardResult), m_cppLeaderboardResult(cppLeaderboardResult)
     {
         m_totalRowCount = m_cppLeaderboardResult.total_row_count();
@@ -195,19 +182,19 @@ struct LeaderboardResultImpl {
     }
 
     uint32 m_totalRowCount;
-    std::vector<LeaderboardColumn*> m_columns;
-    std::vector<LeaderboardRow*> m_rows;
+    std::vector<XSAPI_LEADERBOARD_COLUMN*> m_columns;
+    std::vector<XSAPI_LEADERBOARD_ROW*> m_rows;
 
     leaderboard_result m_cppLeaderboardResult;
-    LeaderboardResult* m_cLeaderboardResult;
+    XSAPI_LEADERBOARD_RESULT* m_cLeaderboardResult;
 };
 
-inline LeaderboardResult* CreateLeaderboardResultFromCpp(
+inline XSAPI_LEADERBOARD_RESULT* CreateLeaderboardResultFromCpp(
     _In_ leaderboard_result cppLeaderboardResult
 )
 {
-    auto leaderboardResult = new LeaderboardResult();
-    leaderboardResult->pImpl = new LeaderboardResultImpl(cppLeaderboardResult, leaderboardResult);
+    auto leaderboardResult = new XSAPI_LEADERBOARD_RESULT();
+    leaderboardResult->pImpl = new XSAPI_LEADERBOARD_RESULT_IMPL(cppLeaderboardResult, leaderboardResult);
     return leaderboardResult;
 }
 

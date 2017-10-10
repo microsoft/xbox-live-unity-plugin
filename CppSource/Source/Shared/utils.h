@@ -3,6 +3,8 @@
 
 #pragma once
 
+using namespace xbox::services;
+
 class win32_handle
 {
 public:
@@ -51,6 +53,9 @@ public:
         );
 
     static XSAPI_RESULT xsapi_result_from_hc_result(HC_RESULT hcr);
+
+    template<typename T>
+    static XSAPI_RESULT xsapi_result_from_xbox_live_result(xbox_live_result<T> result);
 };
 
 template<typename T, typename T2>

@@ -5,17 +5,18 @@
 #include "leaderboard_helper_c.h"
 #include "taskargs.h"
 
-// todo move
-std::vector<LeaderboardQuery *> m_queries;
+// todo - move global variabes into a pimpl and store it in the xsapi singleton
+std::vector<XSAPI_LEADERBOARD_QUERY *> m_queries;
+xbox_live_result<leaderboard_query> cppLeaderboardQueryResult;
 
-XSAPI_DLLEXPORT LeaderboardQuery* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_LEADERBOARD_QUERY* XBL_CALLING_CONV
 LeaderboardQueryCreate(
 )
 {
     verify_global_init();
 
-    auto query = new LeaderboardQuery();
-    query->pImpl = new LeaderboardQueryImpl(leaderboard_query(), query);
+    auto query = new XSAPI_LEADERBOARD_QUERY();
+    query->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(leaderboard_query(), query);
     m_queries.push_back(query);
 
     return query;
@@ -23,7 +24,7 @@ LeaderboardQueryCreate(
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
-    _In_ LeaderboardQuery* leaderboardQuery,
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ bool skipResultToMe
 )
 {
@@ -33,8 +34,8 @@ LeaderboardQuerySetSkipResultToMe(
 }
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToRank(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ uint32 skipResultToRank
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ uint32_t skipResultToRank
 )
 {
     verify_global_init();
@@ -44,8 +45,8 @@ LeaderboardQuerySetSkipResultToRank(
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ uint32 maxItems
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ uint32_t maxItems
 )
 {
     verify_global_init();
@@ -55,8 +56,8 @@ LeaderboardQuerySetMaxItems(
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
-    _In_ LeaderboardQuery* leaderboardQuery,
-    _In_ SORT_ORDER order
+    _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
+    _In_ XSAPI_SORT_ORDER order
 )
 {
     verify_global_init();
@@ -66,7 +67,7 @@ LeaderboardQuerySetOrder(
 
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
-    _In_ LeaderboardResult* leaderboardResult
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult
 )
 {
     verify_global_init();
@@ -92,7 +93,7 @@ HC_RESULT LeaderboardResultGetNextExecute(
     if (!result.err())
     {
         auto cppPayload = result.payload();
-        GetNextResultPayload& payload = args->result.payload;
+        XSAPI_GET_NEXT_RESULT_PAYLOAD& payload = args->result.payload;
 
         auto leaderboardResult = CreateLeaderboardResultFromCpp(cppPayload);
 
@@ -105,8 +106,8 @@ HC_RESULT LeaderboardResultGetNextExecute(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNext(
-    _In_ LeaderboardResult* leaderboardResult,
-    _In_ uint32 maxItems,
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
+    _In_ uint32_t maxItems,
     _In_ GetNextCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
@@ -132,11 +133,10 @@ LeaderboardResultGetNext(
 }
 #endif
 
-xbox_live_result<leaderboard_query> cppLeaderboardQueryResult;
-XSAPI_DLLEXPORT int XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNextQuery(
-    _In_ LeaderboardResult* leaderboardResult,
-    _Out_ LeaderboardQuery** nextQuery,
+    _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
+    _Out_ XSAPI_LEADERBOARD_QUERY** nextQuery,
     _Out_ PCSTR* errMessage
 )
 {
@@ -147,5 +147,5 @@ LeaderboardResultGetNextQuery(
     *nextQuery = CreateLeaderboardQueryFromCpp(cppLeaderboardQueryResult.payload());
 
     *errMessage = cppLeaderboardQueryResult.err_message().c_str();
-    return cppLeaderboardQueryResult.err().value();
+    return utils::xsapi_result_from_xbox_live_result<leaderboard_query>(cppLeaderboardQueryResult);
 }

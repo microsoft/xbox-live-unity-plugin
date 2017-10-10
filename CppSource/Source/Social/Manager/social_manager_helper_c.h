@@ -7,17 +7,17 @@
 
 using namespace xbox::services::social::manager;
 
-struct SocialManagerPresenceTitleRecordImpl
+struct XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL
 {
-    SocialManagerPresenceTitleRecordImpl(
+    XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL(
         _In_ social_manager_presence_title_record cppPresenceTitleRecord,
-        _In_ SocialManagerPresenceTitleRecord* cPresenceTitleRecord
+        _In_ XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD* cPresenceTitleRecord
     ) : m_cPresenceTitleRecord(cPresenceTitleRecord), m_cppPresenceTitleRecord(cppPresenceTitleRecord)
     {
         m_isTitleActive = m_cppPresenceTitleRecord.is_title_active();
         m_cPresenceTitleRecord->isTitleActive = m_isTitleActive;
 
-        m_deviceType = static_cast<PRESENCE_DEVICE_TYPE>(m_cppPresenceTitleRecord.device_type());
+        m_deviceType = static_cast<XSAPI_PRESENCE_DEVICE_TYPE>(m_cppPresenceTitleRecord.device_type());
         m_cPresenceTitleRecord->deviceType = m_deviceType;
 
         m_isBroadcasting = m_cppPresenceTitleRecord.is_broadcasting();
@@ -32,30 +32,30 @@ struct SocialManagerPresenceTitleRecordImpl
 
     bool m_isTitleActive;
     bool m_isBroadcasting;
-    PRESENCE_DEVICE_TYPE m_deviceType;
+    XSAPI_PRESENCE_DEVICE_TYPE m_deviceType;
     uint32 m_titleId;
     std::string m_presenceText;
 
     social_manager_presence_title_record m_cppPresenceTitleRecord;
-    SocialManagerPresenceTitleRecord* m_cPresenceTitleRecord;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD* m_cPresenceTitleRecord;
 };
 
-SocialManagerPresenceTitleRecord* CreateSocialManagerPresenceTitleRecordFromCpp(
+XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD* CreateSocialManagerPresenceTitleRecordFromCpp(
     _In_ social_manager_presence_title_record cppPresenceTitleRecord
 )
 {
-    auto cPresenceTitleRecord = new SocialManagerPresenceTitleRecord();
-    cPresenceTitleRecord->pImpl = new SocialManagerPresenceTitleRecordImpl(cppPresenceTitleRecord, cPresenceTitleRecord);
+    auto cPresenceTitleRecord = new XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD();
+    cPresenceTitleRecord->pImpl = new XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL(cppPresenceTitleRecord, cPresenceTitleRecord);
         
     return cPresenceTitleRecord;
 }
 
 
-struct SocialManagerPresenceRecordImpl
+struct XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL
 {
-    SocialManagerPresenceRecordImpl(
+    XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL(
         _In_ const social_manager_presence_record cppPresenceRecord,
-        _In_ SocialManagerPresenceRecord *cPresenceRecord
+        _In_ XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD *cPresenceRecord
     ) : m_cppSocialManagerPresenceRecord(cppPresenceRecord), m_cSocialManagerPresenceRecord(cPresenceRecord)
     {
         Refresh();
@@ -65,7 +65,7 @@ struct SocialManagerPresenceRecordImpl
     {
         if (m_cSocialManagerPresenceRecord != nullptr) 
         {
-            m_presenceState = static_cast<USER_PRESENCE_STATE>(m_cppSocialManagerPresenceRecord.user_state());
+            m_presenceState = static_cast<XSAPI_USER_PRESENCE_STATE>(m_cppSocialManagerPresenceRecord.user_state());
             m_cSocialManagerPresenceRecord->userState = m_presenceState;
 
             m_titleRecords.clear();
@@ -78,18 +78,18 @@ struct SocialManagerPresenceRecordImpl
         }
     }
 
-    USER_PRESENCE_STATE m_presenceState;
-    std::vector<SocialManagerPresenceTitleRecord *> m_titleRecords;
+    XSAPI_USER_PRESENCE_STATE m_presenceState;
+    std::vector<XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD *> m_titleRecords;
 
     const xbox::services::social::manager::social_manager_presence_record m_cppSocialManagerPresenceRecord;
-    SocialManagerPresenceRecord* m_cSocialManagerPresenceRecord;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD* m_cSocialManagerPresenceRecord;
 };
 
-struct PreferredColorImpl
+struct XSAPI_PREFERRED_COLOR_IMPL
 {
-    PreferredColorImpl(
+    XSAPI_PREFERRED_COLOR_IMPL(
         _In_ preferred_color cppColor,
-        _In_ PreferredColor* cColor
+        _In_ XSAPI_PREFERRED_COLOR* cColor
     ) : m_cColor(cColor), m_cppColor(cppColor)
     {
         m_primaryColor = utils::to_utf8string(m_cppColor.primary_color());
@@ -107,14 +107,14 @@ struct PreferredColorImpl
     std::string m_tertiaryColor;
 
     preferred_color m_cppColor;
-    PreferredColor* m_cColor;
+    XSAPI_PREFERRED_COLOR* m_cColor;
 };
 
-struct XboxSocialUserImpl
+struct XSAPI_XBOX_SOCIAL_USER_IMPL
 {
-    XboxSocialUserImpl(
+    XSAPI_XBOX_SOCIAL_USER_IMPL(
         _In_ xbox_social_user* cppXboxSocialUser,
-        _In_ XboxSocialUser* cXboxSocialUser
+        _In_ XSAPI_XBOX_SOCIAL_USER* cXboxSocialUser
     ) : m_cXboxSocialUser(cXboxSocialUser), m_cppXboxSocialUser(cppXboxSocialUser)
     {
         m_xboxUserId = utils::to_utf8string(std::wstring(m_cppXboxSocialUser->xbox_user_id()));
@@ -147,12 +147,12 @@ struct XboxSocialUserImpl
         m_gamertag = utils::to_utf8string(std::wstring(m_cppXboxSocialUser->gamertag()));
         m_cXboxSocialUser->gamertag = m_gamertag.c_str();
 
-        m_presenceRecord = new SocialManagerPresenceRecord();
-        m_presenceRecord->pImpl = new SocialManagerPresenceRecordImpl(m_cppXboxSocialUser->presence_record(), m_presenceRecord);
+        m_presenceRecord = new XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD();
+        m_presenceRecord->pImpl = new XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL(m_cppXboxSocialUser->presence_record(), m_presenceRecord);
         m_cXboxSocialUser->presenceRecord = m_presenceRecord;
 
         auto cppTitleHistory = m_cppXboxSocialUser->title_history();
-        m_titleHistory = new TitleHistory();
+        m_titleHistory = new XSAPI_TITLE_HISTORY();
         m_titleHistory->userHasPlayed = cppTitleHistory.has_user_played();
         auto diffTime = utility::datetime().utc_now() - cppTitleHistory.last_time_user_played();
         time_t currentTime = time(NULL);
@@ -160,8 +160,8 @@ struct XboxSocialUserImpl
         m_titleHistory->lastTimeUserPlayed = currentTime;
         m_cXboxSocialUser->titleHistory = m_titleHistory;
 
-        m_preferredColor = new PreferredColor();
-        m_preferredColor->pImpl = new PreferredColorImpl(m_cppXboxSocialUser->preferred_color(), m_preferredColor);
+        m_preferredColor = new XSAPI_PREFERRED_COLOR();
+        m_preferredColor->pImpl = new XSAPI_PREFERRED_COLOR_IMPL(m_cppXboxSocialUser->preferred_color(), m_preferredColor);
         m_cXboxSocialUser->preferredColor = m_preferredColor;
     }
 
@@ -175,29 +175,29 @@ struct XboxSocialUserImpl
     bool m_useAvatar;
     std::string m_gamerscore;
     std::string m_gamertag;
-    SocialManagerPresenceRecord* m_presenceRecord;
-    TitleHistory* m_titleHistory;
-    PreferredColor* m_preferredColor;
+    XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD* m_presenceRecord;
+    XSAPI_TITLE_HISTORY* m_titleHistory;
+    XSAPI_PREFERRED_COLOR* m_preferredColor;
 
     xbox_social_user* m_cppXboxSocialUser;
-    XboxSocialUser* m_cXboxSocialUser;
+    XSAPI_XBOX_SOCIAL_USER* m_cXboxSocialUser;
 };
 
-XboxSocialUser* CreateXboxSocialUserFromCpp(
+XSAPI_XBOX_SOCIAL_USER* CreateXboxSocialUserFromCpp(
     _In_ xbox::services::social::manager::xbox_social_user* cppXboxSocialUser
 )
 {
-    auto cXboxSocialUser = new XboxSocialUser();
-    cXboxSocialUser->pImpl = new XboxSocialUserImpl(cppXboxSocialUser, cXboxSocialUser);
+    auto cXboxSocialUser = new XSAPI_XBOX_SOCIAL_USER();
+    cXboxSocialUser->pImpl = new XSAPI_XBOX_SOCIAL_USER_IMPL(cppXboxSocialUser, cXboxSocialUser);
 
     return cXboxSocialUser;
 }
 
-struct XboxUserIdContainerImpl
+struct XSAPI_XBOX_USER_ID_CONTAINER_IMPL
 {
-    XboxUserIdContainerImpl(
+    XSAPI_XBOX_USER_ID_CONTAINER_IMPL(
         _In_ xbox_user_id_container cppContainer,
-        _In_ XboxUserIdContainer* cContainer
+        _In_ XSAPI_XBOX_USER_ID_CONTAINER* cContainer
     ) : m_cContainer(cContainer), m_cppContainer(cppContainer)
     {
         m_xboxUserId = utils::to_utf8string(m_cppContainer.xbox_user_id());
@@ -207,14 +207,14 @@ struct XboxUserIdContainerImpl
     std::string m_xboxUserId;
 
     xbox_user_id_container m_cppContainer;
-    XboxUserIdContainer* m_cContainer;
+    XSAPI_XBOX_USER_ID_CONTAINER* m_cContainer;
 };
 
-struct XboxSocialUserGroupImpl
+struct XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL
 {
-    XboxSocialUserGroupImpl(
+    XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL(
         _In_ std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> cppSocialUserGroup,
-        _In_ XboxSocialUserGroup *cSocialUserGroup
+        _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *cSocialUserGroup
     ) : m_cppSocialUserGroup(cppSocialUserGroup), m_cSocialUserGroup(cSocialUserGroup)
     {
         Init();
@@ -222,8 +222,9 @@ struct XboxSocialUserGroupImpl
 
     void Init() 
     {
-        m_localUser = new XboxLiveUser();
-        m_localUser->pImpl = new XboxLiveUserImpl(m_cppSocialUserGroup->local_user()->windows_system_user(), m_localUser);
+        auto user = new XboxLiveUser();
+        user->pImpl = new XboxLiveUserImpl(m_cppSocialUserGroup->local_user()->windows_system_user(), user);
+        m_cSocialUserGroup->localUser = user;
 
         Refresh();
     }
@@ -235,57 +236,47 @@ struct XboxSocialUserGroupImpl
         {
             const std::vector<xbox::services::social::manager::xbox_social_user *> cppUsers = m_cppSocialUserGroup->users();
             m_users.clear();
-            m_numOfUsers = cppUsers.size();
             for (auto cppUser : cppUsers) 
             {
                 m_users.push_back(CreateXboxSocialUserFromCpp(cppUser));
             }
             m_cSocialUserGroup->users = m_users.data();
-            m_cSocialUserGroup->numOfUsers = m_numOfUsers;
+            m_cSocialUserGroup->numOfUsers = cppUsers.size();
 
-            m_socialUserGroupType = static_cast<SOCIAL_USER_GROUP_TYPE>(m_cppSocialUserGroup->social_user_group_type());
-            m_cSocialUserGroup->socialUserGroupType = m_socialUserGroupType;
+            m_cSocialUserGroup->socialUserGroupType = static_cast<XSAPI_SOCIAL_USER_GROUP_TYPE>(m_cppSocialUserGroup->social_user_group_type());
 
             auto cppTrackedUsers = m_cppSocialUserGroup->users_tracked_by_social_user_group();
             m_usersTrackedBySocialUserGroup.clear();
             for (auto cppUserIdContainer : cppTrackedUsers) 
             {
-                auto cUserIdContainer = new XboxUserIdContainer();
-                cUserIdContainer->pImpl = new XboxUserIdContainerImpl(cppUserIdContainer, cUserIdContainer);
+                auto cUserIdContainer = new XSAPI_XBOX_USER_ID_CONTAINER();
+                cUserIdContainer->pImpl = new XSAPI_XBOX_USER_ID_CONTAINER_IMPL(cppUserIdContainer, cUserIdContainer);
                 m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
             }
             m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
             m_cSocialUserGroup->numOfUsersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.size();
 
-            m_localUser->pImpl->Refresh();
-            m_cSocialUserGroup->localUser = m_localUser;
+            m_cSocialUserGroup->localUser->pImpl->Refresh();
 
-            m_presenceFilterOfGroup = static_cast<PRESENCE_FILTER>(m_cppSocialUserGroup->presence_filter_of_group());
-            m_cSocialUserGroup->presenceFilterOfGroup = m_presenceFilterOfGroup;
+            m_cSocialUserGroup->presenceFilterOfGroup = static_cast<XSAPI_PRESENCE_FILTER>(m_cppSocialUserGroup->presence_filter_of_group());
 
-            m_relationshipFilterOfGroup = static_cast<RELATIONSHIP_FILTER>(m_cppSocialUserGroup->relationship_filter_of_group());
-            m_cSocialUserGroup->relationshipFilterOfGroup = m_relationshipFilterOfGroup;
+            m_cSocialUserGroup->relationshipFilterOfGroup = static_cast<XSAPI_RELATIONSHIP_FILTER>(m_cppSocialUserGroup->relationship_filter_of_group());
         }
     }
 
-    std::vector<XboxSocialUser *> m_users;
-    int m_numOfUsers;
-    SOCIAL_USER_GROUP_TYPE m_socialUserGroupType;
-    std::vector<XboxUserIdContainer *> m_usersTrackedBySocialUserGroup;
-    XboxLiveUser* m_localUser;
-    PRESENCE_FILTER m_presenceFilterOfGroup;
-    RELATIONSHIP_FILTER m_relationshipFilterOfGroup;
+    std::vector<XSAPI_XBOX_SOCIAL_USER *> m_users;
+    std::vector<XSAPI_XBOX_USER_ID_CONTAINER *> m_usersTrackedBySocialUserGroup;
 
-    XboxSocialUserGroup* m_cSocialUserGroup;
+    XSAPI_XBOX_SOCIAL_USER_GROUP* m_cSocialUserGroup;
     std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> m_cppSocialUserGroup;
 };
 
-SocialUserGroupLoadedEventArgs* CreateSocialUserGroupLoadedEventArgs(
+XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS* CreateSocialUserGroupLoadedEventArgs(
     _In_ std::shared_ptr<xbox::services::social::manager::social_user_group_loaded_event_args> cppSocialUserGroupLoadedEventArgs,
-    _In_ std::vector<XboxSocialUserGroup*> groups
+    _In_ std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> groups
 )
 {
-    XboxSocialUserGroup* groupAffected = new XboxSocialUserGroup();
+    XSAPI_XBOX_SOCIAL_USER_GROUP* groupAffected = new XSAPI_XBOX_SOCIAL_USER_GROUP();
     for (auto group : groups) 
     {
         if (group->pImpl->m_cppSocialUserGroup == cppSocialUserGroupLoadedEventArgs->social_user_group()) {
@@ -293,46 +284,42 @@ SocialUserGroupLoadedEventArgs* CreateSocialUserGroupLoadedEventArgs(
         }
     }
 
-    auto args = new SocialUserGroupLoadedEventArgs();
+    auto args = new XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS();
     args->socialUserGroup = groupAffected;
 
     return args;
 }
 
-struct SocialEventImpl {
-    SocialEventImpl(
+struct XSAPI_SOCIAL_EVENT_IMPL {
+    XSAPI_SOCIAL_EVENT_IMPL(
         _In_ social_event cppEvent,
-        _In_ SocialEvent* cEvent,
-        _In_ std::vector<XboxSocialUserGroup*> groups
+        _In_ XSAPI_SOCIAL_EVENT* cEvent,
+        _In_ std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> groups
     ) : m_cEvent(cEvent), m_cppEvent(cppEvent)
     {
-        m_user = new XboxLiveUser();
-        m_user->pImpl = new XboxLiveUserImpl(m_cppEvent.user(), m_user);
-        m_cEvent->user = m_user;
+        auto user = new XboxLiveUser();
+        user->pImpl = new XboxLiveUserImpl(m_cppEvent.user(), user);
+        m_cEvent->user = user;
 
-        m_eventType = static_cast<SOCIAL_EVENT_TYPE>(m_cppEvent.event_type());
-        m_cEvent->eventType = m_eventType;
+        m_cEvent->eventType = static_cast<XSAPI_SOCIAL_EVENT_TYPE>(m_cppEvent.event_type());
 
         for (auto user : m_cppEvent.users_affected())
         {
-            auto container = new XboxUserIdContainer();
-            container->pImpl = new XboxUserIdContainerImpl(user, container);
+            auto container = new XSAPI_XBOX_USER_ID_CONTAINER();
+            container->pImpl = new XSAPI_XBOX_USER_ID_CONTAINER_IMPL(user, container);
             m_usersAffectedList.push_back(container);
         }
 
-        m_usersAffected = m_usersAffectedList.data();
-        m_cEvent->usersAffected = m_usersAffected;
+        m_cEvent->usersAffected = m_usersAffectedList.data();
 
-        m_numOfUsersAffected = m_cppEvent.users_affected().size();
-        m_cEvent->numOfUsersAffected = m_numOfUsersAffected;
+        m_cEvent->numOfUsersAffected = m_cppEvent.users_affected().size();
 
         try
         {
             auto cSocialUserGroupLoadedEventArgs = std::dynamic_pointer_cast<xbox::services::social::manager::social_user_group_loaded_event_args>(m_cppEvent.event_args());
             if (cSocialUserGroupLoadedEventArgs != NULL)
             {
-                m_eventArgs = CreateSocialUserGroupLoadedEventArgs(cSocialUserGroupLoadedEventArgs, groups);
-                m_cEvent->eventArgs = m_eventArgs;
+                m_cEvent->eventArgs = CreateSocialUserGroupLoadedEventArgs(cSocialUserGroupLoadedEventArgs, groups);
             }
         }
         catch (const std::exception&)
@@ -340,33 +327,26 @@ struct SocialEventImpl {
 
         }
 
-        m_err = m_cppEvent.err().value();
-        m_cEvent->err = m_err;
+        m_cEvent->err = m_cppEvent.err().value();
 
         m_errMessage = m_cppEvent.err_message();
         m_cEvent->errMessage = m_errMessage.c_str();
     }
 
-    XboxLiveUser* m_user;
-    SOCIAL_EVENT_TYPE m_eventType;
-    std::vector<XboxUserIdContainer *> m_usersAffectedList;
-    XboxUserIdContainer** m_usersAffected;
-    int m_numOfUsersAffected;
-    SocialEventArgs* m_eventArgs;
-    int m_err;
+    std::vector<XSAPI_XBOX_USER_ID_CONTAINER *> m_usersAffectedList;
     std::string m_errMessage;
 
     social_event m_cppEvent;
-    SocialEvent* m_cEvent;
+    XSAPI_SOCIAL_EVENT* m_cEvent;
 };
 
-SocialEvent* CreateSocialEventFromCpp(
+XSAPI_SOCIAL_EVENT* CreateSocialEventFromCpp(
     _In_ xbox::services::social::manager::social_event cppSocialEvent,
-    _In_ std::vector<XboxSocialUserGroup*> groups
+    _In_ std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> groups
 )
 {
-    auto cSocialEvent = new SocialEvent();
-    cSocialEvent->pImpl = new SocialEventImpl(cppSocialEvent, cSocialEvent, groups);
+    auto cSocialEvent = new XSAPI_SOCIAL_EVENT();
+    cSocialEvent->pImpl = new XSAPI_SOCIAL_EVENT_IMPL(cppSocialEvent, cSocialEvent, groups);
 
     return cSocialEvent;
 }
