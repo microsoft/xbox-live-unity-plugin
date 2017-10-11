@@ -15,7 +15,7 @@ try
     }
     singleton->m_threadPool->start_threads();
     
-    return XSAPI_OK;
+    return XSAPI_RESULT_OK;
 }
 CATCH_RETURN()
 

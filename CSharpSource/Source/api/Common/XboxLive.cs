@@ -16,7 +16,7 @@ namespace Microsoft.Xbox.Services
     {
         private bool disposed;
         private static XboxLive instance;
-        private static IntPtr xsapiNativeDll;
+        private static IntPtr xsapiNativeDll = IntPtr.Zero;
         private XboxLiveSettings settings;
         private IStatisticManager statsManager;
         private ISocialManager socialManager;
@@ -25,7 +25,9 @@ namespace Microsoft.Xbox.Services
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
 
-        private delegate XsapiResult XBLGlobalInitialize();
+        internal const string FlatCDllName = "Microsoft.Xbox.Services.140.UWP.C.dll";
+
+        private delegate XSAPI_RESULT XBLGlobalInitialize();
         private delegate void XBLGlobalCleanup();
 
         private XboxLive()
@@ -48,7 +50,7 @@ namespace Microsoft.Xbox.Services
                 string path = Directory.GetCurrentDirectory() + fileName;
                 xsapiNativeDll = LoadNativeDll(path);
 
-                var intializationResult = this.Invoke<XsapiResult, XBLGlobalInitialize>();
+                var intializationResult = this.Invoke<XSAPI_RESULT, XBLGlobalInitialize>();
                 // TODO handle this better
             }
             catch (Exception)

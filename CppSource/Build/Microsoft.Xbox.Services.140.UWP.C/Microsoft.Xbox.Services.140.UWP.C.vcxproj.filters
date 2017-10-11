@@ -146,6 +146,9 @@
     <ClCompile Include="..\..\Source\Leaderboard\leaderboard_c.cpp">
       <Filter>C++ Source\Leaderboard</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
+      <Filter>C++ Source\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

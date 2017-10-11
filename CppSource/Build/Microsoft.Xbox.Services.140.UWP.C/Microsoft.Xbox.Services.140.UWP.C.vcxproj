@@ -154,6 +154,7 @@
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp" />
     <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp" />
     <ClCompile Include="..\..\Source\System\user.cpp" />
+    <ClCompile Include="..\..\Source\System\user_impl_c.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />

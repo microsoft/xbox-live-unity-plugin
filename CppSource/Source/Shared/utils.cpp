@@ -86,36 +86,68 @@ std::wstring utils::to_utf16string(const std::string& utf8)
 XSAPI_RESULT utils::std_bad_alloc_to_result(std::bad_alloc const& e, _In_z_ char const* file, uint32_t line)
 {
     HC_TRACE_ERROR(XSAPI_C_TRACE, "[%d] std::bad_alloc reached api boundary: %s\n    %s:%u",
-        XSAPI_E_OUTOFMEMORY, e.what(), file, line);
-    return XSAPI_E_OUTOFMEMORY;
+        XSAPI_RESULT_E_HC_OUTOFMEMORY, e.what(), file, line);
+    return XSAPI_RESULT_E_HC_OUTOFMEMORY;
 }
 
 XSAPI_RESULT utils::std_exception_to_result(std::exception const& e, _In_z_ char const* file, uint32_t line)
 {
     HC_TRACE_ERROR(XSAPI_C_TRACE, "[%d] std::exception reached api boundary: %s\n    %s:%u",
-        XSAPI_E_FAIL, e.what(), file, line);
+        XSAPI_RESULT_E_GENERIC_ERROR, e.what(), file, line);
 
     assert(false);
-    return XSAPI_E_FAIL;
+    return XSAPI_RESULT_E_GENERIC_ERROR;
 }
 
 XSAPI_RESULT utils::unknown_exception_to_result(_In_z_ char const* file, uint32_t line)
 {
     HC_TRACE_ERROR(XSAPI_C_TRACE, "[%d] unknown exception reached api boundary\n    %s:%u",
-        XSAPI_E_FAIL, file, line);
+        XSAPI_RESULT_E_GENERIC_ERROR, file, line);
 
     assert(false);
-    return XSAPI_E_FAIL;
+    return XSAPI_RESULT_E_GENERIC_ERROR;
 }
 
 XSAPI_RESULT utils::xsapi_result_from_hc_result(HC_RESULT hcr)
 {
-    // TODO make this is a bit more robust
+    if (hcr == HC_OK)
+    {
+        return XSAPI_RESULT_OK;
+    }
+    else if (hcr < XSAPI_RESULT_E_HC_MIN || hcr > XSAPI_RESULT_E_HC_MAX)
+    {
+        return XSAPI_RESULT_E_HC_FAIL;
+    }
     return static_cast<XSAPI_RESULT>(hcr);
 }
 
-template<typename T>
-static XSAPI_RESULT xsapi_result_from_xbox_live_result(xbox::services::xbox_live_result<T> result)
+XSAPI_RESULT utils::xsapi_result_from_xbox_live_result_err(std::error_code errc)
 {
-    return result.err().value() == 0 ? XSAPI_RESULT::XSAPI_OK : XSAPI_RESULT::XSAPI_E_FAIL;
+    switch (errc.default_error_condition().value())
+    {
+    case (int)xbox::services::xbox_live_error_condition::no_error:
+        return XSAPI_RESULT_OK;
+    case (int)xbox::services::xbox_live_error_condition::auth:
+        return XSAPI_RESULT_E_AUTH;
+    case (int)xbox::services::xbox_live_error_condition::generic_error: 
+        return XSAPI_RESULT_E_GENERIC_ERROR;
+    case (int)xbox::services::xbox_live_error_condition::generic_out_of_range: 
+        return XSAPI_RESULT_E_OUT_OF_RANGE;
+    case (int)xbox::services::xbox_live_error_condition::http: 
+        return XSAPI_RESULT_E_HTTP;
+    case (int)xbox::services::xbox_live_error_condition::http_404_not_found: 
+        return XSAPI_RESULT_E_HTTP_404_NOT_FOUND;
+    case (int)xbox::services::xbox_live_error_condition::http_412_precondition_failed: 
+        return XSAPI_RESULT_E_HTTP_412_PRECONDITION_FAILED;
+    case (int)xbox::services::xbox_live_error_condition::http_429_too_many_requests: 
+        return XSAPI_RESULT_E_HTTP_429_TOO_MANY_REQUESTS;
+    case (int)xbox::services::xbox_live_error_condition::http_service_timeout: 
+        return XSAPI_RESULT_E_HTTP_SERVICE_TIMEOUT;
+    case (int)xbox::services::xbox_live_error_condition::network: 
+        return XSAPI_RESULT_E_NETWORK;
+    case (int)xbox::services::xbox_live_error_condition::rta: 
+        return XSAPI_RESULT_E_RTA;
+    default: 
+        return XSAPI_RESULT_E_GENERIC_ERROR;
+    }
 }
