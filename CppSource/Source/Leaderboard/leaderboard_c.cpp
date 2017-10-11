@@ -87,7 +87,7 @@ HC_RESULT LeaderboardResultGetNextExecute(
     auto result = args->leaderboard->pImpl->m_cppLeaderboardResult.get_next(args->maxItems).get();
     
     args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = result.err().value();
+    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
     args->result.result.errorMessage = args->resultErrorMsg.c_str();
 
     if (!result.err())
@@ -147,5 +147,5 @@ LeaderboardResultGetNextQuery(
     *nextQuery = CreateLeaderboardQueryFromCpp(cppLeaderboardQueryResult.payload());
 
     *errMessage = cppLeaderboardQueryResult.err_message().c_str();
-    return utils::xsapi_result_from_xbox_live_result<leaderboard_query>(cppLeaderboardQueryResult);
+    return utils::xsapi_result_from_xbox_live_result_err(cppLeaderboardQueryResult.err());
 }

@@ -49,11 +49,9 @@ struct XSAPI_LEADERBOARD_ROW_IMPL {
         m_xboxUserId = utils::to_utf8string(m_cppLeaderboardRow.xbox_user_id());
         m_cLeaderboardRow->xboxUserId = m_xboxUserId.c_str();
 
-        m_percentile = m_cppLeaderboardRow.percentile();
-        m_cLeaderboardRow->percentile = m_percentile;
+        m_cLeaderboardRow->percentile = m_cppLeaderboardRow.percentile();
 
-        m_rank = m_cppLeaderboardRow.rank();
-        m_cLeaderboardRow->rank = m_rank;
+        m_cLeaderboardRow->rank = m_cppLeaderboardRow.rank();
 
         for (size_t i = 0; i < m_cppLeaderboardRow.column_values().size(); i++) 
         {
@@ -66,8 +64,6 @@ struct XSAPI_LEADERBOARD_ROW_IMPL {
 
     std::string m_gamertag;
     std::string m_xboxUserId;
-    double m_percentile;
-    uint32 m_rank;
     std::vector<std::string> m_columnValuesStrs;
     std::vector<PCSTR> m_columnValues;
 
@@ -111,8 +107,7 @@ struct XSAPI_LEADERBOARD_QUERY_IMPL
         m_socialGroup = utils::to_utf8string(m_cppQuery.social_group());
         m_cQuery->socialGroup = m_socialGroup.c_str();
 
-        m_hasNext = m_cppQuery.has_next();
-        m_cQuery->hasNext = m_hasNext;
+        m_cQuery->hasNext = m_cppQuery.has_next();
     }
 
     void SetSkipResultToMe(bool skipResultToMe) 
@@ -141,7 +136,6 @@ struct XSAPI_LEADERBOARD_QUERY_IMPL
 
     std::string m_statName;
     std::string m_socialGroup;
-    bool m_hasNext;
 
     leaderboard_query m_cppQuery;
     XSAPI_LEADERBOARD_QUERY* m_cQuery;
@@ -163,8 +157,7 @@ struct XSAPI_LEADERBOARD_RESULT_IMPL {
         _In_ XSAPI_LEADERBOARD_RESULT* cLeaderboardResult
     ) : m_cLeaderboardResult(cLeaderboardResult), m_cppLeaderboardResult(cppLeaderboardResult)
     {
-        m_totalRowCount = m_cppLeaderboardResult.total_row_count();
-        m_cLeaderboardResult->totalRowCount = m_totalRowCount;
+        m_cLeaderboardResult->totalRowCount = m_cppLeaderboardResult.total_row_count();
 
         for (auto column : m_cppLeaderboardResult.columns())
         {
@@ -181,7 +174,6 @@ struct XSAPI_LEADERBOARD_RESULT_IMPL {
         m_cLeaderboardResult->rowsSize = m_rows.size();
     }
 
-    uint32 m_totalRowCount;
     std::vector<XSAPI_LEADERBOARD_COLUMN*> m_columns;
     std::vector<XSAPI_LEADERBOARD_ROW*> m_rows;
 

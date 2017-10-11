@@ -113,7 +113,7 @@ typedef struct XSAPI_GET_NEXT_RESULT_PAYLOAD
 
 typedef struct XSAPI_GET_NEXT_RESULT
 {
-    XboxLiveResult result;
+    XSAPI_RESULT_INFO result;
     XSAPI_GET_NEXT_RESULT_PAYLOAD payload;
 } XSAPI_GET_NEXT_RESULT;
 

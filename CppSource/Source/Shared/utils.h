@@ -3,8 +3,6 @@
 
 #pragma once
 
-using namespace xbox::services;
-
 class win32_handle
 {
 public:

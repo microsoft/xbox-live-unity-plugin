@@ -57,7 +57,7 @@ typedef struct XSAPI_STAT_EVENT
 {
     XSAPI_STAT_EVENT_TYPE eventType;
     XSAPI_STAT_EVENT_ARGS* eventArgs;
-    XboxLiveUser* localUser;
+    XSAPI_XBOX_LIVE_USER* localUser;
     int32_t errorCode;
     PCSTR errorMessage;
 
@@ -66,19 +66,19 @@ typedef struct XSAPI_STAT_EVENT
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerAddLocalUser(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
 );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRemoveLocalUser(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
 );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRequestFlushToService(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ bool isHighPriority,
     _Out_ PCSTR* errMessage
 );
@@ -90,7 +90,7 @@ StatsManagerDoWork(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticNumberData(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _In_ double statValue,
     _Out_ PCSTR* errMessage
@@ -98,7 +98,7 @@ StatsManagerSetStatisticNumberData(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticIntegerData(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _In_ int64_t statValue,
     _Out_ PCSTR* errMessage
@@ -106,7 +106,7 @@ StatsManagerSetStatisticIntegerData(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticStringData(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _In_ PCSTR statValue,
     _Out_ PCSTR* errMessage
@@ -114,7 +114,7 @@ StatsManagerSetStatisticStringData(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStatNames(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _Inout_ PCSTR** statNameList,
     _Inout_ uint32_t* statNameListSize,
     _Inout_ PCSTR* errMessage
@@ -122,7 +122,7 @@ StatsManagerGetStatNames(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStat(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _Out_ XSAPI_STAT_VALUE** statValue,
     _Out_ PCSTR* errMessage
@@ -130,14 +130,14 @@ StatsManagerGetStat(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerDeleteStat(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _Out_ PCSTR* errMessage
 );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetLeaderboard(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _In_ XSAPI_LEADERBOARD_QUERY* query,
     _Out_ PCSTR* errMessage
@@ -145,7 +145,7 @@ StatsManagerGetLeaderboard(
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetSocialLeaderboard(
-    _In_ XboxLiveUser* user,
+    _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _In_ PCSTR socialGroup,
     _In_ XSAPI_LEADERBOARD_QUERY* query,

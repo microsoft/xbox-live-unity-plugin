@@ -10,6 +10,19 @@ using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::stats::manager;
 
+struct XSAPI_STATS_MANAGER_VARS 
+{
+    public:
+        xbox_live_result<void> cppVoidResult;
+        xbox_live_result<stat_value> cppStatValueResult;
+
+        std::vector<XSAPI_STAT_EVENT *> cEvents;
+
+        std::vector<utility::string_t> cppStatNameList;
+        std::vector<std::string> cStatNameStringList;
+        std::vector<PCSTR> cStatNameCharList;
+};
+
 struct XSAPI_STAT_VALUE_IMPL
 {
     XSAPI_STAT_VALUE_IMPL(
@@ -99,8 +112,8 @@ struct XSAPI_STAT_EVENT_IMPL
         }
         m_cStatEvent->eventArgs = m_args;
 
-        m_localUser = new XboxLiveUser();
-        m_localUser->pImpl = new XboxLiveUserImpl(m_cppStatEvent.local_user(), m_localUser);
+        m_localUser = new XSAPI_XBOX_LIVE_USER();
+        m_localUser->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppStatEvent.local_user(), m_localUser);
         m_cStatEvent->localUser = m_localUser;
 
         m_errorInfo = m_cppStatEvent.error_info();
@@ -114,7 +127,7 @@ struct XSAPI_STAT_EVENT_IMPL
 
     XSAPI_STAT_EVENT_TYPE m_eventType;
     XSAPI_STAT_EVENT_ARGS *m_args;
-    XboxLiveUser *m_localUser;
+    XSAPI_XBOX_LIVE_USER *m_localUser;
     xbox_live_result<void> m_errorInfo;
     std::error_code m_errorCode;
     std::string m_errorMessage;
