@@ -78,6 +78,11 @@ std::string utils::to_utf8string(const std::wstring& utf16)
     return utf8_from_utf16(utf16.data(), utf16.size());
 }
 
+std::wstring utils::to_utf16string(PCSTR utf8)
+{
+    return utf16_from_utf8(utf8, strlen(utf8));
+}
+
 std::wstring utils::to_utf16string(const std::string& utf8)
 {
     return utf16_from_utf8(utf8.data(), utf8.size());

@@ -13,6 +13,11 @@ namespace Microsoft.Xbox.Services
     {
         internal static IntPtr StringToHGlobalUtf8(string str)
         {
+            if (str == null)
+            {
+                return IntPtr.Zero;
+            }
+
             var bytes = Encoding.UTF8.GetBytes(str);
             var pointer = Marshal.AllocHGlobal(bytes.Length + 1);
 
@@ -29,6 +34,11 @@ namespace Microsoft.Xbox.Services
 
         internal static string Utf8ToString(IntPtr utf8)
         {
+            if (utf8 == IntPtr.Zero)
+            {
+                return null;
+            }
+
             List<byte> rawBytes = new List<byte>();
             byte nextByte = byte.MaxValue;
 

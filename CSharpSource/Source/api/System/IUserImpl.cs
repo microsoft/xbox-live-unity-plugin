@@ -3,6 +3,7 @@
 
 namespace Microsoft.Xbox.Services.System
 {
+    using global::System;
     using global::System.Threading.Tasks;
 
     internal interface IUserImpl
@@ -16,6 +17,9 @@ namespace Microsoft.Xbox.Services.System
         AuthConfig AuthConfig { get; }
 #if WINDOWS_UWP
         Windows.System.User CreationContext { get; }
+#endif
+#if !UNITY_EDITOR
+        IntPtr XboxLiveUserPtr { get; }
 #endif
 
         Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh);

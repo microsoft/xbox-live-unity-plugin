@@ -7,21 +7,28 @@
 
 using namespace xbox::services::system;
 
+struct show_profile_card_taskargs : public taskargs
+{
+    PCSTR targetXboxUserId;
+};
+
+struct check_gaming_privilege_taskargs : public taskargs_with_payload<bool>
+{
+    XSAPI_GAMING_PRIVILEGE privilege;
+    std::string friendlyMessage;
+};
+
 HC_RESULT TCUIShowProfileCardUIExecute(
     _In_opt_ void* executionRoutineContext,
     _In_ HC_TASK_HANDLE taskHandle
     )
 {
-    auto args = reinterpret_cast<xbl_args_tcui_show_profile_card_ui*>(executionRoutineContext);
+    auto args = reinterpret_cast<show_profile_card_taskargs*>(executionRoutineContext);
     auto result = title_callable_ui::show_profile_card_ui(utils::to_utf16string(args->targetXboxUserId)).get();
-
-    args->resultErrorMsg = result.err_message();
-    args->result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.errorMessage = args->resultErrorMsg.c_str();
+    args->copy_xbox_live_result(result);
 
     return HCTaskSetCompleted(taskHandle);
 }
-
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 TCUIShowProfileCardUI(
@@ -34,7 +41,7 @@ try
 {
     verify_global_init();
 
-    auto args = new xbl_args_tcui_show_profile_card_ui();
+    auto args = new show_profile_card_taskargs();
     args->targetXboxUserId = targetXboxUserId;
 
     return utils::xsapi_result_from_hc_result(
@@ -42,7 +49,7 @@ try
             taskGroupId,
             TCUIShowProfileCardUIExecute,
             static_cast<void*>(args),
-            xbl_execute_callback_fn<xbl_args_tcui_show_profile_card_ui, XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine<show_profile_card_taskargs, XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE>,
             static_cast<void*>(args),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,
@@ -56,13 +63,11 @@ HC_RESULT TCUICheckGamingPrivilegeSilentlyExecute(
     _In_ HC_TASK_HANDLE taskHandle
     )
 {
-    auto args = reinterpret_cast<xbl_args_tcui_check_gaming_privilege*>(executionRoutineContext);
+    auto args = reinterpret_cast<check_gaming_privilege_taskargs*>(executionRoutineContext);
     auto result = title_callable_ui::check_gaming_privilege_silently((gaming_privilege)args->privilege);
 
-    args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.result.errorMessage = args->resultErrorMsg.c_str();
-    args->result.hasPrivilege = result.payload();
+    args->copy_xbox_live_result(result);
+    args->completionRoutinePayload = result.payload();
 
     return HCTaskSetCompleted(taskHandle);
 }
@@ -78,7 +83,7 @@ try
 {
     verify_global_init();
 
-    auto tcuiArgs = new xbl_args_tcui_check_gaming_privilege();
+    auto tcuiArgs = new check_gaming_privilege_taskargs();
     tcuiArgs->privilege = privilege;
 
     return utils::xsapi_result_from_hc_result(
@@ -86,7 +91,7 @@ try
             taskGroupId,
             TCUICheckGamingPrivilegeSilentlyExecute,
             static_cast<void*>(tcuiArgs),
-            xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine_with_payload<check_gaming_privilege_taskargs, XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE>,
             static_cast<void*>(tcuiArgs),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,
@@ -101,17 +106,15 @@ HC_RESULT TCUICheckGamingPrivilegeWithUIExecute(
     _In_ HC_TASK_HANDLE taskHandle
     )
 {
-    auto args = reinterpret_cast<xbl_args_tcui_check_gaming_privilege*>(executionRoutineContext);
+    auto args = reinterpret_cast<check_gaming_privilege_taskargs*>(executionRoutineContext);
 
     auto result = title_callable_ui::check_gaming_privilege_with_ui(
         (gaming_privilege)args->privilege,
         utils::to_utf16string(args->friendlyMessage)
         ).get();
 
-    args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.result.errorMessage = args->resultErrorMsg.c_str();
-    args->result.hasPrivilege = result.payload();
+    args->copy_xbox_live_result(result);
+    args->completionRoutinePayload = result.payload();
 
     return HCTaskSetCompleted(taskHandle);
 }
@@ -128,7 +131,7 @@ try
 {
     verify_global_init();
 
-    auto tcuiArgs = new xbl_args_tcui_check_gaming_privilege();
+    auto tcuiArgs = new check_gaming_privilege_taskargs();
     tcuiArgs->privilege = privilege;
     tcuiArgs->friendlyMessage = friendlyMessage;
 
@@ -137,7 +140,7 @@ try
             taskGroupId,
             TCUICheckGamingPrivilegeWithUIExecute,
             static_cast<void*>(tcuiArgs),
-            xbl_execute_callback_fn<xbl_args_tcui_check_gaming_privilege, XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine_with_payload<check_gaming_privilege_taskargs, XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE>,
             static_cast<void*>(tcuiArgs),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,

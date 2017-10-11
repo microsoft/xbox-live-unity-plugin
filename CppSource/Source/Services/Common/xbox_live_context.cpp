@@ -5,43 +5,29 @@
 #include "xsapi/xbox_live_app_config_c.h"
 #include "xsapi/xbox_live_context_c.h"
 #include "user_impl.h"
+#include "xbox_live_context_impl.h"
 
 using namespace xbox::services;
 
-struct XSAPI_XBOX_LIVE_CONTEXT_IMPL
-{
-public:
-    XSAPI_XBOX_LIVE_CONTEXT_IMPL(
-        _In_ XSAPI_XBOX_LIVE_USER* pUser,
-        _In_ XSAPI_XBOX_LIVE_CONTEXT* pXboxLiveContext
-        ) 
-        : m_pXboxLiveContext(pXboxLiveContext),
-        m_cppContext(pUser->pImpl->cppUser())
-    {
-        GetXboxLiveAppConfigSingleton(&m_pXboxLiveContext->pAppConfig);
-    }
-
-private:
-    XSAPI_XBOX_LIVE_CONTEXT* m_pXboxLiveContext;
-    xbox_live_context m_cppContext;
-};
-
-XSAPI_DLLEXPORT XSAPI_XBOX_LIVE_CONTEXT* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveContextCreate(
-    XSAPI_XBOX_LIVE_USER* pUser
+    _In_ CONST XSAPI_XBOX_LIVE_USER *user,
+    _Out_ CONST XSAPI_XBOX_LIVE_CONTEXT** ppContext
     )
 {
-    // TODO improve error handling
-    if (pUser == nullptr)
+    if (user == nullptr || ppContext == nullptr)
     {
-        return nullptr;
+        return XSAPI_RESULT_E_HC_INVALIDARG;
     }
 
     verify_global_init();
 
     auto context = new XSAPI_XBOX_LIVE_CONTEXT();
-    context->pImpl = new XSAPI_XBOX_LIVE_CONTEXT_IMPL(pUser, context);
-    return context;
+    context->pImpl = new XSAPI_XBOX_LIVE_CONTEXT_IMPL(user, context);
+
+    *ppContext = context;
+
+    return XSAPI_RESULT_OK;
 }
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV

@@ -79,19 +79,14 @@ typedef enum XSAPI_GAMING_PRIVILEGE
     XSAPI_GAMING_PRIVILEGE_ADD_FRIEND = 255
 } XSAPI_GAMING_PRIVILEGE;
 
-typedef struct XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT
-{
-    bool hasPrivilege;
-    XSAPI_RESULT_INFO result;
-} XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT;
-
 typedef void(*XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
     _In_opt_ void* completionRoutineContext
     );
 
 typedef void(*XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE)(
-    _In_ XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT result,
+    _In_ XSAPI_RESULT_INFO result,
+    _In_ bool hasPrivilege,
     _In_opt_ void* completionRoutineContext
     );
 

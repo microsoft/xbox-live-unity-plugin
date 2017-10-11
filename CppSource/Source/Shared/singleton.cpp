@@ -10,6 +10,7 @@ static std::unique_ptr<xsapi_singleton> g_xblSingleton;
 xsapi_singleton::xsapi_singleton()
 {
     m_threadPool = std::make_unique<xsapi_thread_pool>();
+    m_titleStorageState = std::make_unique<title_storage_state>();
 }
 
 xsapi_singleton* get_xsapi_singleton(_In_ bool createIfRequired)

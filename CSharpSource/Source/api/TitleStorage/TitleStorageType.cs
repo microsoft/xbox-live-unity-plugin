@@ -10,25 +10,25 @@ namespace Microsoft.Xbox.Services.TitleStorage
         /// <summary>
         /// Unknown storage type.
         /// </summary>
-        Unknown,
+        Unknown = -1,
 
         /// <summary>
         /// Per-user data storage such as game state or game settings that can be only be accessed by Xbox One.
         /// User restrictions can be configured to public or owner only in the service configuration.
         /// </summary>
-        TrustedPlatform,
+        TrustedPlatformStorage = 0,
 
         /// <summary>
         /// Global data storage.  This storage type is only writable via the Xbox Developer Portal (XDP).
         /// Any platform may read from this storage type. Data could be rosters, maps, challenges, art resources, etc.
         /// </summary>
-        GlobalStorage,
+        GlobalStorage = 2,
 
         /// <summary>
         /// Per-user data storage such as game state or game settings the can be accessed by Xbox One, Windows 10, and Windows Phone 10 devices
         /// User restrictions can be configured to public or owner only in the service configuration.
         /// </summary>
-        UniversalPlatform
+        Universal = 5
     }
 
 }

@@ -3,6 +3,9 @@
 // 
 namespace Microsoft.Xbox.Services.TitleStorage
 {
+    using global::System.Runtime.InteropServices;
+    using global::System;
+
     /// <summary>
     /// Blob data returned from the cloud.
     /// </summary>
@@ -28,5 +31,13 @@ namespace Microsoft.Xbox.Services.TitleStorage
             this.BlobMetadata = blobMetadata;
             this.BlobBuffer = blobBuffer;
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct XSAPI_TITLE_STORAGE_BLOB_RESULT
+    {
+        public IntPtr blobBuffer;
+        public UInt64 cbBlobBuffer;
+        public IntPtr blobMetadata;
     }
 }

@@ -30,6 +30,7 @@ namespace Microsoft.Xbox.Services.System
         public string Privileges { get; set; }
         public string WebAccountId { get; set; }
         public AuthConfig AuthConfig { get; set; }
+        public IntPtr XboxLiveUserPtr { get; }
 
         public Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh)
         {

@@ -47,18 +47,12 @@ typedef struct XSAPI_XBOX_LIVE_USER
     XSAPI_XBOX_LIVE_USER_IMPL *pImpl;
 } XSAPI_XBOX_LIVE_USER;
 
-typedef struct XSAPI_SIGN_IN_RESULT_PAYLOAD
-{
-    XSAPI_SIGN_IN_STATUS status;
-} XSAPI_SIGN_IN_RESULT_PAYLOAD;
-
 typedef struct XSAPI_SIGN_IN_RESULT
 {
-    XSAPI_RESULT_INFO result;
-    XSAPI_SIGN_IN_RESULT_PAYLOAD payload;
+    XSAPI_SIGN_IN_STATUS status;
 } XSAPI_SIGN_IN_RESULT;
 
-typedef struct XSAPI_TOKEN_AND_SIGNATURE_RESULT_PAYLOAD
+typedef struct XSAPI_TOKEN_AND_SIGNATURE_RESULT
 {
     PCSTR token;
     PCSTR signature;
@@ -68,12 +62,6 @@ typedef struct XSAPI_TOKEN_AND_SIGNATURE_RESULT_PAYLOAD
     PCSTR ageGroup;
     PCSTR privileges;
     PCSTR webAccountId;
-} XSAPI_TOKEN_AND_SIGNATURE_RESULT_PAYLOAD;
-
-typedef struct XSAPI_TOKEN_AND_SIGNATURE_RESULT
-{
-    XSAPI_RESULT_INFO result;
-    XSAPI_TOKEN_AND_SIGNATURE_RESULT_PAYLOAD payload;
 } XSAPI_TOKEN_AND_SIGNATURE_RESULT;
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -97,7 +85,8 @@ XboxLiveUserDelete(
     ) XSAPI_NOEXCEPT;
 
 typedef void(*XSAPI_SIGN_IN_COMPLETION_ROUTINE)(
-    _In_ XSAPI_SIGN_IN_RESULT result,
+    _In_ XSAPI_RESULT_INFO result,
+    _In_ XSAPI_SIGN_IN_RESULT payload,
     _In_opt_ void* context
     );
 
@@ -140,7 +129,8 @@ XboxLiveUserSignInSilentlyWithCoreDispatcher(
 #endif
 
 typedef void(*XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE)(
-    _In_ XSAPI_TOKEN_AND_SIGNATURE_RESULT result,
+    _In_ XSAPI_RESULT_INFO result,
+    _In_ XSAPI_TOKEN_AND_SIGNATURE_RESULT payload,
     _In_opt_ void* context
     );
 

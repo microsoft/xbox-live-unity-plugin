@@ -3,73 +3,26 @@
 #pragma once
 
 #include "xsapi/errors_c.h"
-#include "xsapi/title_callable_ui_c.h"
-#include "xsapi/system_c.h"
+
+struct taskargs
+{
+    virtual ~taskargs() {}
+
+    template<typename T>
+    void copy_xbox_live_result(xbox::services::xbox_live_result<T> cppResult)
+    {
+        errorMessage = cppResult.err_message();
+        result.errorMessage = errorMessage.data();
+        result.errorCode = utils::xsapi_result_from_xbox_live_result_err(cppResult.err());
+    }
+
+    XSAPI_RESULT_INFO result;
+    std::string errorMessage;
+};
 
 template<typename T>
-struct xbl_args
+struct taskargs_with_payload : public taskargs
 {
-    T result;
-    virtual ~xbl_args() {}
-};
-
-struct xbl_args_tcui_show_profile_card_ui : public xbl_args<XSAPI_RESULT_INFO>
-{
-    PCSTR targetXboxUserId;
-    std::string resultErrorMsg;
-};
-
-struct xbl_args_tcui_check_gaming_privilege : public xbl_args<XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT>
-{
-    XSAPI_GAMING_PRIVILEGE privilege;
-    std::string resultErrorMsg;
-    std::string friendlyMessage;
-};
-
-struct xbl_args_xbox_live_user_sign_in : public xbl_args<XSAPI_SIGN_IN_RESULT>
-{
-    xbl_args_xbox_live_user_sign_in(
-        _In_ XSAPI_XBOX_LIVE_USER* pUser,
-        _In_ Platform::Object^ coreDispatcher,
-        _In_opt_ bool signInSilently = false
-        );
-
-    XSAPI_XBOX_LIVE_USER* pUser;
-    bool signInSilently;
-    Platform::Object^ coreDispatcher;
-
-    std::string resultErrorMsg;
-};
-
-struct xbl_args_xbox_live_user_get_token_and_signature : public xbl_args<XSAPI_TOKEN_AND_SIGNATURE_RESULT>
-{
-    xbl_args_xbox_live_user_get_token_and_signature(
-        _In_ XSAPI_XBOX_LIVE_USER* pUser,
-        _In_ PCSTR httpMethod,
-        _In_ PCSTR url,
-        _In_ PCSTR headers,
-        _In_ PCSTR requestBodyString
-        );
-
-    XSAPI_XBOX_LIVE_USER* pUser;
-    PCSTR httpMethod;
-    PCSTR url;
-    PCSTR headers;
-    PCSTR requestBodyString;
-
-    std::string token;
-    std::string signature;
-    std::string xboxUserId;
-    std::string gamertag;
-    std::string xboxUserHash;
-    std::string ageGroup;
-    std::string privileges;
-    std::string webAccountId;
-
-    std::string resultErrorMsg;
-};
-
-struct xbl_args_xbox_live_user_refresh_token : public xbl_args<XSAPI_RESULT_INFO>
-{
-    std::string resultErrorMsg;
+    // completionRoutinePayload is the final result object that will be passed to the completion function
+    T completionRoutinePayload;
 };
