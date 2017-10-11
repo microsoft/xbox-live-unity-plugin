@@ -22,6 +22,9 @@
     <Filter Include="C++ Public Includes">
       <UniqueIdentifier>{b79b5071-f94f-443a-b903-1b604db21b8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Services\TitleStorage">
+      <UniqueIdentifier>{912c9396-dff4-4469-9c25-161bec7dbfa6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -69,12 +72,30 @@
     <ClInclude Include="..\..\Source\Shared\singleton.h">
       <Filter>C++ Source\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\title_storage_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_taskargs.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Common\xbox_live_context_impl.h">
+      <Filter>C++ Source\Services\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\System\user_taskargs.h">
+      <Filter>C++ Source\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_state.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp">
       <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\utils.cpp">
@@ -100,6 +121,21 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\singleton.cpp">
       <Filter>C++ Source\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_impl.cpp">
+      <Filter>C++ Source\Services\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\System\user_taskargs.cpp">
+      <Filter>C++ Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
       <Filter>C++ Source\System</Filter>

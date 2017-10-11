@@ -40,6 +40,7 @@
 #include <vector>
 #include <codecvt>
 #include <iomanip>
+#include <ctime>
 
 #if UWP_API
 #include <collection.h>
@@ -64,6 +65,8 @@ typedef std::chrono::steady_clock chrono_clock_t;
 #endif
 
 typedef int32_t FUNCTION_CONTEXT;
+
+#include "xsapi/services.h"
 
 // libHttpClient
 #include "httpClient/httpClient.h"

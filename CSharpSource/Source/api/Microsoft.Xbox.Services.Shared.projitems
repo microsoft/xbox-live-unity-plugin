@@ -97,12 +97,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\AuthConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IUserImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\MarshallingHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveCallbackContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\BlobQueryProperties.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataResultInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\ITitleStorageService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\QuotaInfoResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\MockLeaderboardService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\SortOrder.cs" />

@@ -7,8 +7,7 @@
 XBOX_LIVE_APP_CONFIG_IMPL::XBOX_LIVE_APP_CONFIG_IMPL()
 {
     auto singleton = get_xsapi_singleton();
-    std::lock_guard<std::mutex> lock(singleton->m_singletonLock);
-
+    
     m_cppConfig = xbox::services::xbox_live_app_config::get_app_config_singleton();
 
     m_scid = utils::to_utf8string(m_cppConfig->scid());
@@ -37,7 +36,7 @@ try
 
     if (singleton->m_appConfigSingleton == nullptr)
     {
-        singleton->m_appConfigSingleton = std::make_shared<XSAPI_XBOX_LIVE_APP_CONFIG>();
+        singleton->m_appConfigSingleton = std::make_unique<XSAPI_XBOX_LIVE_APP_CONFIG>();
         singleton->m_appConfigImplSingleton = std::make_unique<XBOX_LIVE_APP_CONFIG_IMPL>();
     }
     *ppConfig = singleton->m_appConfigSingleton.get();

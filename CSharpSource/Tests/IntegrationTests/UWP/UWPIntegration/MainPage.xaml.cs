@@ -23,6 +23,7 @@ namespace UWPIntegration
     using Windows.UI.Xaml.Data;
     using System.Diagnostics;
     using Microsoft.Xbox.Services.System;
+    using Microsoft.Xbox.Services.TitleStorage;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -32,6 +33,7 @@ namespace UWPIntegration
         private int jumps;
         private int headshots;
         private LeaderboardResult leaderboard;
+        private TitleStorageBlobMetadata blobMetadata = null;
         private XboxSocialUserGroup xboxSocialUserGroupAll;
         private XboxSocialUserGroup xboxSocialUserGroupAllOnline;
         private XboxSocialUserGroup xboxSocialUserGroupFromList;
@@ -277,13 +279,97 @@ namespace UWPIntegration
             this.XboxSocialUserGroupFromList = this.SocialManager.CreateSocialUserGroupFromList(this.User, userIds);
         }
 
+        private async void TitleStorageGetQuota_Click(object sender, RoutedEventArgs e)
+        {
+            var quota = await this.User.Services.TitleStorageService.GetQuotaAsync(
+                XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal);
+
+            this.TitleStorageData.Text = string.Format("Used bytes = {0}, Quota bytes = {1}", quota.UsedBytes, quota.QuotaBytes);
+        }
+
+        private async void TitleStorageGetMetadata_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadataResult = await this.User.Services.TitleStorageService.GetBlobMetadataAsync(
+                    XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/", this.User.XboxUserId);
+
+                var items = metadataResult.Items;
+                if (items.Count > 0)
+                {
+                    this.blobMetadata = items[0];
+                    this.TitleStorageData.Text = string.Format("First metadata item has length {0}", items[0].Length);
+                }
+            }
+            catch(Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in GetBlobMetadataAsync";
+            }
+        }
+
+        private async void TitleStorageUpload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+
+                var bytes = System.Text.Encoding.Unicode.GetBytes("Hello, world!");
+
+                metadata = await this.User.Services.TitleStorageService.UploadBlobAsync(metadata, bytes.ToList(), TitleStorageETagMatchCondition.NotUsed, TitleStorageService.DefaultUploadBlockSize);
+
+                this.TitleStorageData.Text = string.Format("Uploaded file with length {0}", metadata.Length);
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in UploadBlobAsync";
+            }
+        }
+
+        private async void TitleStorageDownload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (this.blobMetadata == null)
+                {
+                    this.TitleStorageData.Text = string.Format("Call GetBlobMetadataAsync first");
+                }
+                else
+                {
+                    var downloadResult = await this.User.Services.TitleStorageService.DownloadBlobAsync(this.blobMetadata, TitleStorageETagMatchCondition.NotUsed, null);
+
+                    string text = System.Text.Encoding.Unicode.GetString(downloadResult.BlobBuffer);
+
+                    this.TitleStorageData.Text = string.Format("Downloaded file with content:\n {0}", text);
+                }
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in DownloadBlobAsync";
+            }
+        }
+
+        private async void TitleStorageDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+                await this.User.Services.TitleStorageService.DeleteBlobAsync(metadata, false);
+
+                this.TitleStorageData.Text = string.Format("Successfully deleted blob with path \"path/to/newfile.txt\"", metadata.Length);
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in UploadBlobAsync";
+            }
+        }
+
+
         private void RefreshSocialGroups()
         {
             this.XboxSocialUserGroupAll = this.XboxSocialUserGroupAll;
             this.XboxSocialUserGroupAllOnline = this.XboxSocialUserGroupAllOnline;
             this.XboxSocialUserGroupFromList = this.XboxSocialUserGroupFromList;
         }
-
 
         async void DoWork()
         {

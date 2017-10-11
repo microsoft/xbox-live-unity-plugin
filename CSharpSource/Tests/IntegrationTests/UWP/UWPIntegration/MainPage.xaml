@@ -183,5 +183,17 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
+
+        <StackPanel Grid.Row="6" Margin="4">
+            <TextBlock Text="Title Storage APIs" Margin="4" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Get Quota" VerticalAlignment="Top" Click="TitleStorageGetQuota_Click" Margin="4"/>
+                <Button Content="Get Metadata" VerticalAlignment="Top" Click="TitleStorageGetMetadata_Click" Margin="4"/>
+                <Button Content="Upload" VerticalAlignment="Top" Click="TitleStorageUpload_Click" Margin="4"/>
+                <Button Content="Download" VerticalAlignment="Top" Click="TitleStorageDownload_Click" Margin="4"/>
+                <Button Content="Delete" VerticalAlignment="Top" Click="TitleStorageDelete_Click" Margin="4"/>
+            </StackPanel>
+            <TextBlock x:Name="TitleStorageData" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="50" Margin="4"/>
+        </StackPanel>
     </Grid>
 </Page>
