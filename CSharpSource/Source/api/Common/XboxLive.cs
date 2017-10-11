@@ -83,7 +83,7 @@ namespace Microsoft.Xbox.Services
 
         public IPresenceWriter PresenceWriter {
             get 
-			{
+            {
                 if (Instance.presenceWriter == null) {
                     Instance.presenceWriter = Presence.PresenceWriter.Instance;
                 }
@@ -145,30 +145,6 @@ namespace Microsoft.Xbox.Services
             GC.SuppressFinalize(this);
         }
 
-        //internal static class NativeMethods
-        //{
-        //    [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
-        //    internal static extern IntPtr LoadLibrary(string lpFileName);
-
-        //    [DllImport("kernel32", SetLastError = true)]
-        //    [return: MarshalAs(UnmanagedType.Bool)]
-        //    public static extern bool FreeLibrary(IntPtr hModule);
-
-        //    [DllImport("kernel32")]
-        //    public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-        //}
-
-        //public static IntPtr LoadNativeDll(string fileName)
-        //{
-        //    IntPtr nativeDll = NativeMethods.LoadLibrary(fileName);
-        //    if (nativeDll == IntPtr.Zero)
-        //    {
-        //        throw new Win32Exception();
-        //    }
-
-        //    return nativeDll;
-        //}
-
         public static Int64 DefaultTaskGroupId
         {
             get
@@ -177,36 +153,6 @@ namespace Microsoft.Xbox.Services
             }
         }
         
-//        public T Invoke<T, T2>(params object[] args)
-//        {
-//            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T2).Name);
-//            if (procAddress == IntPtr.Zero)
-//            {
-//                return default(T);
-//            }
-//#if WINDOWS_UWP
-//            var function = Marshal.GetDelegateForFunctionPointer<T2>(procAddress) as Delegate;
-//#else
-//            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T2));
-//#endif
-//            return (T)function.DynamicInvoke(args);
-//        }
-
-//        public void Invoke<T>(params object[] args)
-//        {
-//            IntPtr procAddress = NativeMethods.GetProcAddress(xsapiNativeDll, typeof(T).Name);
-//            if (procAddress == IntPtr.Zero)
-//            {
-//                return;
-//            }
-//#if WINDOWS_UWP
-//            var function = Marshal.GetDelegateForFunctionPointer<T>(procAddress) as Delegate;
-//#else
-//            var function = Marshal.GetDelegateForFunctionPointer(procAddress, typeof(T));
-//#endif
-//            function.DynamicInvoke(args);
-//        }
-
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT XBLGlobalInitialize();
 
