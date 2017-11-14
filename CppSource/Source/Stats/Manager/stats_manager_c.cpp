@@ -193,7 +193,7 @@ StatsManagerGetLeaderboard(
 {
     verify_global_init();
 
-    statsVars.cppVoidResult = stats_manager::get_singleton_instance()->get_leaderboard(user->pImpl->cppUser(), utils::to_utf16string(statName), query->pImpl->m_cppQuery);
+    statsVars.cppVoidResult = stats_manager::get_singleton_instance()->get_leaderboard(user->pImpl->cppUser(), utils::to_utf16string(statName), query->pImpl->cppQuery());
 
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
@@ -210,7 +210,7 @@ StatsManagerGetSocialLeaderboard(
 {
     verify_global_init();
 
-    statsVars.cppVoidResult = stats_manager::get_singleton_instance()->get_social_leaderboard(user->pImpl->cppUser(), utils::to_utf16string(statName), utils::to_utf16string(socialGroup), query->pImpl->m_cppQuery);
+    statsVars.cppVoidResult = stats_manager::get_singleton_instance()->get_social_leaderboard(user->pImpl->cppUser(), utils::to_utf16string(statName), utils::to_utf16string(socialGroup), query->pImpl->cppQuery());
 
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());

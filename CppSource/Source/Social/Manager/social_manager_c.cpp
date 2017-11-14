@@ -21,7 +21,7 @@ SocialManagerPresenceRecordIsUserPlayingTitle(
 {
     verify_global_init();
 
-    return presenceRecord->pImpl->m_cppSocialManagerPresenceRecord.is_user_playing_title(titleId);
+    return presenceRecord->pImpl->cppSocialManagerPresenceRecord().is_user_playing_title(titleId);
 }
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -151,7 +151,7 @@ SocialManagerDestroySocialUserGroup(
     auto newEnd = std::remove(socialVars.cGroups.begin(), socialVars.cGroups.end(), group);
     socialVars.cGroups.erase(newEnd, socialVars.cGroups.end());
 
-    socialVars.cppVoidResult = social_manager::get_singleton_instance()->destroy_social_user_group(group->pImpl->m_cppSocialUserGroup);
+    socialVars.cppVoidResult = social_manager::get_singleton_instance()->destroy_social_user_group(group->pImpl->cppSocialUserGroup());
 
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
@@ -174,7 +174,7 @@ SocialManagerUpdateSocialUserGroup(
         usersVector.push_back(utils::to_utf16string(users[i]));
     }
 
-    socialVars.cppVoidResult = social_manager::get_singleton_instance()->update_social_user_group(group->pImpl->m_cppSocialUserGroup, usersVector);
+    socialVars.cppVoidResult = social_manager::get_singleton_instance()->update_social_user_group(group->pImpl->cppSocialUserGroup(), usersVector);
     group->pImpl->Refresh();
 
     *errMessage = socialVars.cppVoidResult.err_message().c_str();

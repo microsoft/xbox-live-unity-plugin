@@ -140,6 +140,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Leaderboard\leaderboard_c.cpp" />
+    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_helper_c.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -152,7 +153,9 @@
     <ClCompile Include="..\..\Source\Shared\utils.cpp" />
     <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp" />
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp" />
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp" />
     <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp" />
+    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_helper_c.cpp" />
     <ClCompile Include="..\..\Source\System\user.cpp" />
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp" />
   </ItemGroup>

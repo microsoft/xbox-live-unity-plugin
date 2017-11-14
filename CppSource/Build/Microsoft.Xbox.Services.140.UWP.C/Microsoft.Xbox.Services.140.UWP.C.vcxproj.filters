@@ -149,6 +149,15 @@
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
       <Filter>C++ Source\System</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_helper_c.cpp">
+      <Filter>C++ Source\Leaderboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp">
+      <Filter>C++ Source\Social\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_helper_c.cpp">
+      <Filter>C++ Source\Stats\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
