@@ -9,71 +9,91 @@
 std::vector<XSAPI_LEADERBOARD_QUERY *> m_queries;
 xbox_live_result<leaderboard_query> cppLeaderboardQueryResult;
 
-XSAPI_DLLEXPORT XSAPI_LEADERBOARD_QUERY* XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT  XBL_CALLING_CONV
 LeaderboardQueryCreate(
-)
+    XSAPI_LEADERBOARD_QUERY* *query
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
-    auto query = new XSAPI_LEADERBOARD_QUERY();
-    query->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(leaderboard_query(), query);
-    m_queries.push_back(query);
+    *query = new XSAPI_LEADERBOARD_QUERY();
+    (*query)->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(leaderboard_query(), query);
+    m_queries.push_back(*query);
 
-    return query;
+    return XSAPI_RESULT_OK;
 }
+CATCH_RETURN()
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ bool skipResultToMe
 )
+try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetSkipResultToMe(skipResultToMe);
+
+    return XSAPI_RESULT_OK;
 }
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+CATCH_RETURN()
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToRank(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t skipResultToRank
 )
+try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetSkipResultToRank(skipResultToRank);
-}
 
-XSAPI_DLLEXPORT void XBL_CALLING_CONV
+    return XSAPI_RESULT_OK;
+}
+CATCH_RETURN()
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t maxItems
 )
+try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetMaxItems(maxItems);
+
+    return XSAPI_RESULT_OK;
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ XSAPI_SORT_ORDER order
 )
+try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetOrder(order);
 }
+CATCH_RETURN_WITH(;)
 
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult
 )
+try
 {
     verify_global_init();
 
     return leaderboardResult->pImpl->cppLeaderboardResult().has_next();
 }
+CATCH_RETURN_WITH(;)
 
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
