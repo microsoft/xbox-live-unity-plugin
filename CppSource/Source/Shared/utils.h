@@ -34,6 +34,8 @@ public:
     static std::wstring to_utf16string(PCSTR utf8);
     static std::wstring to_utf16string(const std::string& utf8);
 
+    static std::vector<utility::string_t> to_string_vector(PCSTR* stringArray, size_t stringArrayCount);
+
     static XSAPI_RESULT std_bad_alloc_to_result(
         std::bad_alloc const& e, 
         _In_z_ char const* file, 
@@ -68,7 +70,6 @@ public:
         if (typedCr != nullptr)
         {
             typedCr(args->result, args->completionRoutinePayload, completionRoutineContext);
-            
         }
         delete args;
         return HC_OK;
@@ -88,7 +89,6 @@ public:
         if (typedCr != nullptr)
         {
             typedCr(args->result, completionRoutineContext);
-
         }
         delete args;
         return HC_OK;

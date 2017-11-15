@@ -88,6 +88,16 @@ std::wstring utils::to_utf16string(const std::string& utf8)
     return utf16_from_utf8(utf8.data(), utf8.size());
 }
 
+std::vector<utility::string_t> utils::to_string_vector(PCSTR* stringArray, size_t stringArrayCount)
+{
+    std::vector<utility::string_t> stringVector;
+    for (size_t i = 0; i < stringArrayCount; ++i)
+    {
+        stringVector.push_back(utils::to_utf16string(stringArray[i]));
+    }
+    return stringVector;
+}
+
 XSAPI_RESULT utils::std_bad_alloc_to_result(std::bad_alloc const& e, _In_z_ char const* file, uint32_t line)
 {
     HC_TRACE_ERROR(XSAPI_C_TRACE, "[%d] std::bad_alloc reached api boundary: %s\n    %s:%u",

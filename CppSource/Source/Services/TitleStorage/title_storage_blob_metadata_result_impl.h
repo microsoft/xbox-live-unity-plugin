@@ -5,7 +5,7 @@
 
 #include "xsapi/title_storage_c.h"
 
-class TITLE_STORAGE_BLOB_METADATA_RESULT_IMPL
+class XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT_IMPL
 {
 public:
     void update(const xbox::services::title_storage::title_storage_blob_metadata_result& cppObject);

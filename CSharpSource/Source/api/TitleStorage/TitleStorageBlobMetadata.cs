@@ -168,11 +168,8 @@ namespace Microsoft.Xbox.Services.TitleStorage
 
         internal void Refresh()
         {
-#if DOTNET_3_5
-            var CStruct = Marshal.PtrToStructure(this.metadataPtr, typeof(XSAPI_TITLE_STORAGE_BLOB_METADATA)) as XSAPI_TITLE_STORAGE_BLOB_METADATA;
-#else
-            var CStruct = Marshal.PtrToStructure<XSAPI_TITLE_STORAGE_BLOB_METADATA>(this.metadataPtr);
-#endif
+            var CStruct = MarshalingHelpers.PtrToStructure<XSAPI_TITLE_STORAGE_BLOB_METADATA>(this.metadataPtr);
+
             this.ServiceConfigurationId = MarshalingHelpers.Utf8ToString(CStruct.serviceConfigurationId);
             this.BlobPath = MarshalingHelpers.Utf8ToString(CStruct.blobPath);
             this.BlobType = CStruct.blobType;

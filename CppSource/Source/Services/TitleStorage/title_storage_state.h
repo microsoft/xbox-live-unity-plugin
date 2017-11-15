@@ -12,6 +12,6 @@ public:
     std::recursive_mutex m_lock;
 
     // For now we only ever cache the most recent metadata result. Might consider changing this in the future
-    TITLE_STORAGE_BLOB_METADATA_RESULT_IMPL m_blobMetadataResultImpl;
+    XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT_IMPL m_blobMetadataResultImpl;
     std::set<const XSAPI_TITLE_STORAGE_BLOB_METADATA*> m_blobMetadata;
 };

@@ -4,26 +4,22 @@
 
 namespace UWPIntegration
 {
-    using System;
-    using System.Linq;
-
-    using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
-
-    using Microsoft.Xbox;
     using Microsoft.Xbox.Services;
-    using Microsoft.Xbox.Services.Privacy;
     using Microsoft.Xbox.Services.Leaderboard;
+    using Microsoft.Xbox.Services.Privacy;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Windows.UI.Xaml.Data;
-    using System.Diagnostics;
     using Microsoft.Xbox.Services.System;
     using Microsoft.Xbox.Services.TitleStorage;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -222,6 +218,16 @@ namespace UWPIntegration
             if (!this.User.IsSignedIn) return;
 
             var result = await this.User.Services.PrivacyService.CheckPermissionWithTargetUserAsync(PermissionIdConstants.ViewTargetVideoHistory, "2814680291986301");
+
+            string resultText = string.Format("Allowed: {0}", result.IsAllowed);
+            if (!result.IsAllowed)
+            {
+                foreach (var reason in result.Reasons)
+                {
+                    resultText += string.Format("\tReason: {0}", reason.Reason);
+                }
+            }
+            this.PrivacyData.Text = resultText;
         }
         private async void CheckMultiplePermissions_Click(object sender, RoutedEventArgs e)
         {
@@ -236,6 +242,53 @@ namespace UWPIntegration
             xuids.Add("2814680291986301");
             xuids.Add("2814634309691161");
             var result = await this.User.Services.PrivacyService.CheckMultiplePermissionsWithMultipleTargetUsersAsync(permissionIds, xuids);
+
+            string resultText = "";
+            foreach (var multiplePermissionsResult in result)
+            {
+                resultText += string.Format("Xuid: {0}", multiplePermissionsResult.XboxUserId);
+                foreach (var permissionResult in multiplePermissionsResult.Items)
+                {
+                    resultText += string.Format("\tPermission {0} allowed: {1}", permissionResult.PermissionRequested, permissionResult.IsAllowed);
+                    if (!permissionResult.IsAllowed)
+                    {
+                        foreach (var reason in permissionResult.Reasons)
+                        {
+                            resultText += string.Format("\tReason: {0}", reason.Reason);
+                        }
+                    }
+                }
+                resultText += "\n";
+            }
+            this.PrivacyData.Text = resultText;
+        }
+
+        private async void GetAvoidList_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.User.IsSignedIn) return;
+
+            var result = await this.user.Services.PrivacyService.GetAvoidListAsync();
+
+            string resultText = "Avoided Xuids: ";
+            foreach (var xuid in result)
+            {
+                resultText += xuid + "\t";
+            }
+            this.PrivacyData.Text = resultText;
+        }
+
+        private async void GetMuteList_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.User.IsSignedIn) return;
+
+            var result = await this.user.Services.PrivacyService.GetMuteListAsync();
+
+            string resultText = "Muted Xuids: ";
+            foreach (var xuid in result)
+            {
+                resultText += xuid + "\t";
+            }
+            this.PrivacyData.Text = resultText;
         }
 
         private void WriteSocialStats_Click(object sender, RoutedEventArgs e)
