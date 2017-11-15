@@ -196,7 +196,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Presence\UserPresenceState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\MultiplePermissionsCheckResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionCheckResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionReason.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionDenyReason.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionIdConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PrivacyService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RealTimeActivity\RealTimeActivityConnectionState.cs" />

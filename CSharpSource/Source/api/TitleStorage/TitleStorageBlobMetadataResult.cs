@@ -28,15 +28,12 @@ namespace Microsoft.Xbox.Services.TitleStorage
                 {
                     items = new List<TitleStorageBlobMetadata>((int)metadataResultStruct.itemCount);
 
+                    int size = MarshalingHelpers.SizeOf<XSAPI_TITLE_STORAGE_BLOB_METADATA>();
                     IntPtr metadataPtr = metadataResultStruct.items;
                     for (ulong i = 0; i < metadataResultStruct.itemCount; ++i)
                     {
                         items.Add(new TitleStorageBlobMetadata(metadataPtr));
-#if DOTNET_3_5
-                        metadataPtr = new IntPtr(metadataPtr.ToInt64() + Marshal.SizeOf(new XSAPI_TITLE_STORAGE_BLOB_METADATA()));
-#else
-                        metadataPtr = IntPtr.Add(metadataPtr, Marshal.SizeOf<XSAPI_TITLE_STORAGE_BLOB_METADATA>());
-#endif
+                        metadataPtr = metadataPtr.Increment(size);
                     }
                 }
                 return items;

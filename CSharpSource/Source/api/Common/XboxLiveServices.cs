@@ -19,6 +19,7 @@ namespace Microsoft.Xbox.Services
 #if UNITY_EDITOR
             // TODO Implement mock title storage service for unity editor
             this.TitleStorageService = null;
+            this.PrivacyService = null;
 #else
             IntPtr xboxLiveContext;
             var xsapiResult = XboxLiveContextCreate(user.PCXboxLiveUser, out xboxLiveContext);
@@ -30,8 +31,8 @@ namespace Microsoft.Xbox.Services
             XboxLiveContextPtr = xboxLiveContext;
 
             this.TitleStorageService = new TitleStorageService(XboxLiveContextPtr);
+            this.PrivacyService = new PrivacyService(XboxLiveContextPtr);
 #endif
-            this.PrivacyService = new PrivacyService(user);
         }
 
         ~XboxLiveServices()

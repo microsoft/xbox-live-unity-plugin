@@ -9,6 +9,12 @@ namespace Microsoft.Xbox.Services.Privacy
     internal interface IPrivacyService
     {
         /// <summary>
+        /// Get the list of Xbox Live Ids the calling user should avoid during multiplayer matchmaking.
+        /// </summary>
+        /// <returns>A collection of XboxUserIds that correspond to the calling user's avoid list.</returns>
+        Task<IList<string>> GetAvoidListAsync();
+        
+        /// <summary>
         /// Check a single permission with a single target user.
         /// </summary>
         /// <param name="permissionId">The ID of the permission to check.
@@ -31,5 +37,11 @@ namespace Microsoft.Xbox.Services.Privacy
             IList<string> permissionIds,
             IList<string> targetXboxUserIds
             );
+
+        /// <summary>
+        /// Get the list of Xbox Live Ids that the calling user should not hear (mute) during multiplayer matchmaking.
+        /// </summary>
+        /// <returns>The collection of Xbox user IDs that represent the mute list for a user.</returns>
+        Task<IList<string>> GetMuteListAsync();
     }
 }

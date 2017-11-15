@@ -146,6 +146,10 @@
     <ClCompile Include="..\..\Source\Services\Common\xbox_live_context.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_impl.cpp" />
     <ClCompile Include="..\..\Source\Services\Misc\title_callable_ui.cpp" />
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy.cpp" />
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.cpp" />
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.cpp" />
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.cpp" />
     <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.cpp" />
     <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.cpp" />
     <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage.cpp" />
@@ -159,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\privacy_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Include\xsapi\system_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
@@ -171,6 +176,10 @@
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_context_impl.h" />
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h" />
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.h" />
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.h" />
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_taskargs.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_state.h" />

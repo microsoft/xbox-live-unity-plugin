@@ -25,6 +25,9 @@
     <Filter Include="C++ Source\Services\TitleStorage">
       <UniqueIdentifier>{912c9396-dff4-4469-9c25-161bec7dbfa6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Services\Privacy">
+      <UniqueIdentifier>{bc845480-97e6-486a-81e0-2445018cfcc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -93,6 +96,21 @@
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_state.h">
       <Filter>C++ Source\Services\TitleStorage</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\privacy_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_taskargs.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -139,6 +157,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
       <Filter>C++ Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
