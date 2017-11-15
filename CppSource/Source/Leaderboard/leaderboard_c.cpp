@@ -9,53 +9,48 @@
 std::vector<XSAPI_LEADERBOARD_QUERY *> m_queries;
 xbox_live_result<leaderboard_query> cppLeaderboardQueryResult;
 
-XSAPI_DLLEXPORT XSAPI_RESULT  XBL_CALLING_CONV
+XSAPI_DLLEXPORT XSAPI_LEADERBOARD_QUERY* XBL_CALLING_CONV
 LeaderboardQueryCreate(
-    XSAPI_LEADERBOARD_QUERY* *query
 ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
 
-    *query = new XSAPI_LEADERBOARD_QUERY();
-    (*query)->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(leaderboard_query(), query);
-    m_queries.push_back(*query);
+    auto query = new XSAPI_LEADERBOARD_QUERY();
+    query->pImpl = new XSAPI_LEADERBOARD_QUERY_IMPL(leaderboard_query(), query);
+    m_queries.push_back(query);
 
-    return XSAPI_RESULT_OK;
+    return query;
 }
-CATCH_RETURN()
+CATCH_RETURN_WITH(nullptr)
 
-XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ bool skipResultToMe
-)
+) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetSkipResultToMe(skipResultToMe);
-
-    return XSAPI_RESULT_OK;
 }
-CATCH_RETURN()
+CATCH_RETURN_WITH(;)
 
-XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToRank(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t skipResultToRank
-)
+) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
 
     leaderboardQuery->pImpl->SetSkipResultToRank(skipResultToRank);
-
-    return XSAPI_RESULT_OK;
 }
-CATCH_RETURN()
+CATCH_RETURN_WITH(;)
 
-XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t maxItems
@@ -65,10 +60,8 @@ try
     verify_global_init();
 
     leaderboardQuery->pImpl->SetMaxItems(maxItems);
-
-    return XSAPI_RESULT_OK;
 }
-CATCH_RETURN()
+CATCH_RETURN_WITH(;)
 
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
@@ -93,7 +86,7 @@ try
 
     return leaderboardResult->pImpl->cppLeaderboardResult().has_next();
 }
-CATCH_RETURN_WITH(;)
+CATCH_RETURN_WITH(false)
 
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
