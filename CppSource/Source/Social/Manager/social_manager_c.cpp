@@ -17,19 +17,22 @@ XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 SocialManagerPresenceRecordIsUserPlayingTitle(
     _In_ XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD* presenceRecord,
     _In_ uint32_t titleId
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
     return presenceRecord->pImpl->cppSocialManagerPresenceRecord().is_user_playing_title(titleId);
 }
+CATCH_RETURN_WITH(false);
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerAddLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER *user,
     _In_ XSAPI_SOCIAL_MANAGER_EXTRA_DETAIL_LEVEL extraLevelDetail,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -39,12 +42,14 @@ SocialManagerAddLocalUser(
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerRemoveLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER *user,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -53,12 +58,14 @@ SocialManagerRemoveLocalUser(
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 
 XSAPI_DLLEXPORT XSAPI_SOCIAL_EVENT** XBL_CALLING_CONV
 SocialManagerDoWork(
     _Out_ int32_t* socialEventsSize
     )
+try
 {
     verify_global_init();
 
@@ -85,6 +92,7 @@ SocialManagerDoWork(
     *socialEventsSize = socialVars.cEvents.size();
     return socialVars.cEvents.data();
 }
+CATCH_RETURN_WITH(nullptr)
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromFilters(
@@ -93,7 +101,8 @@ SocialManagerCreateSocialUserGroupFromFilters(
     _In_ XSAPI_RELATIONSHIP_FILTER filter,
     _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -109,6 +118,7 @@ SocialManagerCreateSocialUserGroupFromFilters(
     *errMessage = socialVars.cppGroupResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppGroupResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
@@ -117,7 +127,8 @@ SocialManagerCreateSocialUserGroupFromList(
     _In_ int32_t xboxUserIdListSize,
     _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -138,12 +149,14 @@ SocialManagerCreateSocialUserGroupFromList(
     *errMessage = socialVars.cppGroupResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppGroupResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerDestroySocialUserGroup(
     _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *group,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -156,6 +169,7 @@ SocialManagerDestroySocialUserGroup(
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
@@ -163,7 +177,8 @@ SocialManagerUpdateSocialUserGroup(
     _In_ PCSTR* users,
     _In_ uint32_t usersSize,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -180,13 +195,15 @@ SocialManagerUpdateSocialUserGroup(
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerSetRichPresencePollingStatus(
     _In_ XSAPI_XBOX_LIVE_USER *user,
     _In_ bool shouldEnablePolling,
     _Out_ PCSTR* errMessage
-    )
+    ) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
     
@@ -196,3 +213,4 @@ SocialManagerSetRichPresencePollingStatus(
     *errMessage = socialVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppVoidResult.err());
 }
+CATCH_RETURN()
