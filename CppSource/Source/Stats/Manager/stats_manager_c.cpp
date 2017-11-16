@@ -17,7 +17,8 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerAddLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -26,12 +27,14 @@ StatsManagerAddLocalUser(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRemoveLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -40,13 +43,15 @@ StatsManagerRemoveLocalUser(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRequestFlushToService(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ bool isHighPriority,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -55,11 +60,13 @@ StatsManagerRequestFlushToService(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_STAT_EVENT** XBL_CALLING_CONV
 StatsManagerDoWork(
     _Inout_ uint32_t *statEventsSize
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -73,6 +80,7 @@ StatsManagerDoWork(
     
     return statsVars.cEvents.data();
 }
+CATCH_RETURN_WITH(nullptr)
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticNumberData(
@@ -80,7 +88,8 @@ StatsManagerSetStatisticNumberData(
     _In_ PCSTR statName,
     _In_ double statValue,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -89,6 +98,7 @@ StatsManagerSetStatisticNumberData(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticIntegerData(
@@ -96,7 +106,8 @@ StatsManagerSetStatisticIntegerData(
     _In_ PCSTR statName,
     _In_ int64_t statValue,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -105,6 +116,7 @@ StatsManagerSetStatisticIntegerData(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticStringData(
@@ -112,7 +124,8 @@ StatsManagerSetStatisticStringData(
     _In_ PCSTR statName,
     _In_ PCSTR statValue,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -121,6 +134,7 @@ StatsManagerSetStatisticStringData(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStatNames(
@@ -128,7 +142,8 @@ StatsManagerGetStatNames(
     _Inout_ PCSTR** statNameList,
     _Inout_ uint32_t* statNameListSize,
     _Inout_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -150,6 +165,7 @@ StatsManagerGetStatNames(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStat(
@@ -157,7 +173,8 @@ StatsManagerGetStat(
     _In_ PCSTR statName,
     _Out_ XSAPI_STAT_VALUE** statValue,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -167,13 +184,15 @@ StatsManagerGetStat(
     *errMessage = statsVars.cppStatValueResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppStatValueResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerDeleteStat(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -182,6 +201,7 @@ StatsManagerDeleteStat(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetLeaderboard(
@@ -189,7 +209,8 @@ StatsManagerGetLeaderboard(
     _In_ PCSTR statName,
     _In_ XSAPI_LEADERBOARD_QUERY* query,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -198,6 +219,7 @@ StatsManagerGetLeaderboard(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetSocialLeaderboard(
@@ -206,7 +228,8 @@ StatsManagerGetSocialLeaderboard(
     _In_ PCSTR socialGroup,
     _In_ XSAPI_LEADERBOARD_QUERY* query,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -215,3 +238,4 @@ StatsManagerGetSocialLeaderboard(
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());
 }
+CATCH_RETURN()
