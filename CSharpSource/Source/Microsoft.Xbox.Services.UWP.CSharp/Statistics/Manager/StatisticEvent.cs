@@ -26,7 +26,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             User = new XboxLiveUser(cStatEvent.LocalUser);
 
             ErrorCode = cStatEvent.ErrorCode;
-            ErrorMessage = cStatEvent.ErrorMessage;
+            ErrorMessage = MarshalingHelpers.Utf8ToString(cStatEvent.ErrorMessage);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -44,8 +44,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             [MarshalAs(UnmanagedType.I4)]
             public int ErrorCode;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string ErrorMessage;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr ErrorMessage;
         }
     }
 }

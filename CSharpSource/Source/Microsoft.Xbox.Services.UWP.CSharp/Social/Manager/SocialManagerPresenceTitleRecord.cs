@@ -15,7 +15,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IsBroadcasting = Convert.ToBoolean(cTitleRecord.IsBroadcasting);
             Device = cTitleRecord.DeviceType;
             TitleId = cTitleRecord.TitleId;
-            PresenceText = cTitleRecord.PresenceText;
+            PresenceText = MarshalingHelpers.Utf8ToString(cTitleRecord.PresenceText);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -34,8 +34,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U4)]
             public uint TitleId;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string PresenceText;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceText;
         }
     }
 }

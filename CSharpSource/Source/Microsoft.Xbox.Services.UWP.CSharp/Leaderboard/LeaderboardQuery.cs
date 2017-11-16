@@ -28,8 +28,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
             SkipResultToRank = cLeaderboardQuery.SkipResultToRank;
             MaxItems = cLeaderboardQuery.MaxItems;
             Order = cLeaderboardQuery.Order;
-            StatName = cLeaderboardQuery.StatName;
-            SocialGroup = cLeaderboardQuery.SocialGroup;
+            StatName = MarshalingHelpers.Utf8ToString(cLeaderboardQuery.StatName);
+            SocialGroup = MarshalingHelpers.Utf8ToString(cLeaderboardQuery.SocialGroup);
             HasNext = cLeaderboardQuery.HasNext;
         }
 
@@ -113,11 +113,11 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.U4)]
             public SortOrder Order;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string StatName;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr StatName;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string SocialGroup;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr SocialGroup;
 
             [MarshalAs(UnmanagedType.Bool)]
             public bool HasNext;

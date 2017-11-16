@@ -12,13 +12,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             XboxSocialUser_c cXboxSocialUser = Marshal.PtrToStructure<XboxSocialUser_c>(xboxSocialUserPtr);
 
-            XboxUserId = cXboxSocialUser.XboxUserId;
-            DisplayName = cXboxSocialUser.DisplayName;
-            RealName = cXboxSocialUser.RealName;
-            DisplayPicRaw = cXboxSocialUser.DisplayPicUrlRaw;
+            XboxUserId = MarshalingHelpers.Utf8ToString(cXboxSocialUser.XboxUserId);
+            DisplayName = MarshalingHelpers.Utf8ToString(cXboxSocialUser.DisplayName);
+            RealName = MarshalingHelpers.Utf8ToString(cXboxSocialUser.RealName);
+            DisplayPicRaw = MarshalingHelpers.Utf8ToString(cXboxSocialUser.DisplayPicUrlRaw);
             UseAvatar = Convert.ToBoolean(cXboxSocialUser.UseAvatar);
-            Gamertag = cXboxSocialUser.Gamertag;
-            Gamerscore = cXboxSocialUser.Gamerscore;
+            Gamertag = MarshalingHelpers.Utf8ToString(cXboxSocialUser.Gamertag);
+            Gamerscore = MarshalingHelpers.Utf8ToString(cXboxSocialUser.Gamerscore);
             PreferredColor = new PreferredColor(cXboxSocialUser.PreferredColor);
             IsFollowedByCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowedByCaller);
             IsFollowingUser = Convert.ToBoolean(cXboxSocialUser.IsFollowingUser);
@@ -32,8 +32,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct XboxSocialUser_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string XboxUserId;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr XboxUserId;
 
             [MarshalAs(UnmanagedType.U1)]
             public byte IsFavorite;
@@ -44,23 +44,23 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.U1)]
             public byte IsFollowedByCaller;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string DisplayName;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr DisplayName;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string RealName;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr RealName;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string DisplayPicUrlRaw;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr DisplayPicUrlRaw;
 
             [MarshalAs(UnmanagedType.U1)]
             public byte UseAvatar;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Gamerscore;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Gamerscore;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Gamertag;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Gamertag;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr PresenceRecord;

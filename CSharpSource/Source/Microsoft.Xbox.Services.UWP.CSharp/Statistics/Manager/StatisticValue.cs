@@ -11,18 +11,18 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         internal StatisticValue(IntPtr statValuePtr)
         {
             StatisticValue_c cStatValue = Marshal.PtrToStructure<StatisticValue_c>(statValuePtr);
-            Name = cStatValue.Name;
+            Name = MarshalingHelpers.Utf8ToString(cStatValue.Name);
             AsNumber = cStatValue.AsNumber;
             AsInteger = cStatValue.AsInteger;
-            AsString = cStatValue.AsString;
+            AsString = MarshalingHelpers.Utf8ToString(cStatValue.AsString);
             DataType = cStatValue.DataType;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct StatisticValue_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Name;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Name;
 
             [MarshalAs(UnmanagedType.R8)]
             public double AsNumber;
@@ -30,8 +30,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             [MarshalAs(UnmanagedType.I8)]
             public long AsInteger;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string AsString;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr AsString;
 
             [MarshalAs(UnmanagedType.U4)]
             public StatisticDataType DataType;

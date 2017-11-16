@@ -290,8 +290,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
         [StructLayout(LayoutKind.Sequential)]
         internal struct XboxUserIdContainer_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string XboxUserId;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr XboxUserId;
         }
     }
 }

@@ -74,7 +74,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 for (int i = 0; i < cTrackedUsers.Count(); i++)
                 {
                     var cSocialUser = Marshal.PtrToStructure<SocialManager.XboxUserIdContainer_c>(cTrackedUsers[i]);
-                    m_trackedUsers.Add(cSocialUser.XboxUserId);
+                    string xuid = MarshalingHelpers.Utf8ToString(cSocialUser.XboxUserId);
+                    m_trackedUsers.Add(xuid);
                 }
             }
         }

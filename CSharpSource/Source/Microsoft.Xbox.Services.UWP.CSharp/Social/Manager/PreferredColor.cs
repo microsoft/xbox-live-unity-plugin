@@ -11,23 +11,23 @@ namespace Microsoft.Xbox.Services.Social.Manager
         internal PreferredColor(IntPtr preferredColorPtr)
         {
             PreferredColor_c cPreferredColor = Marshal.PtrToStructure<PreferredColor_c>(preferredColorPtr);
-            PrimaryColor = cPreferredColor.PrimaryColor;
-            SecondaryColor = cPreferredColor.SecondaryColor;
-            TertiaryColor = cPreferredColor.TertiaryColor;
+            PrimaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.PrimaryColor);
+            SecondaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.SecondaryColor);
+            TertiaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.TertiaryColor);
         }
 
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct PreferredColor_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string PrimaryColor;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PrimaryColor;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string SecondaryColor;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr SecondaryColor;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string TertiaryColor;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr TertiaryColor;
         }
     }
 }

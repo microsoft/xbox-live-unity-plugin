@@ -13,14 +13,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
             LeaderboardColumn_c cColumn = Marshal.PtrToStructure<LeaderboardColumn_c>(leaderboardColumnPtr);
 
             StatisticType = cColumn.StatType;
-            StatisticName = cColumn.StatName;
+            StatisticName = MarshalingHelpers.Utf8ToString(cColumn.StatName);
         }
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct LeaderboardColumn_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string StatName;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr StatName;
 
             [MarshalAs(UnmanagedType.I4)]
             public LeaderboardStatType StatType;

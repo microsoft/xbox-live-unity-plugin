@@ -14,8 +14,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
             LeaderboardRow_c cRow = Marshal.PtrToStructure<LeaderboardRow_c>(leaderboardRowPtr);
             Rank = cRow.Rank;
             Percentile = cRow.Percentile;
-            XboxUserId = cRow.XboxUserId;
-            Gamertag = cRow.Gamertag;
+            XboxUserId = MarshalingHelpers.Utf8ToString(cRow.XboxUserId);
+            Gamertag = MarshalingHelpers.Utf8ToString(cRow.Gamertag);
 
             Values = new List<string>();
             if (cRow.ColumnValuesSize > 0)
@@ -32,11 +32,11 @@ namespace Microsoft.Xbox.Services.Leaderboard
         [StructLayout(LayoutKind.Sequential)]
         internal struct LeaderboardRow_c
         {
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string Gamertag;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Gamertag;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string XboxUserId;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr XboxUserId;
 
             [MarshalAs(UnmanagedType.R8)]
             public double Percentile;

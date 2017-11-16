@@ -42,13 +42,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 foreach (IntPtr cXuidPtr in cUsersAffected)
                 {
                     SocialManager.XboxUserIdContainer_c cXuid = Marshal.PtrToStructure<SocialManager.XboxUserIdContainer_c>(cXuidPtr);
-                    usersAffected.Add(cXuid.XboxUserId);
+                    string xuid = MarshalingHelpers.Utf8ToString(cXuid.XboxUserId);
+                    usersAffected.Add(xuid);
                 }
             }
             UsersAffected = usersAffected.AsReadOnly();
 
             ErrorCode = cSocialEvent.ErrorCode;
-            ErrorMessge = cSocialEvent.ErrorMessage;
+            ErrorMessge = MarshalingHelpers.Utf8ToString(cSocialEvent.ErrorMessage);
         }
         
         [StructLayout(LayoutKind.Sequential)]
@@ -72,8 +73,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.I4)]
             public int ErrorCode;
 
-            [MarshalAs(UnmanagedType.LPStr)]
-            public string ErrorMessage;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr ErrorMessage;
         }
     }
 }
