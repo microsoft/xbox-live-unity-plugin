@@ -106,7 +106,7 @@ namespace Microsoft.Xbox.Services
 #endif
         }
 
-        internal static int SizeOf<T>()
+        internal static int SizeOf<T>() where T: new()
         {
 #if DOTNET_3_5
             return Marshal.SizeOf(new T());
