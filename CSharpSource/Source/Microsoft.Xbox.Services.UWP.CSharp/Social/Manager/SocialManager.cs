@@ -281,14 +281,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct SocialUserGroupLoadedArgs_c
+        internal struct SOCIAL_USER_GROUP_LOADED_ARGS
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr SocialUserGroup;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct XboxUserIdContainer_c
+        internal struct XBOX_USER_ID_CONTAINER
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr XboxUserId;

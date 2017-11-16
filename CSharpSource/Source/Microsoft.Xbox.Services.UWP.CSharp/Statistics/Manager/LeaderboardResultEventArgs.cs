@@ -11,12 +11,12 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     {
         internal LeaderboardResultEventArgs(IntPtr leaderboardResultEventArgsPtr)
         {
-            LeaderboardResultEventArgs_c cArgs = Marshal.PtrToStructure<LeaderboardResultEventArgs_c>(leaderboardResultEventArgsPtr);
+            LEADERBOARD_RESULT_EVENT_ARGS cArgs = Marshal.PtrToStructure<LEADERBOARD_RESULT_EVENT_ARGS>(leaderboardResultEventArgsPtr);
             Result = new LeaderboardResult(cArgs.Result);
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardResultEventArgs_c
+        internal struct LEADERBOARD_RESULT_EVENT_ARGS
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Result;

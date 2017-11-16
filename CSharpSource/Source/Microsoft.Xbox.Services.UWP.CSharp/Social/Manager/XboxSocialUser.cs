@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal XboxSocialUser(IntPtr xboxSocialUserPtr)
         {
-            XboxSocialUser_c cXboxSocialUser = Marshal.PtrToStructure<XboxSocialUser_c>(xboxSocialUserPtr);
+            XBOX_SOCIAL_USER cXboxSocialUser = Marshal.PtrToStructure<XBOX_SOCIAL_USER>(xboxSocialUserPtr);
 
             XboxUserId = MarshalingHelpers.Utf8ToString(cXboxSocialUser.XboxUserId);
             DisplayName = MarshalingHelpers.Utf8ToString(cXboxSocialUser.DisplayName);
@@ -30,7 +30,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct XboxSocialUser_c
+        internal struct XBOX_SOCIAL_USER
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr XboxUserId;

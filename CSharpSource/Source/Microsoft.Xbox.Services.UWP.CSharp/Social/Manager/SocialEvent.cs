@@ -11,14 +11,14 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal SocialEvent(IntPtr socialEventPtr, IList<XboxSocialUserGroup> groups)
         {
-            SocialEvent_c cSocialEvent = Marshal.PtrToStructure<SocialEvent_c>(socialEventPtr);
+            SOCIAL_EVENT cSocialEvent = Marshal.PtrToStructure<SOCIAL_EVENT>(socialEventPtr);
             EventType = cSocialEvent.EventType;
 
             User = new XboxLiveUser(cSocialEvent.User);
 
             try
             {
-                SocialManager.SocialUserGroupLoadedArgs_c cArgs = Marshal.PtrToStructure<SocialManager.SocialUserGroupLoadedArgs_c>(cSocialEvent.EventArgs);
+                SocialManager.SOCIAL_USER_GROUP_LOADED_ARGS cArgs = Marshal.PtrToStructure<SocialManager.SOCIAL_USER_GROUP_LOADED_ARGS>(cSocialEvent.EventArgs);
 
                 foreach (XboxSocialUserGroup group in groups)
                 {
@@ -41,7 +41,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 Marshal.Copy(cSocialEvent.UsersAffected, cUsersAffected, 0, cSocialEvent.NumOfUsersAffected);
                 foreach (IntPtr cXuidPtr in cUsersAffected)
                 {
-                    SocialManager.XboxUserIdContainer_c cXuid = Marshal.PtrToStructure<SocialManager.XboxUserIdContainer_c>(cXuidPtr);
+                    SocialManager.XBOX_USER_ID_CONTAINER cXuid = Marshal.PtrToStructure<SocialManager.XBOX_USER_ID_CONTAINER>(cXuidPtr);
                     string xuid = MarshalingHelpers.Utf8ToString(cXuid.XboxUserId);
                     usersAffected.Add(xuid);
                 }
@@ -53,7 +53,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
         
         [StructLayout(LayoutKind.Sequential)]
-        internal struct SocialEvent_c
+        internal struct SOCIAL_EVENT
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr User;

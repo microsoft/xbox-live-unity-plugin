@@ -11,7 +11,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
     {
         internal LeaderboardRow(IntPtr leaderboardRowPtr)
         {
-            LeaderboardRow_c cRow = Marshal.PtrToStructure<LeaderboardRow_c>(leaderboardRowPtr);
+            LEADERBOARD_ROW cRow = Marshal.PtrToStructure<LEADERBOARD_ROW>(leaderboardRowPtr);
             Rank = cRow.Rank;
             Percentile = cRow.Percentile;
             XboxUserId = MarshalingHelpers.Utf8ToString(cRow.XboxUserId);
@@ -30,7 +30,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardRow_c
+        internal struct LEADERBOARD_ROW
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Gamertag;

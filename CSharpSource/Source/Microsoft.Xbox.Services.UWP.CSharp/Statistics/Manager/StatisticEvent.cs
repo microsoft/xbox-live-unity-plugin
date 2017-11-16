@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     {
         internal StatisticEvent(IntPtr statEventPtr)
         {
-            StatisticEvent_c cStatEvent = Marshal.PtrToStructure<StatisticEvent_c>(statEventPtr);
+            STATISTIC_EVENT cStatEvent = Marshal.PtrToStructure<STATISTIC_EVENT>(statEventPtr);
 
             EventType = cStatEvent.EventType;
 
@@ -30,7 +30,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct StatisticEvent_c
+        internal struct STATISTIC_EVENT
         {
             [MarshalAs(UnmanagedType.U4)]
             public StatisticEventType EventType;

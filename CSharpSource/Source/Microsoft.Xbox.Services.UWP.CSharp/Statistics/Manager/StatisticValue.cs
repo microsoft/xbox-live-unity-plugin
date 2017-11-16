@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     {
         internal StatisticValue(IntPtr statValuePtr)
         {
-            StatisticValue_c cStatValue = Marshal.PtrToStructure<StatisticValue_c>(statValuePtr);
+            STATISTIC_VALUE cStatValue = Marshal.PtrToStructure<STATISTIC_VALUE>(statValuePtr);
             Name = MarshalingHelpers.Utf8ToString(cStatValue.Name);
             AsNumber = cStatValue.AsNumber;
             AsInteger = cStatValue.AsInteger;
@@ -19,7 +19,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct StatisticValue_c
+        internal struct STATISTIC_VALUE
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Name;

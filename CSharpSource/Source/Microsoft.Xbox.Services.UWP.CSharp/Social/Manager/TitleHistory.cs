@@ -9,7 +9,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     {
         internal TitleHistory(IntPtr titleHistoryPtr)
         {
-            TitleHistory_c cTitleHistory = Marshal.PtrToStructure<TitleHistory_c>(titleHistoryPtr);
+            TITLE_HISTORY cTitleHistory = Marshal.PtrToStructure<TITLE_HISTORY>(titleHistoryPtr);
             HasUserPlayed = Convert.ToBoolean(cTitleHistory.UserHasPlayed);
 
             // todo test
@@ -18,7 +18,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct TitleHistory_c
+    internal struct TITLE_HISTORY
     {
         [MarshalAs(UnmanagedType.U1)]
         public byte UserHasPlayed;

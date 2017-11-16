@@ -23,7 +23,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         internal LeaderboardQuery(IntPtr leaderboardQueryPtr)
         {
             m_leaderboardQueryPtr = leaderboardQueryPtr;
-            LeaderboardQuery_c cLeaderboardQuery = Marshal.PtrToStructure<LeaderboardQuery_c>(leaderboardQueryPtr);
+            LEADERBOARD_QUERY cLeaderboardQuery = Marshal.PtrToStructure<LEADERBOARD_QUERY>(leaderboardQueryPtr);
             SkipResultToMe = cLeaderboardQuery.SkipResultToMe;
             SkipResultToRank = cLeaderboardQuery.SkipResultToRank;
             MaxItems = cLeaderboardQuery.MaxItems;
@@ -99,7 +99,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardQuery_c
+        internal struct LEADERBOARD_QUERY
         {
             [MarshalAs(UnmanagedType.Bool)]
             public bool SkipResultToMe;

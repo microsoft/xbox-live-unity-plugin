@@ -10,14 +10,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
     {
         internal LeaderboardColumn(IntPtr leaderboardColumnPtr)
         {
-            LeaderboardColumn_c cColumn = Marshal.PtrToStructure<LeaderboardColumn_c>(leaderboardColumnPtr);
+            LEADERBOARD_COLUMN cColumn = Marshal.PtrToStructure<LEADERBOARD_COLUMN>(leaderboardColumnPtr);
 
             StatisticType = cColumn.StatType;
             StatisticName = MarshalingHelpers.Utf8ToString(cColumn.StatName);
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardColumn_c
+        internal struct LEADERBOARD_COLUMN
         {
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr StatName;

@@ -22,7 +22,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         internal LeaderboardResult(IntPtr leaderboardResultPtr)
         {
             m_leaderboardResultPtr = leaderboardResultPtr;
-            LeaderboardResult_c cResult = Marshal.PtrToStructure<LeaderboardResult_c>(leaderboardResultPtr);
+            LEADERBOARD_RESULT cResult = Marshal.PtrToStructure<LEADERBOARD_RESULT>(leaderboardResultPtr);
 
             TotalRowCount = cResult.TotalRowCount;
 
@@ -76,7 +76,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         }
         
         [StructLayout(LayoutKind.Sequential)]
-        internal struct LeaderboardResult_c
+        internal struct LEADERBOARD_RESULT
         {
             [MarshalAs(UnmanagedType.U4)]
             public UInt32 TotalRowCount;

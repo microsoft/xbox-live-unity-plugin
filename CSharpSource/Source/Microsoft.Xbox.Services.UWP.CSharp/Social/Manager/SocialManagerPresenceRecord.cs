@@ -15,7 +15,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             this.m_socialManagerPresenceRecordPtr = socialManagerPresenceRecordPtr;
 
-            SocialManagerPresenceRecord_c cPresenceRecord = Marshal.PtrToStructure<SocialManagerPresenceRecord_c>(socialManagerPresenceRecordPtr);
+            SOCIAL_MANAGER_PRESENCE_RECORD cPresenceRecord = Marshal.PtrToStructure<SOCIAL_MANAGER_PRESENCE_RECORD>(socialManagerPresenceRecordPtr);
             UserState = cPresenceRecord.UserState;
 
             m_titleRecords = new List<SocialManagerPresenceTitleRecord>();
@@ -59,7 +59,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct SocialManagerPresenceRecord_c
+        internal struct SOCIAL_MANAGER_PRESENCE_RECORD
         {
             [MarshalAs(UnmanagedType.U4)]
             public UserPresenceState UserState;
