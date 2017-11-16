@@ -54,7 +54,7 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t maxItems
-)
+) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -67,7 +67,7 @@ XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ XSAPI_SORT_ORDER order
-)
+) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -79,7 +79,7 @@ CATCH_RETURN_WITH(;)
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult
-)
+) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -124,7 +124,8 @@ LeaderboardResultGetNext(
     _In_ GetNextCompletionRoutine completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -144,6 +145,7 @@ LeaderboardResultGetNext(
         nullptr
     ));
 }
+CATCH_RETURN()
 #endif
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -151,7 +153,8 @@ LeaderboardResultGetNextQuery(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
     _Out_ XSAPI_LEADERBOARD_QUERY** nextQuery,
     _Out_ PCSTR* errMessage
-)
+) XSAPI_NOEXCEPT
+try
 {
     verify_global_init();
 
@@ -162,3 +165,4 @@ LeaderboardResultGetNextQuery(
     *errMessage = cppLeaderboardQueryResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(cppLeaderboardQueryResult.err());
 }
+CATCH_RETURN()
