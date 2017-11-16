@@ -38,7 +38,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             {
                 LocalUser = new XboxLiveUser(cSocialUserGroup.LocalUser);
             }
-            LocalUser.Impl.UpdatePropertiesFromXboxLiveUser_c();
+            LocalUser.Impl.UpdatePropertiesFromXboxLiveUserPtr();
 
             // Users
 

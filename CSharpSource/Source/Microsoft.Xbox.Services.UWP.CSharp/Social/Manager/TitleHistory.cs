@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         internal TitleHistory(IntPtr titleHistoryPtr)
         {
             TITLE_HISTORY cTitleHistory = Marshal.PtrToStructure<TITLE_HISTORY>(titleHistoryPtr);
-            HasUserPlayed = Convert.ToBoolean(cTitleHistory.UserHasPlayed);
+            HasUserPlayed = cTitleHistory.UserHasPlayed;
 
             // todo test
             LastTimeUserPlayed = DateTimeOffset.FromUnixTimeSeconds(cTitleHistory.LastTimeUserPlayed);
@@ -21,7 +21,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     internal struct TITLE_HISTORY
     {
         [MarshalAs(UnmanagedType.U1)]
-        public byte UserHasPlayed;
+        public bool UserHasPlayed;
 
         [MarshalAs(UnmanagedType.I8)]
         public long LastTimeUserPlayed;

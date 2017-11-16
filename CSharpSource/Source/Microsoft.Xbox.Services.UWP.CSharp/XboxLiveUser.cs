@@ -48,7 +48,7 @@ namespace Microsoft.Xbox.Services
             };
 
             this.userImpl = user;
-            user.UpdatePropertiesFromXboxLiveUser_c();
+            user.UpdatePropertiesFromXboxLiveUserPtr();
         }
         
         public Windows.System.User WindowsSystemUser

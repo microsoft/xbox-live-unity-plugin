@@ -110,7 +110,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 // Refresh objects
                 foreach (XboxLiveUser user in m_localUsers)
                 {
-                    user.Impl.UpdatePropertiesFromXboxLiveUser_c();
+                    user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
                 }
             }
 

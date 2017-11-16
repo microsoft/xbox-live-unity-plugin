@@ -16,13 +16,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             DisplayName = MarshalingHelpers.Utf8ToString(cXboxSocialUser.DisplayName);
             RealName = MarshalingHelpers.Utf8ToString(cXboxSocialUser.RealName);
             DisplayPicRaw = MarshalingHelpers.Utf8ToString(cXboxSocialUser.DisplayPicUrlRaw);
-            UseAvatar = Convert.ToBoolean(cXboxSocialUser.UseAvatar);
+            UseAvatar = cXboxSocialUser.UseAvatar;
             Gamertag = MarshalingHelpers.Utf8ToString(cXboxSocialUser.Gamertag);
             Gamerscore = MarshalingHelpers.Utf8ToString(cXboxSocialUser.Gamerscore);
             PreferredColor = new PreferredColor(cXboxSocialUser.PreferredColor);
-            IsFollowedByCaller = Convert.ToBoolean(cXboxSocialUser.IsFollowedByCaller);
-            IsFollowingUser = Convert.ToBoolean(cXboxSocialUser.IsFollowingUser);
-            IsFavorite = Convert.ToBoolean(cXboxSocialUser.IsFavorite);
+            IsFollowedByCaller = cXboxSocialUser.IsFollowedByCaller;
+            IsFollowingUser = cXboxSocialUser.IsFollowingUser;
+            IsFavorite = cXboxSocialUser.IsFavorite;
 
             PresenceRecord = new SocialManagerPresenceRecord(cXboxSocialUser.PresenceRecord);
 
@@ -36,13 +36,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             public IntPtr XboxUserId;
 
             [MarshalAs(UnmanagedType.U1)]
-            public byte IsFavorite;
+            public bool IsFavorite;
 
             [MarshalAs(UnmanagedType.U1)]
-            public byte IsFollowingUser;
+            public bool IsFollowingUser;
 
             [MarshalAs(UnmanagedType.U1)]
-            public byte IsFollowedByCaller;
+            public bool IsFollowedByCaller;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr DisplayName;
@@ -54,7 +54,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             public IntPtr DisplayPicUrlRaw;
 
             [MarshalAs(UnmanagedType.U1)]
-            public byte UseAvatar;
+            public bool UseAvatar;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Gamerscore;

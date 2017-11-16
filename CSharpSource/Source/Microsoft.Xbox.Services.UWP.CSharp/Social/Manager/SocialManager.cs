@@ -238,7 +238,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 }
                 foreach (XboxLiveUser user in m_localUsers)
                 {
-                    user.Impl.UpdatePropertiesFromXboxLiveUser_c();
+                    user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
 
             // Does local work
-            user.Impl.UpdatePropertiesFromXboxLiveUser_c();
+            user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
         }
 
         // Marshalling
