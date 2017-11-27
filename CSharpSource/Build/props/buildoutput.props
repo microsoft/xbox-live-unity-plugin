@@ -2,7 +2,7 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BaseOutputPath>$(BuildRoot)\binaries\</BaseOutputPath>
-    <BasePluginLayoutPath>$(BaseOutputPath)Layout\$(Configuration)\</BasePluginLayoutPath>
+    <AssetLibsBasePath>$(BuildRoot)\..\Assets\Xbox Live\Libs\</AssetLibsBasePath>
     <OutputPath>$(BaseOutputPath)$(Platform)\$(Configuration)\</OutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <IntermediateOutputPath>$(BuildRoot)\obj\$(Platform)\$(Configuration)</IntermediateOutputPath>
