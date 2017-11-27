@@ -10,5 +10,11 @@ namespace Microsoft.Xbox.Services.Leaderboard
         public string SocialGroup { get; private set; }
                 
         public bool HasNext { get; private set; }
+
+        // todo remove after removing leaderboard service
+        internal LeaderboardQuery(LeaderboardQuery query, string continuation)
+        {
+
+        }
     }
 }
