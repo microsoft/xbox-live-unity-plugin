@@ -30,10 +30,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
         }
 
-        private delegate bool SocialManagerPresenceRecordIsUserPlayingTitle(IntPtr socialManagerPresenceRecord, uint titleId);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern bool SocialManagerPresenceRecordIsUserPlayingTitle(IntPtr socialManagerPresenceRecord, uint titleId);
+
         public bool IsUserPlayingTitle(uint titleId)
         {
-            return XboxLive.Instance.Invoke<bool, SocialManagerPresenceRecordIsUserPlayingTitle>(m_socialManagerPresenceRecordPtr, titleId);
+            return SocialManagerPresenceRecordIsUserPlayingTitle(m_socialManagerPresenceRecordPtr, titleId);
         }
 
         public bool Equals(SocialManagerPresenceRecord other)

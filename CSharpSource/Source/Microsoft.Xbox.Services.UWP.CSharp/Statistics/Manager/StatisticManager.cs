@@ -8,12 +8,14 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
     using global::System.Runtime.InteropServices;
 
     using Microsoft.Xbox.Services.Leaderboard;
+    using System;
 
     public partial class StatisticManager : IStatisticManager
     {
         private readonly List<XboxLiveUser> m_localUsers = new List<XboxLiveUser>();
 
-        private delegate Int32 StatsManagerAddLocalUser(IntPtr user, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerAddLocalUser(IntPtr user, IntPtr errMessage);
         public void AddLocalUser(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -22,13 +24,13 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerAddLocalUser>(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerAddLocalUser(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -37,7 +39,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             m_localUsers.Add(user);
         }
 
-        private delegate Int32 StatsManagerRemoveLocalUser(IntPtr user, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerRemoveLocalUser(IntPtr user, IntPtr errMessage);
         public void RemoveLocalUser(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -46,13 +49,13 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerRemoveLocalUser>(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerRemoveLocalUser(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -61,7 +64,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             m_localUsers.Remove(user);
         }
 
-        private delegate Int32 StatsManagerRequestFlushToService(IntPtr user, bool isHighPriority, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerRequestFlushToService(IntPtr user, bool isHighPriority, IntPtr errMessage);
         public void RequestFlushToService(XboxLiveUser user, bool isHighPriority = false)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -70,26 +74,27 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerRequestFlushToService>(user.Impl.GetPtr(), isHighPriority, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerRequestFlushToService(user.Impl.GetPtr(), isHighPriority, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate IntPtr StatsManagerDoWork(IntPtr numOfEvents);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern IntPtr StatsManagerDoWork(IntPtr numOfEvents);
         public IList<StatisticEvent> DoWork()
         {
             // Allocates memory for returned objects
             IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
 
             // Invokes the c method
-            IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, StatsManagerDoWork>(cNumOfEvents);
+            IntPtr eventsPtr = StatsManagerDoWork(cNumOfEvents);
 
             // Does local work
             int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
@@ -117,7 +122,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             return events.AsReadOnly();
         }
 
-        private delegate Int32 StatsManagerSetStatisticNumberData(IntPtr user, string statName, double value, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerSetStatisticNumberData(IntPtr user, string statName, double value, IntPtr errMessage);
         public void SetStatisticNumberData(XboxLiveUser user, string statName, double value)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -126,57 +132,60 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticNumberData>(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticNumberData(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate Int32 StatsManagerSetStatisticIntegerData(IntPtr user, string statName, long value, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerSetStatisticIntegerData(IntPtr user, string statName, long value, IntPtr errMessage);
         public void SetStatisticIntegerData(XboxLiveUser user, string statName, long value)
         {
             // Allocates memory for returned objects
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticIntegerData>(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticIntegerData(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate Int32 StatsManagerSetStatisticStringData(IntPtr user, string statName, string value, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerSetStatisticStringData(IntPtr user, string statName, string value, IntPtr errMessage);
         public void SetStatisticStringData(XboxLiveUser user, string statName, string value)
         {
             // Allocates memory for returned objects
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerSetStatisticStringData>(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticStringData(user.Impl.GetPtr(), statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate Int32 StatsManagerDeleteStat(IntPtr user, string statName, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerDeleteStat(IntPtr user, string statName, IntPtr errMessage);
         public void DeleteStatistic(XboxLiveUser user, string statName)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -185,19 +194,20 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerDeleteStat>(user.Impl.GetPtr(), statName, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerDeleteStat(user.Impl.GetPtr(), statName, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate Int32 StatsManagerGetLeaderboard(IntPtr user, string statName, IntPtr query, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerGetLeaderboard(IntPtr user, string statName, IntPtr query, IntPtr errMessage);
         public void GetLeaderboard(XboxLiveUser user, string statName, LeaderboardQuery query)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -206,7 +216,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetLeaderboard>(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetLeaderboard(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -218,7 +228,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        private delegate Int32 StatsManagerGetSocialLeaderboard(IntPtr user, string statName, string socialGroup, IntPtr query, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerGetSocialLeaderboard(IntPtr user, string statName, string socialGroup, IntPtr query, IntPtr errMessage);
         public void GetSocialLeaderboard(XboxLiveUser user, string statName, string socialGroup, LeaderboardQuery query)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -227,19 +238,20 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetSocialLeaderboard>(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetSocialLeaderboard(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
         }
 
-        private delegate Int32 StatsManagerGetStat(IntPtr user, IntPtr statName, IntPtr statValue, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerGetStat(IntPtr user, IntPtr statName, IntPtr statValue, IntPtr errMessage);
         public StatisticValue GetStatistic(XboxLiveUser user, string statName)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -250,13 +262,13 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cStatName = Marshal.StringToHGlobalAnsi(statName);
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetStat>(user.Impl.GetPtr(), cStatName, cStatValue, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetStat(user.Impl.GetPtr(), cStatName, cStatValue, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -268,7 +280,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             return statValue;
         }
 
-        private delegate Int32 StatsManagerGetStatNames(IntPtr user, IntPtr statNameList, IntPtr statNameListSize, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT StatsManagerGetStatNames(IntPtr user, IntPtr statNameList, IntPtr statNameListSize, IntPtr errMessage);
         public IList<string> GetStatisticNames(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
@@ -279,13 +292,13 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, StatsManagerGetStatNames>(user.Impl.GetPtr(), cStatListPtr, cStatListSize, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.GetPtr(), cStatListPtr, cStatListSize, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }

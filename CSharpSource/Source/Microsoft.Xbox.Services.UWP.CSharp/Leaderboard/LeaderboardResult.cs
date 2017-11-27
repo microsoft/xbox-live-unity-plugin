@@ -6,15 +6,17 @@ namespace Microsoft.Xbox.Services.Leaderboard
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Runtime.InteropServices;
+    using System;
 
     public partial class LeaderboardResult : ILeaderboardResult
     {
-        private delegate bool LeaderboardResultHasNext(IntPtr leaderboard);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern bool LeaderboardResultHasNext(IntPtr leaderboard);
         public bool HasNext
         {
             get
             {
-                return XboxLive.Instance.Invoke<bool, LeaderboardResultHasNext>(m_leaderboardResultPtr);
+                return LeaderboardResultHasNext(m_leaderboardResultPtr);
             }
         }
 
@@ -49,7 +51,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
             }
         }
 
-        private delegate Int32 LeaderboardResultGetNextQuery(IntPtr leaderboard, IntPtr nextQuery, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT LeaderboardResultGetNextQuery(IntPtr leaderboard, IntPtr nextQuery, IntPtr errMessage);
         public LeaderboardQuery GetNextQuery()
         {
             // Allocates memory for returned objects
@@ -57,13 +60,13 @@ namespace Microsoft.Xbox.Services.Leaderboard
             IntPtr cNextQuery = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, LeaderboardResultGetNextQuery>(m_leaderboardResultPtr, cNextQuery, cErrMessage);
+            XSAPI_RESULT errCode = LeaderboardResultGetNextQuery(m_leaderboardResultPtr, cNextQuery, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }

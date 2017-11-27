@@ -7,6 +7,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System.Collections.Generic;
     using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Presence;
+    using System;
 
     public partial class SocialManager : ISocialManager
     {
@@ -29,13 +30,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerAddLocalUser>(user.Impl.GetPtr(), extraDetailLevel, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerAddLocalUser(user.Impl.GetPtr(), extraDetailLevel, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -51,13 +52,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerRemoveLocalUser>(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerRemoveLocalUser(user.Impl.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -74,13 +75,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromFilters>(user.Impl.GetPtr(), presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromFilters(user.Impl.GetPtr(), presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -113,13 +114,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerCreateSocialUserGroupFromList>(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromList(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -158,13 +159,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerUpdateSocialUserGroup>(socialGroup.GetPtr(), cUserIds, users.Count, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerUpdateSocialUserGroup(socialGroup.GetPtr(), cUserIds, users.Count, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringUni(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -188,13 +189,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerDestroySocialUserGroup>(xboxSocialUserGroup.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerDestroySocialUserGroup(xboxSocialUserGroup.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -210,7 +211,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
 
             // Invokes the c method
-            IntPtr eventsPtr = XboxLive.Instance.Invoke<IntPtr, SocialManagerDoWork>(cNumOfEvents);
+            IntPtr eventsPtr = SocialManagerDoWork(cNumOfEvents);
             
             // Does local work
             int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
@@ -253,13 +254,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            int errCode = XboxLive.Instance.Invoke<Int32, SocialManagerSetRichPresencePollingStatus>(user.Impl.GetPtr(), shouldEnablePolling, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerSetRichPresencePollingStatus(user.Impl.GetPtr(), shouldEnablePolling, cErrMessage);
             
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
             Marshal.FreeHGlobal(cErrMessage);
 
-            if (errCode > 0)
+            if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 // todo do something
             }
@@ -269,15 +270,29 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
         // Marshalling
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel, IntPtr errMessage);
+        
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerRemoveLocalUser(IntPtr user, IntPtr errMessage);
 
-        private delegate Int32 SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel, IntPtr errMessage);
-        private delegate Int32 SocialManagerRemoveLocalUser(IntPtr user, IntPtr errMessage);
-        private delegate Int32 SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter, IntPtr returnGroup, IntPtr errMessage);
-        private delegate Int32 SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size, IntPtr returnGroup, IntPtr errMessage);
-        private delegate Int32 SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size, IntPtr errMessage);
-        private delegate Int32 SocialManagerDestroySocialUserGroup(IntPtr group, IntPtr errMessage);
-        private delegate IntPtr SocialManagerDoWork(IntPtr numOfEvents);
-        private delegate Int32 SocialManagerSetRichPresencePollingStatus(IntPtr user, bool shouldEnablePolling, IntPtr errMessage);
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter, IntPtr returnGroup, IntPtr errMessage);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size, IntPtr returnGroup, IntPtr errMessage);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size, IntPtr errMessage);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerDestroySocialUserGroup(IntPtr group, IntPtr errMessage);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern IntPtr SocialManagerDoWork(IntPtr numOfEvents);
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT SocialManagerSetRichPresencePollingStatus(IntPtr user, bool shouldEnablePolling, IntPtr errMessage);
 
 
         [StructLayout(LayoutKind.Sequential)]
