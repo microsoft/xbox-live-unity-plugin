@@ -75,6 +75,8 @@ public class UserProfile : MonoBehaviour
             }
         }
 
+        Microsoft.Xbox.Services.XboxLiveUser.SignOutCompleted += XboxLiveUserOnSignOutCompleted;
+
         if (XboxLiveUserManager.Instance.SingleUserModeEnabled)
         {
             if (XboxLiveUserManager.Instance.UserForSingleUserMode == null)
