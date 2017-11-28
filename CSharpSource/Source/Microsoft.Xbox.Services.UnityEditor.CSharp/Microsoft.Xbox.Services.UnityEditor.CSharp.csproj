@@ -2,7 +2,7 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">DebugNET35</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -23,30 +23,42 @@
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BuildRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.root))</BuildRoot>
+    <DefineConstants>TRACE;UNITY_EDITOR</DefineConstants>
   </PropertyGroup>
   <Import Project="$(BuildRoot)\build\props\buildoutput.props" />
-  <PropertyGroup>
-    <PluginLayoutPath>$(BasePluginLayoutPath)Unity\</PluginLayoutPath>
+  <PropertyGroup Condition="'$(Configuration)' == 'DebugNET46' Or '$(Configuration)' == 'ReleaseNET46'">
+    <DefineConstants>$(DefineConstants);DOTNET_4_6</DefineConstants>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <AssetLibsPath>$(AssetLibsBasePath)UnityEditor\NET46\</AssetLibsPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'DebugNET35' Or '$(Configuration)' == 'ReleaseNET35'">
+    <AssetLibsPath>$(AssetLibsBasePath)UnityEditor\NET35\</AssetLibsPath>
+    <DefineConstants>$(DefineConstants);DOTNET_3_5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugNET35|AnyCPU' Or '$(Configuration)|$(Platform)' == 'DebugNET46|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;UNITY;</DefineConstants>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseNET35|AnyCPU' Or '$(Configuration)|$(Platform)' == 'ReleaseNET46|AnyCPU'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE;UNITY;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+      <HintPath>..\..\external\packages\Newtonsoft.Json.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(TargetFrameworkVersion)' == 'v4.6.1'">
+      <HintPath>..\..\external\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,19 +67,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Unity.Compat">
+    <Reference Include="Unity.Compat" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\external\parse-sdk\release\Unity.Compat.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Tasks">
+    <Reference Include="Unity.Tasks" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
       <HintPath>..\..\external\parse-sdk\release\Unity.Tasks.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\UserImpl.cs" />
-    <Compile Include="XboxLiveUser.cs" />
-    <Compile Include="XboxLiveAppConfiguration.cs" />
-    <Compile Include="XboxLive.cs" />
+    <Compile Include="Common\XboxLiveUser.cs" />
+    <Compile Include="Common\XboxLiveAppConfiguration.cs" />
+    <Compile Include="Common\XboxLive.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -75,18 +87,9 @@
   <Import Project="$(BuildRoot)\Source\api\Microsoft.Xbox.Services.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
-  <Target Name="LayoutPlugin" AfterTargets="Build">
-    <Message Importance="high" Text="Copying binaries to plugin layout path $(PluginLayoutPath)" />
-    <MakeDir Directories="$(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
-  </Target>
-  <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
-    <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
-    <MakeDir Directories="$(SolutionDir)..\..\Assets\Xbox Live\libs" />
-    <ItemGroup>
-      <PluginFiles Include="$(PluginLayoutPath)\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\Assets\Xbox Live\libs\Unity" />
+  <Target Name="CopyToUnityLibs" Condition="Exists('$(BuildRoot)\..\Assets\Xbox Live')" AfterTargets="Build">
+    <Message importance="high" Text="$(TargetPath) Copying binaries to Unity Libs folder $(BuildRoot)\..\Assets\Xbox Live\libs" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(AssetLibsPath)&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsPath)&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
 </Project>

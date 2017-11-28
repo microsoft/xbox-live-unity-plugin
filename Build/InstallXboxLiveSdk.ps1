@@ -89,3 +89,5 @@ elseif($FromSource)
     }
   }
 }
+
+Write-Host "Done installing XboxLive SDK."

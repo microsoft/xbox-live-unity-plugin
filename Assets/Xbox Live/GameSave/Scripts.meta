@@ -1,9 +1,16 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Xbox Live/GameSave/Scripts.meta
 guid: 1bd9b6bf795b340458f85e541b5aa3be
 folderAsset: yes
 timeCreated: 1496428551
+=======
+guid: 16eaf07a02d7c09498039807bbe67603
+folderAsset: yes
+timeCreated: 1511807222
+>>>>>>> 7f3149d... Fixing build issues related to different .NET versions in Unity. (#152):Assets/Plugins/x64.meta
 licenseType: Free
 DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

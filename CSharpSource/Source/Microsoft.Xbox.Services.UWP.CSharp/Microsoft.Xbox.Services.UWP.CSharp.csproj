@@ -7,7 +7,7 @@
   <Import Project="$(BuildRoot)\build\props\buildoutput.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{CFB2CA8F-6611-4DCA-981C-4B7AFCCA19A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -20,10 +20,10 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PluginLayoutPath>$(BasePluginLayoutPath)UWP\</PluginLayoutPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
+    <PlatformTarget>ARM</PlatformTarget>
+    <CDllPlatform>ARM</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -31,8 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
+    <PlatformTarget>ARM</PlatformTarget>
+    <CDllPlatform>ARM</CDllPlatform>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -41,6 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
+    <CDllPlatform>win32</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
@@ -51,6 +53,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
+    <CDllPlatform>win32</CDllPlatform>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
@@ -61,6 +64,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
+    <CDllPlatform>x64</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
@@ -71,6 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
+    <CDllPlatform>x64</CDllPlatform>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
@@ -88,9 +93,9 @@
     <Compile Include="System\AccountProvider.cs" />
     <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />
-    <Compile Include="XboxLiveUser.cs" />
-    <Compile Include="XboxLiveAppConfiguration.cs" />
-    <Compile Include="XboxLive.cs" />
+    <Compile Include="Common\XboxLiveUser.cs" />
+    <Compile Include="Common\XboxLiveAppConfiguration.cs" />
+    <Compile Include="Common\XboxLive.cs" />
     <EmbeddedResource Include="Properties\Microsoft.Xbox.Services._140.UWP.CSharp.rd.xml" />
   </ItemGroup>
   <!-- Nearly all of our source comes from the Services.Shared project -->
@@ -99,20 +104,10 @@
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <Target Name="LayoutPlugin" AfterTargets="Build">
-    <Message Importance="high" Text="OutputPath: $(OutDir)" />
-    <Message Importance="high" Text="Copying binaries to plugin layout path $(PluginLayoutPath)" />
-    <MakeDir Directories="$(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.dll $(PluginLayoutPath)" />
-    <Exec Command="xcopy /y /d $(OutDir)*.pdb $(PluginLayoutPath)" Condition="'$(Configuration)' == 'Debug'" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll $(PluginLayoutPath)" />
-  </Target>
-  <Target Name="CopyToUnityLibs" Condition="Exists('$(SolutionDir)..\..\Assets\Xbox Live')" AfterTargets="LayoutPlugin">
-    <Message Text="Copying binaries to Unity Libs folder $(SolutionDir)..\..\Assets\Xbox Live\libs" />
-    <MakeDir Directories="$(SolutionDir)..\..\Assets\Xbox Live\libs" />
-    <ItemGroup>
-      <PluginFiles Include="$(PluginLayoutPath)\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(SolutionDir)..\..\Assets\Xbox Live\libs\UWP" />
+  <Target Name="CopyToUnityLibs" AfterTargets="Build">
+    <Message Importance="high" Text="Copying binaries to plugin layout path $(AssetLibsBasePath)" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\external\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" />
   </Target>
 </Project>
