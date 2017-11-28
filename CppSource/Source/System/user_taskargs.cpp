@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 #include "pch.h"
-#include "taskargs.h"
+#include "user_taskargs.h"
 
-xbl_args_xbox_live_user_sign_in::xbl_args_xbox_live_user_sign_in(
+sign_in_taskargs::sign_in_taskargs(
     _In_ XSAPI_XBOX_LIVE_USER* _pUser,
     _In_ Platform::Object^ _coreDispatcher,
     _In_opt_ bool _signInSilently
@@ -14,7 +14,7 @@ xbl_args_xbox_live_user_sign_in::xbl_args_xbox_live_user_sign_in(
 {
 }
 
-xbl_args_xbox_live_user_get_token_and_signature::xbl_args_xbox_live_user_get_token_and_signature(
+get_token_and_signature_taskargs::get_token_and_signature_taskargs(
     _In_ XSAPI_XBOX_LIVE_USER* _pUser,
     _In_ PCSTR _httpMethod,
     _In_ PCSTR _url,

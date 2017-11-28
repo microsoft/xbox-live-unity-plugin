@@ -109,12 +109,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\AuthConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\IUserImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\MarshallingHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveCallbackContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\XboxLiveResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\BlobQueryProperties.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\TitleStorageBlobMetadataResultInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\ITitleStorageService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TitleStorage\QuotaInfoResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\MockLeaderboardService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\SortOrder.cs" />
@@ -211,7 +208,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Presence\UserPresenceState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\MultiplePermissionsCheckResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionCheckResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionReason.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionDenyReason.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PermissionIdConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\PrivacyService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RealTimeActivity\RealTimeActivityConnectionState.cs" />

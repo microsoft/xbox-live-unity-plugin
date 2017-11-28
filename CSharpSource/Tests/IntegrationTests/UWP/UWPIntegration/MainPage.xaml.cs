@@ -4,25 +4,22 @@
 
 namespace UWPIntegration
 {
-    using System;
-    using System.Linq;
-
-    using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
-
-    using Microsoft.Xbox;
     using Microsoft.Xbox.Services;
-    using Microsoft.Xbox.Services.Privacy;
     using Microsoft.Xbox.Services.Leaderboard;
+    using Microsoft.Xbox.Services.Privacy;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
+    using Microsoft.Xbox.Services.System;
+    using Microsoft.Xbox.Services.TitleStorage;
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using Windows.UI.Xaml.Data;
-    using System.Diagnostics;
-    using Microsoft.Xbox.Services.System;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -32,6 +29,7 @@ namespace UWPIntegration
         private long jumps;
         private long headshots;
         private LeaderboardResult leaderboard;
+        private TitleStorageBlobMetadata blobMetadata = null;
         private XboxSocialUserGroup xboxSocialUserGroupAll;
         private XboxSocialUserGroup xboxSocialUserGroupAllOnline;
         private XboxSocialUserGroup xboxSocialUserGroupFromList;
@@ -217,6 +215,16 @@ namespace UWPIntegration
             if (!this.User.IsSignedIn) return;
 
             var result = await this.User.Services.PrivacyService.CheckPermissionWithTargetUserAsync(PermissionIdConstants.ViewTargetVideoHistory, "2814680291986301");
+
+            string resultText = string.Format("Allowed: {0}", result.IsAllowed);
+            if (!result.IsAllowed)
+            {
+                foreach (var reason in result.Reasons)
+                {
+                    resultText += string.Format("\tReason: {0}", reason.Reason);
+                }
+            }
+            this.PrivacyData.Text = resultText;
         }
         private async void CheckMultiplePermissions_Click(object sender, RoutedEventArgs e)
         {
@@ -231,6 +239,53 @@ namespace UWPIntegration
             xuids.Add("2814680291986301");
             xuids.Add("2814634309691161");
             var result = await this.User.Services.PrivacyService.CheckMultiplePermissionsWithMultipleTargetUsersAsync(permissionIds, xuids);
+
+            string resultText = "";
+            foreach (var multiplePermissionsResult in result)
+            {
+                resultText += string.Format("Xuid: {0}", multiplePermissionsResult.XboxUserId);
+                foreach (var permissionResult in multiplePermissionsResult.Items)
+                {
+                    resultText += string.Format("\tPermission {0} allowed: {1}", permissionResult.PermissionRequested, permissionResult.IsAllowed);
+                    if (!permissionResult.IsAllowed)
+                    {
+                        foreach (var reason in permissionResult.Reasons)
+                        {
+                            resultText += string.Format("\tReason: {0}", reason.Reason);
+                        }
+                    }
+                }
+                resultText += "\n";
+            }
+            this.PrivacyData.Text = resultText;
+        }
+
+        private async void GetAvoidList_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.User.IsSignedIn) return;
+
+            var result = await this.user.Services.PrivacyService.GetAvoidListAsync();
+
+            string resultText = "Avoided Xuids: ";
+            foreach (var xuid in result)
+            {
+                resultText += xuid + "\t";
+            }
+            this.PrivacyData.Text = resultText;
+        }
+
+        private async void GetMuteList_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.User.IsSignedIn) return;
+
+            var result = await this.user.Services.PrivacyService.GetMuteListAsync();
+
+            string resultText = "Muted Xuids: ";
+            foreach (var xuid in result)
+            {
+                resultText += xuid + "\t";
+            }
+            this.PrivacyData.Text = resultText;
         }
 
         private void WriteSocialStats_Click(object sender, RoutedEventArgs e)
@@ -275,6 +330,91 @@ namespace UWPIntegration
             this.XboxSocialUserGroupFromList = this.SocialManager.CreateSocialUserGroupFromList(this.User, userIds);
         }
         
+        private async void TitleStorageGetQuota_Click(object sender, RoutedEventArgs e)
+        {
+            var quota = await this.User.Services.TitleStorageService.GetQuotaAsync(
+                XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal);
+
+            this.TitleStorageData.Text = string.Format("Used bytes = {0}, Quota bytes = {1}", quota.UsedBytes, quota.QuotaBytes);
+        }
+
+        private async void TitleStorageGetMetadata_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadataResult = await this.User.Services.TitleStorageService.GetBlobMetadataAsync(
+                    XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/", this.User.XboxUserId);
+
+                var items = metadataResult.Items;
+                if (items.Count > 0)
+                {
+                    this.blobMetadata = items[0];
+                    this.TitleStorageData.Text = string.Format("First metadata item has length {0}", items[0].Length);
+                }
+            }
+            catch(Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in GetBlobMetadataAsync";
+            }
+        }
+
+        private async void TitleStorageUpload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+
+                var bytes = System.Text.Encoding.Unicode.GetBytes("Hello, world!");
+
+                metadata = await this.User.Services.TitleStorageService.UploadBlobAsync(metadata, bytes.ToList(), TitleStorageETagMatchCondition.NotUsed, TitleStorageService.DefaultUploadBlockSize);
+
+                this.TitleStorageData.Text = string.Format("Uploaded file with length {0}", metadata.Length);
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in UploadBlobAsync";
+            }
+        }
+
+        private async void TitleStorageDownload_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (this.blobMetadata == null)
+                {
+                    this.TitleStorageData.Text = string.Format("Call GetBlobMetadataAsync first");
+                }
+                else
+                {
+                    var downloadResult = await this.User.Services.TitleStorageService.DownloadBlobAsync(this.blobMetadata, TitleStorageETagMatchCondition.NotUsed, null);
+
+                    string text = System.Text.Encoding.Unicode.GetString(downloadResult.BlobBuffer);
+
+                    this.TitleStorageData.Text = string.Format("Downloaded file with content:\n {0}", text);
+                }
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in DownloadBlobAsync";
+            }
+        }
+
+        private async void TitleStorageDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+                await this.User.Services.TitleStorageService.DeleteBlobAsync(metadata, false);
+
+                this.TitleStorageData.Text = string.Format("Successfully deleted blob with path \"path/to/newfile.txt\"", metadata.Length);
+            }
+            catch (Exception)
+            {
+                this.TitleStorageData.Text = "Exception occurred in UploadBlobAsync";
+            }
+        }
+
+
         private void RefreshSocialGroups()
         {
             this.XboxSocialUserGroupAll = this.XboxSocialUserGroupAll;

@@ -117,8 +117,9 @@ typedef struct XSAPI_GET_NEXT_RESULT
     XSAPI_GET_NEXT_RESULT_PAYLOAD payload;
 } XSAPI_GET_NEXT_RESULT;
 
-typedef void(*GetNextCompletionRoutine)(
-    _In_ XSAPI_GET_NEXT_RESULT result,
+typedef void(*GET_NEXT_COMPLETION_ROUTINE)(
+    _In_ XSAPI_RESULT_INFO result,
+    _In_ XSAPI_GET_NEXT_RESULT payload,
     _In_opt_ void* context
     );
 
@@ -126,7 +127,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNext(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
     _In_ uint32_t maxItems,
-    _In_ GetNextCompletionRoutine completionRoutine,
+    _In_ GET_NEXT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
 );

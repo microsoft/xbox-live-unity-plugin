@@ -30,7 +30,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerAddLocalUser(user.Impl.GetPtr(), extraDetailLevel, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerAddLocalUser(user.Impl.XboxLiveUserPtr, extraDetailLevel, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -52,7 +52,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerRemoveLocalUser(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerRemoveLocalUser(user.Impl.XboxLiveUserPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -75,7 +75,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromFilters(user.Impl.GetPtr(), presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromFilters(user.Impl.XboxLiveUserPtr, presenceFilter, relationshipFilter, cGroupPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -114,7 +114,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromList(user.Impl.GetPtr(), cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromList(user.Impl.XboxLiveUserPtr, cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -254,7 +254,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerSetRichPresencePollingStatus(user.Impl.GetPtr(), shouldEnablePolling, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerSetRichPresencePollingStatus(user.Impl.XboxLiveUserPtr, shouldEnablePolling, cErrMessage);
             
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));

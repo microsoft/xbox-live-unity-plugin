@@ -22,6 +22,12 @@
     <Filter Include="C++ Public Includes">
       <UniqueIdentifier>{b79b5071-f94f-443a-b903-1b604db21b8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Services\TitleStorage">
+      <UniqueIdentifier>{912c9396-dff4-4469-9c25-161bec7dbfa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++ Source\Services\Privacy">
+      <UniqueIdentifier>{bc845480-97e6-486a-81e0-2445018cfcc5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="C++ Source\Social">
       <UniqueIdentifier>{b417d1c1-466f-48b9-ae38-84253e927859}</UniqueIdentifier>
     </Filter>
@@ -84,6 +90,42 @@
     <ClInclude Include="..\..\Source\Shared\singleton.h">
       <Filter>C++ Source\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\title_storage_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_taskargs.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Common\xbox_live_context_impl.h">
+      <Filter>C++ Source\Services\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\System\user_taskargs.h">
+      <Filter>C++ Source\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_state.h">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\privacy_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_taskargs.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h">
       <Filter>C++ Source\Social\Manager</Filter>
     </ClInclude>
@@ -110,9 +152,6 @@
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\taskargs.cpp">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\utils.cpp">
       <Filter>C++ Source\Shared</Filter>
     </ClCompile>
@@ -137,6 +176,21 @@
     <ClCompile Include="..\..\Source\Shared\singleton.cpp">
       <Filter>C++ Source\Shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_context_impl.cpp">
+      <Filter>C++ Source\Services\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\System\user_taskargs.cpp">
+      <Filter>C++ Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage.cpp">
+      <Filter>C++ Source\Services\TitleStorage</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp">
       <Filter>C++ Source\Social\Manager</Filter>
     </ClCompile>
@@ -148,6 +202,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
       <Filter>C++ Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_check_result_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.cpp">
+      <Filter>C++ Source\Services\Privacy</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Leaderboard\leaderboard_helper_c.cpp">
       <Filter>C++ Source\Leaderboard</Filter>

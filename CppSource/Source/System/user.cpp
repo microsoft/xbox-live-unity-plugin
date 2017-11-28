@@ -3,7 +3,7 @@
 
 #include "pch.h"
 #include "user_impl.h"
-#include "taskargs.h"
+#include "user_taskargs.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;
@@ -60,7 +60,7 @@ HC_RESULT XboxLiveUserSignInExecute(
     )
 {
     xbox_live_result<sign_in_result> result;
-    auto args = reinterpret_cast<xbl_args_xbox_live_user_sign_in*>(context);
+    auto args = reinterpret_cast<sign_in_taskargs*>(context);
         
     if (args->coreDispatcher == nullptr)
     {
@@ -85,15 +85,12 @@ HC_RESULT XboxLiveUserSignInExecute(
         }
     }
 
-    args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.result.errorMessage = args->resultErrorMsg.c_str();
-    
+    args->copy_xbox_live_result(result);
+
     if (!result.err())
     {
-        args->result.payload.status = static_cast<XSAPI_SIGN_IN_STATUS>(result.payload().status());
+        args->completionRoutinePayload.status = static_cast<XSAPI_SIGN_IN_STATUS>(result.payload().status());
         args->pUser->pImpl->Refresh();
-
         {
             auto singleton = get_xsapi_singleton();
             std::lock_guard<std::mutex> lock(singleton->m_usersLock);
@@ -115,14 +112,14 @@ XSAPI_RESULT XboxLiveUserSignInHelper(
 {
     verify_global_init();
 
-    auto args = new xbl_args_xbox_live_user_sign_in(pUser, coreDispatcher, signInSilently);
+    auto args = new sign_in_taskargs(pUser, coreDispatcher, signInSilently);
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
             taskGroupId,
             XboxLiveUserSignInExecute,
             static_cast<void*>(args),
-            xbl_execute_callback_fn<xbl_args_xbox_live_user_sign_in, XSAPI_SIGN_IN_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine_with_payload<sign_in_taskargs, XSAPI_SIGN_IN_COMPLETION_ROUTINE>,
             static_cast<void*>(args),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,
@@ -189,7 +186,7 @@ HC_RESULT XboxLiveUserGetTokenAndSignatureExecute(
     _In_ HC_TASK_HANDLE taskHandle
     )
 {
-    auto args = reinterpret_cast<xbl_args_xbox_live_user_get_token_and_signature*>(context);    
+    auto args = reinterpret_cast<get_token_and_signature_taskargs*>(context);    
 
     auto result = args->pUser->pImpl->cppUser()->get_token_and_signature(
         utils::to_utf16string(args->httpMethod),
@@ -198,15 +195,13 @@ HC_RESULT XboxLiveUserGetTokenAndSignatureExecute(
         args->requestBodyString == nullptr ? string_t() : utils::to_utf16string(args->requestBodyString)
         ).get();
 
-    args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.result.errorMessage = args->resultErrorMsg.c_str();
+    args->copy_xbox_live_result(result);
 
     if (!result.err())
     {
         auto cppPayload = result.payload();
-        XSAPI_TOKEN_AND_SIGNATURE_RESULT_PAYLOAD& payload = args->result.payload;
-        
+        XSAPI_TOKEN_AND_SIGNATURE_RESULT& payload = args->completionRoutinePayload;
+
         args->token = utils::to_utf8string(cppPayload.token());
         payload.token = args->token.data();
 
@@ -250,7 +245,7 @@ try
 {
     verify_global_init();
 
-    auto args = new xbl_args_xbox_live_user_get_token_and_signature(
+    auto args = new get_token_and_signature_taskargs(
         pUser,
         httpMethod,
         url,
@@ -262,7 +257,7 @@ try
             taskGroupId,
             XboxLiveUserGetTokenAndSignatureExecute,
             static_cast<void*>(args),
-            xbl_execute_callback_fn<xbl_args_xbox_live_user_get_token_and_signature, XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine_with_payload<get_token_and_signature_taskargs, XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE>,
             static_cast<void*>(args),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,

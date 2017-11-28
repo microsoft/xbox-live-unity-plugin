@@ -24,7 +24,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerAddLocalUser(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerAddLocalUser(user.Impl.XboxLiveUserPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -49,7 +49,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerRemoveLocalUser(user.Impl.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerRemoveLocalUser(user.Impl.XboxLiveUserPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -74,7 +74,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerRequestFlushToService(user.Impl.GetPtr(), isHighPriority, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerRequestFlushToService(user.Impl.XboxLiveUserPtr, isHighPriority, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -132,7 +132,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerSetStatisticNumberData(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticNumberData(user.Impl.XboxLiveUserPtr, statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -152,7 +152,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerSetStatisticIntegerData(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticIntegerData(user.Impl.XboxLiveUserPtr, statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -172,7 +172,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerSetStatisticStringData(user.Impl.GetPtr(), statName, value, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerSetStatisticStringData(user.Impl.XboxLiveUserPtr, statName, value, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -194,7 +194,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerDeleteStat(user.Impl.GetPtr(), statName, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerDeleteStat(user.Impl.XboxLiveUserPtr, statName, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -216,7 +216,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerGetLeaderboard(user.Impl.GetPtr(), statName, query.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetLeaderboard(user.Impl.XboxLiveUserPtr, statName, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -238,7 +238,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerGetSocialLeaderboard(user.Impl.GetPtr(), statName, socialGroup, query.GetPtr(), cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetSocialLeaderboard(user.Impl.XboxLiveUserPtr, statName, socialGroup, query.GetPtr(), cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -262,7 +262,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cStatName = Marshal.StringToHGlobalAnsi(statName);
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerGetStat(user.Impl.GetPtr(), cStatName, cStatValue, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetStat(user.Impl.XboxLiveUserPtr, cStatName, cStatValue, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -292,7 +292,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.GetPtr(), cStatListPtr, cStatListSize, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.XboxLiveUserPtr, cStatListPtr, cStatListSize, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));

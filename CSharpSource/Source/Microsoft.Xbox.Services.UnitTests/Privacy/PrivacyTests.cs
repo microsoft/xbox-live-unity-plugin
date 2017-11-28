@@ -55,7 +55,7 @@ namespace Microsoft.Xbox.Services.UnitTests.Leaderboards
                 int index = 0;
                 foreach (var permission in jsonPermissions)
                 {
-                    VerifyPermissionCheckResult(result[multiplePermIndex].Permissions[index], (JObject)permission);
+                    VerifyPermissionCheckResult(result[multiplePermIndex].Items[index], (JObject)permission);
                     ++index;
                 }
 

@@ -100,13 +100,13 @@ HC_RESULT LeaderboardResultGetNextExecute(
     auto result = args->leaderboard->pImpl->cppLeaderboardResult().get_next(args->maxItems).get();
     
     args->resultErrorMsg = result.err_message();
-    args->result.result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
-    args->result.result.errorMessage = args->resultErrorMsg.c_str();
+    args->result.errorCode = utils::xsapi_result_from_xbox_live_result_err(result.err());
+    args->result.errorMessage = args->resultErrorMsg.c_str();
 
     if (!result.err())
     {
         auto cppPayload = result.payload();
-        XSAPI_GET_NEXT_RESULT_PAYLOAD& payload = args->result.payload;
+        XSAPI_GET_NEXT_RESULT_PAYLOAD& payload = args->completionRoutinePayload.payload;
 
         auto leaderboardResult = CreateLeaderboardResultFromCpp(cppPayload);
 
@@ -121,7 +121,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 LeaderboardResultGetNext(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
     _In_ uint32_t maxItems,
-    _In_ GetNextCompletionRoutine completionRoutine,
+    _In_ GET_NEXT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
 ) XSAPI_NOEXCEPT
@@ -138,7 +138,7 @@ try
         taskGroupId,
         LeaderboardResultGetNextExecute,
         static_cast<void*>(args),
-        xbl_execute_callback_fn<xbl_args_leaderboard_result_get_next, GetNextCompletionRoutine>,
+        utils::execute_completion_routine_with_payload<xbl_args_leaderboard_result_get_next, GET_NEXT_COMPLETION_ROUTINE>,
         static_cast<void*>(args),
         static_cast<void*>(completionRoutine),
         completionRoutineContext,

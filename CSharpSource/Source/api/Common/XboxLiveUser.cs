@@ -116,6 +116,16 @@ namespace Microsoft.Xbox.Services
             }
         }
 
+#if !UNITY_EDITOR
+        internal IntPtr PCXboxLiveUser
+        {
+            get
+            {
+                return this.userImpl.XboxLiveUserPtr;
+            }
+        }
+#endif
+
         public Task<SignInResult> SignInAsync()
         {
             return this.userImpl.SignInImpl(true, false);
