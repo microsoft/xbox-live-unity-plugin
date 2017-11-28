@@ -149,12 +149,13 @@ namespace Microsoft.Xbox.Services.Leaderboard
             public Int32 RowsSize;
         }
 
-    // Used for mock services
-    internal LeaderboardResult(IList<LeaderboardRow> rows, IList<LeaderboardColumn> cols, uint totalRowCount)
+        // Used for mock services
+        internal LeaderboardResult(IList<LeaderboardRow> rows, IList<LeaderboardColumn> cols, uint totalRowCount)
         {
             Rows = rows;
             Columns = cols;
             TotalRowCount = totalRowCount;
+            pImpl = new MockLeaderboardResultImpl();
         }
     }
 }

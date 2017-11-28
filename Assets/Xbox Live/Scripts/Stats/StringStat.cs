@@ -12,10 +12,10 @@ public class StringStat : StatBase<string>
     protected override void HandleGetStat(XboxLiveUser user, string statName)
     {
         this.isLocalUserAdded = true;
-        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
         if (statValue != null)
         {
-            this.Value = statValue.AsString();
+            this.Value = statValue.AsString;
         }
     }
 
@@ -29,7 +29,7 @@ public class StringStat : StatBase<string>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsString(this.XboxLiveUser.User, this.ID, value);
+                XboxLive.Instance.StatsManager.SetStatisticStringData(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }

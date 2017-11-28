@@ -164,7 +164,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                     mStats[stat.Name] = stat;
                 }
             }
-            mStats.Clear();
+            mChangedStats.Clear();
             mStatEventList.Add(new StatisticEvent(StatisticEventType.StatisticUpdateComplete, user, null));
         }
 
@@ -193,20 +193,28 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
             if (!mStats.ContainsKey(statName))
             {
-                throw new ArgumentException("Stat name doesnt exist");
+                mStats[statName] = new StatisticValue()
+                {
+                    Name = statName,
+                    AsInteger = 300,
+                    AsNumber = 300,
+                    DataType = StatisticDataType.Number
+                };
             }
 
             StatisticValue stat = mStats[statName];
 
             List<LeaderboardRow> rows = new List<LeaderboardRow>();
-            uint maxScore = (query.MaxItems - 1) * 100;
+            uint maxScore = query.MaxItems * 100;
             uint rankOffset = query.SkipResultToRank == 0 ? 1 : query.SkipResultToRank;
+            bool userDisplayed = false;
             for (uint i = 0; i < query.MaxItems; i++)
             {
                 uint score = maxScore - i * 100;
                 LeaderboardRow row;
-                if (stat.DataType == StatisticDataType.Number && (stat.AsNumber > score || stat.AsInteger > score))
+                if (!userDisplayed && stat.DataType == StatisticDataType.Number && (stat.AsNumber >= score || stat.AsInteger >= score))
                 {
+                    userDisplayed = true;
                     row = new LeaderboardRow(new List<string> { stat.AsNumber.ToString() }, i + rankOffset, 0.8, user.XboxUserId, user.Gamertag);
                 }
                 else
@@ -224,7 +232,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
             LeaderboardResultEventArgs args = new LeaderboardResultEventArgs(result);
 
-            mStatEventList.Add(new StatisticEvent(StatisticEventType.StatisticUpdateComplete, user, args));
+            mStatEventList.Add(new StatisticEvent(StatisticEventType.GetLeaderboardComplete, user, args));
         }
 
         public void GetSocialLeaderboard(XboxLiveUser user, string statName, string socialGroup, LeaderboardQuery query)

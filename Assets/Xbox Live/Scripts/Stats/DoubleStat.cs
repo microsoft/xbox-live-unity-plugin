@@ -12,10 +12,10 @@ public class DoubleStat : StatBase<double>
     protected override void HandleGetStat(XboxLiveUser user, string statName)
     {
         this.isLocalUserAdded = true;
-        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
         if (statValue != null)
         {
-            this.Value = statValue.AsNumber();
+            this.Value = statValue.AsNumber;
         }
     }
 
@@ -40,7 +40,7 @@ public class DoubleStat : StatBase<double>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsNumber(this.XboxLiveUser.User, this.ID, value);
+                XboxLive.Instance.StatsManager.SetStatisticNumberData(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }
