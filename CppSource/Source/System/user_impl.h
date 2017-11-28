@@ -9,6 +9,7 @@ struct XSAPI_XBOX_LIVE_USER_IMPL
 {
 public:
     XSAPI_XBOX_LIVE_USER_IMPL(_In_ Windows::System::User^ creationContext, _In_ XSAPI_XBOX_LIVE_USER* pUser);
+    XSAPI_XBOX_LIVE_USER_IMPL(_In_ std::shared_ptr<xbox::services::system::xbox_live_user> cppUser, _In_ XSAPI_XBOX_LIVE_USER *cUser);
     void Refresh();
     std::shared_ptr<xbox::services::system::xbox_live_user> cppUser() const;
 

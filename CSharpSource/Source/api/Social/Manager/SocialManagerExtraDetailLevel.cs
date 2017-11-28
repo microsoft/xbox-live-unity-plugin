@@ -4,12 +4,11 @@
 namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
-
-    [Flags]
+    
     public enum SocialManagerExtraDetailLevel
     {
-        None = 0x0,
-        TitleHistory = 0x1,
-        PreferredColor = 0x2,
+        NoExtraDetail = 0x0,
+        TitleHistoryLevel = 0x1,
+        PreferredColorLevel = 0x2,
     }
 }

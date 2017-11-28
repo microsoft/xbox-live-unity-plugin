@@ -5,7 +5,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     public enum SocialUserGroupType
     {
-        Unknown = 0,
         Filter,
         UserList,
     }

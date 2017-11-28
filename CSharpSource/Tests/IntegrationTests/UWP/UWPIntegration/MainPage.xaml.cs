@@ -323,7 +323,7 @@ namespace UWPIntegration
         {
             if (!this.User.IsSignedIn) return;
 
-            List<ulong> userIds = new List<ulong>();
+            List<string> userIds = new List<string>();
             foreach (XboxSocialUser user in XboxSocialUserGroupAll.Users)
             {
                 userIds.Add(user.XboxUserId);
@@ -331,7 +331,7 @@ namespace UWPIntegration
 
             this.XboxSocialUserGroupFromList = this.SocialManager.CreateSocialUserGroupFromList(this.User, userIds);
         }
-
+        
         private async void TitleStorageGetQuota_Click(object sender, RoutedEventArgs e)
         {
             var quota = await this.User.Services.TitleStorageService.GetQuotaAsync(

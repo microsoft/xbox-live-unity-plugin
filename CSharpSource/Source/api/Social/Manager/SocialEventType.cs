@@ -5,7 +5,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     public enum SocialEventType
     {
-        Unknown = 0,
         UsersAddedToSocialGraph,
         UsersRemovedFromSocialGraph,
         PresenceChanged,
@@ -15,5 +14,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
         LocalUserRemoved,
         SocialUserGroupLoaded,
         SocialUserGroupUpdated,
+        Unknown,
     }
 }

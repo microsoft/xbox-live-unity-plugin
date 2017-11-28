@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Xbox.Services.Social.Manager
 {
-    public class SocialEventArgs : EventArgs
+    public interface SocialEventArgs
     {
     }
 }

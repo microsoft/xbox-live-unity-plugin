@@ -18,13 +18,7 @@ namespace Microsoft.Xbox.Services.UnitTests.Social
             base.TestInitialize();
             MockXboxLiveData.Load(Environment.CurrentDirectory + "\\Social\\SocialManagerUT.json");
         }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            SocialManager.Reset();
-        }
-
+        
         [TestMethod]
         public void GetSocialManagerSingleton()
         {
@@ -33,16 +27,16 @@ namespace Microsoft.Xbox.Services.UnitTests.Social
         }
 
         [TestMethod]
-        public async Task AddAndRemoveLocalUser()
+        public void AddAndRemoveLocalUser()
         {
-            await SocialManager.Instance.AddLocalUser(user, SocialManagerExtraDetailLevel.None);
+            SocialManager.Instance.AddLocalUser(user, SocialManagerExtraDetailLevel.NoExtraDetail);
             SocialManager.Instance.RemoveLocalUser(user);
         }
 
         [TestMethod]
-        public async Task AddLocalUserWithDetail()
+        public void AddLocalUserWithDetail()
         {
-            await SocialManager.Instance.AddLocalUser(user, SocialManagerExtraDetailLevel.PreferredColor | SocialManagerExtraDetailLevel.TitleHistory);
+            SocialManager.Instance.AddLocalUser(user, SocialManagerExtraDetailLevel.PreferredColorLevel | SocialManagerExtraDetailLevel.TitleHistoryLevel);
         }
     }
 }
