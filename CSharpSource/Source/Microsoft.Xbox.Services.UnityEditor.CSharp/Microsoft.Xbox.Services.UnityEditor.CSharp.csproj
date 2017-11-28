@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Leaderboard\LeaderboardQuery.cs" />
+    <Compile Include="Leaderboard\LeaderboardQueryUnityEditorImpl.cs" />
     <Compile Include="Leaderboard\LeaderboardResult.cs" />
+    <Compile Include="Leaderboard\LeaderboardResultUnityEditorImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Social\Manager\SocialManagerPresenceRecord.cs" />
     <Compile Include="System\TitleCallableUI.cs" />

@@ -3,19 +3,11 @@
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
-    public partial class LeaderboardResult : ILeaderboardResult
+    public partial class LeaderboardResult
     {
-        public bool HasNext
+        internal LeaderboardResult()
         {
-            get
-            {
-                return false;
-            }
-        }
-
-        public LeaderboardQuery GetNextQuery()
-        {
-            return null;
+            pImpl = new LeaderboardResultUnityEditorImpl();
         }
     }
 }

@@ -15,15 +15,15 @@ namespace Microsoft.Xbox.Services.Social.Manager
             // todo test
             LastTimeUserPlayed = DateTimeOffset.FromUnixTimeSeconds(cTitleHistory.LastTimeUserPlayed);
         }
-    }
 
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct TITLE_HISTORY
-    {
-        [MarshalAs(UnmanagedType.U1)]
-        public bool UserHasPlayed;
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct TITLE_HISTORY
+        {
+            [MarshalAs(UnmanagedType.U1)]
+            public bool UserHasPlayed;
 
-        [MarshalAs(UnmanagedType.I8)]
-        public long LastTimeUserPlayed;
+            [MarshalAs(UnmanagedType.I8)]
+            public long LastTimeUserPlayed;
+        }
     }
 }

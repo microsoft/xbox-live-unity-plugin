@@ -77,8 +77,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)GameServerPlatform\GameServerTicketStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameServerPlatform\GameVariant.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GameServerPlatform\QualityOfServiceServer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardQuery.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardQueryImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\ILeaderboardResultImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\LeaderboardQueryImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\LeaderboardResultImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\LeaderboardStatType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\IPresenceWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Presence\MockPresenceWriter.cs" />

@@ -3,12 +3,27 @@
 
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
+    using global::System;
+    using global::System.Runtime.InteropServices;
     using Microsoft.Xbox.Services.Leaderboard;
 
-    public partial class LeaderboardResultEventArgs : StatisticEventArgs
+    public class LeaderboardResultEventArgs : StatisticEventArgs
     {
         public LeaderboardResult Result { get; private set; }
-        
+
+        internal LeaderboardResultEventArgs(IntPtr leaderboardResultEventArgsPtr)
+        {
+            LEADERBOARD_RESULT_EVENT_ARGS cArgs = (LEADERBOARD_RESULT_EVENT_ARGS)Marshal.PtrToStructure(leaderboardResultEventArgsPtr, typeof(LEADERBOARD_RESULT_EVENT_ARGS));
+            Result = new LeaderboardResult(cArgs.Result);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LEADERBOARD_RESULT_EVENT_ARGS
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr Result;
+        }
+
         // Used for mock services
         internal LeaderboardResultEventArgs(LeaderboardResult result)
         {

@@ -3,30 +3,14 @@
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
-    public partial class LeaderboardQuery : ILeaderboardQuery
+    public partial class LeaderboardQuery
     {
-        public uint MaxItems
+        public LeaderboardQuery()
         {
-            get;
-            set;
-        }
-        
-        public SortOrder Order
-        {
-            get;
-            set;
-        }
-        
-        public bool SkipResultToMe
-        {
-            get;
-            set;
-        }
-
-        public uint SkipResultToRank
-        {
-            get;
-            set;
+            pImpl = new LeaderboardQueryUnityEditorImpl();
+            StatName = "Score";
+            HasNext = false;
+            SocialGroup = "All";
         }
     }
 }

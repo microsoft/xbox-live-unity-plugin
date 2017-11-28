@@ -7,12 +7,30 @@ namespace Microsoft.Xbox.Services.Leaderboard
     using global::System.Runtime.InteropServices;
     using Newtonsoft.Json;
 
-    public partial class LeaderboardColumn
+    public class LeaderboardColumn
     {
         public LeaderboardStatType StatisticType { get; set; }
         
         public string StatisticName { get; set; }
-        
+
+        internal LeaderboardColumn(IntPtr leaderboardColumnPtr)
+        {
+            LEADERBOARD_COLUMN cColumn = (LEADERBOARD_COLUMN)Marshal.PtrToStructure(leaderboardColumnPtr, typeof(LEADERBOARD_COLUMN));
+
+            StatisticType = cColumn.StatType;
+            StatisticName = MarshalingHelpers.Utf8ToString(cColumn.StatName);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct LEADERBOARD_COLUMN
+        {
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr StatName;
+
+            [MarshalAs(UnmanagedType.I4)]
+            public LeaderboardStatType StatType;
+        }
+
         // Used for mock services
         internal LeaderboardColumn(LeaderboardStatType type, string name)
         {

@@ -7,7 +7,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using global::System.Runtime.InteropServices;
     using Presence;
 
-    public partial class SocialManagerPresenceTitleRecord : IEquatable<SocialManagerPresenceTitleRecord>
+    public class SocialManagerPresenceTitleRecord : IEquatable<SocialManagerPresenceTitleRecord>
     {
         public SocialManagerPresenceTitleRecord()
         {
@@ -21,7 +21,37 @@ namespace Microsoft.Xbox.Services.Social.Manager
             this.IsTitleActive = titleRecord.IsTitleActive;
             this.PresenceText = titleRecord.Presence;
         }
-        
+
+        internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
+        {
+            SOCIAL_MANAGER_PRESENCE_TITLE_RECORD cTitleRecord = (SOCIAL_MANAGER_PRESENCE_TITLE_RECORD)Marshal.PtrToStructure(titleRecordPtr, typeof(SOCIAL_MANAGER_PRESENCE_TITLE_RECORD));
+            IsTitleActive = cTitleRecord.IsTitleActive;
+            IsBroadcasting = cTitleRecord.IsBroadcasting;
+            Device = cTitleRecord.DeviceType;
+            TitleId = cTitleRecord.TitleId;
+            PresenceText = MarshalingHelpers.Utf8ToString(cTitleRecord.PresenceText);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SOCIAL_MANAGER_PRESENCE_TITLE_RECORD
+        {
+
+            [MarshalAs(UnmanagedType.U1)]
+            public bool IsTitleActive;
+
+            [MarshalAs(UnmanagedType.U1)]
+            public bool IsBroadcasting;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public PresenceDeviceType DeviceType;
+
+            [MarshalAs(UnmanagedType.U4)]
+            public uint TitleId;
+
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceText;
+        }
+
         public uint TitleId { get; set; }
 
         public string PresenceText { get; set; }
