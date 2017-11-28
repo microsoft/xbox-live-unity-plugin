@@ -55,10 +55,13 @@ sysinfo.txt
 BuildPackage.log
 
 # We only want the .meta files for the libs which define which builds to include them in.
-/Assets/Xbox Live/Libs/**/*.dll
-/Assets/Xbox Live/Libs/**/*.pdb
-/Assets/Plugins/**/*.dll
-/Assets/Plugins/**/*.pdb
+/Assets/Xbox Live/Libs/*
+!/Assets/Xbox Live/Libs/*.meta
+!/Assets/Xbox Live/Libs/**/*.dll.meta
+/Assets/Plugins/*
+!/Assets/Plugins/*.meta
+!/Assets/Plugins/**/*.dll.meta
+
 
 # Ignore any configuration files created when testing stuff.
 /XboxServices.config
