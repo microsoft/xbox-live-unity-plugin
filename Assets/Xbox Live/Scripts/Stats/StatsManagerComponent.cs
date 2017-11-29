@@ -19,7 +19,7 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
 
     public event EventHandler StatUpdateComplete;
 
-    private IStatsManager manager;
+    private IStatisticManager manager;
 
     protected StatsManagerComponent()
     {
@@ -37,26 +37,26 @@ public class StatsManagerComponent : Singleton<StatsManagerComponent>
             Debug.LogWarning("Somehow the manager got nulled out.");
             return;
         }
-        List<StatEvent> events = this.manager.DoWork();
-        foreach (StatEvent statEvent in events)
+        IList<StatisticEvent> events = this.manager.DoWork();
+        foreach (StatisticEvent statEvent in events)
         {
             if (XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                Debug.LogFormat("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.LocalUser.Gamertag);
+                Debug.LogFormat("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.User.Gamertag);
             }
 
             switch (statEvent.EventType)
             {
-                case StatEventType.LocalUserAdded:
-                    this.OnLocalUserAdded(statEvent.LocalUser);
+                case StatisticEventType.LocalUserAdded:
+                    this.OnLocalUserAdded(statEvent.User);
                     break;
-                case StatEventType.LocalUserRemoved:
-                    this.OnLocalUserRemoved(statEvent.LocalUser);
+                case StatisticEventType.LocalUserRemoved:
+                    this.OnLocalUserRemoved(statEvent.User);
                     break;
-                case StatEventType.StatUpdateComplete:
+                case StatisticEventType.StatisticUpdateComplete:
                     this.OnStatUpdateComplete();
                     break;
-                case StatEventType.GetLeaderboardComplete:
+                case StatisticEventType.GetLeaderboardComplete:
                     this.OnGetLeaderboardCompleted(new XboxLivePrefab.StatEventArgs(statEvent));
                     break;
             }

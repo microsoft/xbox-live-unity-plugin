@@ -28,3 +28,11 @@ get_token_and_signature_taskargs::get_token_and_signature_taskargs(
     requestBodyString(_requestBodyString)
 {
 }
+
+xbl_args_leaderboard_result_get_next::xbl_args_leaderboard_result_get_next(
+    _In_ XSAPI_LEADERBOARD_RESULT* _leaderboard,
+    _In_ uint32 _maxItems
+)
+    : leaderboard(_leaderboard), maxItems(_maxItems)
+{
+}

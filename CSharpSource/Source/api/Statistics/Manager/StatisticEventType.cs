@@ -3,11 +3,11 @@
 
 namespace Microsoft.Xbox.Services.Statistics.Manager
 {
-    public enum StatEventType
+    public enum StatisticEventType
     {
         LocalUserAdded,
         LocalUserRemoved,
-        StatUpdateComplete,
+        StatisticUpdateComplete,
         GetLeaderboardComplete,
     }
 }

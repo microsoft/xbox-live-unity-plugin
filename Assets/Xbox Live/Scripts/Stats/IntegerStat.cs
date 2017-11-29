@@ -13,15 +13,15 @@ using Microsoft.Xbox.Services.Statistics.Manager;
 /// Yes, this should be a long, but Unity doesn't save seem to properly serialize long values.
 /// </remarks>
 [Serializable]
-public class IntegerStat : StatBase<int>
+public class IntegerStat : StatBase<long>
 {
     protected override void HandleGetStat(XboxLiveUser user, string statName)
     {
         this.isLocalUserAdded = true;
-        StatValue statValue = XboxLive.Instance.StatsManager.GetStat(user, statName);
+        StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
         if (statValue != null)
         {
-            this.Value = statValue.AsInteger();
+            this.Value = statValue.AsInteger;
         }
     }
 
@@ -35,7 +35,7 @@ public class IntegerStat : StatBase<int>
         this.Value = this.Value - 1;
     }
 
-    public override int Value
+    public override long Value
     {
         get
         {
@@ -45,7 +45,7 @@ public class IntegerStat : StatBase<int>
         {
             if (this.isLocalUserAdded)
             {
-                XboxLive.Instance.StatsManager.SetStatAsInteger(this.XboxLiveUser.User, this.ID, value);
+                XboxLive.Instance.StatsManager.SetStatisticIntegerData(this.XboxLiveUser.User, this.ID, value);
             }
             base.Value = value;
         }

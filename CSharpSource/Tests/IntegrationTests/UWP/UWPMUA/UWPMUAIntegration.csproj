@@ -2,6 +2,9 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <BuildRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.root))</BuildRoot>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{28AFCA79-691F-4493-B639-D3CAD311189B}</ProjectGuid>
@@ -140,11 +143,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <Target Name="CopyCdllToAppx" AfterTargets="Build">
-    <Message Importance="high" Text="Copying C dll to Appx folder from $(ProjectDir)..\..\..\..\Plugins\$(Platform)\ to $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Plugins\$(Platform)\*.dll $(TargetDir)AppX\" />    
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Plugins\$(Platform)\*.pdb $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Plugins\$(Platform)\*.dll $(TargetDir)" />    
-    <Exec Command="xcopy /y /d $(ProjectDir)..\..\..\..\Plugins\$(Platform)\*.pdb $(TargetDir)" />      
+    <Message Importance="high" Text="Copying C dll to Appx folder from $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\ to $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\*.dll $(TargetDir)AppX\" />    
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\*.pdb $(TargetDir)AppX\" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

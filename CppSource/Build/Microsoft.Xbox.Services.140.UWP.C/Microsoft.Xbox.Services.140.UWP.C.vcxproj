@@ -139,6 +139,8 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_c.cpp" />
+    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_helper_c.cpp" />
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -159,6 +161,8 @@
     <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp" />
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp" />
     <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp" />
+    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp" />
+    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_helper_c.cpp" />
     <ClCompile Include="..\..\Source\System\user.cpp" />
     <ClCompile Include="..\..\Source\System\user_taskargs.cpp" />
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp" />
@@ -166,15 +170,18 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
     <ClInclude Include="..\..\Include\xsapi\privacy_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\leaderboard_c.h" />
     <ClInclude Include="..\..\Include\xsapi\presence_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
     <ClInclude Include="..\..\Include\xsapi\social_manager_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h" />
     <ClInclude Include="..\..\Include\xsapi\system_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_storage_c.h" />
     <ClInclude Include="..\..\Include\xsapi\types_c.h" />
     <ClInclude Include="..\..\Include\xsapi\xbox_live_app_config_c.h" />
     <ClInclude Include="..\..\Include\xsapi\xbox_live_context_c.h" />
+    <ClInclude Include="..\..\Source\Leaderboard\leaderboard_helper_c.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch_common.h" />
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
@@ -192,6 +199,7 @@
     <ClInclude Include="..\..\Source\Shared\threadpool.h" />
     <ClInclude Include="..\..\Source\Shared\utils.h" />
     <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h" />
+    <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h" />
     <ClInclude Include="..\..\Source\System\user_impl.h" />
     <ClInclude Include="..\..\Source\System\user_taskargs.h" />
   </ItemGroup>
