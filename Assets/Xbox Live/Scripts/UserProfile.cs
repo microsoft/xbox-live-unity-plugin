@@ -100,7 +100,10 @@ public class UserProfile : MonoBehaviour
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
     {
-        this.StartCoroutine(this.Refresh();
+        UnityEngine.WSA.Application.InvokeOnAppThread(() =>
+        {
+            this.Refresh();
+        }, false);
     }
 
     public void SignIn()
@@ -263,7 +266,7 @@ public class UserProfile : MonoBehaviour
         return new Color(r, g, b);
     }
 
-    private IEnumerator Refresh()
+    private void Refresh()
     {
         var isSignedIn = this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
         this.signInPanel.SetActive(!isSignedIn);
