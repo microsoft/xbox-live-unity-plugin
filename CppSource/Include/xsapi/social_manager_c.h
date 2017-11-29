@@ -162,7 +162,14 @@ typedef struct XSAPI_XBOX_SOCIAL_USER_GROUP
 
     XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL *pImpl;
 } XSAPI_XBOX_SOCIAL_USER_GROUP;
-// todo get_users_from_xbox_user_ids
+
+XSAPI_DLLEXPORT XSAPI_XBOX_SOCIAL_USER** XBL_CALLING_CONV
+XboxSocialUserGroupGetUsersFromXboxUserIds(
+    _In_ XSAPI_XBOX_SOCIAL_USER_GROUP* group,
+    _In_ PCSTR* xboxUserIds,
+    _In_ int32_t xboxUserIdsSize,
+    _Out_ int32_t* xboxSocialUsersSize
+);
 
 typedef struct XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS : XSAPI_SOCIAL_EVENT_ARGS 
 {

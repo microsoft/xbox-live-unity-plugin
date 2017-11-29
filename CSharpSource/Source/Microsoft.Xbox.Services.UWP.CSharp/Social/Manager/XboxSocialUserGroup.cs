@@ -4,10 +4,11 @@
 namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
+    using global::System.Collections.Generic;
     using global::System.Linq;
     using global::System.Runtime.InteropServices;
 
-    public partial class XboxSocialUserGroup
+    public partial class XboxSocialUserGroup : IXboxSocialUserGroup
     {
         // Pointer to the c object
         private IntPtr m_socialUserGroupPtr;
@@ -17,7 +18,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             m_socialUserGroupPtr = socialUserGroupPtr;
             Refresh();
         }
-
+        
         internal IntPtr GetPtr()
         {
             return m_socialUserGroupPtr;
@@ -79,7 +80,54 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 }
             }
         }
-        
+
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern IntPtr XboxSocialUserGroupGetUsersFromXboxUserIds(IntPtr group, IntPtr xboxUserIds, Int32 xboxUserIdsSize, IntPtr usersSize);
+        public IList<XboxSocialUser> GetUsersFromXboxUserIds(IList<string> xboxUserIds)
+        {
+            // Allocates memory for returned objects
+            IntPtr cUsersSize = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
+
+            List<IntPtr> userIdPtrs = new List<IntPtr>();
+            for (int i = 0; i < xboxUserIds.Count; i++)
+            {
+                IntPtr cXuid = Marshal.StringToHGlobalAnsi(xboxUserIds[i]);
+                userIdPtrs.Add(cXuid);
+            }
+            IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * xboxUserIds.Count);
+            Marshal.Copy(userIdPtrs.ToArray(), 0, cUserIds, xboxUserIds.Count);
+
+            // Invokes the c method
+            IntPtr cUsersPtr = XboxSocialUserGroupGetUsersFromXboxUserIds(m_socialUserGroupPtr, cUserIds, userIdPtrs.Count(), cUsersSize);
+
+            // Does local work
+            int usersSize = Marshal.ReadInt32(cUsersSize);
+            Marshal.FreeHGlobal(cUsersSize);
+
+            List<XboxSocialUser> users = new List<XboxSocialUser>();
+
+            if (usersSize > 0)
+            {
+                IntPtr[] cUsers = new IntPtr[usersSize];
+                Marshal.Copy(cUsersPtr, cUsers, 0, usersSize);
+
+                foreach (IntPtr cUser in cUsers)
+                {
+                    users.Add(new XboxSocialUser(cUser));
+                }
+            }
+
+            // Cleans up parameters
+            foreach (IntPtr ptr in userIdPtrs)
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+            Marshal.FreeHGlobal(cUserIds);
+
+            return users.AsReadOnly();
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct XBOX_SOCIAL_USER_GROUP
         {
