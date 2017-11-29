@@ -96,6 +96,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Presence\PresenceTitleType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shared\IXboxWebsocketClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\ISocialManagerPresenceRecord.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\IXboxSocialUserGroup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\SocialManagerPresenceRecord.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Statistics\Manager\IStatisticManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Statistics\Manager\LeaderboardResultEventArgs.cs" />

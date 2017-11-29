@@ -26,6 +26,39 @@ try
 }
 CATCH_RETURN_WITH(false);
 
+XSAPI_DLLEXPORT XSAPI_XBOX_SOCIAL_USER** XBL_CALLING_CONV
+XboxSocialUserGroupGetUsersFromXboxUserIds(
+    _In_ XSAPI_XBOX_SOCIAL_USER_GROUP* group,
+    _In_ PCSTR* xboxUserIds,
+    _In_ int32_t xboxUserIdsSize,
+    _Out_ int32_t* xboxSocialUsersSize
+    )
+try
+{
+    verify_global_init();
+
+    std::vector<xbox_user_id_container> cXboxUserIdContainers = std::vector<xbox_user_id_container>(xboxUserIdsSize);
+    std::vector<std::wstring> cXboxUserIds = std::vector<std::wstring>(xboxUserIdsSize);
+
+    for (size_t i = 0; i < xboxUserIdsSize; i++)
+    {
+        cXboxUserIds[i] = utils::to_utf16string(xboxUserIds[i]);
+        cXboxUserIdContainers[i] = xbox_user_id_container(cXboxUserIds[i].c_str());
+    }
+
+    auto cppXboxSocialUsers = group->pImpl->cppSocialUserGroup()->get_users_from_xbox_user_ids(cXboxUserIdContainers);
+    *xboxSocialUsersSize = cppXboxSocialUsers.size();
+
+    socialVars.cXboxSocialUserGroupUsers = std::vector<XSAPI_XBOX_SOCIAL_USER*>(*xboxSocialUsersSize);
+    for (size_t i = 0; i < xboxUserIdsSize; i++)
+    {
+        socialVars.cXboxSocialUserGroupUsers[i] = CreateXboxSocialUserFromCpp(cppXboxSocialUsers[i]);
+    }
+    
+    return socialVars.cXboxSocialUserGroupUsers.data();
+}
+CATCH_RETURN_WITH(nullptr)
+
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerAddLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER *user,

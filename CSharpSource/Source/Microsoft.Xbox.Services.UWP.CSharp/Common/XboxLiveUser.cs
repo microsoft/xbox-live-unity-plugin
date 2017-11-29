@@ -50,7 +50,7 @@ namespace Microsoft.Xbox.Services
             this.userImpl = user;
             user.UpdatePropertiesFromXboxLiveUserPtr();
         }
-        
+      
         public Windows.System.User WindowsSystemUser
         {
             get

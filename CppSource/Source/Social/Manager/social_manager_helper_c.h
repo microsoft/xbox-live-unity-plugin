@@ -13,6 +13,7 @@ using namespace xbox::services::social::manager;
 struct XSAPI_SOCIAL_MANAGER_VARS
 {
     public:
+        std::vector<XSAPI_XBOX_SOCIAL_USER*> cXboxSocialUserGroupUsers;
         std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> cGroups;
         std::vector<XSAPI_SOCIAL_EVENT*> cEvents;
         xbox_live_result<void> cppVoidResult;

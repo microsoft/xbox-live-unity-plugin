@@ -212,17 +212,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="CopyLibsForCSharp" AfterTargets="Build">
+  <Target Name="CopyToUnityLibs" AfterTargets="Build">
     <PropertyGroup Label="x86" Condition="'$(Platform.ToLower())' == 'win32' Or '$(Platform.ToLower())' == 'x86'">
       <PluginPlatform>x86</PluginPlatform>
     </PropertyGroup>
     <PropertyGroup Label="!x86" Condition="'$(Platform.ToLower())' == 'x64' Or '$(Platform.ToLower())' == 'arm'">
       <PluginPlatform>$(Platform)</PluginPlatform>
     </PropertyGroup>
-    <Message Importance="high" Text="Copying binaries to CSharp Libs folder $(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
-    <MakeDir Directories="$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)" />
-    <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)&quot;" />
-    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(ProjectDir)..\..\..\CSharpSource\Plugins\$(PluginPlatform)&quot;" Condition="'$(Configuration)' == 'Debug'" />
+    <Message Importance="high" Text="Copying binaries from $(OutDir) to Unity Libs folder $(ProjectDir)..\..\..\Assets\Plugins\" />
+    <Exec Command="xcopy /y /d /i &quot;$(OutDir)*.dll&quot; &quot;$(ProjectDir)..\..\..\Assets\Plugins\$(PluginPlatform)&quot;" />
+    <Exec Command="xcopy /y /d /i &quot;$(OutDir)*.pdb&quot; &quot;$(ProjectDir)..\..\..\Assets\Plugins\$(PluginPlatform)&quot;" Condition="'$(Configuration)' == 'Debug'" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
