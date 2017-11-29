@@ -42,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 11
   m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 8
+    serializedVersion: 9
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -87,7 +87,7 @@ LightmapSettings:
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_ShadowMaskMode: 2
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -271,12 +271,17 @@ Prefab:
       propertyPath: UseInitialValueFromService
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114524918340390160, guid: 1e652f2a783ee37488d7e38fb10180f5,
+        type: 2}
+      propertyPath: ID
+      value: jumps
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1e652f2a783ee37488d7e38fb10180f5, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &410330606 stripped
+--- !u!224 &247602698 stripped
 RectTransform:
-  m_PrefabParentObject: {fileID: 224148228764223538, guid: f9c76770c5e766a4f83203b145924f14,
+  m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
     type: 2}
   m_PrefabInternal: {fileID: 27983877}
 --- !u!114 &486259306 stripped
@@ -371,7 +376,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1319575166}
-  - {fileID: 410330606}
+  - {fileID: 247602698}
   - {fileID: 1098717619}
   - {fileID: 64782322}
   - {fileID: 1866934589}

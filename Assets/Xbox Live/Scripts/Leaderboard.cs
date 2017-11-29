@@ -192,7 +192,7 @@ public class Leaderboard : MonoBehaviour
         LeaderboardQuery query;
         if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
         {
-            query = this.leaderboardData.NextQuery;
+            query = this.leaderboardData.GetNextQuery();
         }
         else
         {
@@ -209,24 +209,22 @@ public class Leaderboard : MonoBehaviour
                     break;
             }
 
-            query = new LeaderboardQuery
+            query = new LeaderboardQuery()
             {
-                StatName = this.stat.ID,
-                SocialGroup = socialGroup,
-                SkipResultsToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
+                SkipResultToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
                 MaxItems = this.entryCount,
             };
 
             // Handle last page
             if (this.totalPages > 0 && newPage == this.totalPages)
             {
-                query.SkipResultsToRank = (newPage * this.entryCount) - 1;
+                query.SkipResultToRank = (newPage * this.entryCount) - 1;
                 newPage -= 1;
             }
         }
 
         this.currentPage = newPage;
-        XboxLive.Instance.StatsManager.GetLeaderboard(this.XboxLiveUser.User, query);
+        XboxLive.Instance.StatsManager.GetLeaderboard(this.XboxLiveUser.User, this.stat.ID, query);
     }
 
     private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
@@ -237,7 +235,7 @@ public class Leaderboard : MonoBehaviour
 
     private void GetLeaderboardCompleted(object sender, XboxLivePrefab.StatEventArgs e)
     {
-        if (e.EventData.ErrorInfo != null)
+        if (e.EventData.ErrorCode != 0)
         {
             return;
         }
@@ -252,7 +250,7 @@ public class Leaderboard : MonoBehaviour
     /// <param name="result"></param>
     private void LoadResult(LeaderboardResult result)
     {
-        if (this.stat == null || this.stat.ID != result.NextQuery.StatName || this.socialGroup != result.NextQuery.SocialGroup)
+        if (this.stat == null || (result.HasNext && (this.stat.ID != result.GetNextQuery().StatName || this.socialGroup != result.GetNextQuery().SocialGroup)))
         {
             return;
         }

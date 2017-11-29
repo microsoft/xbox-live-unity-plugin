@@ -1,53 +1,80 @@
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace Microsoft.Xbox.Services.Leaderboard
 {
-    public class LeaderboardQuery
+    public partial class LeaderboardQuery
     {
-        /// <summary>
-        /// Create a new query
-        /// </summary>
-        public LeaderboardQuery()
-        {
-        }
+        public string StatName { get; internal set; }
+        public string SocialGroup { get; internal set; }
+        public bool HasNext { get; internal set; }
 
-        /// <summary>
-        /// Create a continuation query from an existing query combined with a continuation token.
-        /// </summary>
-        /// <param name="query">The query that this continuation query is based on.</param>
-        /// <param name="continuationToken">The continuation token for the next request.</param>
-        public LeaderboardQuery(LeaderboardQuery query, string continuationToken)
-        {
-            this.StatName = query.StatName;
-            this.SocialGroup = query.SocialGroup;
-            this.MaxItems = query.MaxItems;
-            this.Order = query.Order;
-            this.SkipResultsToRank = query.SkipResultsToRank;
-            this.SkipResultToMe = query.SkipResultToMe;
-            this.ContinuationToken = continuationToken;
-        }
-
-        public string StatName { get; set; }
-
-        public string SocialGroup { get; set; }
-
-        public uint MaxItems { get; set; }
-
-        public SortOrder Order { get; set; }
-
-        public bool SkipResultToMe { get; set; }
-
-        public uint SkipResultsToRank { get; set; }
-
-        internal string ContinuationToken { get; set; }
-
-        public bool HasNext
+        public uint SkipResultToRank
         {
             get
             {
-                return !string.IsNullOrEmpty(this.ContinuationToken);
+                return pImpl.GetSkipResultToRank();
             }
+            set
+            {
+                pImpl.SetSkipResultToRank(value);
+            }
+        }
+
+        public bool SkipResultToMe
+        {
+            get
+            {
+                return pImpl.GetSkipResultToMe();
+            }
+
+            set
+            {
+                 pImpl.SetSkipResultToMe(value);
+            }
+        }
+
+        public SortOrder Order
+        {
+            get
+            {
+                return pImpl.GetOrder();
+            }
+
+            set
+            {
+                pImpl.SetOrder(value);
+            }
+        }
+
+        public uint MaxItems
+        {
+            get
+            {
+                return pImpl.GetMaxItems();
+            }
+
+            set
+            {
+                pImpl.SetMaxItems(value);
+            }
+        }
+
+        ILeaderboardQueryImpl pImpl;
+        internal IntPtr GetPtr() { return pImpl.GetPtr(); }
+        
+        internal LeaderboardQuery(IntPtr ptr)
+        {
+            pImpl = new LeaderboardQueryImpl(ptr, this);
+        }
+
+        // todo remove after removing leaderboard service
+        internal LeaderboardQuery(LeaderboardQuery query, string continuation)
+        {
+
         }
     }
 }

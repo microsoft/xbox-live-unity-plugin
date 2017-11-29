@@ -54,6 +54,7 @@ public:
         );
 
     static XSAPI_RESULT xsapi_result_from_hc_result(HC_RESULT hcr);
+
     static XSAPI_RESULT xsapi_result_from_xbox_live_result_err(std::error_code errc);
 
     template<typename T, typename T2>

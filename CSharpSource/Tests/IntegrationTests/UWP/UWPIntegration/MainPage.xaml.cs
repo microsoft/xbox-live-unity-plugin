@@ -26,8 +26,8 @@ namespace UWPIntegration
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        private int jumps;
-        private int headshots;
+        private long jumps;
+        private long headshots;
         private LeaderboardResult leaderboard;
         private TitleStorageBlobMetadata blobMetadata = null;
         private XboxSocialUserGroup xboxSocialUserGroupAll;
@@ -113,7 +113,7 @@ namespace UWPIntegration
             get { return this.user; }
         }
 
-        public IStatsManager StatsManager
+        public IStatisticManager StatsManager
         {
             get { return XboxLive.Instance.StatsManager; }
         }
@@ -163,9 +163,8 @@ namespace UWPIntegration
                 LeaderboardQuery query = new LeaderboardQuery
                 {
                     MaxItems = 3,
-                    StatName = "jumps"
                 };
-                this.StatsManager.GetLeaderboard(this.User, query);
+                this.StatsManager.GetLeaderboard(this.User, "jumps", query);
             }
         }
 
@@ -175,18 +174,16 @@ namespace UWPIntegration
             {
                 LeaderboardQuery query = new LeaderboardQuery
                 {
-                    MaxItems = 3,
-                    SocialGroup = "all",
-                    StatName = "headshots"
+                    MaxItems = 3
                 };
-                this.StatsManager.GetLeaderboard(this.User, query);
+                this.StatsManager.GetSocialLeaderboard(this.User, "headshots", "all", query);
             }
         }
 
         private void WriteGlobalStats_Click(object sender, RoutedEventArgs e)
         {
             if (!this.User.IsSignedIn) return;
-            this.StatsManager.SetStatAsInteger(this.User, "jumps", ++this.jumps);
+            this.StatsManager.SetStatisticIntegerData(this.User, "jumps", ++this.jumps);
         }
 
         private void FlushStats_Click(object sender, RoutedEventArgs e)
@@ -294,7 +291,7 @@ namespace UWPIntegration
         private void WriteSocialStats_Click(object sender, RoutedEventArgs e)
         {
             if (!this.User.IsSignedIn) return;
-            this.StatsManager.SetStatAsInteger(this.User, "headshots", ++this.headshots);
+            this.StatsManager.SetStatisticIntegerData(this.User, "headshots", ++this.headshots);
         }
 
         private void NextLb_Click(object sender, RoutedEventArgs e)
@@ -303,7 +300,8 @@ namespace UWPIntegration
 
             if (this.LeaderboardResult.HasNext)
             {
-                this.StatsManager.GetLeaderboard(this.User, this.LeaderboardResult.NextQuery);
+                LeaderboardQuery nextQuery = this.LeaderboardResult.GetNextQuery();
+                this.StatsManager.GetLeaderboard(this.User, nextQuery.StatName, nextQuery);
             }
         }
 
@@ -432,10 +430,10 @@ namespace UWPIntegration
                 {
                     // Perform the long running do work task on a background thread.
                     var statsDoWorkTask = Task.Run(() => { return this.StatsManager.DoWork(); });
-                    List<StatEvent> statsEvents = await statsDoWorkTask;
-                    foreach (StatEvent ev in statsEvents)
+                    IList<StatisticEvent> statsEvents = await statsDoWorkTask;
+                    foreach (StatisticEvent ev in statsEvents)
                     {
-                        if (ev.EventType == StatEventType.GetLeaderboardComplete)
+                        if (ev.EventType == StatisticEventType.GetLeaderboardComplete)
                         {
                             LeaderboardResult result = ((LeaderboardResultEventArgs)ev.EventArgs).Result;
                             this.LeaderboardResult = result;
@@ -444,21 +442,21 @@ namespace UWPIntegration
                         }
                     }
 
-                    var statNames = this.StatsManager.GetStatNames(this.User);
+                    var statNames = this.StatsManager.GetStatisticNames(this.User);
                     if (statNames.Count > 0)
                     {
                         foreach (var stat in statNames)
                         {
                             if (string.Equals(stat, "headshots"))
                             {
-                                this.headshots = this.StatsManager.GetStat(this.User, "headshots").AsInteger();
+                                this.headshots = this.StatsManager.GetStatistic(this.User, "headshots").AsInteger;
                             }
                             else if (string.Equals(stat, "jumps"))
                             {
-                                this.jumps = this.StatsManager.GetStat(this.User, "jumps").AsInteger();
+                                this.jumps = this.StatsManager.GetStatistic(this.User, "jumps").AsInteger;
                             }
                         }
-                        this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStat(this.User, n)).Select(s => $"{s.Name} ({s.Type}) = {s.Value}"));
+                        this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStatistic(this.User, n)).Select(s => $"{s.Name} ({s.DataType}) = {GetStatValue(s)}"));
                     }
 
                     var socialDoWorkTask = Task.Run(() => { return this.SocialManager.DoWork(); });
@@ -474,6 +472,19 @@ namespace UWPIntegration
 
                 // don't run again for at least 200 milliseconds
                 await Task.Delay(200);
+            }
+        }
+
+        object GetStatValue(StatisticValue value)
+        {
+            switch (value.DataType)
+            {
+                case StatisticDataType.Number:
+                    return value.AsInteger;
+                case StatisticDataType.String:
+                    return value.AsString;
+                default:
+                    return value.AsNumber;
             }
         }
 
