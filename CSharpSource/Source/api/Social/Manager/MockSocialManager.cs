@@ -11,53 +11,37 @@ namespace Microsoft.Xbox.Services.Social.Manager
     using Microsoft.Xbox.Services.Presence;
     using Microsoft.Xbox.Services.System;
 
+    // todo update this method
     public class MockSocialManager : ISocialManager
     {
-        private static Random rng = new Random();
-        private List<SocialEvent> events;
-        private static readonly List<SocialEvent> emptyEventsList = new List<SocialEvent>();
+        static Random rng = new Random();
+        List<XboxLiveUser> mLocalUsers;
+        List<SocialEvent> mEvents;
 
         internal MockSocialManager()
         {
-            this.events = new List<SocialEvent>();
-            this.LocalUsers = new List<XboxLiveUser>();
+            mLocalUsers = new List<XboxLiveUser>();
+            mEvents = new List<SocialEvent>();
         }
 
-        public IList<XboxLiveUser> LocalUsers { get; private set; }
-
-        public Task AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel)
+        public IList<XboxLiveUser> LocalUsers
         {
-            this.LocalUsers.Add(user);
-            this.events.Add(new SocialEvent(SocialEventType.LocalUserAdded, user, null));
-            return Task.FromResult(true);
+            get
+            {
+                return mLocalUsers.AsReadOnly();
+            }
         }
 
-        public void RemoveLocalUser(XboxLiveUser user)
+        public void AddLocalUser(XboxLiveUser user, SocialManagerExtraDetailLevel extraDetailLevel = SocialManagerExtraDetailLevel.NoExtraDetail)
         {
-            this.LocalUsers.Remove(user);
-        }
-
-        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, List<ulong> userIds)
-        {
-            var group = new XboxSocialUserGroup(user, userIds);
-
-            // Create 'real' users for the userIds
-            var users = userIds
-                .Select(CreateUser)
-                .ToDictionary(u => u.XboxUserId);
-
-            group.InitializeGroup(users.Values);
-            group.UpdateView(users, new List<SocialEvent>());
-            this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
-
-            return group;
+            mLocalUsers.Add(user);
+            mEvents.Add(new SocialEvent(SocialEventType.LocalUserAdded, user));
         }
 
         public XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter)
         {
-            var group = new XboxSocialUserGroup(user, presenceFilter, relationshipFilter, XboxLiveAppConfiguration.Instance.TitleId);
 
-            var users = Enumerable.Range(0, 5)
+            Dictionary<string, XboxSocialUser> users = Enumerable.Range(0, 5)
                 .Select(id =>
                 {
                     var groupUser = CreateUser();
@@ -73,7 +57,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
                         case PresenceFilter.TitleOffline:
                             InitUserForOfflinePresence(ref groupUser);
                             break;
-                        
+
                         case PresenceFilter.AllTitle:
                         case PresenceFilter.All:
                             if (id % 2 == 0)
@@ -101,16 +85,71 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     return groupUser;
                 }).ToDictionary(u => u.XboxUserId);
 
-            group.InitializeGroup(users.Values);
-            group.UpdateView(users, new List<SocialEvent>());
-            this.events.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
+            XboxSocialUserGroup group = new XboxSocialUserGroup(user, SocialUserGroupType.Filter, presenceFilter, relationshipFilter, users);
+            mEvents.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
 
             return group;
         }
 
+        public XboxSocialUserGroup CreateSocialUserGroupFromList(XboxLiveUser user, IList<string> xboxUserIdList)
+        {
+            Dictionary<string, XboxSocialUser> users = xboxUserIdList
+                .Select(CreateUser)
+                .ToDictionary(u => u.XboxUserId);
+
+            XboxSocialUserGroup group = new XboxSocialUserGroup(
+                    user, 
+                    SocialUserGroupType.UserList, 
+                    PresenceFilter.Unknown, 
+                    RelationshipFilter.Friends, 
+                    users);
+
+            mEvents.Add(new SocialEvent(SocialEventType.SocialUserGroupLoaded, user, null, group));
+
+            return group;
+        }
+
+        public void DestroySocialUserGroup(XboxSocialUserGroup group)
+        {
+            // do nothing
+        }
+
+        public IList<SocialEvent> DoWork()
+        {
+            List<SocialEvent> currentEvents = mEvents;
+            mEvents = new List<SocialEvent>();
+            return currentEvents;
+        }
+
+        public void RemoveLocalUser(XboxLiveUser user)
+        {
+            mLocalUsers.Remove(user);
+            mEvents.Add(new SocialEvent(SocialEventType.LocalUserRemoved, user));
+        }
+
+        public void SetRichPresencePollingStatus(XboxLiveUser user, bool shouldEnablePolling)
+        {
+            // do nothing
+        }
+
+        public void UpdateSocialUserGroup(XboxSocialUserGroup group, IList<string> userIds)
+        {
+            Dictionary<string, XboxSocialUser> users = 
+                userIds
+                .Select(CreateUser)
+                .ToDictionary(u => u.XboxUserId);
+
+            group.UpdateGroup(users);
+
+            mEvents.Add(new SocialEvent(SocialEventType.SocialUserGroupUpdated, group.LocalUser, null, group));
+        }
+
+
+        // Mock Helpers
+
         private void InitUserForOfflinePresence(ref XboxSocialUser groupUser)
         {
-            groupUser.PresenceState = UserPresenceState.Offline;
+            groupUser.PresenceRecord = new SocialManagerPresenceRecord(UserPresenceState.Offline, null);
             groupUser.TitleHistory = new TitleHistory
             {
                 HasUserPlayed = true,
@@ -120,8 +159,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         private void InitUserForOnlinePresence(ref XboxSocialUser groupUser)
         {
-            groupUser.PresenceState = UserPresenceState.Online;
-            groupUser.PresenceDetails = new List<SocialManagerPresenceTitleRecord>
+            List<SocialManagerPresenceTitleRecord> titles = new List<SocialManagerPresenceTitleRecord>
             {
                 new SocialManagerPresenceTitleRecord
                 {
@@ -129,28 +167,15 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     IsTitleActive = true,
                 }
             };
+
+            groupUser.PresenceRecord = new SocialManagerPresenceRecord(UserPresenceState.Online, titles);
         }
 
-        public IList<SocialEvent> DoWork()
+        private static XboxSocialUser CreateUser(string id = "")
         {
-            List<SocialEvent> returnList = null;
-            if (this.events.Count > 0)
+            if (string.IsNullOrEmpty(id))
             {
-                returnList = this.events;
-                this.events = new List<SocialEvent>();
-            }
-            else
-            {
-                returnList = emptyEventsList;
-            }
-            return returnList;
-        }
-
-        private static XboxSocialUser CreateUser(ulong id = 0)
-        {
-            if (id == 0)
-            {
-                id = (ulong)(rng.NextDouble() * ulong.MaxValue);
+                id = (rng.NextDouble() * ulong.MaxValue).ToString();
             }
 
             return new XboxSocialUser

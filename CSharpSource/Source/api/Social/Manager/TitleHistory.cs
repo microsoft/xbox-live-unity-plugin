@@ -5,8 +5,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
 
-    public class TitleHistory : IEquatable<TitleHistory>
+    public partial class TitleHistory : IEquatable<TitleHistory>
     {
+        public TitleHistory()
+        {
+        }
+
         public DateTimeOffset LastTimeUserPlayed { get; set; }
 
         public bool HasUserPlayed { get; set; }

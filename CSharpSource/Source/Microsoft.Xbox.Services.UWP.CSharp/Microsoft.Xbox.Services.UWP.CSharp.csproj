@@ -90,6 +90,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Social\Manager\SocialEvent.cs" />
+    <Compile Include="Social\Manager\SocialManager.cs" />
+    <Compile Include="Social\Manager\SocialManagerPresenceRecord.cs" />
+    <Compile Include="Social\Manager\TitleHistory.cs" />
+    <Compile Include="Social\Manager\XboxSocialUser.cs" />
+    <Compile Include="Social\Manager\XboxSocialUserGroup.cs" />
     <Compile Include="System\TitleCallableUI.cs" />
     <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />

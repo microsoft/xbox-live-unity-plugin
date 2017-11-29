@@ -157,6 +157,8 @@
     <ClCompile Include="..\..\Source\Shared\threadpool.cpp" />
     <ClCompile Include="..\..\Source\Shared\utils.cpp" />
     <ClCompile Include="..\..\Source\Shared\xbox_live_app_config.cpp" />
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp" />
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp" />
     <ClCompile Include="..\..\Source\System\user.cpp" />
     <ClCompile Include="..\..\Source\System\user_taskargs.cpp" />
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp" />
@@ -164,7 +166,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\errors_c.h" />
     <ClInclude Include="..\..\Include\xsapi\privacy_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\presence_c.h" />
     <ClInclude Include="..\..\Include\xsapi\services_c.h" />
+    <ClInclude Include="..\..\Include\xsapi\social_manager_c.h" />
     <ClInclude Include="..\..\Include\xsapi\system_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_callable_ui_c.h" />
     <ClInclude Include="..\..\Include\xsapi\title_storage_c.h" />
@@ -187,6 +191,7 @@
     <ClInclude Include="..\..\Source\Shared\singleton.h" />
     <ClInclude Include="..\..\Source\Shared\threadpool.h" />
     <ClInclude Include="..\..\Source\Shared\utils.h" />
+    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h" />
     <ClInclude Include="..\..\Source\System\user_impl.h" />
     <ClInclude Include="..\..\Source\System\user_taskargs.h" />
   </ItemGroup>

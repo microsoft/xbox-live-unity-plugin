@@ -28,6 +28,12 @@
     <Filter Include="C++ Source\Services\Privacy">
       <UniqueIdentifier>{bc845480-97e6-486a-81e0-2445018cfcc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Social">
+      <UniqueIdentifier>{b417d1c1-466f-48b9-ae38-84253e927859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="C++ Source\Social\Manager">
+      <UniqueIdentifier>{74a87d6e-0338-4a8d-a029-8965327ad6c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\xsapi\services_c.h">
@@ -111,6 +117,15 @@
     <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h">
       <Filter>C++ Source\Services\Privacy</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h">
+      <Filter>C++ Source\Social\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\presence_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\social_manager_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -155,6 +170,9 @@
     <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage.cpp">
       <Filter>C++ Source\Services\TitleStorage</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp">
+      <Filter>C++ Source\Social\Manager</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
       <Filter>C++ Source\System</Filter>
     </ClCompile>
@@ -169,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.cpp">
       <Filter>C++ Source\Services\Privacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp">
+      <Filter>C++ Source\Social\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
