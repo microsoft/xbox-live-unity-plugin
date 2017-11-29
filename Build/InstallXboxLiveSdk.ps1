@@ -88,6 +88,19 @@ elseif($FromSource)
       Write-Host "SDK Build (Platform:x86) Succeeded."
     }
     
+    Write-Host "Building (Platform:x86, configuration .NET35) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x86 /property:Configuration=DebugNET35"
+    
+    if(!$buildResult.BuildSucceeded)
+    {
+       Write-Host "Failed.  See build logs for details."
+       Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+       Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+    }
+    else {
+      Write-Host "SDK Build (Platform:x86 configuration .NET35) Succeeded."
+    }
+    
     Write-Host "Building (Platform:x64) Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x64"
     
@@ -100,5 +113,33 @@ elseif($FromSource)
     else {
       Write-Host "SDK Build (Platform:x64) Succeeded."
     }
+    
+    Write-Host "Building (Platform:x64, configuration .NET35) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x64 /property:Configuration=DebugNET35"
+    
+    if(!$buildResult.BuildSucceeded)
+    {
+       Write-Host "Failed.  See build logs for details."
+       Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+       Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+    }
+    else {
+      Write-Host "SDK Build (Platform:x64 configuration .NET35) Succeeded."
+    }
+    
+    Write-Host "Building (Platform:ARM) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=ARM"
+    
+    if(!$buildResult.BuildSucceeded)
+    {
+       Write-Host "Failed.  See build logs for details."
+       Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+       Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+    }
+    else {
+      Write-Host "SDK Build (Platform:ARM) Succeeded."
+    }
   }
 }
+
+Write-Host "Done installing XboxLive SDK."

@@ -5,7 +5,6 @@
 /UWP/
 /Assets/AssetStoreTools*
 
-/Assets/Plugins/*
 Build/nuget.exe
 /CSharpSource/Plugins/
 /CppSource/Build/Microsoft.Xbox.Services.140.UWP.C/packages/
@@ -52,14 +51,22 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.unitypackage.meta
 BuildPackage.log
 
 # We only want the .meta files for the libs which define which builds to include them in.
-/Assets/Xbox Live/Libs/
+/Assets/Xbox Live/Libs/*
 !/Assets/Xbox Live/Libs/*.meta
 !/Assets/Xbox Live/Libs/**/*.dll.meta
+/Assets/Plugins/*
+!/Assets/Plugins/*.meta
+!/Assets/Plugins/**/*.dll.meta
+
 
 # Ignore any configuration files created when testing stuff.
 /XboxServices.config
 /Assets/WSATestCertificate.pfx*
 /*_StoreKey.pfx
+
+/UnityPackageManager/
+/Assets/Xbox Live/Readme.txt.meta

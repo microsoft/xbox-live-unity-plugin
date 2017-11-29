@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 83ffbc511b13b7d448089fbaa959e296
-timeCreated: 1511810315
+guid: 314720312fa1fd64dbfc2edcce192344
+timeCreated: 1511831675
 licenseType: Free
 PluginImporter:
   externalObjects: {}
@@ -110,7 +110,7 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
+        CPU: ARM
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
