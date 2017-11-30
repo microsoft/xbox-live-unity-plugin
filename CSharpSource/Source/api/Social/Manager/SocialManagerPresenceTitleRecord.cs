@@ -13,15 +13,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
         }
 
-        public SocialManagerPresenceTitleRecord(PresenceDeviceType device, PresenceTitleRecord titleRecord)
-        {
-            this.Device = device;
-            this.TitleId = titleRecord.TitleId;
-            this.IsBroadcasting = titleRecord.BroadcastRecord.StartTime != DateTimeOffset.MinValue;
-            this.IsTitleActive = titleRecord.IsTitleActive;
-            this.PresenceText = titleRecord.Presence;
-        }
-
         internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
         {
             SOCIAL_MANAGER_PRESENCE_TITLE_RECORD cTitleRecord = (SOCIAL_MANAGER_PRESENCE_TITLE_RECORD)Marshal.PtrToStructure(titleRecordPtr, typeof(SOCIAL_MANAGER_PRESENCE_TITLE_RECORD));
