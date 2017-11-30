@@ -26,7 +26,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             this.m_socialManagerPresenceRecordPtr = socialManagerPresenceRecordPtr;
 
-            SOCIAL_MANAGER_PRESENCE_RECORD cPresenceRecord = (SOCIAL_MANAGER_PRESENCE_RECORD)Marshal.PtrToStructure(socialManagerPresenceRecordPtr, typeof(SOCIAL_MANAGER_PRESENCE_RECORD));
+            SOCIAL_MANAGER_PRESENCE_RECORD cPresenceRecord = MarshalingHelpers.PtrToStructure<SOCIAL_MANAGER_PRESENCE_RECORD>(socialManagerPresenceRecordPtr);
             UserState = cPresenceRecord.UserState;
 
             m_titleRecords = new List<SocialManagerPresenceTitleRecord>();

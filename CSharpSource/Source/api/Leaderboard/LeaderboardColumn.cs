@@ -15,7 +15,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
 
         internal LeaderboardColumn(IntPtr leaderboardColumnPtr)
         {
-            LEADERBOARD_COLUMN cColumn = (LEADERBOARD_COLUMN)Marshal.PtrToStructure(leaderboardColumnPtr, typeof(LEADERBOARD_COLUMN));
+            LEADERBOARD_COLUMN cColumn = MarshalingHelpers.PtrToStructure<LEADERBOARD_COLUMN>(leaderboardColumnPtr);
 
             StatisticType = cColumn.StatType;
             StatisticName = MarshalingHelpers.Utf8ToString(cColumn.StatName);

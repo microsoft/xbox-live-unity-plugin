@@ -36,7 +36,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
 
         internal LeaderboardRow(IntPtr leaderboardRowPtr)
         {
-            LEADERBOARD_ROW cRow = (LEADERBOARD_ROW)Marshal.PtrToStructure(leaderboardRowPtr, typeof(LEADERBOARD_ROW));
+            LEADERBOARD_ROW cRow = MarshalingHelpers.PtrToStructure<LEADERBOARD_ROW>(leaderboardRowPtr);
             Rank = cRow.Rank;
             Percentile = cRow.Percentile;
             XboxUserId = MarshalingHelpers.Utf8ToString(cRow.XboxUserId);

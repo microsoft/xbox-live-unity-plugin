@@ -16,7 +16,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         internal StatisticValue(IntPtr statValuePtr)
         {
-            STATISTIC_VALUE cStatValue = (STATISTIC_VALUE)Marshal.PtrToStructure(statValuePtr, typeof(STATISTIC_VALUE));
+            STATISTIC_VALUE cStatValue = MarshalingHelpers.PtrToStructure<STATISTIC_VALUE>(statValuePtr);
             Name = MarshalingHelpers.Utf8ToString(cStatValue.Name);
             AsNumber = cStatValue.AsNumber;
             AsInteger = cStatValue.AsInteger;

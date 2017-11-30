@@ -13,7 +13,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         internal LeaderboardResultEventArgs(IntPtr leaderboardResultEventArgsPtr)
         {
-            LEADERBOARD_RESULT_EVENT_ARGS cArgs = (LEADERBOARD_RESULT_EVENT_ARGS)Marshal.PtrToStructure(leaderboardResultEventArgsPtr, typeof(LEADERBOARD_RESULT_EVENT_ARGS));
+            LEADERBOARD_RESULT_EVENT_ARGS cArgs = MarshalingHelpers.PtrToStructure<LEADERBOARD_RESULT_EVENT_ARGS>(leaderboardResultEventArgsPtr);
             Result = new LeaderboardResult(cArgs.Result);
         }
 
