@@ -72,8 +72,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr ColumnValues;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public Int32 ColumnValuesSize;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public int ColumnValuesSize;
         }
 
         // Used for mock services

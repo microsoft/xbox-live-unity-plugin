@@ -30,8 +30,8 @@ XSAPI_DLLEXPORT XSAPI_XBOX_SOCIAL_USER** XBL_CALLING_CONV
 XboxSocialUserGroupGetUsersFromXboxUserIds(
     _In_ XSAPI_XBOX_SOCIAL_USER_GROUP* group,
     _In_ PCSTR* xboxUserIds,
-    _In_ int32_t xboxUserIdsSize,
-    _Out_ int32_t* xboxSocialUsersSize
+    _In_ size_t xboxUserIdsSize,
+    _Out_ size_t* xboxSocialUsersSize
     )
 try
 {
@@ -96,7 +96,7 @@ CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_SOCIAL_EVENT** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Out_ int32_t* socialEventsSize
+    _Out_ size_t* socialEventsSize
     )
 try
 {
@@ -157,7 +157,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
     _In_ XSAPI_XBOX_LIVE_USER *user,
     _In_ PCSTR* xboxUserIdList,
-    _In_ int32_t xboxUserIdListSize,
+    _In_ size_t xboxUserIdListSize,
     _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
     ) XSAPI_NOEXCEPT
@@ -167,7 +167,7 @@ try
 
     std::vector<string_t> xboxUserIdVector = std::vector<string_t>(xboxUserIdListSize);
 
-    for (int i = 0; i < xboxUserIdListSize; i++)
+    for (size_t i = 0; i < xboxUserIdListSize; i++)
     {
         xboxUserIdVector[i] = utils::to_utf16string(xboxUserIdList[i]);
     }
@@ -208,7 +208,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
     _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *group,
     _In_ PCSTR* users,
-    _In_ uint32_t usersSize,
+    _In_ size_t usersSize,
     _Out_ PCSTR* errMessage
     ) XSAPI_NOEXCEPT
 try
@@ -217,7 +217,7 @@ try
 
     std::vector<string_t> usersVector = std::vector<string_t>();
 
-    for (uint32 i = 0; i < usersSize; i++)
+    for (size_t i = 0; i < usersSize; i++)
     {
         usersVector.push_back(utils::to_utf16string(users[i]));
     }
