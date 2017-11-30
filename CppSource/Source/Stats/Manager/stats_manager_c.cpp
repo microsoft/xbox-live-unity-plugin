@@ -64,7 +64,7 @@ CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_STAT_EVENT** XBL_CALLING_CONV
 StatsManagerDoWork(
-    _Inout_ uint32_t *statEventsSize
+    _Inout_ size_t *statEventsSize
 ) XSAPI_NOEXCEPT
 try
 {
@@ -140,7 +140,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStatNames(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Inout_ PCSTR** statNameList,
-    _Inout_ uint32_t* statNameListSize,
+    _Inout_ size_t* statNameListSize,
     _Inout_ PCSTR* errMessage
 ) XSAPI_NOEXCEPT
 try

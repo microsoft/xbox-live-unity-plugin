@@ -63,6 +63,16 @@ namespace Microsoft.Xbox.Services.Social.Manager
             return this.Equals((SocialManagerPresenceRecord)obj);
         }
 
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = UserState.GetHashCode();
+                hashCode = (hashCode * 397) ^ (m_titleRecords.GetHashCode());
+                return hashCode;
+            }
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         internal struct SOCIAL_MANAGER_PRESENCE_RECORD
         {

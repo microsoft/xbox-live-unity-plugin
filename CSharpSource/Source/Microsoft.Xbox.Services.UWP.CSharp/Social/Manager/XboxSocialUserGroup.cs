@@ -83,7 +83,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
 
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern IntPtr XboxSocialUserGroupGetUsersFromXboxUserIds(IntPtr group, IntPtr xboxUserIds, Int32 xboxUserIdsSize, IntPtr usersSize);
+        private static extern IntPtr XboxSocialUserGroupGetUsersFromXboxUserIds(IntPtr group, IntPtr xboxUserIds, int xboxUserIdsSize, IntPtr usersSize);
         public IList<XboxSocialUser> GetUsersFromXboxUserIds(IList<string> xboxUserIds)
         {
             // Allocates memory for returned objects
