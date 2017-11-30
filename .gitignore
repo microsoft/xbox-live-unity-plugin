@@ -62,6 +62,11 @@ BuildPackage.log
 !/Assets/Plugins/*.meta
 !/Assets/Plugins/**/*.dll.meta
 
+# Ignore .meta files that Unity generates for Readme.txt
+/Assets/Xbox Live/Readme.txt.meta
+
+# We don't want .meta files for GameSave directory since that package is generated seperately
+/Assets/Xbox Live/GameSave/*.meta
 
 # Ignore any configuration files created when testing stuff.
 /XboxServices.config
@@ -69,4 +74,3 @@ BuildPackage.log
 /*_StoreKey.pfx
 
 /UnityPackageManager/
-/Assets/Xbox Live/Readme.txt.meta
