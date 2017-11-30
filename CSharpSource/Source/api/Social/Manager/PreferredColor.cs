@@ -20,7 +20,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         internal PreferredColor(IntPtr preferredColorPtr)
         {
-            PREFERRED_COLOR cPreferredColor = (PREFERRED_COLOR)Marshal.PtrToStructure(preferredColorPtr, typeof(PREFERRED_COLOR));
+            PREFERRED_COLOR cPreferredColor = MarshalingHelpers.PtrToStructure<PREFERRED_COLOR>(preferredColorPtr);
             PrimaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.PrimaryColor);
             SecondaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.SecondaryColor);
             TertiaryColor = MarshalingHelpers.Utf8ToString(cPreferredColor.TertiaryColor);

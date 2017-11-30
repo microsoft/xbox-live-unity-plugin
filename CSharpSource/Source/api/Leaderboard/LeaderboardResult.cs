@@ -28,7 +28,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         {
             pImpl = new LeaderboardResultImpl(leaderboardResultPtr);
 
-            LEADERBOARD_RESULT cResult = (LEADERBOARD_RESULT)Marshal.PtrToStructure(leaderboardResultPtr, typeof(LEADERBOARD_RESULT));
+            LEADERBOARD_RESULT cResult = MarshalingHelpers.PtrToStructure<LEADERBOARD_RESULT>(leaderboardResultPtr);
 
             TotalRowCount = cResult.TotalRowCount;
 

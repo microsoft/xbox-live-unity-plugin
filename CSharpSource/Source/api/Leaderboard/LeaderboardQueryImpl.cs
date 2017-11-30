@@ -71,7 +71,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         {
             m_leaderboardQueryPtr = ptr;
 
-            LEADERBOARD_QUERY cLeaderboardQuery = (LEADERBOARD_QUERY)Marshal.PtrToStructure(m_leaderboardQueryPtr, typeof(LEADERBOARD_QUERY));
+            LEADERBOARD_QUERY cLeaderboardQuery = MarshalingHelpers.PtrToStructure<LEADERBOARD_QUERY>(m_leaderboardQueryPtr);
             m_skipResultToMe = cLeaderboardQuery.SkipResultToMe;
             m_skipResultToRank = cLeaderboardQuery.SkipResultToRank;
             m_maxItems = cLeaderboardQuery.MaxItems;
