@@ -19,7 +19,6 @@ namespace Microsoft.Xbox.Services
         private XboxLiveSettings settings;
         private IStatisticManager statsManager;
         private ISocialManager socialManager;
-        private IPresenceWriter presenceWriter;
 
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
@@ -78,16 +77,6 @@ namespace Microsoft.Xbox.Services
             private set
             {
                 instance = null;
-            }
-        }
-
-        public IPresenceWriter PresenceWriter {
-            get 
-            {
-                if (Instance.presenceWriter == null) {
-                    Instance.presenceWriter = Presence.PresenceWriter.Instance;
-                }
-                return Instance.presenceWriter;
             }
         }
 
