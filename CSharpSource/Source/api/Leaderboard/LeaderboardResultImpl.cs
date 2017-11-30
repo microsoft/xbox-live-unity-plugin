@@ -23,8 +23,8 @@ namespace Microsoft.Xbox.Services.Leaderboard
         public LeaderboardQuery GetNextQueryImpl()
         {
             // Allocates memory for returned objects
-            IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)));
-            IntPtr cNextQuery = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)));
+            IntPtr cErrMessage = Marshal.AllocHGlobal(MarshalingHelpers.SizeOf<IntPtr>());
+            IntPtr cNextQuery = Marshal.AllocHGlobal(MarshalingHelpers.SizeOf<IntPtr>());
 
             // Invokes the c method
             XSAPI_RESULT errCode = LeaderboardResultGetNextQuery(m_leaderboardResultPtr, cNextQuery, cErrMessage);

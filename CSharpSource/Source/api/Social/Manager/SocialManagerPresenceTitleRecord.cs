@@ -15,7 +15,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         internal SocialManagerPresenceTitleRecord(IntPtr titleRecordPtr)
         {
-            SOCIAL_MANAGER_PRESENCE_TITLE_RECORD cTitleRecord = (SOCIAL_MANAGER_PRESENCE_TITLE_RECORD)Marshal.PtrToStructure(titleRecordPtr, typeof(SOCIAL_MANAGER_PRESENCE_TITLE_RECORD));
+            SOCIAL_MANAGER_PRESENCE_TITLE_RECORD cTitleRecord = MarshalingHelpers.PtrToStructure<SOCIAL_MANAGER_PRESENCE_TITLE_RECORD>(titleRecordPtr);
             IsTitleActive = cTitleRecord.IsTitleActive;
             IsBroadcasting = cTitleRecord.IsBroadcasting;
             Device = cTitleRecord.DeviceType;
