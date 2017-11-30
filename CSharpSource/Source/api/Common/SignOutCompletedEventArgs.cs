@@ -12,6 +12,7 @@ namespace Microsoft.Xbox.Services
             this.User = user;
         }
 
+        // TODO change this to XboxLiveUser instead of IXboxLive user to match WinRT projections
         public IXboxLiveUser User { get; private set; }
     }
 }
