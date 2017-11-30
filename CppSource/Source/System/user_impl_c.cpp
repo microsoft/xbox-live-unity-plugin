@@ -7,7 +7,7 @@
 XSAPI_XBOX_LIVE_USER_IMPL::XSAPI_XBOX_LIVE_USER_IMPL(
     _In_ Windows::System::User^ creationContext,
     _In_ XSAPI_XBOX_LIVE_USER* pUser
-    )
+)
     : m_pUser(pUser)
 {
     if (creationContext != nullptr)
@@ -18,6 +18,15 @@ XSAPI_XBOX_LIVE_USER_IMPL::XSAPI_XBOX_LIVE_USER_IMPL(
     {
         m_cppUser = std::make_shared<xbox::services::system::xbox_live_user>();
     }
+}
+
+XSAPI_XBOX_LIVE_USER_IMPL::XSAPI_XBOX_LIVE_USER_IMPL(
+    _In_ std::shared_ptr<xbox::services::system::xbox_live_user> cppUser, 
+    _In_ XSAPI_XBOX_LIVE_USER *cUser
+)
+    : m_pUser(cUser), m_cppUser(cppUser)
+{
+    Refresh();
 }
 
 void XSAPI_XBOX_LIVE_USER_IMPL::Refresh()

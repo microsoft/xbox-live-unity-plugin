@@ -12,7 +12,7 @@ namespace Microsoft.Xbox.Services.UnitTests.Stats
         [TestMethod]
         public void GetInstance()
         {
-            IStatsManager sm = XboxLive.Instance.StatsManager;
+            IStatisticManager sm = XboxLive.Instance.StatsManager;
             Assert.IsNotNull(sm);
         }
     }

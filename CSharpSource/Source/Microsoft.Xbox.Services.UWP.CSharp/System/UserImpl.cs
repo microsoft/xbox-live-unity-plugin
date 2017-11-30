@@ -48,9 +48,20 @@ namespace Microsoft.Xbox.Services.System
             {
                 throw new XboxException(result);
             }
+            
+            Init();
+        }
 
+        internal UserImpl(IntPtr cXboxLiveUser)
+        {
+            XboxLiveUserPtr = cXboxLiveUser;
+            Init();
+        }
+
+        void Init()
+        {
             signOutHandlerContext = AddSignOutCompletedHandler(OnSignOutCompleted);
-            xboxLiveUserInstanceMap[xboxLiveUserPtr] = this;
+            xboxLiveUserInstanceMap[XboxLiveUserPtr] = this;
 
             // TODO: This config is broken.
             var appConfig = XboxLiveAppConfiguration.Instance;
@@ -72,11 +83,10 @@ namespace Microsoft.Xbox.Services.System
                 XboxLiveUserDelete(XboxLiveUserPtr);
             }
         }
-
+        
         private static void OnSignOutCompleted(IntPtr xboxLiveUser_c)
         {
             UserImpl @this = xboxLiveUserInstanceMap[xboxLiveUser_c];
-
             if (!@this.IsSignedIn)
             {
                 return;
@@ -238,7 +248,7 @@ namespace Microsoft.Xbox.Services.System
             }
         }
 
-        private void UpdatePropertiesFromXboxLiveUserPtr()
+        internal void UpdatePropertiesFromXboxLiveUserPtr()
         {
             var xboxLiveUserStruct = Marshal.PtrToStructure<XSAPI_XBOX_LIVE_USER>(XboxLiveUserPtr);
 

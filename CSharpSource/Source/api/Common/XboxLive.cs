@@ -17,9 +17,8 @@ namespace Microsoft.Xbox.Services
         private bool disposed;
         private static XboxLive instance;
         private XboxLiveSettings settings;
-        private IStatsManager statsManager;
+        private IStatisticManager statsManager;
         private ISocialManager socialManager;
-        private IPresenceWriter presenceWriter;
 
         private static readonly object instanceLock = new object();
         private readonly XboxLiveAppConfiguration appConfig;
@@ -81,16 +80,6 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        public IPresenceWriter PresenceWriter {
-            get 
-            {
-                if (Instance.presenceWriter == null) {
-                    Instance.presenceWriter = Presence.PresenceWriter.Instance;
-                }
-                return Instance.presenceWriter;
-            }
-        }
-
         public ISocialManager SocialManager
         {
             get
@@ -103,13 +92,13 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        public IStatsManager StatsManager
+        public IStatisticManager StatsManager
         {
             get
             {
                 if (Instance.statsManager == null)
                 {
-                    Instance.statsManager = Statistics.Manager.StatsManager.Instance;
+                    Instance.statsManager = Statistics.Manager.StatisticManager.Instance;
                 }
                 return Instance.statsManager;
             }

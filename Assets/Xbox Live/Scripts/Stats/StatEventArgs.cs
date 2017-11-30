@@ -10,11 +10,11 @@ namespace XboxLivePrefab
 {
     public class StatEventArgs : EventArgs
     {
-        public StatEventArgs(StatEvent statEvent)
+        public StatEventArgs(StatisticEvent statEvent)
         {
             this.EventData = statEvent;
         }
 
-        public StatEvent EventData { get; private set; }
+        public StatisticEvent EventData { get; private set; }
     }
 }

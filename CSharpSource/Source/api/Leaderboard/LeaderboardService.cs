@@ -30,15 +30,15 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 skipToXboxUserId = user.XboxUserId;
             }
 
-            string requestPath;
-            if (string.IsNullOrEmpty(query.SocialGroup))
-            {
-                requestPath = CreateLeaderboardUrlPath(this.appConfig.PrimaryServiceConfigId, query.StatName, query.MaxItems, skipToXboxUserId, query.SkipResultsToRank, query.ContinuationToken);
-            }
-            else
-            {
-                requestPath = CreateSocialLeaderboardUrlPath(this.appConfig.PrimaryServiceConfigId, query.StatName, user.XboxUserId, query.MaxItems, skipToXboxUserId, query.SkipResultsToRank, query.ContinuationToken, query.SocialGroup);
-            }
+            string requestPath = "";
+            //if (string.IsNullOrEmpty(query.SocialGroup))
+            //{
+            //    requestPath = CreateLeaderboardUrlPath(this.appConfig.PrimaryServiceConfigId, query.StatName, query.MaxItems, skipToXboxUserId, query.SkipResultToRank, query.ContinuationToken);
+            //}
+            //else
+            //{
+            //    requestPath = CreateSocialLeaderboardUrlPath(this.appConfig.PrimaryServiceConfigId, query.StatName, user.XboxUserId, query.MaxItems, skipToXboxUserId, query.SkipResultToRank, query.ContinuationToken, query.SocialGroup);
+            //}
 
             XboxLiveHttpRequest request = XboxLiveHttpRequest.Create(HttpMethod.Get, leaderboardsBaseUri.ToString(), requestPath);
             request.ContractVersion = leaderboardApiContract;
@@ -71,7 +71,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
                 {
                     Gamertag = row.Gamertag,
                     Percentile = row.Percentile,
-                    Rank = row.Rank,
+                    Rank = (uint)row.Rank,
                     XboxUserId = row.XboxUserId,
                     Values = row.Value != null ? new List<string> { row.Value } : row.Values,
                 };
@@ -79,7 +79,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             }
 
             LeaderboardQuery nextQuery = new LeaderboardQuery(query, lbResponse.PagingInfo != null ? lbResponse.PagingInfo.ContinuationToken : null);
-            LeaderboardResult result = new LeaderboardResult(lbResponse.LeaderboardInfo.TotalCount, columns, rows, nextQuery);
+            LeaderboardResult result = new LeaderboardResult(rows, columns, lbResponse.LeaderboardInfo.TotalCount);
             return result;
         }
 
