@@ -93,6 +93,6 @@ For developers in the Xbox Live Creators Program, you can submit a new idea or v
 *   [Xbox Live Unity Plugin](https://github.com/Microsoft/xbox-live-unity-plugin)
 *   [Xbox Live Resiliency Fiddler Plugin](https://github.com/Microsoft/xbox-live-resiliency-fiddler-plugin)
 *   [Xbox Live Trace Analyzer](https://github.com/Microsoft/xbox-live-trace-analyzer)
-*   [Xbox Live Powershell Cmdlets](https://github.com/Microsoft/xbox-live-powershell-module)
+*   [Xbox Live Developer Tools](https://github.com/Microsoft/xbox-live-developer-tools)
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
