@@ -429,8 +429,7 @@ namespace UWPIntegration
                 if (this.User.IsSignedIn)
                 {
                     // Perform the long running do work task on a background thread.
-                    var statsDoWorkTask = Task.Run(() => { return this.StatsManager.DoWork(); });
-                    IList<StatisticEvent> statsEvents = await statsDoWorkTask;
+                    IList<StatisticEvent> statsEvents = this.StatsManager.DoWork();
                     foreach (StatisticEvent ev in statsEvents)
                     {
                         if (ev.EventType == StatisticEventType.GetLeaderboardComplete)
@@ -458,9 +457,8 @@ namespace UWPIntegration
                         }
                         this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStatistic(this.User, n)).Select(s => $"{s.Name} ({s.DataType}) = {GetStatValue(s)}"));
                     }
-
-                    var socialDoWorkTask = Task.Run(() => { return this.SocialManager.DoWork(); });
-                    IList<SocialEvent> socialEvents = await socialDoWorkTask;
+                    
+                    IList<SocialEvent> socialEvents = this.SocialManager.DoWork();
                     foreach (SocialEvent ev in socialEvents)
                     {
                         string msg;

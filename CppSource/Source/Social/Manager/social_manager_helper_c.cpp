@@ -52,7 +52,7 @@ void XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL::Refresh()
             m_titleRecords.push_back(CreateSocialManagerPresenceTitleRecordFromCpp(cppTitleRecord));
         }
         m_cSocialManagerPresenceRecord->presenceTitleRecords = m_titleRecords.data();
-        m_cSocialManagerPresenceRecord->numOfPresenceTitleRecords = m_titleRecords.size();
+        m_cSocialManagerPresenceRecord->presenceTitleRecordsSize = m_titleRecords.size();
     }
 }
 
@@ -162,7 +162,7 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
             m_users.push_back(CreateXboxSocialUserFromCpp(cppUser));
         }
         m_cSocialUserGroup->users = m_users.data();
-        m_cSocialUserGroup->numOfUsers = cppUsers.size();
+        m_cSocialUserGroup->usersSize = cppUsers.size();
 
         m_cSocialUserGroup->socialUserGroupType = static_cast<XSAPI_SOCIAL_USER_GROUP_TYPE>(m_cppSocialUserGroup->social_user_group_type());
 
@@ -175,7 +175,7 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
             m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
         }
         m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
-        m_cSocialUserGroup->numOfUsersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.size();
+        m_cSocialUserGroup->usersTrackedBySocialUserGroupSize = m_usersTrackedBySocialUserGroup.size();
 
         m_cSocialUserGroup->localUser->pImpl->Refresh();
 
@@ -193,7 +193,7 @@ std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> XSAPI_X
 void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Init()
 {
     auto user = new XSAPI_XBOX_LIVE_USER();
-    user->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppSocialUserGroup->local_user()->windows_system_user(), user);
+    user->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppSocialUserGroup->local_user(), user);
     m_cSocialUserGroup->localUser = user;
 
     Refresh();
@@ -220,7 +220,7 @@ XSAPI_SOCIAL_EVENT_IMPL::XSAPI_SOCIAL_EVENT_IMPL(
 
     m_cEvent->usersAffected = m_usersAffectedList.data();
 
-    m_cEvent->numOfUsersAffected = m_cppEvent.users_affected().size();
+    m_cEvent->usersAffectedSize = m_cppEvent.users_affected().size();
 
     try
     {

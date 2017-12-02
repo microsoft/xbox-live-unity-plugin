@@ -269,7 +269,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
         }
 
-        // Marshalling
+        // Marshaling
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel, IntPtr errMessage);
         

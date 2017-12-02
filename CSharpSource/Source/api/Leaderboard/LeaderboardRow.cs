@@ -43,11 +43,12 @@ namespace Microsoft.Xbox.Services.Leaderboard
             Gamertag = MarshalingHelpers.Utf8ToString(cRow.Gamertag);
 
             Values = new List<string>();
-            if (cRow.ColumnValuesSize > 0)
+            int columnValuesSize = cRow.ColumnValuesSize.ToInt32();
+            if (columnValuesSize > 0)
             {
-                IntPtr[] cValues = new IntPtr[cRow.ColumnValuesSize];
-                Marshal.Copy(cRow.ColumnValues, cValues, 0, cRow.ColumnValuesSize);
-                for (int i = 0; i < cRow.ColumnValuesSize; i++)
+                IntPtr[] cValues = new IntPtr[columnValuesSize];
+                Marshal.Copy(cRow.ColumnValues, cValues, 0, columnValuesSize);
+                for (int i = 0; i < columnValuesSize; i++)
                 {
                     Values.Add(Marshal.PtrToStringAnsi(cValues[i]));
                 }
@@ -73,7 +74,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             public IntPtr ColumnValues;
 
             [MarshalAs(UnmanagedType.SysInt)]
-            public int ColumnValuesSize;
+            public IntPtr ColumnValuesSize;
         }
 
         // Used for mock services

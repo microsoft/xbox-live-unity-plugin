@@ -33,22 +33,24 @@ namespace Microsoft.Xbox.Services.Leaderboard
             TotalRowCount = cResult.TotalRowCount;
 
             Columns = new List<LeaderboardColumn>();
-            if (cResult.ColumnsSize > 0)
+            int columnsSize = cResult.ColumnsSize.ToInt32();
+            if (columnsSize > 0)
             {
-                IntPtr[] cColumns = new IntPtr[cResult.ColumnsSize];
-                Marshal.Copy(cResult.Columns, cColumns, 0, cResult.ColumnsSize);
-                for (int i = 0; i < cResult.ColumnsSize; i++)
+                IntPtr[] cColumns = new IntPtr[columnsSize];
+                Marshal.Copy(cResult.Columns, cColumns, 0, columnsSize);
+                for (int i = 0; i < columnsSize; i++)
                 {
                     Columns.Add(new LeaderboardColumn(cColumns[i]));
                 }
             }
 
             Rows = new List<LeaderboardRow>();
-            if (cResult.RowsSize > 0)
+            int rowsSize = cResult.RowsSize.ToInt32();
+            if (rowsSize > 0)
             {
-                IntPtr[] cRows = new IntPtr[cResult.RowsSize];
-                Marshal.Copy(cResult.Rows, cRows, 0, cResult.RowsSize);
-                for (int i = 0; i < cResult.RowsSize; i++)
+                IntPtr[] cRows = new IntPtr[rowsSize];
+                Marshal.Copy(cResult.Rows, cRows, 0, rowsSize);
+                for (int i = 0; i < rowsSize; i++)
                 {
                     Rows.Add(new LeaderboardRow(cRows[i]));
                 }
@@ -139,14 +141,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Columns;
 
-            [MarshalAs(UnmanagedType.U4)]
-            public Int32 ColumnsSize;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr ColumnsSize;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Rows;
 
-            [MarshalAs(UnmanagedType.U4)]
-            public Int32 RowsSize;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr RowsSize;
         }
 
         // Used for mock services

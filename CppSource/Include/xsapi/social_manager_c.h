@@ -95,7 +95,7 @@ typedef struct XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD
 {
     XSAPI_USER_PRESENCE_STATE userState;
     XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD** presenceTitleRecords;
-    int numOfPresenceTitleRecords;
+    size_t presenceTitleRecordsSize;
 
     XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL * pImpl;
 } XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD;
@@ -141,7 +141,7 @@ typedef struct XSAPI_SOCIAL_EVENT
     XSAPI_XBOX_LIVE_USER* user;
     XSAPI_SOCIAL_EVENT_TYPE eventType;
     XSAPI_XBOX_USER_ID_CONTAINER** usersAffected;
-    uint32_t numOfUsersAffected;
+    size_t usersAffectedSize;
     XSAPI_SOCIAL_EVENT_ARGS* eventArgs;
     int32_t err;
     PCSTR errMessage;
@@ -152,10 +152,10 @@ typedef struct XSAPI_SOCIAL_EVENT
 typedef struct XSAPI_XBOX_SOCIAL_USER_GROUP
 {
     XSAPI_XBOX_SOCIAL_USER** users;
-    uint32_t numOfUsers;
+    size_t usersSize;
     XSAPI_SOCIAL_USER_GROUP_TYPE socialUserGroupType;
     XSAPI_XBOX_USER_ID_CONTAINER** usersTrackedBySocialUserGroup;
-    uint32_t numOfUsersTrackedBySocialUserGroup;
+    size_t usersTrackedBySocialUserGroupSize;
     XSAPI_XBOX_LIVE_USER* localUser;
     XSAPI_PRESENCE_FILTER presenceFilterOfGroup;
     XSAPI_RELATIONSHIP_FILTER relationshipFilterOfGroup;

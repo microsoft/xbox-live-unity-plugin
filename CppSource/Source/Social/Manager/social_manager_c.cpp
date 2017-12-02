@@ -147,6 +147,7 @@ try
     socialUserGroup->pImpl = new XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL(socialVars.cppGroupResult.payload(), socialUserGroup);
     socialVars.cGroups.push_back(socialUserGroup);
     *group = socialUserGroup;
+    
 
     *errMessage = socialVars.cppGroupResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(socialVars.cppGroupResult.err());

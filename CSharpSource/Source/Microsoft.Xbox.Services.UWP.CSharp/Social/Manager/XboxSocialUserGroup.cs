@@ -46,11 +46,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
             // todo: for perf consider not removing everthing, but updating certain things and deleting the rest
             m_users.Clear();
 
-            if (cSocialUserGroup.NumOfUsers > 0)
+            int usersSize = cSocialUserGroup.UsersSize.ToInt32();
+            if (usersSize > 0)
             {
-                IntPtr[] cUsersArray = new IntPtr[cSocialUserGroup.NumOfUsers];
+                IntPtr[] cUsersArray = new IntPtr[usersSize];
 
-                Marshal.Copy(cSocialUserGroup.Users, cUsersArray, 0, cSocialUserGroup.NumOfUsers);
+                Marshal.Copy(cSocialUserGroup.Users, cUsersArray, 0, usersSize);
 
 
                 for (int i = 0; i < cUsersArray.Count(); i++)
@@ -65,11 +66,12 @@ namespace Microsoft.Xbox.Services.Social.Manager
             // todo: for perf consider whether this list is static or dynamic
             m_trackedUsers.Clear();
 
-            if (cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup > 0)
+            int usersTrackedBySocialUserGroupSize = cSocialUserGroup.UsersTrackedBySocialUserGroupSize.ToInt32();
+            if (usersTrackedBySocialUserGroupSize > 0)
             {
-                IntPtr[] cTrackedUsers = new IntPtr[cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup];
+                IntPtr[] cTrackedUsers = new IntPtr[usersTrackedBySocialUserGroupSize];
 
-                Marshal.Copy(cSocialUserGroup.UsersTrackedBySocialUserGroup, cTrackedUsers, 0, cSocialUserGroup.NumOfUsersTrackedBySocialUserGroup);
+                Marshal.Copy(cSocialUserGroup.UsersTrackedBySocialUserGroup, cTrackedUsers, 0, usersTrackedBySocialUserGroupSize);
 
 
                 for (int i = 0; i < cTrackedUsers.Count(); i++)
@@ -134,8 +136,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Users;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public int NumOfUsers;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersSize;
 
             [MarshalAs(UnmanagedType.U4)]
             public SocialUserGroupType SocialUserGroupType;
@@ -143,8 +145,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr UsersTrackedBySocialUserGroup;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public int NumOfUsersTrackedBySocialUserGroup;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr UsersTrackedBySocialUserGroupSize;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr LocalUser;

@@ -30,10 +30,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
             UserState = cPresenceRecord.UserState;
 
             m_titleRecords = new List<SocialManagerPresenceTitleRecord>();
-            if (cPresenceRecord.NumOfPresenceTitleRecords > 0)
+            int presenceTitleRecordsSize = cPresenceRecord.PresenceTitleRecordsSize.ToInt32();
+            if (presenceTitleRecordsSize > 0)
             {
-                IntPtr[] cTitleRecords = new IntPtr[cPresenceRecord.NumOfPresenceTitleRecords];
-                Marshal.Copy(cPresenceRecord.PresenceTitleRecords, cTitleRecords, 0, cPresenceRecord.NumOfPresenceTitleRecords);
+                IntPtr[] cTitleRecords = new IntPtr[presenceTitleRecordsSize];
+                Marshal.Copy(cPresenceRecord.PresenceTitleRecords, cTitleRecords, 0, presenceTitleRecordsSize);
                 foreach (IntPtr cTitleRecord in cTitleRecords)
                 {
                     m_titleRecords.Add(new SocialManagerPresenceTitleRecord(cTitleRecord));
@@ -82,8 +83,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr PresenceTitleRecords;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public int NumOfPresenceTitleRecords;
+            [MarshalAs(UnmanagedType.SysInt)]
+            public IntPtr PresenceTitleRecordsSize;
         }
 
         // Used for mock services

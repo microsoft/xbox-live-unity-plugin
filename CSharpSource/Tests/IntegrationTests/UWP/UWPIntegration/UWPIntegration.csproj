@@ -7,6 +7,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <CDllPlatform>win32</CDllPlatform>
     <ProjectGuid>{28AFCA79-691F-4493-B639-D3CAD311189B}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -21,6 +22,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <CDllPlatform>win32</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -32,6 +34,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <CDllPlatform>win32</CDllPlatform>
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -44,6 +47,7 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <CDllPlatform>ARM</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -55,6 +59,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <CDllPlatform>ARM</CDllPlatform>
     <OutputPath>bin\ARM\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -67,6 +72,7 @@
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <CDllPlatform>x64</CDllPlatform>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -78,6 +84,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <CDllPlatform>x64</CDllPlatform>
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -145,9 +152,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <Target Name="CopyCdllToAppx" AfterTargets="Build">
-    <Message Importance="high" Text="Copying C dll to Appx folder from $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\ to $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\*.dll $(TargetDir)AppX\" />    
-    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(Platform)\Microsoft.Xbox.Services.140.UWP.C\*.pdb $(TargetDir)AppX\" /> 
+    <Message Importance="high" Text="Copying C dll to Appx folder from $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\ to $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.dll $(TargetDir)AppX\" />    
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.pdb $(TargetDir)AppX\" /> 
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
