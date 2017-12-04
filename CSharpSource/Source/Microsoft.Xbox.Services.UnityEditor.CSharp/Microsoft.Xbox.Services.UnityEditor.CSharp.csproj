@@ -90,6 +90,6 @@
   <Target Name="CopyToUnityLibs" Condition="Exists('$(BuildRoot)\..\Assets\Xbox Live')" AfterTargets="Build">
     <Message importance="high" Text="$(TargetPath) Copying binaries to Unity Libs folder $(BuildRoot)\..\Assets\Xbox Live\libs" />
     <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(AssetLibsPath)&quot;" />
-    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsPath)&quot;" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsPath)&quot;" Condition="'$(Configuration)' == 'DebugNET46' OR '$(Configuration)' == 'DebugNET35'" />
   </Target>
 </Project>
