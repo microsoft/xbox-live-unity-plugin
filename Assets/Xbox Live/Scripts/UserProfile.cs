@@ -209,10 +209,7 @@ public class UserProfile : MonoBehaviour
             XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
             yield return this.LoadProfileInfo();
         }
-        else
-        {
-            this.Refresh();
-        }
+        this.Refresh();
     }
 
     private IEnumerator LoadProfileInfo()
