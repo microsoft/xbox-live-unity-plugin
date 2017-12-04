@@ -45,6 +45,8 @@ public class UserProfile : MonoBehaviour
 
     public bool AllowGuestAccounts = false;
 
+    public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
+
     public void Awake()
     {
         this.EnsureEventSystem();
@@ -120,15 +122,16 @@ public class UserProfile : MonoBehaviour
 
         // Don't allow subsequent sign in attempts until the current attemp completes
         this.AllowSignInAttempt = false;
-
-        this.StartCoroutine((new[] {
-            this.InitializeXboxLiveUser(),
-            this.SignInAsync()
-        }).GetEnumerator());
+        this.StartCoroutine(this.InitializeXboxLiveUser());
     }
 
     public void Update()
     {
+        while (ExecuteOnMainThread.Count > 0)
+        {
+            ExecuteOnMainThread.Dequeue().Invoke();
+        }
+
         if (this.AllowSignInAttempt && !string.IsNullOrEmpty(this.InputControllerButton) && Input.GetKeyDown(this.InputControllerButton))
         {
             this.SignIn();
@@ -138,6 +141,7 @@ public class UserProfile : MonoBehaviour
     public IEnumerator InitializeXboxLiveUser()
     {
         yield return null;
+        Debug.Log(">>InitializeXboxLiveUser");
 
 #if ENABLE_WINMD_SUPPORT
         if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser == null)
@@ -150,6 +154,8 @@ public class UserProfile : MonoBehaviour
                             {
                                 this.XboxLiveUser.WindowsSystemUser = task.Result;
                                 this.XboxLiveUser.Initialize();
+                                Debug.Log("Initialize user returned");
+                                this.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(this.SignInAsync()); });
                             }
                             else
                             {
@@ -169,6 +175,7 @@ public class UserProfile : MonoBehaviour
             if (this.XboxLiveUser.User == null)
             {
                 this.XboxLiveUser.Initialize();
+                yield return this.SignInAsync();
             }
         }
 #else
@@ -178,11 +185,15 @@ public class UserProfile : MonoBehaviour
         }
 
         this.XboxLiveUser.Initialize();
+        yield return this.SignInAsync();
 #endif
+        Debug.Log("InitializeXboxLiveUser>>>");
     }
 
     public IEnumerator SignInAsync()
     {
+        Debug.Log(">>>>SignInAsync");
+
         SignInStatus signInStatus;
         TaskYieldInstruction<SignInResult> signInSilentlyTask = this.XboxLiveUser.User.SignInSilentlyAsync().AsCoroutine();
         yield return signInSilentlyTask;
@@ -207,6 +218,7 @@ public class UserProfile : MonoBehaviour
         {
             this.Refresh();
         }
+        Debug.Log("SignInAsync>>>");
     }
 
     private IEnumerator LoadProfileInfo()
