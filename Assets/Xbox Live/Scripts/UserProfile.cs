@@ -215,13 +215,10 @@ public class UserProfile : MonoBehaviour
         var socialUser = group.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
-        yield return null;
+        yield return www;
 
         try
         {
-            while (!www.isDone)
-            {
-            }
 
             if (www.isDone && string.IsNullOrEmpty(www.error))
             {
