@@ -219,6 +219,10 @@ public class UserProfile : MonoBehaviour
 
         try
         {
+            while (!www.isDone)
+            {
+            }
+
             if (www.isDone && string.IsNullOrEmpty(www.error))
             {
                 var t = www.texture;
