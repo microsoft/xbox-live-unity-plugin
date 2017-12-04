@@ -18,7 +18,7 @@ public class XboxLiveUserInfo : MonoBehaviour
     public XboxLiveUser User { get; private set; }
 
 #if ENABLE_WINMD_SUPPORT
-    public Windows.System.User WindowsSystemUser { get; set; }
+    public Windows.System.User WindowsSystemUser { get; private set; }
 #endif
 
     public void Awake()
@@ -50,24 +50,14 @@ public class XboxLiveUserInfo : MonoBehaviour
 
     public void Initialize()
     {
-#if ENABLE_WINMD_SUPPORT
-        this.InitializeWithWindowsSystemUser();
-#else
         this.User = new XboxLiveUser();
-#endif
     }
 
-    private void InitializeWithWindowsSystemUser()
-    {
 #if ENABLE_WINMD_SUPPORT
-        if (this.WindowsSystemUser != null)
-        {
-            this.User = new XboxLiveUser(this.WindowsSystemUser);
-        }
-        else
-        {
-            this.User = new XboxLiveUser();
-        }
-#endif
+    public void Initialize(Windows.System.User systemUser)
+    {
+        this.WindowsSystemUser = systemUser;
+        this.User = new XboxLiveUser(systemUser);
     }
+#endif
 }

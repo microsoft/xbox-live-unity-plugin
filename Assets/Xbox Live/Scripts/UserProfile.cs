@@ -120,7 +120,7 @@ public class UserProfile : MonoBehaviour
         // Disable the sign-in button
         this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-        // Don't allow subsequent sign in attempts until the current attemp completes
+        // Don't allow subsequent sign in attempts until the current attempt completes
         this.AllowSignInAttempt = false;
         this.StartCoroutine(this.InitializeXboxLiveUser());
     }
@@ -152,9 +152,7 @@ public class UserProfile : MonoBehaviour
                         {
                             if (task.Status == TaskStatus.RanToCompletion)
                             {
-                                this.XboxLiveUser.WindowsSystemUser = task.Result;
-                                this.XboxLiveUser.Initialize();
-                                Debug.Log("Initialize user returned");
+                                this.XboxLiveUser.Initialize(task.Result);
                                 this.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(this.SignInAsync()); });
                             }
                             else
@@ -175,8 +173,8 @@ public class UserProfile : MonoBehaviour
             if (this.XboxLiveUser.User == null)
             {
                 this.XboxLiveUser.Initialize();
-                yield return this.SignInAsync();
             }
+            yield return this.SignInAsync();
         }
 #else
         if (XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser == null)
@@ -187,13 +185,10 @@ public class UserProfile : MonoBehaviour
         this.XboxLiveUser.Initialize();
         yield return this.SignInAsync();
 #endif
-        Debug.Log("InitializeXboxLiveUser>>>");
     }
 
     public IEnumerator SignInAsync()
     {
-        Debug.Log(">>>>SignInAsync");
-
         SignInStatus signInStatus;
         TaskYieldInstruction<SignInResult> signInSilentlyTask = this.XboxLiveUser.User.SignInSilentlyAsync().AsCoroutine();
         yield return signInSilentlyTask;
@@ -218,7 +213,6 @@ public class UserProfile : MonoBehaviour
         {
             this.Refresh();
         }
-        Debug.Log("SignInAsync>>>");
     }
 
     private IEnumerator LoadProfileInfo()
