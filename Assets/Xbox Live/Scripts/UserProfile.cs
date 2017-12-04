@@ -226,10 +226,11 @@ public class UserProfile : MonoBehaviour
         var socialUser = group.GetUser(userId);
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
-        yield return null;
+        yield return www;
 
         try
         {
+
             if (www.isDone && string.IsNullOrEmpty(www.error))
             {
                 var t = www.texture;
