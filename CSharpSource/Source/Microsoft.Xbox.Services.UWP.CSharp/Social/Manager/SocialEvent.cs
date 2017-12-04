@@ -35,10 +35,10 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
 
             List<string> usersAffected = new List<string>();
-            if (cSocialEvent.NumOfUsersAffected > 0)
+            if (cSocialEvent.UsersAffectedCount > 0)
             {
-                IntPtr[] cUsersAffected = new IntPtr[cSocialEvent.NumOfUsersAffected];
-                Marshal.Copy(cSocialEvent.UsersAffected, cUsersAffected, 0, cSocialEvent.NumOfUsersAffected);
+                IntPtr[] cUsersAffected = new IntPtr[cSocialEvent.UsersAffectedCount];
+                Marshal.Copy(cSocialEvent.UsersAffected, cUsersAffected, 0, (int)cSocialEvent.UsersAffectedCount);
                 foreach (IntPtr cXuidPtr in cUsersAffected)
                 {
                     SocialManager.XBOX_USER_ID_CONTAINER cXuid = Marshal.PtrToStructure<SocialManager.XBOX_USER_ID_CONTAINER>(cXuidPtr);
@@ -64,8 +64,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr UsersAffected;
 
-            [MarshalAs(UnmanagedType.I4)]
-            public int NumOfUsersAffected;
+            [MarshalAs(UnmanagedType.U4)]
+            public UInt32 UsersAffectedCount;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr EventArgs;

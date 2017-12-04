@@ -95,7 +95,7 @@ typedef struct XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD
 {
     XSAPI_USER_PRESENCE_STATE userState;
     XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD** presenceTitleRecords;
-    int numOfPresenceTitleRecords;
+    uint32_t presenceTitleRecordsCount;
 
     XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL * pImpl;
 } XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD;
@@ -141,7 +141,7 @@ typedef struct XSAPI_SOCIAL_EVENT
     XSAPI_XBOX_LIVE_USER* user;
     XSAPI_SOCIAL_EVENT_TYPE eventType;
     XSAPI_XBOX_USER_ID_CONTAINER** usersAffected;
-    uint32_t numOfUsersAffected;
+    uint32_t usersAffectedCount;
     XSAPI_SOCIAL_EVENT_ARGS* eventArgs;
     int32_t err;
     PCSTR errMessage;
@@ -152,10 +152,10 @@ typedef struct XSAPI_SOCIAL_EVENT
 typedef struct XSAPI_XBOX_SOCIAL_USER_GROUP
 {
     XSAPI_XBOX_SOCIAL_USER** users;
-    uint32_t numOfUsers;
+    uint32_t usersCount;
     XSAPI_SOCIAL_USER_GROUP_TYPE socialUserGroupType;
     XSAPI_XBOX_USER_ID_CONTAINER** usersTrackedBySocialUserGroup;
-    uint32_t numOfUsersTrackedBySocialUserGroup;
+    uint32_t usersTrackedBySocialUserGroupCount;
     XSAPI_XBOX_LIVE_USER* localUser;
     XSAPI_PRESENCE_FILTER presenceFilterOfGroup;
     XSAPI_RELATIONSHIP_FILTER relationshipFilterOfGroup;
@@ -167,8 +167,8 @@ XSAPI_DLLEXPORT XSAPI_XBOX_SOCIAL_USER** XBL_CALLING_CONV
 XboxSocialUserGroupGetUsersFromXboxUserIds(
     _In_ XSAPI_XBOX_SOCIAL_USER_GROUP* group,
     _In_ PCSTR* xboxUserIds,
-    _In_ size_t xboxUserIdsSize,
-    _Out_ size_t* xboxSocialUsersSize
+    _In_ uint32_t xboxUserIdsCount,
+    _Out_ uint32_t* xboxSocialUsersCount
 );
 
 typedef struct XSAPI_SOCIAL_USER_GROUP_LOADED_EVENT_ARGS : XSAPI_SOCIAL_EVENT_ARGS 
@@ -197,7 +197,7 @@ SocialManagerRemoveLocalUser(
 
 XSAPI_DLLEXPORT XSAPI_SOCIAL_EVENT** XBL_CALLING_CONV
 SocialManagerDoWork(
-    _Out_ size_t* socialEventsSize
+    _Out_ uint32_t* socialEventsCount
     );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -213,7 +213,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerCreateSocialUserGroupFromList(
     _In_ XSAPI_XBOX_LIVE_USER *user,
     _In_ PCSTR* xboxUserIdList,
-    _In_ size_t xboxUserIdListSize,
+    _In_ uint32_t xboxUserIdListCount,
     _Out_ XSAPI_XBOX_SOCIAL_USER_GROUP** group,
     _Out_ PCSTR* errMessage
     );
@@ -228,7 +228,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 SocialManagerUpdateSocialUserGroup(
     _In_ XSAPI_XBOX_SOCIAL_USER_GROUP *group,
     _In_ PCSTR* users,
-    _In_ size_t usersSize,
+    _In_ uint32_t usersCount,
     _Out_ PCSTR* errMessage
     );
 

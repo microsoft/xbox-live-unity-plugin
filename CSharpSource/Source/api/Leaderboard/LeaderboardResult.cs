@@ -33,22 +33,22 @@ namespace Microsoft.Xbox.Services.Leaderboard
             TotalRowCount = cResult.TotalRowCount;
 
             Columns = new List<LeaderboardColumn>();
-            if (cResult.ColumnsSize > 0)
+            if (cResult.ColumnsCount > 0)
             {
-                IntPtr[] cColumns = new IntPtr[cResult.ColumnsSize];
-                Marshal.Copy(cResult.Columns, cColumns, 0, cResult.ColumnsSize);
-                for (int i = 0; i < cResult.ColumnsSize; i++)
+                IntPtr[] cColumns = new IntPtr[cResult.ColumnsCount];
+                Marshal.Copy(cResult.Columns, cColumns, 0, (int)cResult.ColumnsCount);
+                for (uint i = 0; i < cResult.ColumnsCount; i++)
                 {
                     Columns.Add(new LeaderboardColumn(cColumns[i]));
                 }
             }
 
             Rows = new List<LeaderboardRow>();
-            if (cResult.RowsSize > 0)
+            if (cResult.RowsCount > 0)
             {
-                IntPtr[] cRows = new IntPtr[cResult.RowsSize];
-                Marshal.Copy(cResult.Rows, cRows, 0, cResult.RowsSize);
-                for (int i = 0; i < cResult.RowsSize; i++)
+                IntPtr[] cRows = new IntPtr[cResult.RowsCount];
+                Marshal.Copy(cResult.Rows, cRows, 0, (int)cResult.RowsCount);
+                for (uint i = 0; i < cResult.RowsCount; i++)
                 {
                     Rows.Add(new LeaderboardRow(cRows[i]));
                 }
@@ -140,13 +140,13 @@ namespace Microsoft.Xbox.Services.Leaderboard
             public IntPtr Columns;
 
             [MarshalAs(UnmanagedType.U4)]
-            public Int32 ColumnsSize;
+            public uint ColumnsCount;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Rows;
 
             [MarshalAs(UnmanagedType.U4)]
-            public Int32 RowsSize;
+            public uint RowsCount;
         }
 
         // Used for mock services

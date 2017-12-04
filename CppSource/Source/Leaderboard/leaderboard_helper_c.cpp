@@ -41,7 +41,7 @@ XSAPI_LEADERBOARD_ROW_IMPL::XSAPI_LEADERBOARD_ROW_IMPL(
         m_columnValues.push_back(m_columnValuesStrs[i].c_str());
     }
     m_cLeaderboardRow->columnValues = m_columnValues.data();
-    m_cLeaderboardRow->columnValuesSize = m_columnValues.size();
+    m_cLeaderboardRow->columnValuesCount = (uint32_t)m_columnValues.size();
 }
 
 leaderboard_row XSAPI_LEADERBOARD_ROW_IMPL::cppLeaderboardRow() const
@@ -117,14 +117,14 @@ XSAPI_LEADERBOARD_RESULT_IMPL::XSAPI_LEADERBOARD_RESULT_IMPL(
         m_columns.push_back(CreateLeaderboardColumnFromCpp(column));
     }
     m_cLeaderboardResult->columns = m_columns.data();
-    m_cLeaderboardResult->columnsSize = m_columns.size();
+    m_cLeaderboardResult->columnsCount = (uint32_t)m_columns.size();
 
     for (auto row : m_cppLeaderboardResult.rows())
     {
         m_rows.push_back(CreateLeaderboardRowFromCpp(row));
     }
     m_cLeaderboardResult->rows = m_rows.data();
-    m_cLeaderboardResult->rowsSize = m_rows.size();
+    m_cLeaderboardResult->rowsCount = (uint32_t)m_rows.size();
 }
 
 leaderboard_result XSAPI_LEADERBOARD_RESULT_IMPL::cppLeaderboardResult() const

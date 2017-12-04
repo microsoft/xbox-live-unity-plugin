@@ -91,21 +91,21 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         public IList<StatisticEvent> DoWork()
         {
             // Allocates memory for returned objects
-            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
+            IntPtr cEventsCount = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
 
             // Invokes the c method
-            IntPtr eventsPtr = StatsManagerDoWork(cNumOfEvents);
+            IntPtr eventsPtr = StatsManagerDoWork(cEventsCount);
 
             // Does local work
-            int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
-            Marshal.FreeHGlobal(cNumOfEvents);
+            uint eventsCount = (uint)Marshal.ReadInt32(cEventsCount);
+            Marshal.FreeHGlobal(cEventsCount);
 
             List<StatisticEvent> events = new List<StatisticEvent>();
 
-            if (numOfEvents > 0)
+            if (eventsCount > 0)
             {
-                IntPtr[] cEvents = new IntPtr[numOfEvents];
-                Marshal.Copy(eventsPtr, cEvents, 0, numOfEvents);
+                IntPtr[] cEvents = new IntPtr[eventsCount];
+                Marshal.Copy(eventsPtr, cEvents, 0, (int)eventsCount);
 
                 foreach (IntPtr cEvent in cEvents)
                 {
@@ -281,18 +281,18 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         }
 
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern XSAPI_RESULT StatsManagerGetStatNames(IntPtr user, IntPtr statNameList, IntPtr statNameListSize, IntPtr errMessage);
+        private static extern XSAPI_RESULT StatsManagerGetStatNames(IntPtr user, IntPtr statNameList, IntPtr statNameListCount, IntPtr errMessage);
         public IList<string> GetStatisticNames(XboxLiveUser user)
         {
             if (user == null) throw new ArgumentNullException("user");
 
             // Allocates memory for returned objects
             IntPtr cStatListPtr = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
-            IntPtr cStatListSize = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
+            IntPtr cStatListCount = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.XboxLiveUserPtr, cStatListPtr, cStatListSize, cErrMessage);
+            XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.XboxLiveUserPtr, cStatListPtr, cStatListCount, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -304,18 +304,18 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
 
             // Handles returned objects
-            int statListSize = Marshal.ReadInt32(cStatListSize);
-            Marshal.FreeHGlobal(cStatListSize);
+            uint statListCount = (uint)Marshal.ReadInt32(cStatListCount);
+            Marshal.FreeHGlobal(cStatListCount);
 
             List<string> statList = new List<string>();
 
-            if (statListSize > 0)
+            if (statListCount > 0)
             {
                 IntPtr cListPtr = Marshal.ReadIntPtr(cStatListPtr);
-                IntPtr[] cStatList = new IntPtr[statListSize];
-                Marshal.Copy(cListPtr, cStatList, 0, statListSize);
+                IntPtr[] cStatList = new IntPtr[statListCount];
+                Marshal.Copy(cListPtr, cStatList, 0, (int)statListCount);
 
-                for (int i = 0; i < statListSize; i++)
+                for (uint i = 0; i < statListCount; i++)
                 {
                     statList.Add(Marshal.PtrToStringAnsi(cStatList[i]));
                 }
