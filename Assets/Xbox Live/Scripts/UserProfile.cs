@@ -141,7 +141,6 @@ public class UserProfile : MonoBehaviour
     public IEnumerator InitializeXboxLiveUser()
     {
         yield return null;
-        Debug.Log(">>InitializeXboxLiveUser");
 
 #if ENABLE_WINMD_SUPPORT
         if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser == null)
