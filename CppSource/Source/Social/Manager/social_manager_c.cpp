@@ -218,7 +218,7 @@ try
 
     std::vector<string_t> usersVector = std::vector<string_t>();
 
-    for (size_t i = 0; i < usersCount; i++)
+    for (uint32_t i = 0; i < usersCount; i++)
     {
         usersVector.push_back(utils::to_utf16string(users[i]));
     }
