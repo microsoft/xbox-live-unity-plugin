@@ -47,7 +47,7 @@ typedef struct XSAPI_LEADERBOARD_ROW
     double percentile;
     uint32_t rank;
     PCSTR* columnValues;
-    size_t columnValuesSize;
+    uint32_t columnValuesCount;
 
     XSAPI_LEADERBOARD_ROW_IMPL* pImpl;
 } XSAPI_LEADERBOARD_ROW;
@@ -93,9 +93,9 @@ typedef struct XSAPI_LEADERBOARD_RESULT
 {
     uint32_t totalRowCount;
     XSAPI_LEADERBOARD_COLUMN** columns;
-    size_t columnsSize;
+    uint32_t columnsCount;
     XSAPI_LEADERBOARD_ROW** rows;
-    size_t rowsSize;
+    uint32_t rowsCount;
 
     XSAPI_LEADERBOARD_RESULT_IMPL* pImpl;
 } XSAPI_LEADERBOARD_RESULT;

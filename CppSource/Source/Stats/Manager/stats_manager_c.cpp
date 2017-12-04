@@ -64,7 +64,7 @@ CATCH_RETURN()
 
 XSAPI_DLLEXPORT XSAPI_STAT_EVENT** XBL_CALLING_CONV
 StatsManagerDoWork(
-    _Inout_ size_t *statEventsSize
+    _Inout_ uint32_t* statEventsCount
 ) XSAPI_NOEXCEPT
 try
 {
@@ -76,7 +76,7 @@ try
     for (auto cppEvent : cppEvents) {
         statsVars.cEvents.push_back(CreateStatEventFromCpp(cppEvent));
     }
-    *statEventsSize = statsVars.cEvents.size();
+    *statEventsCount = (uint32_t)statsVars.cEvents.size();
     
     return statsVars.cEvents.data();
 }
@@ -140,7 +140,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStatNames(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Inout_ PCSTR** statNameList,
-    _Inout_ size_t* statNameListSize,
+    _Inout_ uint32_t* statNameListCount,
     _Inout_ PCSTR* errMessage
 ) XSAPI_NOEXCEPT
 try
@@ -160,7 +160,7 @@ try
     }
 
     *statNameList = statsVars.cStatNameCharList.data();
-    *statNameListSize = statsVars.cStatNameCharList.size();
+    *statNameListCount = (uint32_t)statsVars.cStatNameCharList.size();
 
     *errMessage = statsVars.cppVoidResult.err_message().c_str();
     return utils::xsapi_result_from_xbox_live_result_err(statsVars.cppVoidResult.err());

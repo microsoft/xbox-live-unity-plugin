@@ -52,7 +52,7 @@ void XSAPI_SOCIAL_MANAGER_PRESENCE_RECORD_IMPL::Refresh()
             m_titleRecords.push_back(CreateSocialManagerPresenceTitleRecordFromCpp(cppTitleRecord));
         }
         m_cSocialManagerPresenceRecord->presenceTitleRecords = m_titleRecords.data();
-        m_cSocialManagerPresenceRecord->presenceTitleRecordsSize = m_titleRecords.size();
+        m_cSocialManagerPresenceRecord->presenceTitleRecordsCount = (uint32_t)m_titleRecords.size();
     }
 }
 
@@ -162,7 +162,7 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
             m_users.push_back(CreateXboxSocialUserFromCpp(cppUser));
         }
         m_cSocialUserGroup->users = m_users.data();
-        m_cSocialUserGroup->usersSize = cppUsers.size();
+        m_cSocialUserGroup->usersCount = (uint32_t)cppUsers.size();
 
         m_cSocialUserGroup->socialUserGroupType = static_cast<XSAPI_SOCIAL_USER_GROUP_TYPE>(m_cppSocialUserGroup->social_user_group_type());
 
@@ -175,7 +175,7 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
             m_usersTrackedBySocialUserGroup.push_back(cUserIdContainer);
         }
         m_cSocialUserGroup->usersTrackedBySocialUserGroup = m_usersTrackedBySocialUserGroup.data();
-        m_cSocialUserGroup->usersTrackedBySocialUserGroupSize = m_usersTrackedBySocialUserGroup.size();
+        m_cSocialUserGroup->usersTrackedBySocialUserGroupCount = (uint32_t)m_usersTrackedBySocialUserGroup.size();
 
         m_cSocialUserGroup->localUser->pImpl->Refresh();
 
@@ -220,7 +220,7 @@ XSAPI_SOCIAL_EVENT_IMPL::XSAPI_SOCIAL_EVENT_IMPL(
 
     m_cEvent->usersAffected = m_usersAffectedList.data();
 
-    m_cEvent->usersAffectedSize = m_cppEvent.users_affected().size();
+    m_cEvent->usersAffectedCount = (uint32_t)m_cppEvent.users_affected().size();
 
     try
     {

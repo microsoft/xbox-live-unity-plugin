@@ -33,24 +33,22 @@ namespace Microsoft.Xbox.Services.Leaderboard
             TotalRowCount = cResult.TotalRowCount;
 
             Columns = new List<LeaderboardColumn>();
-            int columnsSize = cResult.ColumnsSize.ToInt32();
-            if (columnsSize > 0)
+            if (cResult.ColumnsCount > 0)
             {
-                IntPtr[] cColumns = new IntPtr[columnsSize];
-                Marshal.Copy(cResult.Columns, cColumns, 0, columnsSize);
-                for (int i = 0; i < columnsSize; i++)
+                IntPtr[] cColumns = new IntPtr[cResult.ColumnsCount];
+                Marshal.Copy(cResult.Columns, cColumns, 0, (int)cResult.ColumnsCount);
+                for (uint i = 0; i < cResult.ColumnsCount; i++)
                 {
                     Columns.Add(new LeaderboardColumn(cColumns[i]));
                 }
             }
 
             Rows = new List<LeaderboardRow>();
-            int rowsSize = cResult.RowsSize.ToInt32();
-            if (rowsSize > 0)
+            if (cResult.RowsCount > 0)
             {
-                IntPtr[] cRows = new IntPtr[rowsSize];
-                Marshal.Copy(cResult.Rows, cRows, 0, rowsSize);
-                for (int i = 0; i < rowsSize; i++)
+                IntPtr[] cRows = new IntPtr[cResult.RowsCount];
+                Marshal.Copy(cResult.Rows, cRows, 0, (int)cResult.RowsCount);
+                for (uint i = 0; i < cResult.RowsCount; i++)
                 {
                     Rows.Add(new LeaderboardRow(cRows[i]));
                 }
@@ -141,14 +139,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Columns;
 
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr ColumnsSize;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint ColumnsCount;
 
             [MarshalAs(UnmanagedType.SysInt)]
             public IntPtr Rows;
 
-            [MarshalAs(UnmanagedType.SysInt)]
-            public IntPtr RowsSize;
+            [MarshalAs(UnmanagedType.U4)]
+            public uint RowsCount;
         }
 
         // Used for mock services

@@ -114,7 +114,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromList(user.Impl.XboxLiveUserPtr, cUserIds, xboxUserIdList.Count, cGroupPtr, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerCreateSocialUserGroupFromList(user.Impl.XboxLiveUserPtr, cUserIds, (uint)xboxUserIdList.Count, cGroupPtr, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
@@ -159,7 +159,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             IntPtr cErrMessage = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>());
 
             // Invokes the c method
-            XSAPI_RESULT errCode = SocialManagerUpdateSocialUserGroup(socialGroup.GetPtr(), cUserIds, users.Count, cErrMessage);
+            XSAPI_RESULT errCode = SocialManagerUpdateSocialUserGroup(socialGroup.GetPtr(), cUserIds, (uint)users.Count, cErrMessage);
 
             // Handles error
             string errMessage = Marshal.PtrToStringUni(Marshal.ReadIntPtr(cErrMessage));
@@ -208,21 +208,21 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
 
             // Allocates memory for returned objects
-            IntPtr cNumOfEvents = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
+            IntPtr cEventsCount = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
 
             // Invokes the c method
-            IntPtr eventsPtr = SocialManagerDoWork(cNumOfEvents);
+            IntPtr eventsPtr = SocialManagerDoWork(cEventsCount);
             
             // Does local work
-            int numOfEvents = Marshal.ReadInt32(cNumOfEvents);
-            Marshal.FreeHGlobal(cNumOfEvents);
+            uint eventsCount = (uint)Marshal.ReadInt32(cEventsCount);
+            Marshal.FreeHGlobal(cEventsCount);
 
             List<SocialEvent> events = new List<SocialEvent>();
 
-            if (numOfEvents > 0)
+            if (eventsCount > 0)
             {
-                IntPtr[] cEvents = new IntPtr[numOfEvents];
-                Marshal.Copy(eventsPtr, cEvents, 0, numOfEvents);
+                IntPtr[] cEvents = new IntPtr[eventsCount];
+                Marshal.Copy(eventsPtr, cEvents, 0, (int)eventsCount);
 
                 foreach (IntPtr cEvent in cEvents)
                 {
@@ -280,10 +280,10 @@ namespace Microsoft.Xbox.Services.Social.Manager
         private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter, IntPtr returnGroup, IntPtr errMessage);
 
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, int size, IntPtr returnGroup, IntPtr errMessage);
+        private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, UInt32 usersCount, IntPtr returnGroup, IntPtr errMessage);
 
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern XSAPI_RESULT SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, int size, IntPtr errMessage);
+        private static extern XSAPI_RESULT SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, UInt32 usersCount, IntPtr errMessage);
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT SocialManagerDestroySocialUserGroup(IntPtr group, IntPtr errMessage);
