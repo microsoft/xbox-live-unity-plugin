@@ -9,6 +9,9 @@ using Microsoft.Xbox.Services.Statistics.Manager;
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using Microsoft.Xbox.Services.Social.Manager;
+using System.Linq;
 
 [Serializable]
 public class Leaderboard : MonoBehaviour
@@ -67,7 +70,15 @@ public class Leaderboard : MonoBehaviour
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
-    private bool isLocalUserAdded;
+    private bool isLocalUserAdded
+    {
+        get
+        {
+            return statsAddedLocalUser && socialAddedLocalUser;
+        }
+    }
+    private bool statsAddedLocalUser, socialAddedLocalUser;
+    private XboxSocialUserGroup userGroup;
 
     private void Awake()
     {
@@ -86,11 +97,13 @@ public class Leaderboard : MonoBehaviour
         this.headerText.text = this.stat.DisplayName;
         this.entryObjectPool = this.GetComponent<ObjectPool>();
         this.UpdateButtons();
+        SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
         StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
         StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
-        this.isLocalUserAdded = false;
+        this.statsAddedLocalUser = false;
+        this.socialAddedLocalUser = false;
     }
-
+    
     private void Start()
     {
         if (this.XboxLiveUser == null
@@ -100,7 +113,8 @@ public class Leaderboard : MonoBehaviour
             && XboxLiveUserManager.Instance.GetSingleModeUser().User.IsSignedIn)
         {
             this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-            this.isLocalUserAdded = true;
+            this.statsAddedLocalUser = true;
+            this.socialAddedLocalUser = true;
             this.UpdateData(0);
         }
     }
@@ -169,7 +183,7 @@ public class Leaderboard : MonoBehaviour
 
     public void LastPage()
     {
-        this.UpdateData(this.totalPages);
+        this.UpdateData(this.totalPages - 1);
     }
 
     private void UpdateData(uint newPage)
@@ -199,7 +213,7 @@ public class Leaderboard : MonoBehaviour
             switch (leaderboardType)
             {
                 case LeaderboardTypes.Global:
-                    socialGroup = null;
+                    socialGroup = "";
                     break;
                 case LeaderboardTypes.Favorites:
                     socialGroup = "favorite";
@@ -211,25 +225,40 @@ public class Leaderboard : MonoBehaviour
 
             query = new LeaderboardQuery()
             {
-                SkipResultToRank = newPage == 0 ? 0 : (this.currentPage * this.entryCount) - 1,
+                SkipResultToRank = newPage == 0 ? 0 : ((newPage - 1) * this.entryCount),
                 MaxItems = this.entryCount,
             };
-
-            // Handle last page
-            if (this.totalPages > 0 && newPage == this.totalPages)
-            {
-                query.SkipResultToRank = (newPage * this.entryCount) - 1;
-                newPage -= 1;
-            }
         }
 
         this.currentPage = newPage;
         XboxLive.Instance.StatsManager.GetLeaderboard(this.XboxLiveUser.User, this.stat.ID, query);
     }
 
+    private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
+    {
+        if (socialEvent.EventType == SocialEventType.LocalUserAdded)
+        {
+            socialAddedLocalUser = true;
+            this.Refresh();
+        }
+        else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded && 
+            ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == this.userGroup)
+        {
+            var entries = this.contentPanel.GetComponentsInChildren<LeaderboardEntry>();
+            for (int i = 0; i < entries.Length; i++)
+            {
+                XboxSocialUser user = userGroup.Users.FirstOrDefault(x => x.Gamertag == entries[i].gamertagText.text);
+                if (user != null)
+                {
+                    entries[i].GamerpicUrl = user.DisplayPicRaw + "&w=128";
+                }
+            }
+        }
+    }
+
     private void LocalUserAdded(object sender, XboxLiveUserEventArgs e)
     {
-        this.isLocalUserAdded = true;
+        this.statsAddedLocalUser = true;
         this.Refresh();
     }
 
@@ -265,7 +294,7 @@ public class Leaderboard : MonoBehaviour
         }
         else if (this.totalPages == 0)
         {
-            this.totalPages = (this.leaderboardData.TotalRowCount - 1) / (this.entryCount + 1);
+            this.totalPages = this.leaderboardData.TotalRowCount / this.entryCount;
         }
 
         this.pageText.text = string.Format("Page: {0} / {1}", displayCurrentPage, this.totalPages);
@@ -276,8 +305,11 @@ public class Leaderboard : MonoBehaviour
             this.entryObjectPool.ReturnObject(entry);
         }
 
+        IList<string> xuids = new List<string>();
         foreach (LeaderboardRow row in this.leaderboardData.Rows)
         {
+            xuids.Add(row.XboxUserId);
+
             GameObject entryObject = this.entryObjectPool.GetObject();
             LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
 
@@ -285,6 +317,7 @@ public class Leaderboard : MonoBehaviour
 
             entryObject.transform.SetParent(this.contentPanel);
         }
+        userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(XboxLiveUserManager.Instance.UserForSingleUserMode.User, xuids);
 
         // Reset the scroll view to the top.
         this.scrollRect.verticalNormalizedPosition = 1;
