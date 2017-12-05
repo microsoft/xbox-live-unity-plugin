@@ -45,6 +45,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
             // todo: for perf consider not removing everthing, but updating certain things and deleting the rest
             m_users.Clear();
+
             
             if (cSocialUserGroup.UsersCount > 0)
             {
@@ -64,6 +65,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
             // todo: for perf consider whether this list is static or dynamic
             m_trackedUsers.Clear();
+
             
             if (cSocialUserGroup.UsersTrackedBySocialUserGroupCount > 0)
             {
@@ -88,20 +90,13 @@ namespace Microsoft.Xbox.Services.Social.Manager
         {
             // Allocates memory for returned objects
             IntPtr cUsersCount = Marshal.AllocHGlobal(Marshal.SizeOf<Int32>());
-
-            List<IntPtr> userIdPtrs = new List<IntPtr>();
-            for (int i = 0; i < xboxUserIds.Count; i++)
-            {
-                IntPtr cXuid = Marshal.StringToHGlobalAnsi(xboxUserIds[i]);
-                userIdPtrs.Add(cXuid);
-            }
-            IntPtr cUserIds = Marshal.AllocHGlobal(Marshal.SizeOf<IntPtr>() * xboxUserIds.Count);
-            Marshal.Copy(userIdPtrs.ToArray(), 0, cUserIds, xboxUserIds.Count);
+            IntPtr cUserIds = MarshalingHelpers.StringListToHGlobalUtf8StringArray(xboxUserIds);
 
             // Invokes the c method
             IntPtr cUsersPtr = XboxSocialUserGroupGetUsersFromXboxUserIds(m_socialUserGroupPtr, cUserIds, (uint)userIdPtrs.Count(), cUsersCount);
 
             // Does local work
+
             uint usersCount = (uint)Marshal.ReadInt32(cUsersCount);
             Marshal.FreeHGlobal(cUsersCount);
 
@@ -119,11 +114,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             }
 
             // Cleans up parameters
-            foreach (IntPtr ptr in userIdPtrs)
-            {
-                Marshal.FreeHGlobal(ptr);
-            }
-            Marshal.FreeHGlobal(cUserIds);
+            MarshalingHelpers.FreeHGlobalUtf8StringArray(cUserIds, xboxUserIds.Count());
 
             return users.AsReadOnly();
         }

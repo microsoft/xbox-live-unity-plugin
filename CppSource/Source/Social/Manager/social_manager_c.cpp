@@ -50,7 +50,7 @@ try
     *xboxSocialUsersCount = (uint32_t)cppXboxSocialUsers.size();
 
     socialVars.cXboxSocialUserGroupUsers = std::vector<XSAPI_XBOX_SOCIAL_USER*>(*xboxSocialUsersCount);
-    for (size_t i = 0; i < xboxUserIdsCount; i++)
+    for (uint32_t i = 0; i < *xboxSocialUsersCount; i++)
     {
         socialVars.cXboxSocialUserGroupUsers[i] = CreateXboxSocialUserFromCpp(cppXboxSocialUsers[i]);
     }
