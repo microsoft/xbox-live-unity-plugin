@@ -218,38 +218,35 @@ public class UserProfile : MonoBehaviour
 
     private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
     {
-        if (socialEvent.User.XboxUserId == this.XboxLiveUser.User.XboxUserId &&
-            socialEvent.EventType == SocialEventType.LocalUserAdded)
+        if (this.XboxLiveUser.User == null ||
+            socialEvent.User.XboxUserId != this.XboxLiveUser.User.XboxUserId)
+        {
+            // Ignore the social event
+            return;
+        }
+        
+        if (socialEvent.EventType == SocialEventType.LocalUserAdded)
         {
             if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                Debug.LogFormat("Failed to add local user to SocialManager: {1}", socialEvent.ErrorMessge);
+                Debug.LogFormat("Failed to add local user to SocialManager: {0}", socialEvent.ErrorMessge);
             }
             else
             {
                 LoadProfileInfo();
             }
         }
-        else if (socialEvent.User.XboxUserId == this.XboxLiveUser.User.XboxUserId && 
-                 socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
+        else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
                  ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == userGroup)
         {
             if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                Debug.LogFormat("Failed to load the SocialUserGroup: {1}", socialEvent.ErrorMessge);
+                Debug.LogFormat("Failed to load the SocialUserGroup: {0}", socialEvent.ErrorMessge);
             }
             else
             {
                 StartCoroutine(FinishLoadingProfileInfo());
             }
-        }
-    }
-
-    void HandleSocialEventError(SocialEvent socialEvent, string message)
-    {
-        if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-        {
-            Debug.LogFormat("{0}: {1}", message, socialEvent.ErrorMessge);
         }
     }
 
