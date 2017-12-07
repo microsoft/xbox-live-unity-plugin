@@ -47,6 +47,8 @@ public class UserProfile : MonoBehaviour
 
     public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
+    private XboxSocialUserGroup userGroup;
+
     public void Awake()
     {
         this.EnsureEventSystem();
@@ -92,7 +94,7 @@ public class UserProfile : MonoBehaviour
             else
             {
                 this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
-                this.StartCoroutine(this.LoadProfileInfo());
+                this.LoadProfileInfo();
             }
         }
 
@@ -206,15 +208,31 @@ public class UserProfile : MonoBehaviour
         {
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
             XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
-            yield return this.LoadProfileInfo();
+            this.LoadProfileInfo();
         }
         this.Refresh();
     }
 
-    private IEnumerator LoadProfileInfo()
+    private void LoadProfileInfo()
     {
-        var group = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
-        var socialUser = group.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
+        SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
+        userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
+    }
+
+    private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
+    {
+        if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
+            ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == userGroup)
+        {
+            StartCoroutine(FinishLoadingProfileInfo());
+        }
+    }
+
+    private IEnumerator FinishLoadingProfileInfo()
+    {
+        SocialManagerComponent.Instance.EventProcessed -= SocialManagerEventProcessed;
+        var socialUser = userGroup.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
+        userGroup = null;
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
