@@ -48,7 +48,6 @@ public class UserProfile : MonoBehaviour
     public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
     private XboxSocialUserGroup userGroup;
-    private bool subscribedToEventHandler;
 
     public void Awake()
     {
@@ -59,8 +58,6 @@ public class UserProfile : MonoBehaviour
         {
             XboxLiveUserManager.Instance.Initialize();
         }
-        
-
     }
 
     public void Start()
@@ -79,6 +76,7 @@ public class UserProfile : MonoBehaviour
             }
         }
 
+        SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
         Microsoft.Xbox.Services.XboxLiveUser.SignOutCompleted += XboxLiveUserOnSignOutCompleted;
 
         if (XboxLiveUserManager.Instance.SingleUserModeEnabled)
@@ -207,12 +205,6 @@ public class UserProfile : MonoBehaviour
         // Throw any exceptions if needed.
         if (signInStatus == SignInStatus.Success)
         {
-            if (!subscribedToEventHandler)
-            {
-                SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
-                subscribedToEventHandler = true;
-            }
-
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
             XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
         }
@@ -221,34 +213,30 @@ public class UserProfile : MonoBehaviour
 
     private void LoadProfileInfo()
     {
-        if (!subscribedToEventHandler)
-        {
-            SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
-            subscribedToEventHandler = true;
-        }
-
         userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
     }
 
     private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
     {
-        if (socialEvent.EventType == SocialEventType.LocalUserAdded)
+        if (socialEvent.User.XboxUserId == this.XboxLiveUser.User.XboxUserId &&
+            socialEvent.EventType == SocialEventType.LocalUserAdded)
         {
-            if (socialEvent.ErrorCode != 0)
+            if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                HandleSocialEventError(socialEvent, "Failed to add local user to SocialManager");
+                Debug.LogFormat("Failed to add local user to SocialManager: {1}", socialEvent.ErrorMessge);
             }
             else
             {
                 LoadProfileInfo();
             }
         }
-        else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
-                ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == userGroup)
+        else if (socialEvent.User.XboxUserId == this.XboxLiveUser.User.XboxUserId && 
+                 socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
+                 ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == userGroup)
         {
-            if (socialEvent.ErrorCode != 0)
+            if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                HandleSocialEventError(socialEvent, "Failed to load the SocialUserGroup");
+                Debug.LogFormat("Failed to load the SocialUserGroup: {1}", socialEvent.ErrorMessge);
             }
             else
             {
@@ -263,24 +251,11 @@ public class UserProfile : MonoBehaviour
         {
             Debug.LogFormat("{0}: {1}", message, socialEvent.ErrorMessge);
         }
-
-        if (subscribedToEventHandler)
-        {
-            SocialManagerComponent.Instance.EventProcessed -= SocialManagerEventProcessed;
-            subscribedToEventHandler = false;
-        }
     }
 
     private IEnumerator FinishLoadingProfileInfo()
     {
-        if (subscribedToEventHandler)
-        {
-            SocialManagerComponent.Instance.EventProcessed -= SocialManagerEventProcessed;
-            subscribedToEventHandler = false;
-        }
-
         var socialUser = userGroup.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
-        userGroup = null;
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
