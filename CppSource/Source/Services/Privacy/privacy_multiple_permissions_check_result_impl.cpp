@@ -32,5 +32,5 @@ void XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT_IMPL::update(
 
     cObj->xboxUserId = m_xboxUserId.data();
     cObj->items = m_items.size() > 0 ? &m_items[0] : nullptr;
-    cObj->itemsCount = m_items.size();
+    cObj->itemsCount = (uint32_t)m_items.size();
 }

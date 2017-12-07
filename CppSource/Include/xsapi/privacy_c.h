@@ -41,14 +41,14 @@ typedef struct XSAPI_PRIVACY_PERMISSION_CHECK_RESULT
     bool isAllowed;
     PCSTR permissionRequested;
     const XSAPI_PRIVACY_PERMISSION_DENY_REASON *denyReasons;
-    size_t denyReasonsCount;
+    uint32_t denyReasonsCount;
 } XSAPI_PRIVACY_PERMISSION_CHECK_RESULT;
 
 typedef struct XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT
 {
     PCSTR xboxUserId;
     const XSAPI_PRIVACY_PERMISSION_CHECK_RESULT *items;
-    size_t itemsCount;
+    uint32_t itemsCount;
 } XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT;
 
 /// <summary>
@@ -60,7 +60,7 @@ typedef struct XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT
 typedef void(*XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
     _In_ PCSTR* xboxUserIds,
-    _In_ size_t xboxUserIdsCount,
+    _In_ uint32_t xboxUserIdsCount,
     _In_opt_ void* context
     );
 
@@ -146,7 +146,7 @@ PrivacyCheckPermissionWithTargetUser(
 typedef void(*XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
     _In_ XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT* privacyCheckResults,
-    _In_ size_t privacyCheckResultsCount,
+    _In_ uint32_t privacyCheckResultsCount,
     _In_opt_ void* context
     );
 
@@ -169,9 +169,9 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 PrivacyCheckMultiplePermissionsWithMultipleTargetUsers(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ PCSTR* permissionIds,
-    _In_ size_t permissionIdsCount,
+    _In_ uint32_t permissionIdsCount,
     _In_ PCSTR* xboxUserIds,
-    _In_ size_t xboxUserIdsCount,
+    _In_ uint32_t xboxUserIdsCount,
     _In_ XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId

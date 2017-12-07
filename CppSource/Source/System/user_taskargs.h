@@ -27,10 +27,10 @@ struct get_token_and_signature_taskargs : public taskargs_with_payload<XSAPI_TOK
         _In_ PCSTR requestBodyString);
 
     XSAPI_XBOX_LIVE_USER* pUser;
-    PCSTR httpMethod;
-    PCSTR url;
-    PCSTR headers;
-    PCSTR requestBodyString;
+    string_t httpMethod;
+    string_t url;
+    string_t headers;
+    string_t requestBodyString;
 
     std::string token;
     std::string signature;

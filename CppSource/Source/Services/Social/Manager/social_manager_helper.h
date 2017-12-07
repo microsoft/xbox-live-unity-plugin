@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #pragma once
-#include "../System/user_impl.h"
+#include "user_impl.h"
 #include "xsapi/social_manager_c.h"
 #include<time.h>
 

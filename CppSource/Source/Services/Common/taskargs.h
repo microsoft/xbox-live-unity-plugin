@@ -27,18 +27,3 @@ struct taskargs_with_payload : public taskargs
     // completionRoutinePayload is the final result object that will be passed to the completion function
     T completionRoutinePayload;
 };
-
-struct xbl_args_leaderboard_result_get_next : public taskargs_with_payload<XSAPI_GET_NEXT_RESULT>
-{
-    xbl_args_leaderboard_result_get_next(
-        _In_ XSAPI_LEADERBOARD_RESULT* leaderboard,
-        _In_ uint32 maxItems
-    );
-
-    XSAPI_LEADERBOARD_RESULT* leaderboard;
-    uint32 maxItems;
-
-    XSAPI_LEADERBOARD_RESULT* nextResult;
-
-    std::string resultErrorMsg;
-};

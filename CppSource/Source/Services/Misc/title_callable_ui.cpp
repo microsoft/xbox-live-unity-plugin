@@ -9,13 +9,13 @@ using namespace xbox::services::system;
 
 struct show_profile_card_taskargs : public taskargs
 {
-    PCSTR targetXboxUserId;
+    string_t targetXboxUserId;
 };
 
 struct check_gaming_privilege_taskargs : public taskargs_with_payload<bool>
 {
     XSAPI_GAMING_PRIVILEGE privilege;
-    std::string friendlyMessage;
+    string_t friendlyMessage;
 };
 
 HC_RESULT TCUIShowProfileCardUIExecute(
@@ -24,7 +24,7 @@ HC_RESULT TCUIShowProfileCardUIExecute(
     )
 {
     auto args = reinterpret_cast<show_profile_card_taskargs*>(executionRoutineContext);
-    auto result = title_callable_ui::show_profile_card_ui(utils::to_utf16string(args->targetXboxUserId)).get();
+    auto result = title_callable_ui::show_profile_card_ui(args->targetXboxUserId).get();
     args->copy_xbox_live_result(result);
 
     return HCTaskSetCompleted(taskHandle);
@@ -42,7 +42,7 @@ try
     verify_global_init();
 
     auto args = new show_profile_card_taskargs();
-    args->targetXboxUserId = targetXboxUserId;
+    args->targetXboxUserId = utils::to_utf16string(targetXboxUserId);
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
@@ -110,7 +110,7 @@ HC_RESULT TCUICheckGamingPrivilegeWithUIExecute(
 
     auto result = title_callable_ui::check_gaming_privilege_with_ui(
         (gaming_privilege)args->privilege,
-        utils::to_utf16string(args->friendlyMessage)
+        args->friendlyMessage
         ).get();
 
     args->copy_xbox_live_result(result);
@@ -133,7 +133,7 @@ try
 
     auto tcuiArgs = new check_gaming_privilege_taskargs();
     tcuiArgs->privilege = privilege;
-    tcuiArgs->friendlyMessage = friendlyMessage;
+    tcuiArgs->friendlyMessage = utils::to_utf16string(friendlyMessage);
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(

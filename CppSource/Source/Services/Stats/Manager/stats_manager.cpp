@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "../Leaderboard/leaderboard_helper_c.h"
+#include "../Leaderboard/leaderboard_helper.h"
 #include "user_impl.h"
-#include "stats_manager_helper_c.h"
+#include "stats_manager_helper.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;

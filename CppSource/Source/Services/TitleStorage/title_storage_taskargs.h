@@ -20,10 +20,10 @@ struct get_quota_taskargs : public title_storage_taskargs, public taskargs_with_
 
 struct get_blob_metadata_taskargs : public title_storage_taskargs, public taskargs_with_payload<XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT>
 {
-    std::string serviceConfigurationId;
+    string_t serviceConfigurationId;
     XSAPI_TITLE_STORAGE_TYPE storageType;
-    std::string blobPath;
-    std::string xboxUserId;
+    string_t blobPath;
+    string_t xboxUserId;
     uint32_t skipItems;
     uint32_t maxItems; 
 };
@@ -43,17 +43,16 @@ struct download_blob_taskargs : public title_storage_taskargs, public taskargs_w
 {
     const XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata;
     PBYTE blobBuffer;
-    size_t cbBlobBuffer;
+    uint32_t cbBlobBuffer;
     XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition;
-    PCSTR selectQuery;
-    uint32_t* preferredDownloadBlockSize;
+    string_t selectQuery;
+    uint32_t preferredDownloadBlockSize;
 };
 
 struct upload_blob_taskargs : public title_storage_taskargs, public taskargs_with_payload<const XSAPI_TITLE_STORAGE_BLOB_METADATA*>
 {
     const XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata;
-    PBYTE blobBuffer;
-    size_t cbBlobBuffer;
+    std::shared_ptr<std::vector<unsigned char>> blobBuffer;
     XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition;
-    uint32_t* preferredUploadBlockSize;
+    uint32_t preferredUploadBlockSize;
 };

@@ -40,7 +40,7 @@ HC_RESULT get_privacy_list_write_results(
     auto args = reinterpret_cast<privacy_user_list_taskargs*>(context);
     auto callback = reinterpret_cast<XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE>(completionRoutine);
 
-    size_t count = args->xboxUserIdPointers.size();
+    uint32_t count = (uint32_t)args->xboxUserIdPointers.size();
     auto firstItem = count > 0 ? &args->xboxUserIdPointers[0] : nullptr;
     callback(args->result, firstItem, count, completionRoutineContext);
 
@@ -170,10 +170,7 @@ HC_RESULT check_multiple_permissions_execute(
     auto args = reinterpret_cast<privacy_check_multiple_permissions_taskargs*>(context);
     auto privacyService = args->pXboxLiveContext->pImpl->cppObject().privacy_service();
 
-    auto result = privacyService.check_multiple_permissions_with_multiple_target_users(
-        utils::to_string_vector(args->permissionIds, args->permissionIdsCount),
-        utils::to_string_vector(args->xboxUserIds, args->xboxUserIdsCount))
-        .get();
+    auto result = privacyService.check_multiple_permissions_with_multiple_target_users(args->permissionIds, args->xboxUserIds).get();
 
     args->copy_xbox_live_result(result);
 
@@ -201,7 +198,7 @@ HC_RESULT check_multiple_permissions_write_results(
     auto args = reinterpret_cast<privacy_check_multiple_permissions_taskargs*>(context);
     auto callback = reinterpret_cast<XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE>(completionRoutine);
 
-    size_t count = args->permissions.size();
+    uint32_t count = (uint32_t)args->permissions.size();
     auto firstItem = count > 0 ? &args->permissions[0] : nullptr;
     callback(args->result, firstItem, count, completionRoutineContext);
 
@@ -213,9 +210,9 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 PrivacyCheckMultiplePermissionsWithMultipleTargetUsers(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ PCSTR* permissionIds,
-    _In_ size_t permissionIdsCount,
+    _In_ uint32_t permissionIdsCount,
     _In_ PCSTR* xboxUserIds,
-    _In_ size_t xboxUserIdsCount,
+    _In_ uint32_t xboxUserIdsCount,
     _In_ XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
@@ -226,11 +223,9 @@ try
 
     auto args = new privacy_check_multiple_permissions_taskargs();
     args->pXboxLiveContext = pContext;
-    args->permissionIds = permissionIds;
-    args->permissionIdsCount = permissionIdsCount;
-    args->xboxUserIds = xboxUserIds;
-    args->xboxUserIdsCount = xboxUserIdsCount;
-
+    args->permissionIds = utils::to_string_vector(permissionIds, permissionIdsCount);
+    args->xboxUserIds = utils::to_string_vector(xboxUserIds, xboxUserIdsCount);
+    
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
             taskGroupId,

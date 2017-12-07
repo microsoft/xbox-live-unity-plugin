@@ -73,4 +73,10 @@ BuildPackage.log
 /Assets/WSATestCertificate.pfx*
 /*_StoreKey.pfx
 
+# Ignore VSTU generated projects
+xbox-live-unity-plugin.Editor.csproj
+xbox-live-unity-plugin.Player.csproj
+xbox-live-unity-plugin.csproj
+xbox-live-unity-plugin.sln
+
 /UnityPackageManager/

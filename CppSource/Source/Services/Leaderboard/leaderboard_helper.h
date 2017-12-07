@@ -3,11 +3,27 @@
 
 #pragma once
 
-#include "xsapi\leaderboard_c.h"
+#include "xsapi/leaderboard_c.h"
+#include "taskargs.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::leaderboard;
+
+struct leaderboard_result_get_next_taskargs : public taskargs_with_payload<XSAPI_GET_NEXT_RESULT>
+{
+    leaderboard_result_get_next_taskargs(
+        _In_ XSAPI_LEADERBOARD_RESULT* leaderboard,
+        _In_ uint32 maxItems
+    );
+
+    XSAPI_LEADERBOARD_RESULT* leaderboard;
+    uint32 maxItems;
+
+    XSAPI_LEADERBOARD_RESULT* nextResult;
+
+    std::string resultErrorMsg;
+};
 
 struct XSAPI_LEADERBOARD_COLUMN_IMPL {
 public:

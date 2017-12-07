@@ -29,10 +29,8 @@ struct privacy_check_permission_taskargs : public privacy_taskargs, public taska
 
 struct privacy_check_multiple_permissions_taskargs : public privacy_taskargs, public taskargs
 {
-    PCSTR* permissionIds;
-    size_t permissionIdsCount;
-    PCSTR* xboxUserIds;
-    size_t xboxUserIdsCount;
+    std::vector<string_t> permissionIds;
+    std::vector<string_t> xboxUserIds;
     std::vector<XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT> permissions;
     std::vector<XSAPI_PRIVACY_MULTIPLE_PERMISSIONS_CHECK_RESULT_IMPL> permissionsImpls;
 };

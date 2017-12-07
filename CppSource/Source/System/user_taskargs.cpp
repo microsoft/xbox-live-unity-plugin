@@ -21,18 +21,13 @@ get_token_and_signature_taskargs::get_token_and_signature_taskargs(
     _In_ PCSTR _headers,
     _In_ PCSTR _requestBodyString
     )
-    : pUser(_pUser),
-    httpMethod(_httpMethod),
-    url(_url),
-    headers(_headers),
-    requestBodyString(_requestBodyString)
+    : pUser(_pUser)
 {
-}
-
-xbl_args_leaderboard_result_get_next::xbl_args_leaderboard_result_get_next(
-    _In_ XSAPI_LEADERBOARD_RESULT* _leaderboard,
-    _In_ uint32 _maxItems
-)
-    : leaderboard(_leaderboard), maxItems(_maxItems)
-{
+    httpMethod = utils::to_utf16string(_httpMethod);
+    url = utils::to_utf16string(_url);
+    headers = utils::to_utf16string(_headers);
+    if (_requestBodyString != nullptr)
+    {
+        requestBodyString = utils::to_utf16string(_requestBodyString);
+    }
 }

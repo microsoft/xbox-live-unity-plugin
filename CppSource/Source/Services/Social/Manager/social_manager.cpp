@@ -3,7 +3,7 @@
 
 #include "pch.h"
 #include "user_impl.h"
-#include "social_manager_helper_c.h"
+#include "social_manager_helper.h"
 
 using namespace xbox::services;
 using namespace xbox::services::system;

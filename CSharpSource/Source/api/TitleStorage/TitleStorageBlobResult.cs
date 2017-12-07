@@ -37,7 +37,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
     internal struct XSAPI_TITLE_STORAGE_BLOB_RESULT
     {
         public IntPtr blobBuffer;
-        public UInt64 cbBlobBuffer;
+        public UInt32 cbBlobBuffer;
         public IntPtr blobMetadata;
     }
 }

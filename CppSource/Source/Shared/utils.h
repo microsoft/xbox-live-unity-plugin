@@ -36,6 +36,9 @@ public:
 
     static std::vector<utility::string_t> to_string_vector(PCSTR* stringArray, size_t stringArrayCount);
 
+    static time_t time_t_from_datetime(const utility::datetime& datetime);
+    static utility::datetime datetime_from_time_t(const time_t* time);
+
     static XSAPI_RESULT std_bad_alloc_to_result(
         std::bad_alloc const& e, 
         _In_z_ char const* file, 
