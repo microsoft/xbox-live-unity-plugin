@@ -21,6 +21,7 @@ public class UserProfile : MonoBehaviour
     public string InputControllerButton;
 
     private bool AllowSignInAttempt = true;
+    private bool ConfigAvailable = true;
 
     [HideInInspector]
     public GameObject signInPanel;
@@ -65,16 +66,16 @@ public class UserProfile : MonoBehaviour
         // Disable the sign-in button if there's no configuration available.
         if (XboxLive.Instance.AppConfig == null || XboxLive.Instance.AppConfig.AppId == null)
         {
-            Button signInButton = this.signInPanel.GetComponentInChildren<Button>();
-            signInButton.interactable = false;
-            this.profileInfoPanel.SetActive(false);
-            Text signInButtonText = signInButton.GetComponentInChildren<Text>(true);
+            this.ConfigAvailable = false;
+
+            Text signInButtonText = this.signInPanel.GetComponentInChildren<Button>().GetComponentInChildren<Text>(true);
             if (signInButtonText != null)
             {
                 signInButtonText.fontSize = 16;
                 signInButtonText.text = "Xbox Live is not enabled.\nSee errors for detail.";
             }
         }
+        this.Refresh();
 
         SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
         Microsoft.Xbox.Services.XboxLiveUser.SignOutCompleted += XboxLiveUserOnSignOutCompleted;
@@ -96,8 +97,6 @@ public class UserProfile : MonoBehaviour
                 this.LoadProfileInfo();
             }
         }
-
-        this.Refresh();
     }
 
     private void XboxLiveUserOnSignOutCompleted(object sender, SignOutCompletedEventArgs signOutCompletedEventArgs)
@@ -300,7 +299,7 @@ public class UserProfile : MonoBehaviour
     private void Refresh()
     {
         var isSignedIn = this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn;
-        this.AllowSignInAttempt = !isSignedIn;
+        this.AllowSignInAttempt = !isSignedIn && this.ConfigAvailable;
         this.signInPanel.GetComponentInChildren<Button>().interactable = this.AllowSignInAttempt;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
