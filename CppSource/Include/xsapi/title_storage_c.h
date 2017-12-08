@@ -109,7 +109,7 @@ typedef struct XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT
 typedef struct XSAPI_TITLE_STORAGE_BLOB_RESULT
 {
     PBYTE blobBuffer;
-    size_t cbBlobBuffer;
+    uint32_t cbBlobBuffer;
     CONST XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata;
 } XSAPI_TITLE_STORAGE_BLOB_RESULT;
 
@@ -211,7 +211,7 @@ TitleStorageDownloadBlob(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ CONST XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata,
     _Out_ PBYTE blobBuffer,
-    _In_ size_t cbBlobBuffer,
+    _In_ uint32_t cbBlobBuffer,
     _In_ XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition,
     _In_opt_ PCSTR selectQuery,
     _In_opt_ uint32_t* preferredDownloadBlockSize,
@@ -231,7 +231,7 @@ TitleStorageUploadBlob(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ CONST XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata,
     _In_ PBYTE blobBuffer,
-    _In_ size_t cbBlobBuffer,
+    _In_ uint32_t cbBlobBuffer,
     _In_ XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition,
     _In_opt_ uint32_t* preferredUploadBlockSize,
     _In_ XSAPI_UPLOAD_BLOB_COMPLETION_ROUTINE completionRoutine,

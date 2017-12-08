@@ -33,5 +33,5 @@ void XSAPI_PRIVACY_PERMISSION_CHECK_RESULT_IMPL::update(
     cObj->isAllowed = cppObj.is_allowed();
     cObj->permissionRequested = m_permissionRequested.data();
     cObj->denyReasons = m_items.size() > 0 ? &m_items[0] : nullptr;
-    cObj->denyReasonsCount = m_items.size();
+    cObj->denyReasonsCount = (uint32_t)m_items.size();
 }

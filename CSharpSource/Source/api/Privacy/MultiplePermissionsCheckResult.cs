@@ -39,6 +39,6 @@ namespace Microsoft.Xbox.Services.Privacy
     {
         public IntPtr xboxUserId;
         public IntPtr items;
-        public UInt64 itemsCount;
+        public UInt32 itemsCount;
     }
 }

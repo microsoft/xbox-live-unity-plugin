@@ -124,7 +124,7 @@ XSAPI_RESULT XboxLiveUserSignInHelper(
             static_cast<void*>(completionRoutine),
             completionRoutineContext,
             nullptr
-        ));    
+        ));
 }
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -186,14 +186,14 @@ HC_RESULT XboxLiveUserGetTokenAndSignatureExecute(
     _In_ HC_TASK_HANDLE taskHandle
     )
 {
-    auto args = reinterpret_cast<get_token_and_signature_taskargs*>(context);    
+    auto args = reinterpret_cast<get_token_and_signature_taskargs*>(context);
 
     auto result = args->pUser->pImpl->cppUser()->get_token_and_signature(
-        utils::to_utf16string(args->httpMethod),
-        utils::to_utf16string(args->url),
-        utils::to_utf16string(args->headers),
-        args->requestBodyString == nullptr ? string_t() : utils::to_utf16string(args->requestBodyString)
-        ).get();
+        args->httpMethod,
+        args->url,
+        args->headers,
+        args->requestBodyString)
+        .get();
 
     args->copy_xbox_live_result(result);
 
@@ -251,7 +251,7 @@ try
         url,
         headers,
         requestBodyString);
-    
+
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
             taskGroupId,

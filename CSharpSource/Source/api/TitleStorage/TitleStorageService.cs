@@ -205,7 +205,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
                 context.GCHandlesToFree = new List<GCHandle> { pPreferredDownloadBlockSize };
 
                 var xsapiResult = TitleStorageDownloadBlob(
-                    this.pCXboxLiveContext, blobMetadata.metadataPtr, buffer, blobMetadata.Length, etagMatchCondition, select, GCHandle.ToIntPtr(pPreferredDownloadBlockSize),
+                    this.pCXboxLiveContext, blobMetadata.metadataPtr, buffer, (UInt32)blobMetadata.Length, etagMatchCondition, select, GCHandle.ToIntPtr(pPreferredDownloadBlockSize),
                     DownloadBlobComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
 
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -259,7 +259,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
                 context.PointersToFree = new List<IntPtr> { buffer };
 
                 var xsapiResult = TitleStorageUploadBlob(
-                    this.pCXboxLiveContext, blobMetadata.metadataPtr, buffer, (ulong)blobBuffer.Count, etagMatchCondition, IntPtr.Zero, UploadBlobComplete, 
+                    this.pCXboxLiveContext, blobMetadata.metadataPtr, buffer, (UInt32)blobBuffer.Count, etagMatchCondition, IntPtr.Zero, UploadBlobComplete, 
                     (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
 
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -362,7 +362,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr xboxLiveContext,
             IntPtr blobMetadataPointer,
             IntPtr blobBuffer,
-            UInt64 cbBlobBuffer,
+            UInt32 cbBlobBuffer,
             TitleStorageETagMatchCondition etagMatchCondition,
             IntPtr selectQuery,
             IntPtr preferredDownloadBlockSize,
@@ -381,7 +381,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr xboxLiveContext,
             IntPtr blobMetadataPointer,
             IntPtr blobBuffer,
-            UInt64 cbBlobBuffer,
+            UInt32 cbBlobBuffer,
             TitleStorageETagMatchCondition etagMatchCondition,
             IntPtr preferredUploadBlockSize,
             XSAPI_UPLOAD_BLOB_COMPLETION_ROUTINE completionRoutine,

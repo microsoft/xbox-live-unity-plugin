@@ -2,8 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "leaderboard_helper_c.h"
-#include "taskargs.h"
+#include "leaderboard_helper.h"
 
 // todo - move global variabes into a pimpl and store it in the xsapi singleton
 std::vector<XSAPI_LEADERBOARD_QUERY *> m_queries;
@@ -95,7 +94,7 @@ HC_RESULT LeaderboardResultGetNextExecute(
     _In_ HC_TASK_HANDLE taskHandle
 )
 {
-    auto args = reinterpret_cast<xbl_args_leaderboard_result_get_next*>(context);
+    auto args = reinterpret_cast<leaderboard_result_get_next_taskargs*>(context);
 
     auto result = args->leaderboard->pImpl->cppLeaderboardResult().get_next(args->maxItems).get();
     
@@ -129,7 +128,7 @@ try
 {
     verify_global_init();
 
-    auto args = new xbl_args_leaderboard_result_get_next(
+    auto args = new leaderboard_result_get_next_taskargs(
         leaderboardResult,
         maxItems
     );
@@ -138,7 +137,7 @@ try
         taskGroupId,
         LeaderboardResultGetNextExecute,
         static_cast<void*>(args),
-        utils::execute_completion_routine_with_payload<xbl_args_leaderboard_result_get_next, GET_NEXT_COMPLETION_ROUTINE>,
+        utils::execute_completion_routine_with_payload<leaderboard_result_get_next_taskargs, GET_NEXT_COMPLETION_ROUTINE>,
         static_cast<void*>(args),
         static_cast<void*>(completionRoutine),
         completionRoutineContext,

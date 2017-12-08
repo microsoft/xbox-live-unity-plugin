@@ -98,6 +98,20 @@ std::vector<utility::string_t> utils::to_string_vector(PCSTR* stringArray, size_
     return stringVector;
 }
 
+time_t utils::time_t_from_datetime(const utility::datetime& datetime)
+{
+    time_t currentUtcTime = time(nullptr);
+    auto diffTime = utility::datetime::utc_now() - datetime;
+    return currentUtcTime - diffTime;
+}
+
+utility::datetime utils::datetime_from_time_t(const time_t* pTime)
+{
+    utility::datetime datetime = utility::datetime::utc_now();
+    auto diffTime = time(nullptr) - *pTime;
+    return datetime - utility::datetime::from_seconds(diffTime);
+}
+
 XSAPI_RESULT utils::std_bad_alloc_to_result(std::bad_alloc const& e, _In_z_ char const* file, uint32_t line)
 {
     HC_TRACE_ERROR(XSAPI_C_TRACE, "[%d] std::bad_alloc reached api boundary: %s\n    %s:%u",

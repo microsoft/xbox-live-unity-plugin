@@ -28,20 +28,20 @@
     <Filter Include="C++ Source\Services\Privacy">
       <UniqueIdentifier>{bc845480-97e6-486a-81e0-2445018cfcc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="C++ Source\Social">
-      <UniqueIdentifier>{b417d1c1-466f-48b9-ae38-84253e927859}</UniqueIdentifier>
+    <Filter Include="C++ Source\Services\Leaderboard">
+      <UniqueIdentifier>{786ea23b-a393-4aea-a48e-7b51d42ead27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="C++ Source\Social\Manager">
-      <UniqueIdentifier>{74a87d6e-0338-4a8d-a029-8965327ad6c6}</UniqueIdentifier>
+    <Filter Include="C++ Source\Services\Stats">
+      <UniqueIdentifier>{318e9fd7-15a0-4fb6-9bea-b1970f8fd025}</UniqueIdentifier>
     </Filter>
-    <Filter Include="C++ Source\Stats">
-      <UniqueIdentifier>{3eddf9ef-fbdc-43a7-b305-e2d7472f7f5d}</UniqueIdentifier>
+    <Filter Include="C++ Source\Services\Stats\Manager">
+      <UniqueIdentifier>{bef12ff3-7e04-45fb-9159-b2ff46e6e28f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="C++ Source\Stats\Manager">
-      <UniqueIdentifier>{c97c6516-790d-4260-b21d-24385648e3d8}</UniqueIdentifier>
+    <Filter Include="C++ Source\Services\Social">
+      <UniqueIdentifier>{477a7e10-2f60-4ad0-a2a1-a5e414961c1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="C++ Source\Leaderboard">
-      <UniqueIdentifier>{160dc85c-4697-401d-8f2a-a951298c01b0}</UniqueIdentifier>
+    <Filter Include="C++ Source\Services\Social\Manager">
+      <UniqueIdentifier>{ac30dfbe-380d-4513-ba18-fb6eb50f4441}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,15 +126,6 @@
     <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h">
       <Filter>C++ Source\Services\Privacy</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Social\Manager\social_manager_helper_c.h">
-      <Filter>C++ Source\Social\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Stats\Manager\stats_manager_helper_c.h">
-      <Filter>C++ Source\Stats\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Leaderboard\leaderboard_helper_c.h">
-      <Filter>C++ Source\Leaderboard</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\leaderboard_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
@@ -146,6 +137,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\stats_manager_c.h">
       <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Leaderboard\leaderboard_helper.h">
+      <Filter>C++ Source\Services\Leaderboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.h">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h">
+      <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,18 +191,6 @@
     <ClCompile Include="..\..\Source\Services\TitleStorage\title_storage.cpp">
       <Filter>C++ Source\Services\TitleStorage</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Social\Manager\social_manager_c.cpp">
-      <Filter>C++ Source\Social\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_c.cpp">
-      <Filter>C++ Source\Stats\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_c.cpp">
-      <Filter>C++ Source\Leaderboard</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\System\user_impl_c.cpp">
-      <Filter>C++ Source\System</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Services\Privacy\privacy.cpp">
       <Filter>C++ Source\Services\Privacy</Filter>
     </ClCompile>
@@ -215,14 +203,26 @@
     <ClCompile Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.cpp">
       <Filter>C++ Source\Services\Privacy</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Leaderboard\leaderboard_helper_c.cpp">
-      <Filter>C++ Source\Leaderboard</Filter>
+    <ClCompile Include="..\..\Source\System\user_impl.cpp">
+      <Filter>C++ Source\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Social\Manager\social_manager_helper_c.cpp">
-      <Filter>C++ Source\Social\Manager</Filter>
+    <ClCompile Include="..\..\Source\Services\Leaderboard\leaderboard.cpp">
+      <Filter>C++ Source\Services\Leaderboard</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Stats\Manager\stats_manager_helper_c.cpp">
-      <Filter>C++ Source\Stats\Manager</Filter>
+    <ClCompile Include="..\..\Source\Services\Leaderboard\leaderboard_helper.cpp">
+      <Filter>C++ Source\Services\Leaderboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager.cpp">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.cpp">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Social\Manager\social_manager.cpp">
+      <Filter>C++ Source\Services\Social\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Social\Manager\social_manager_helper.cpp">
+      <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

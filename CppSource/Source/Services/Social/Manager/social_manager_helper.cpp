@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "social_manager_helper_c.h"
+#include "social_manager_helper.h"
 
 XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL::XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL(
     _In_ social_manager_presence_title_record cppPresenceTitleRecord,
@@ -113,10 +113,7 @@ XSAPI_XBOX_SOCIAL_USER_IMPL::XSAPI_XBOX_SOCIAL_USER_IMPL(
     auto cppTitleHistory = m_cppXboxSocialUser->title_history();
     m_titleHistory = new XSAPI_TITLE_HISTORY();
     m_titleHistory->userHasPlayed = cppTitleHistory.has_user_played();
-    auto diffTime = utility::datetime().utc_now() - cppTitleHistory.last_time_user_played();
-    time_t currentTime = time(NULL);
-    currentTime -= diffTime;
-    m_titleHistory->lastTimeUserPlayed = currentTime;
+    m_titleHistory->lastTimeUserPlayed = utils::time_t_from_datetime(cppTitleHistory.last_time_user_played());
     m_cXboxSocialUser->titleHistory = m_titleHistory;
 
     m_preferredColor = new XSAPI_PREFERRED_COLOR();

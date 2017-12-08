@@ -51,7 +51,7 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
-        private void GetPrivacyUserListComplete(XSAPI_RESULT_INFO result, IntPtr xboxUserIdList, UInt64 count, IntPtr contextKey)
+        private void GetPrivacyUserListComplete(XSAPI_RESULT_INFO result, IntPtr xboxUserIdList, UInt32 count, IntPtr contextKey)
         {
             XsapiCallbackContext<object, IList<string>> context;
             if (XsapiCallbackContext<object, IList<string>>.TryRemove(contextKey.ToInt32(), out context))
@@ -127,7 +127,7 @@ namespace Microsoft.Xbox.Services.Privacy
                     }, tcs);
 
                 var xsapiResult = PrivacyCheckMultiplePermissionsWithMultipleTargetUsers(
-                    this.pCXboxLiveContext, permissionIdsArray, (ulong)permissionIds.Count, xuidsArray, (ulong)targetXboxUserIds.Count,
+                    this.pCXboxLiveContext, permissionIdsArray, (UInt32)permissionIds.Count, xuidsArray, (UInt32)targetXboxUserIds.Count,
                     CheckMultiplePermissionsWithMultipleTargetUsersComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
 
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -138,7 +138,7 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
-        private void CheckMultiplePermissionsWithMultipleTargetUsersComplete(XSAPI_RESULT_INFO result, IntPtr resultsPtr, UInt64 privacyCheckResultCount, IntPtr contextKey)
+        private void CheckMultiplePermissionsWithMultipleTargetUsersComplete(XSAPI_RESULT_INFO result, IntPtr resultsPtr, UInt32 privacyCheckResultCount, IntPtr contextKey)
         {
             XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>> context;
             if (XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>>.TryRemove(contextKey.ToInt32(), out context))
@@ -177,7 +177,7 @@ namespace Microsoft.Xbox.Services.Privacy
         private delegate void XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE(
             XSAPI_RESULT_INFO result,
             IntPtr xboxUserIds,
-            UInt64 xboxUserIdsCount,
+            UInt32 xboxUserIdsCount,
             IntPtr context);
 
         [DllImport(XboxLive.FlatCDllName)]
@@ -213,16 +213,16 @@ namespace Microsoft.Xbox.Services.Privacy
         private delegate void XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE(
             XSAPI_RESULT_INFO result,
             IntPtr privacyCheckResults,
-            UInt64 privacyCheckResultsCount,
+            UInt32 privacyCheckResultsCount,
             IntPtr context);
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT PrivacyCheckMultiplePermissionsWithMultipleTargetUsers(
             IntPtr xboxLiveContext,
             IntPtr permissionIds,
-            UInt64 permissionIdsCount,
+            UInt32 permissionIdsCount,
             IntPtr xboxUserIds,
-            UInt64 xboxUserIdsCount,
+            UInt32 xboxUserIdsCount,
             XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE completionRoutine,
             IntPtr completionRoutineContext,
             Int64 taskGroupId);

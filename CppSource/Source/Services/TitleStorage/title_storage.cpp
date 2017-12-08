@@ -82,10 +82,10 @@ HC_RESULT get_blob_metadata_execute(
     auto titleStorageService = args->pXboxLiveContext->pImpl->cppObject().title_storage_service();
 
     auto result = titleStorageService.get_blob_metadata(
-        utils::to_utf16string(args->serviceConfigurationId),
+        args->serviceConfigurationId,
         static_cast<title_storage_type>(args->storageType),
-        utils::to_utf16string(args->blobPath),
-        utils::to_utf16string(args->xboxUserId),
+        args->blobPath,
+        args->xboxUserId,
         args->skipItems,
         args->maxItems)
         .get();
@@ -110,10 +110,10 @@ TitleStorageGetBlobMetadata(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ PCSTR serviceConfigurationId,
     _In_ XSAPI_TITLE_STORAGE_TYPE storageType,
-    _In_ PCSTR blobPath,
-    _In_ PCSTR xboxUserId,
-    _In_ uint32_t skipItems,
-    _In_ uint32_t maxItems,
+    _In_opt_ PCSTR blobPath,
+    _In_opt_ PCSTR xboxUserId,
+    _In_opt_ uint32_t skipItems,
+    _In_opt_ uint32_t maxItems,
     _In_ XSAPI_GET_BLOB_METADATA_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
@@ -124,19 +124,19 @@ try
 
     auto args = new get_blob_metadata_taskargs();
     args->pXboxLiveContext = pContext;
-    args->serviceConfigurationId = serviceConfigurationId;
+    args->serviceConfigurationId = utils::to_utf16string(serviceConfigurationId);
     args->storageType = storageType;
     args->skipItems = skipItems;
     args->maxItems = maxItems;
 
     if (blobPath != nullptr)
     {
-        args->blobPath = blobPath;
+        args->blobPath = utils::to_utf16string(blobPath);
     }
 
     if (xboxUserId != nullptr)
     {
-        args->xboxUserId = xboxUserId;
+        args->xboxUserId = utils::to_utf16string(xboxUserId);
     }
 
     return utils::xsapi_result_from_hc_result(
@@ -240,7 +240,7 @@ try
         xboxUserId == nullptr ? string_t() : utils::to_utf16string(xboxUserId),
         displayName == nullptr ? string_t() : utils::to_utf16string(displayName),
         etag == nullptr ? string_t() : utils::to_utf16string(etag),
-        utility::datetime() /* TODO */);
+        pClientTimeStamp == nullptr ? utility::datetime() : utils::datetime_from_time_t(pClientTimeStamp));
 
     pMetadata->pImpl = new XSAPI_TITLE_STORAGE_BLOB_METADATA_IMPL(pMetadata, cppMetadata);
     singleton->m_titleStorageState->m_blobMetadata.insert(pMetadata);
@@ -329,15 +329,14 @@ HC_RESULT download_blob_execute(
     auto args = reinterpret_cast<download_blob_taskargs*>(context);
     auto titleStorageService = args->pXboxLiveContext->pImpl->cppObject().title_storage_service();
 
-    // TODO Is there a better way to do this
     auto blobBufferSharedPtr = std::make_shared<std::vector<unsigned char>>(args->cbBlobBuffer);
 
     auto result = titleStorageService.download_blob(
         args->pMetadata->pImpl->cppObject(),
         blobBufferSharedPtr,
         static_cast<title_storage_e_tag_match_condition>(args->etagMatchCondition),
-        args->selectQuery == nullptr ? string_t() : utils::to_utf16string(args->selectQuery),
-        args->preferredDownloadBlockSize == nullptr ? title_storage_service::DEFAULT_DOWNLOAD_BLOCK_SIZE : *(args->preferredDownloadBlockSize))
+        args->selectQuery,
+        args->preferredDownloadBlockSize)
         .get();
 
     args->copy_xbox_live_result(result);
@@ -350,7 +349,7 @@ HC_RESULT download_blob_execute(
         memcpy(args->blobBuffer, blobBufferSharedPtr->data(), args->cbBlobBuffer);
         args->completionRoutinePayload.blobBuffer = args->blobBuffer;
 
-        args->completionRoutinePayload.cbBlobBuffer = blobBufferSharedPtr->size();
+        args->completionRoutinePayload.cbBlobBuffer = (uint32_t)blobBufferSharedPtr->size();
     }
     return HCTaskSetCompleted(taskHandle);
 }
@@ -360,7 +359,7 @@ TitleStorageDownloadBlob(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ CONST XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata,
     _In_ PBYTE blobBuffer,
-    _In_ size_t cbBlobBuffer,
+    _In_ uint32_t cbBlobBuffer,
     _In_ XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition,
     _In_opt_ PCSTR selectQuery,
     _In_opt_ uint32_t* preferredDownloadBlockSize,
@@ -383,8 +382,8 @@ try
     args->blobBuffer = blobBuffer;
     args->cbBlobBuffer = cbBlobBuffer;
     args->etagMatchCondition = etagMatchCondition;
-    args->selectQuery = selectQuery;
-    args->preferredDownloadBlockSize = preferredDownloadBlockSize;
+    args->selectQuery = selectQuery == nullptr ? string_t() : utils::to_utf16string(selectQuery);
+    args->preferredDownloadBlockSize = preferredDownloadBlockSize == nullptr ? title_storage_service::DEFAULT_DOWNLOAD_BLOCK_SIZE : *preferredDownloadBlockSize;
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
@@ -408,14 +407,11 @@ HC_RESULT upload_blob_execute(
     auto args = reinterpret_cast<upload_blob_taskargs*>(context);
     auto titleStorageService = args->pXboxLiveContext->pImpl->cppObject().title_storage_service();
 
-    // TODO Is there a better way to do this
-    auto blobBufferSharedPtr = std::make_shared<std::vector<unsigned char>>(args->blobBuffer, args->blobBuffer + args->cbBlobBuffer);
-
     auto result = titleStorageService.upload_blob(
         args->pMetadata->pImpl->cppObject(),
-        blobBufferSharedPtr,
+        args->blobBuffer,
         static_cast<title_storage_e_tag_match_condition>(args->etagMatchCondition),
-        args->preferredUploadBlockSize == nullptr ? title_storage_service::DEFAULT_UPLOAD_BLOCK_SIZE : *(args->preferredUploadBlockSize))
+        args->preferredUploadBlockSize)
         .get();
 
     args->copy_xbox_live_result(result);
@@ -433,7 +429,7 @@ TitleStorageUploadBlob(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ CONST XSAPI_TITLE_STORAGE_BLOB_METADATA* pMetadata,
     _In_ PBYTE blobBuffer,
-    _In_ size_t cbBlobBuffer,
+    _In_ uint32_t cbBlobBuffer,
     _In_ XSAPI_TITLE_STORAGE_E_TAG_MATCH_CONDITION etagMatchCondition,
     _In_opt_ uint32_t* preferredUploadBlockSize,
     _In_ XSAPI_UPLOAD_BLOB_COMPLETION_ROUTINE completionRoutine,
@@ -452,10 +448,9 @@ try
     auto args = new upload_blob_taskargs();
     args->pMetadata = pMetadata;
     args->pXboxLiveContext = pContext;
-    args->blobBuffer = blobBuffer;
-    args->cbBlobBuffer = cbBlobBuffer;
+    args->blobBuffer = std::make_shared<std::vector<unsigned char>>(blobBuffer, blobBuffer + cbBlobBuffer);
     args->etagMatchCondition = etagMatchCondition;
-    args->preferredUploadBlockSize = preferredUploadBlockSize;
+    args->preferredUploadBlockSize = preferredUploadBlockSize == nullptr ? title_storage_service::DEFAULT_UPLOAD_BLOCK_SIZE : *preferredUploadBlockSize;
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(

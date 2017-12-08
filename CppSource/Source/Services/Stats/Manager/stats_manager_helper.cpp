@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "stats_manager_helper_c.h"
+#include "stats_manager_helper.h"
 
 XSAPI_STAT_VALUE_IMPL::XSAPI_STAT_VALUE_IMPL(
     _In_ stat_value cppStatValue,

@@ -47,6 +47,6 @@ namespace Microsoft.Xbox.Services.Privacy
         public bool isAllowed;
         public IntPtr permissionRequested;
         public IntPtr denyReasons;
-        public UInt64 denyReasonsCount;
+        public UInt32 denyReasonsCount;
     }
 }

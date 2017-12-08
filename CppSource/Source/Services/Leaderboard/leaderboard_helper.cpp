@@ -2,7 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "pch.h"
-#include "leaderboard_helper_c.h"
+#include "leaderboard_helper.h"
+
+leaderboard_result_get_next_taskargs::leaderboard_result_get_next_taskargs(
+    _In_ XSAPI_LEADERBOARD_RESULT* _leaderboard,
+    _In_ uint32 _maxItems
+) : leaderboard(_leaderboard), maxItems(_maxItems)
+{
+}
 
 XSAPI_LEADERBOARD_COLUMN_IMPL::XSAPI_LEADERBOARD_COLUMN_IMPL(
     _In_ leaderboard_column cppLeaderboardColumn,
