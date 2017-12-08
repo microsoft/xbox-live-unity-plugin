@@ -77,7 +77,7 @@ elseif($FromSource)
 
     Write-Host "Building (Platform:x86) Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x86"
-        
+
     if(!$buildResult.BuildSucceeded)
     {
        Write-Host "Failed.  See build logs for details."
