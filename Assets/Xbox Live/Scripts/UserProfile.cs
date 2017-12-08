@@ -210,9 +210,14 @@ public class UserProfile : MonoBehaviour
         this.Refresh();
     }
 
-    private void LoadProfileInfo()
+    private void LoadProfileInfo(bool userAdded = true)
     {
-        userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
+        this.gamertag.text = this.XboxLiveUser.User.Gamertag;
+
+        if (userAdded)
+        {
+            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
+        }
     }
 
     private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
@@ -229,6 +234,7 @@ public class UserProfile : MonoBehaviour
             if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
                 Debug.LogFormat("Failed to add local user to SocialManager: {0}", socialEvent.ErrorMessge);
+                LoadProfileInfo(false);
             }
             else
             {
@@ -266,7 +272,6 @@ public class UserProfile : MonoBehaviour
                 this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
             }
 
-            this.gamertag.text = this.XboxLiveUser.User.Gamertag;
             this.gamerscore.text = socialUser.Gamerscore;
 
             if (socialUser.PreferredColor != null)
