@@ -74,7 +74,20 @@ elseif($FromSource)
   if(!$CopyOnly)
   {
     & $nugetCmd restore $sdkSln
-
+    
+    Write-Host "Building (configuration DebugNET35) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Configuration=DebugNET35"
+    
+    if(!$buildResult.BuildSucceeded)
+    {
+       Write-Host "Failed.  See build logs for details."
+       Write-Host "Build Log: $($buildResult.BuildLogFilePath)"
+       Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
+    }
+    else {
+      Write-Host "SDK Build (configuration DebugNET35) Succeeded."
+    }
+    
     Write-Host "Building Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow
     
