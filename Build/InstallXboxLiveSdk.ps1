@@ -114,13 +114,8 @@ elseif($FromSource)
       Write-Host "SDK Build (Platform:x64) Succeeded."
     }
     
-<<<<<<< HEAD
     Write-Host "Building (Platform:x64, configuration .NET35) Xbox Live SDK... "
     $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Platform=x64 /property:Configuration=DebugNET35"
-=======
-    Write-Host "Building (configuration ReleaseNET35) Xbox Live SDK... "
-    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Configuration=ReleaseNET35"
->>>>>>> 017d5c4... updating build script
     
     if(!$buildResult.BuildSucceeded)
     {
@@ -129,11 +124,7 @@ elseif($FromSource)
        Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
     }
     else {
-<<<<<<< HEAD
       Write-Host "SDK Build (Platform:x64 configuration .NET35) Succeeded."
-=======
-      Write-Host "SDK Build (configuration ReleaseNET35) Succeeded."
->>>>>>> 017d5c4... updating build script
     }
     
     Write-Host "Building (Platform:ARM) Xbox Live SDK... "
