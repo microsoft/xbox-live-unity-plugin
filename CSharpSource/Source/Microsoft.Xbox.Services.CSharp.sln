@@ -22,7 +22,6 @@ Global
 		api\Microsoft.Xbox.Services.Shared.projitems*{035e5e11-4a0b-4d1f-ba13-9b62ccafb2b8}*SharedItemsImports = 13
 		api\Microsoft.Xbox.Services.Shared.projitems*{b7130c4b-b36b-4449-80b0-60037fc2e0cd}*SharedItemsImports = 4
 		api\Microsoft.Xbox.Services.Shared.projitems*{cbd81e44-f37f-47d6-b71b-a43a748ae09c}*SharedItemsImports = 4
-		api\Microsoft.Xbox.Services.Shared.projitems*{cfb2ca8f-6611-4dca-981c-4b7afcca19a8}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
