@@ -75,8 +75,8 @@ elseif($FromSource)
   {
     & $nugetCmd restore $sdkSln
     
-    Write-Host "Building (configuration DebugNET35) Xbox Live SDK... "
-    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Configuration=DebugNET35"
+    Write-Host "Building (configuration ReleaseNET35) Xbox Live SDK... "
+    $buildResult = Invoke-MsBuild $sdkSln -BuildLogDirectoryPath $PSScriptRoot -ShowBuildOutputInCurrentWindow -Params "/property:Configuration=ReleaseNET35"
     
     if(!$buildResult.BuildSucceeded)
     {
@@ -85,7 +85,7 @@ elseif($FromSource)
        Write-Host "Error Log: $($buildResult.BuildErrorsLogFilePath)"
     }
     else {
-      Write-Host "SDK Build (configuration DebugNET35) Succeeded."
+      Write-Host "SDK Build (configuration ReleaseNET35) Succeeded."
     }
     
     Write-Host "Building Xbox Live SDK... "

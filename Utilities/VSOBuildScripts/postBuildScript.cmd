@@ -1,3 +1,4 @@
+@echo on
 if "%1" == "local" goto testlocal
 goto start
 
@@ -20,7 +21,10 @@ set libPath=%exportPath%\Libs
 
 mkdir "%exportPath%\Libs"
 
-robocopy /NJS /NJH /MT:16 /S /NP "%TFS_SourcesDirectory%\Source\CSharpSource\binaries\Layout\Release" "%libPath%"
+mkdir "%exportPath%\Xbox Live\Libs"
+
+robocopy /NJS /NJH /MT:16 /S /NP "%TFS_DropLocation%\UWP" "%libPath%\UWP"
+robocopy /NJS /NJH /MT:16 /S /NP "%TFS_DropLocation%\UnityEditor" "%libPath%\UnityEditor"
 
 mkdir %TFS_DropLocation%\Packages
 
