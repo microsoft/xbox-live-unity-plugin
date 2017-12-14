@@ -3,7 +3,6 @@
 
 #include "pch.h"
 #include "threadpool.h"
-#include "xsapi/services_c.h"
 
 #define MAX_THREADS 64
 

@@ -85,3 +85,5 @@
 #else
 #define XSAPI_NOEXCEPT
 #endif
+
+typedef uint32_t XSAPI_MEMORY_TYPE;
