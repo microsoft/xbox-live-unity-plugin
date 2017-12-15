@@ -4,8 +4,9 @@
 namespace Microsoft.Xbox.Services
 {
     using global::System;
-
-    using Newtonsoft.Json;
+#if UNITY_EDITOR
+    using global::Newtonsoft.Json;
+#endif
 
     public partial class XboxLiveAppConfiguration
     {
@@ -14,45 +15,10 @@ namespace Microsoft.Xbox.Services
         private static readonly object instanceLock = new object();
         private static XboxLiveAppConfiguration instance;
 
-        public static XboxLiveAppConfiguration Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (instanceLock)
-                    {
-                        if (instance == null)
-                        {
-                            instance = Load();
-                        }
-                    }
-                }
-                return instance;
-            }
-        }
-
-        private XboxLiveAppConfiguration()
-        {
-        }
-
-        public string PublisherId { get; set; }
-
-        public string PublisherDisplayName { get; set; }
-
-        public string PackageIdentityName { get; set; }
-
-        public string DisplayName { get; set; }
-
-        public string AppId { get; set; }
-
-        public string ProductFamilyName { get; set; }
-
-        internal string EnvironmentPrefix { get; set; }
-
-        internal bool UseFirstPartyToken { get; set; }
-
-        public string PrimaryServiceConfigId { get; set; }
+#if UNITY_EDITOR
+        [JsonProperty("PrimaryServiceConfigId")]
+#endif
+        public string ServiceConfigurationId { get; set; }
 
         public uint TitleId { get; set; }
 
@@ -60,30 +26,34 @@ namespace Microsoft.Xbox.Services
 
         public string Environment { get; set; }
 
-        public bool XboxLiveCreatorsTitle { get; set; }
-
-        public string GetEndpointForService(string serviceName, string protocol = "https")
+        public static XboxLiveAppConfiguration SingletonInstance
         {
-            return string.Format("{0}://{1}{2}.xboxlive.com", protocol, serviceName, string.IsNullOrEmpty(this.Environment) ? string.Empty : ("." + this.Environment));
-        }
-
-        public static XboxLiveAppConfiguration Load()
-        {
-            try
+            get
             {
-                // Attempt to load it from a file
-                return Load(FileName);
-            }
-            catch (Exception e)
-            {
-                // If we're unable to load the file for some reason, we can just use an empty file
-                // if mock data is enable.
-                if (XboxLive.UseMockServices || XboxLive.UseMockHttp)
+                if (instance == null)
                 {
-                    return new XboxLiveAppConfiguration();
+                    lock (instanceLock)
+                    {
+                        try
+                        {
+                            if (instance == null)
+                            {
+                                instance = XboxLiveAppConfiguration.Load();
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            // If we're unable to load the file for some reason, we can just use an empty file
+                            // if mock data is enable.
+                            if (XboxLive.UseMockServices)
+                            {
+                                return new XboxLiveAppConfiguration();
+                            }
+                            throw new XboxException(string.Format("Unable to find or load Xbox Live configuration.  Make sure a properly configured Xboxservices.config exists."), e);
+                        }
+                    }
                 }
-
-                throw new XboxException(string.Format("Unable to find or load Xbox Live configuration.  Make sure a properly configured {0} exists.", FileName), e);
+                return instance;
             }
         }
     }

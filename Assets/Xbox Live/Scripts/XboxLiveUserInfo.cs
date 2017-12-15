@@ -44,8 +44,6 @@ public class XboxLiveUserInfo : MonoBehaviour
                 }
             }
         }
-
-        MockXboxLiveData.Load(Path.Combine(Application.dataPath, "MockData.json"));
     }
 
     public void Initialize()

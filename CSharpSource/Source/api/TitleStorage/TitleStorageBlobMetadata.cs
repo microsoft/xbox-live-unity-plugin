@@ -23,7 +23,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
         /// <summary>
         /// [optional] Timestamp assigned by the client.
         /// </summary>
-        public DateTimeOffset? ClientTimeStamp { get; private set; }
+        public DateTimeOffset ClientTimeStamp { get; private set; }
 
         /// <summary>
         /// ETag for the file used in read and write requests.
@@ -157,13 +157,22 @@ namespace Microsoft.Xbox.Services.TitleStorage
             var displayName = MarshalingHelpers.StringToHGlobalUtf8(this.DisplayName);
             var etag = MarshalingHelpers.StringToHGlobalUtf8(this.ETag);
 
-            TitleStorageCreateBlobMetadata(scid, StorageType, path, BlobType, xuid, displayName, etag, IntPtr.Zero, /*TODO client timestamp*/ out metadataPtr);
+            IntPtr clientTimePtr = IntPtr.Zero;
+            if (this.ClientTimeStamp != null)
+            {
+                var clientTime = this.ClientTimeStamp.ToUnixTimeMilliseconds();
+                clientTimePtr = Marshal.AllocHGlobal(MarshalingHelpers.SizeOf<UInt64>());
+                Marshal.WriteInt64(clientTimePtr, clientTime);
+            }
+
+            TitleStorageCreateBlobMetadata(scid, StorageType, path, BlobType, xuid, displayName, etag, clientTimePtr, out metadataPtr);
 
             Marshal.FreeHGlobal(scid);
             Marshal.FreeHGlobal(path);
             Marshal.FreeHGlobal(xuid);
             Marshal.FreeHGlobal(displayName);
             Marshal.FreeHGlobal(etag);
+            Marshal.FreeHGlobal(clientTimePtr);
         }
 
         internal void Refresh()

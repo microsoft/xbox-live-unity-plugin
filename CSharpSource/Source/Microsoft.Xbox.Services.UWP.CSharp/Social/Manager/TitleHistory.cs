@@ -12,7 +12,6 @@ namespace Microsoft.Xbox.Services.Social.Manager
             TITLE_HISTORY cTitleHistory = Marshal.PtrToStructure<TITLE_HISTORY>(titleHistoryPtr);
             HasUserPlayed = cTitleHistory.UserHasPlayed;
 
-            // todo test
             LastTimeUserPlayed = DateTimeOffset.FromUnixTimeSeconds(cTitleHistory.LastTimeUserPlayed);
         }
 

@@ -23,7 +23,6 @@ namespace Microsoft.Xbox.Services.System
         public string AgeGroup { get; private set; }
         public string Privileges { get; private set; }
         public string WebAccountId { get; private set; }
-        public AuthConfig AuthConfig { get; private set; } // TODO remove this
         public User CreationContext { get; private set; }
         public IntPtr XboxLiveUserPtr { get; private set; }
 
@@ -48,7 +47,6 @@ namespace Microsoft.Xbox.Services.System
             {
                 throw new XboxException(result);
             }
-            
             Init();
         }
 
@@ -62,16 +60,7 @@ namespace Microsoft.Xbox.Services.System
         {
             signOutHandlerContext = AddSignOutCompletedHandler(OnSignOutCompleted);
             xboxLiveUserInstanceMap[XboxLiveUserPtr] = this;
-
-            // TODO: This config is broken.
-            var appConfig = XboxLiveAppConfiguration.Instance;
-            this.AuthConfig = new AuthConfig
-            {
-                Sandbox = appConfig.Sandbox,
-                EnvironmentPrefix = appConfig.EnvironmentPrefix,
-                Environment = appConfig.Environment,
-                UseCompactTicket = appConfig.UseFirstPartyToken
-            };
+            var appConfig = XboxLiveAppConfiguration.SingletonInstance;
         }
 
         ~UserImpl()
@@ -177,9 +166,9 @@ namespace Microsoft.Xbox.Services.System
             }
         }
 
-        public Task<TokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
+        public Task<GetTokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
         {
-            var tcs = new TaskCompletionSource<TokenAndSignatureResult>();
+            var tcs = new TaskCompletionSource<GetTokenAndSignatureResult>();
 
             Task.Run(() =>
             {
@@ -196,7 +185,7 @@ namespace Microsoft.Xbox.Services.System
                 }
 
                 int contextKey;
-                var context = XsapiCallbackContext<UserImpl, TokenAndSignatureResult>.CreateContext(this, tcs, out contextKey);
+                var context = XsapiCallbackContext<UserImpl, GetTokenAndSignatureResult>.CreateContext(this, tcs, out contextKey);
                 context.PointersToFree = new List<IntPtr> { pHttpMethod, pUrl, pHeaders, pBody };
 
                 var result = XboxLiveUserGetTokenAndSignature(
@@ -223,12 +212,12 @@ namespace Microsoft.Xbox.Services.System
         {
             int contextKey = context.ToInt32();
 
-            XsapiCallbackContext<UserImpl, TokenAndSignatureResult> contextObject;
-            if (XsapiCallbackContext<UserImpl, TokenAndSignatureResult>.TryRemove(contextKey, out contextObject))
+            XsapiCallbackContext<UserImpl, GetTokenAndSignatureResult> contextObject;
+            if (XsapiCallbackContext<UserImpl, GetTokenAndSignatureResult>.TryRemove(contextKey, out contextObject))
             {
                 if (result.errorCode == XSAPI_RESULT.XSAPI_RESULT_OK)
                 {
-                    contextObject.TaskCompletionSource.SetResult(new TokenAndSignatureResult
+                    contextObject.TaskCompletionSource.SetResult(new GetTokenAndSignatureResult
                     {
                         WebAccountId = MarshalingHelpers.Utf8ToString(payload.WebAccountId),
                         Privileges = MarshalingHelpers.Utf8ToString(payload.Privileges),
@@ -237,7 +226,6 @@ namespace Microsoft.Xbox.Services.System
                         XboxUserId = MarshalingHelpers.Utf8ToString(payload.XboxUserId),
                         Signature = MarshalingHelpers.Utf8ToString(payload.Signature),
                         Token = MarshalingHelpers.Utf8ToString(payload.Token)
-                        //TokenRequestResultStatus = tokenResult.ResponseStatus // TODO
                     });
                 }
                 else
@@ -333,7 +321,7 @@ namespace Microsoft.Xbox.Services.System
 
         [StructLayout(LayoutKind.Sequential)]
         private struct XSAPI_SIGN_IN_RESULT
-{
+        {
             public SignInStatus status;
         }
 

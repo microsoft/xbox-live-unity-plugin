@@ -16,11 +16,10 @@ namespace Microsoft.Xbox.Services.System
         public string AgeGroup { get; set; }
         public string Privileges { get; set; }
         public string WebAccountId { get; set; }
-        public AuthConfig AuthConfig { get; set; }
 
         private static int numberOfInstances;
         private static Random random = new Random();
-		
+
         public Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh)
         {
             if (XboxLive.UseMockServices)
@@ -36,11 +35,11 @@ namespace Microsoft.Xbox.Services.System
             throw new NotImplementedException();
         }
 
-        public Task<TokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
+        public Task<GetTokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
         {
             if (XboxLive.UseMockServices)
             {
-                return Task.FromResult(new TokenAndSignatureResult
+                return Task.FromResult(new GetTokenAndSignatureResult
                 {
                     Gamertag = this.Gamertag,
                     XboxUserId = this.XboxUserId,

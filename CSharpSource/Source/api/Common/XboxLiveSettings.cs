@@ -5,21 +5,15 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
 
-    public class XboxLiveSettings
+    public class XboxLiveContextSettings
     {
-        private const int DefaultHttpTimeoutWindowInSeconds = 20;
-        private const int DefaultLongHttpTimeoutInSeconds = 5 * 60;
-        private const int DefaultRetryDelayInSeconds = 2;
-
-        public XboxLiveSettings()
+        public XboxLiveContextSettings()
         {
-            this.DiagnosticsTraceLevel = XboxServicesDiagnosticsTraceLevel.Off;
-            this.HttpTimeoutWindow = TimeSpan.FromSeconds(DefaultHttpTimeoutWindowInSeconds);
-            this.LongHttpTimeout = TimeSpan.FromSeconds(DefaultLongHttpTimeoutInSeconds);
-            this.HttpRetryDelay = TimeSpan.FromSeconds(DefaultRetryDelayInSeconds);
         }
 
         public bool UseCoreDispatcherForEventRouting { get; set; }
+
+        public TimeSpan HttpTimeout { get; set; }
 
         public TimeSpan HttpTimeoutWindow { get; set; }
 
@@ -39,15 +33,15 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        //public TimeSpan WebsocketTimeoutWindow { get; set; }
+        public TimeSpan WebsocketTimeoutWindow { get; set; }
 
-        //public event EventHandler<XboxLiveLogCallEventArgs> LogCallRouted;
+        public event EventHandler<XboxLiveLogCallEventArgs> LogCallRouted;
 
-        //public bool EnableServiceCallRoutedEvents { get; set; }
+        public bool EnableServiceCallRoutedEvents { get; set; }
 
-        //public void DisableAssertsForMaximumNumberOfWebsocketsActivated(XboxLiveContextRecommendedSetting setting)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public void DisableAssertsForMaximumNumberOfWebsocketsActivated(XboxLiveContextRecommendedSetting setting)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

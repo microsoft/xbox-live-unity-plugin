@@ -1,8 +1,11 @@
-﻿namespace Microsoft.Xbox.Services.Shared.TitleStorage
+﻿// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// 
+
+namespace Microsoft.Xbox.Services.Shared.TitleStorage
 {
     using global::System.Collections.Generic;
     using global::System.Threading.Tasks;
-
     using Microsoft.Xbox.Services.TitleStorage;
 
     /// <summary>
@@ -72,7 +75,7 @@
         /// <param name="etagMatchCondition">The ETag match condition used to determine if the blob data should be uploaded.</param>
         /// <param name="preferredDownloadBlockSize">The preferred upload block size in bytes for binary blobs. </param>
         /// <returns>An instance of the <see cref="TitleStorageBlobMetadata"/> class with updated ETag and Length Properties.</returns>
-        Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, List<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize);
+        Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, IReadOnlyList<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize);
 
     }
 }

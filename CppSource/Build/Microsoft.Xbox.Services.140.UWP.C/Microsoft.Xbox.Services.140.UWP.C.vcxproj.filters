@@ -75,9 +75,6 @@
     <ClInclude Include="..\..\Include\xsapi\xbox_live_app_config_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h">
-      <Filter>C++ Source\Services\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\utils.h">
       <Filter>C++ Source\Shared</Filter>
     </ClInclude>

@@ -3,8 +3,6 @@
 // 
 namespace Microsoft.Xbox.Services
 {
-    using global::System;
-
     public enum HttpCallResponseBodyType : uint
     {
         StringBody,

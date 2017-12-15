@@ -19,12 +19,12 @@ namespace Microsoft.Xbox.Services.Privacy
             this.pCXboxLiveContext = pCXboxLiveContext;
         }
 
-        public Task<IList<string>> GetAvoidListAsync()
+        public Task<IReadOnlyList<string>> GetAvoidListAsync()
         {
-            var tcs = new TaskCompletionSource<IList<string>>();
+            var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
             Task.Run(() =>
             {
-                int contextKey = XsapiCallbackContext<object, IList<string>>.CreateContext(null, tcs);
+                int contextKey = XsapiCallbackContext<object, IReadOnlyList<string>>.CreateContext(null, tcs);
 
                 var xsapiResult = PrivacyGetAvoidList(this.pCXboxLiveContext, GetPrivacyUserListComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -35,12 +35,12 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
-        public Task<IList<string>> GetMuteListAsync()
+        public Task<IReadOnlyList<string>> GetMuteListAsync()
         {
-            var tcs = new TaskCompletionSource<IList<string>>();
+            var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
             Task.Run(() =>
             {
-                int contextKey = XsapiCallbackContext<object, IList<string>>.CreateContext(null, tcs);
+                int contextKey = XsapiCallbackContext<object, IReadOnlyList<string>>.CreateContext(null, tcs);
 
                 var xsapiResult = PrivacyGetMuteList(this.pCXboxLiveContext, GetPrivacyUserListComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -58,7 +58,7 @@ namespace Microsoft.Xbox.Services.Privacy
             {
                 if (result.errorCode == XSAPI_RESULT.XSAPI_RESULT_OK)
                 {
-                    context.TaskCompletionSource.SetResult(MarshalingHelpers.Utf8StringArrayToStringList(xboxUserIdList, (int)count));
+                    context.TaskCompletionSource.SetResult(MarshalingHelpers.Utf8StringArrayToStringList(xboxUserIdList, count));
                 }
                 else
                 {
@@ -109,15 +109,15 @@ namespace Microsoft.Xbox.Services.Privacy
             }
         }
 
-        public Task<List<MultiplePermissionsCheckResult>> CheckMultiplePermissionsWithMultipleTargetUsersAsync(IList<string> permissionIds, IList<string> targetXboxUserIds)
+        public Task<IReadOnlyList<MultiplePermissionsCheckResult>> CheckMultiplePermissionsWithMultipleTargetUsersAsync(IReadOnlyList<string> permissionIds, IReadOnlyList<string> targetXboxUserIds)
         {
-            var tcs = new TaskCompletionSource<List<MultiplePermissionsCheckResult>>();
+            var tcs = new TaskCompletionSource<IReadOnlyList<MultiplePermissionsCheckResult>>();
             Task.Run(() =>
             {
                 var permissionIdsArray = MarshalingHelpers.StringListToHGlobalUtf8StringArray(permissionIds);
                 var xuidsArray = MarshalingHelpers.StringListToHGlobalUtf8StringArray(targetXboxUserIds);
 
-                int contextKey = XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>>.CreateContext(
+                int contextKey = XsapiCallbackContext<CheckMultiplePermissionsContext, IReadOnlyList<MultiplePermissionsCheckResult>>.CreateContext(
                     new CheckMultiplePermissionsContext
                     {
                         permissionIdsArray = permissionIdsArray,

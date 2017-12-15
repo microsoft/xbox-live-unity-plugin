@@ -31,7 +31,7 @@ void XSAPI_TITLE_STORAGE_BLOB_METADATA_IMPL::update(const xbox::services::title_
     m_eTag = utils::to_utf8string(cppObj.e_tag());
     m_pMetadata->ETag = m_eTag.data();
 
-    // TODO populate client timestamp
+    m_pMetadata->clientTimestamp = utils::time_t_from_datetime(cppObj.client_timestamp());
 
     m_pMetadata->length = cppObj.length();
 

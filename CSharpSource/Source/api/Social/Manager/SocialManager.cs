@@ -35,6 +35,5 @@ namespace Microsoft.Xbox.Services.Social.Manager
                 return m_instance;
             }
         }
-                
     }
 }

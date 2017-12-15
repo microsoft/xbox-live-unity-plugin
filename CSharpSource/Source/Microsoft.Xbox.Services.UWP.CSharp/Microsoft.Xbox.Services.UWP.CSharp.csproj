@@ -100,7 +100,6 @@
     <Compile Include="Statistics\Manager\StatisticEvent.cs" />
     <Compile Include="Statistics\Manager\StatisticManager.cs" />
     <Compile Include="System\TitleCallableUI.cs" />
-    <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />
     <Compile Include="Common\XboxLiveUser.cs" />
     <Compile Include="Common\XboxLiveAppConfiguration.cs" />
@@ -111,12 +110,6 @@
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\..\CppSource\Binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\Microsoft.Xbox.Services.140.UWP.C.dll">
-      <Link>Microsoft.Xbox.Services.140.UWP.C.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <!-- Nearly all of our source comes from the Services.Shared project -->
   <Import Project="$(BuildRoot)\Source\api\Microsoft.Xbox.Services.Shared.projitems" Label="Shared" />

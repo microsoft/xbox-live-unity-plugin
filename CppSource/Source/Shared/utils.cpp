@@ -109,7 +109,7 @@ utility::datetime utils::datetime_from_time_t(const time_t* pTime)
 {
     utility::datetime datetime = utility::datetime::utc_now();
     auto diffTime = time(nullptr) - *pTime;
-    return datetime - utility::datetime::from_seconds(diffTime);
+    return datetime - utility::datetime::from_seconds((unsigned int)diffTime);
 }
 
 XSAPI_RESULT utils::std_bad_alloc_to_result(std::bad_alloc const& e, _In_z_ char const* file, uint32_t line)

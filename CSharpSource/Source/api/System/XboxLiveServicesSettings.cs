@@ -11,6 +11,6 @@ namespace Microsoft.Xbox.Services.System
 
         public static XboxLiveServicesSettings SingletonInstance { get; private set; }
 
-        //public event EventHandler<XboxLiveLogCallEventArgs> LogCallRouted;
+        public event EventHandler<XboxLiveLogCallEventArgs> LogCallRouted;
     }
 }

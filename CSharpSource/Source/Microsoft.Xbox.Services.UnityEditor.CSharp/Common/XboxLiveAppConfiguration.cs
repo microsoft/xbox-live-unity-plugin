@@ -4,10 +4,30 @@
 
 namespace Microsoft.Xbox.Services
 {
+    using Newtonsoft.Json;
     using global::System.IO;
 
     public partial class XboxLiveAppConfiguration
     {
+        public string PublisherId { get; set; }
+
+        public string PublisherDisplayName { get; set; }
+
+        public string PackageIdentityName { get; set; }
+
+        public string DisplayName { get; set; }
+
+        public string AppId { get; set; }
+
+        public string ProductFamilyName { get; set; }
+
+        public bool XboxLiveCreatorsTitle { get; set; }
+
+        private static XboxLiveAppConfiguration Load()
+        {
+            return XboxLiveAppConfiguration.Load(FileName);
+        }
+
         public static XboxLiveAppConfiguration Load(string path)
         {
             if (!File.Exists(path))
@@ -21,7 +41,7 @@ namespace Microsoft.Xbox.Services
                 throw new XboxException(string.Format("Xbox Live app configeration file '{0}' was empty.", path));
             }
 
-            return JsonSerialization.FromJson<XboxLiveAppConfiguration>(content);
+            return JsonConvert.DeserializeObject<XboxLiveAppConfiguration>(content);
         }
     }
 }

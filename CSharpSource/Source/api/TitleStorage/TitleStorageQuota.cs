@@ -28,6 +28,15 @@ namespace Microsoft.Xbox.Services.TitleStorage
         /// </summary>
         public TitleStorageType StorageType { get; private set; }
 
+        /// <summary>
+        /// The ID of the user associated with the storage area
+        /// </summary>
+        public string XboxUserId { get; private set; }
+
+        /// <summary>
+        /// The service configuration ID to get the quota from
+        /// </summary>
+        public string ServiceConfigurationId { get; private set; }
 
         /// <summary>
         /// Initialze a TitleStorageQuota from the corresponding C object
@@ -37,6 +46,8 @@ namespace Microsoft.Xbox.Services.TitleStorage
             QuotaBytes = quotaStruct.QuotaBytes;
             UsedBytes = quotaStruct.UsedBytes;
             StorageType = quotaStruct.storageType;
+            XboxUserId = MarshalingHelpers.Utf8ToString(quotaStruct.XboxUserId);
+            ServiceConfigurationId = MarshalingHelpers.Utf8ToString(quotaStruct.ServiceConfigurationId);
         }
     }
 

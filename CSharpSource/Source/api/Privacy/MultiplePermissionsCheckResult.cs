@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Privacy
 
     public class MultiplePermissionsCheckResult
     {
-        public IList<PermissionCheckResult> Items { get; private set; }
+        public IReadOnlyList<PermissionCheckResult> Items { get; private set; }
 
         public string XboxUserId { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Microsoft.Xbox.Services.Privacy
 
             XboxUserId = MarshalingHelpers.Utf8ToString(multiplePermissionsStruct.xboxUserId);
 
-            Items = new List<PermissionCheckResult>((int)multiplePermissionsStruct.itemsCount);
+            var items = new List<PermissionCheckResult>((int)multiplePermissionsStruct.itemsCount);
 
             int size = MarshalingHelpers.SizeOf<XSAPI_PRIVACY_PERMISSION_CHECK_RESULT>();
             IntPtr permissionStructPtr = multiplePermissionsStruct.items;
@@ -28,9 +28,10 @@ namespace Microsoft.Xbox.Services.Privacy
             for (ulong i = 0; i < multiplePermissionsStruct.itemsCount; ++i)
             {
                 var permissionCheckResultStruct = MarshalingHelpers.PtrToStructure<XSAPI_PRIVACY_PERMISSION_CHECK_RESULT>(permissionStructPtr);
-                Items.Add(new PermissionCheckResult(permissionCheckResultStruct));
+                items.Add(new PermissionCheckResult(permissionCheckResultStruct));
                 permissionStructPtr = permissionStructPtr.Increment(size);
             }
+            Items = items;
         }
     }
 

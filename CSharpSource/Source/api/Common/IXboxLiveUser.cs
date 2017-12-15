@@ -5,7 +5,7 @@ namespace Microsoft.Xbox.Services
 {
     using global::System.Threading.Tasks;
 
-    public interface IXboxLiveUser
+    internal interface IXboxLiveUser
     {
         string WebAccountId { get; }
 
@@ -29,10 +29,10 @@ namespace Microsoft.Xbox.Services
 
         Task<SignInResult> SignInSilentlyAsync();
 
-        Task<TokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers);
+        Task<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers);
 
-        Task<TokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers, string body);
+        Task<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers, string body);
 
-        Task<TokenAndSignatureResult> GetTokenAndSignatureArrayAsync(string httpMethod, string url, string headers, byte[] body);
+        Task<GetTokenAndSignatureResult> GetTokenAndSignatureArrayAsync(string httpMethod, string url, string headers, byte[] body);
     }
 }

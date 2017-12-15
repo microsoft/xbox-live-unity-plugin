@@ -163,7 +163,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
             {
                 new SocialManagerPresenceTitleRecord
                 {
-                    TitleId = XboxLiveAppConfiguration.Instance.TitleId,
+                    TitleId = XboxLiveAppConfiguration.SingletonInstance.TitleId,
                     IsTitleActive = true,
                 }
             };

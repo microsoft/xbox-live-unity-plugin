@@ -5,11 +5,11 @@ namespace Microsoft.Xbox.Services
 {
     public partial class XboxLiveAppConfiguration
     {
-        public static XboxLiveAppConfiguration Load(string path)
+        private static XboxLiveAppConfiguration Load()
         {
             return new XboxLiveAppConfiguration
             {
-                PrimaryServiceConfigId = "00000000-0000-0000-0000-0000694f5acb",
+                ServiceConfigurationId = "00000000-0000-0000-0000-0000694f5acb",
                 TitleId = 1766808267,
                 Environment = string.Empty,
                 Sandbox = "JDTDWX.0",

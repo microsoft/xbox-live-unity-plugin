@@ -35,7 +35,7 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
             if (resultCallBack != null)
             {
 #if ENABLE_WINMD_SUPPORT
-                var configId = XboxLive.Instance.AppConfig.PrimaryServiceConfigId;
+                var configId = XboxLive.Instance.AppConfig.ServiceConfigurationId;
                 var initTask = GameSaveProvider.GetForUserAsync(xboxLiveUser.WindowsSystemUser, configId).AsTask();
                 if (initTask.Result.Status == GameSaveErrorStatus.Ok)
                 {

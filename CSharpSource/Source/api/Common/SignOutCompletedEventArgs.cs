@@ -7,12 +7,11 @@ namespace Microsoft.Xbox.Services
 
     public class SignOutCompletedEventArgs : EventArgs
     {
-        public SignOutCompletedEventArgs(IXboxLiveUser user)
+        public SignOutCompletedEventArgs(XboxLiveUser user)
         {
             this.User = user;
         }
 
-        // TODO change this to XboxLiveUser instead of IXboxLive user to match WinRT projections
-        public IXboxLiveUser User { get; private set; }
+        public XboxLiveUser User { get; private set; }
     }
 }
