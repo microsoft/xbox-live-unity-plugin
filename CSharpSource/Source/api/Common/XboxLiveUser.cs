@@ -4,10 +4,8 @@
 namespace Microsoft.Xbox.Services
 {
     using global::System;
-    using global::System.Collections.Generic;
     using global::System.Text;
     using global::System.Threading.Tasks;
-
     using Microsoft.Xbox.Services.System;
 
     public partial class XboxLiveUser : IXboxLiveUser
@@ -17,38 +15,9 @@ namespace Microsoft.Xbox.Services
         private readonly IUserImpl userImpl;
         private XboxLiveServices xboxLiveServices;
 
-        private static event EventHandler<SignInCompletedEventArgs> InternalSignInCompleted;
-        private static List<EventHandler<SignInCompletedEventArgs>> signInDelegates = new List<EventHandler<SignInCompletedEventArgs>>();
-        public static event EventHandler<SignInCompletedEventArgs> SignInCompleted
-        {
-            add
-            {
-                InternalSignInCompleted += value;
-                signInDelegates.Add(value);
-            }
-            remove
-            {
-                InternalSignInCompleted -= value;
-                signInDelegates.Remove(value);
-            }
-        }
+        public static event EventHandler<SignInCompletedEventArgs> SignInCompleted;
+        public static event EventHandler<SignOutCompletedEventArgs> SignOutCompleted;
 
-        private static event EventHandler<SignOutCompletedEventArgs> InternalSignOutCompleted;
-        private static List<EventHandler<SignOutCompletedEventArgs>> signOutDelegates = new List<EventHandler<SignOutCompletedEventArgs>>();
-        public static event EventHandler<SignOutCompletedEventArgs> SignOutCompleted
-        {
-            add
-            {
-                InternalSignOutCompleted += value;
-                signOutDelegates.Add(value);
-            }
-            remove
-            {
-                InternalSignOutCompleted -= value;
-                signOutDelegates.Remove(value);
-            }
-        }
-        
         public string WebAccountId
         {
             get
@@ -136,36 +105,19 @@ namespace Microsoft.Xbox.Services
             return this.userImpl.SignInImpl(false, false);
         }
 
-        public Task<TokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers)
+        public Task<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers)
         {
             return this.GetTokenAndSignatureArrayAsync(httpMethod, url, headers, null);
         }
 
-        public Task<TokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers, string body)
+        public Task<GetTokenAndSignatureResult> GetTokenAndSignatureAsync(string httpMethod, string url, string headers, string body)
         {
             return this.GetTokenAndSignatureArrayAsync(httpMethod, url, headers, body == null ? null : Encoding.UTF8.GetBytes(body));
         }
 
-        public Task<TokenAndSignatureResult> GetTokenAndSignatureArrayAsync(string httpMethod, string url, string headers, byte[] body)
+        public Task<GetTokenAndSignatureResult> GetTokenAndSignatureArrayAsync(string httpMethod, string url, string headers, byte[] body)
         {
             return this.userImpl.InternalGetTokenAndSignatureAsync(httpMethod, url, headers, body, false, false);
-        }
-
-        public Task RefreshToken()
-        {
-            return this.userImpl.InternalGetTokenAndSignatureAsync("GET", this.userImpl.AuthConfig.XboxLiveEndpoint, null, null, false, true);
-        }
-
-        protected static void OnSignInCompleted(IXboxLiveUser user)
-        {
-            var handler = InternalSignInCompleted;
-            if (handler != null) handler(null, new SignInCompletedEventArgs(user));
-        }
-
-        protected static void OnSignOutCompleted(IXboxLiveUser user)
-        {
-            var handler = InternalSignOutCompleted;
-            if (handler != null) handler(null, new SignOutCompletedEventArgs(user));
         }
     }
 }

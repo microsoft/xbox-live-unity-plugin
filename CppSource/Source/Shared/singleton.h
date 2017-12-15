@@ -3,7 +3,6 @@
 #pragma once
 
 #include "threadpool.h"
-#include "xbox_live_app_config_impl.h"
 #include "xsapi/xbox_live_app_config_c.h"
 #include "title_storage_state.h"
 
@@ -23,7 +22,9 @@ struct xsapi_singleton
     std::map<std::string, XSAPI_XBOX_LIVE_USER*> m_signedInUsers;
 
     std::unique_ptr<XSAPI_XBOX_LIVE_APP_CONFIG> m_appConfigSingleton;
-    std::unique_ptr<XBOX_LIVE_APP_CONFIG_IMPL> m_appConfigImplSingleton;
+    std::string m_scid;
+    std::string m_environment;
+    std::string m_sandbox;
 };
 
 xsapi_singleton* get_xsapi_singleton(_In_ bool createIfRequired = false);

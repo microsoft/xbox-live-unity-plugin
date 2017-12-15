@@ -3,7 +3,6 @@
 
 namespace Microsoft.Xbox.Services
 {
-    using global::System.Threading.Tasks;
     using Microsoft.Xbox.Services.System;
 
     public partial class XboxLiveUser
@@ -14,41 +13,51 @@ namespace Microsoft.Xbox.Services
 
         public XboxLiveUser(Windows.System.User systemUser)
         {
-            var user = new UserImpl(systemUser);
+            var userImpl = new UserImpl(systemUser);
+            this.userImpl = userImpl;
 
             // The UserImpl monitors the underlying system for sign out events
             // and notifies us that a user has been signed out.  We can then
             // pass that event on the application with a concrete reference.
-            user.SignInCompleted += (sender, args) =>
+            userImpl.SignInCompleted += (sender, args) =>
             {
-                OnSignInCompleted(this);
+                if (SignInCompleted != null)
+                {
+                    SignInCompleted(null, new SignInCompletedEventArgs(this));
+                }
             };
-            user.SignOutCompleted += (sender, args) =>
+            userImpl.SignOutCompleted += (sender, args) =>
             {
-                OnSignOutCompleted(this);
+                if (SignOutCompleted != null)
+                {
+                    SignOutCompleted(null, new SignOutCompletedEventArgs(this));
+                }
             };
-
-            this.userImpl = user;
         }
 
         internal XboxLiveUser(global::System.IntPtr xboxLiveUserPtr)
         {
-            var user = new UserImpl(xboxLiveUserPtr);
+            var userImpl = new UserImpl(xboxLiveUserPtr);
+            this.userImpl = userImpl;
 
             // The UserImpl monitors the underlying system for sign out events
             // and notifies us that a user has been signed out.  We can then
             // pass that event on the application with a concrete reference.
-            user.SignInCompleted += (sender, args) =>
+            userImpl.SignInCompleted += (sender, args) =>
             {
-                OnSignInCompleted(this);
+                if (SignInCompleted != null)
+                {
+                    SignInCompleted(null, new SignInCompletedEventArgs(this));
+                }
             };
-            user.SignOutCompleted += (sender, args) =>
+            userImpl.SignOutCompleted += (sender, args) =>
             {
-                OnSignOutCompleted(this);
+                if (SignOutCompleted != null)
+                {
+                    SignOutCompleted(null, new SignOutCompletedEventArgs(this));
+                }
             };
-
-            this.userImpl = user;
-            user.UpdatePropertiesFromXboxLiveUserPtr();
+            userImpl.UpdatePropertiesFromXboxLiveUserPtr();
         }
       
         public Windows.System.User WindowsSystemUser
@@ -62,21 +71,6 @@ namespace Microsoft.Xbox.Services
         internal UserImpl Impl
         {
             get { return (this.userImpl as UserImpl); }
-        }
-
-        internal static void CleanupEventHandler()
-        {
-            foreach (var eh in signInDelegates)
-            {
-                InternalSignInCompleted -= eh;
-            }
-            signInDelegates.Clear();
-
-            foreach (var eh in signOutDelegates)
-            {
-                InternalSignOutCompleted -= eh;
-            }
-            signOutDelegates.Clear();
         }
     }
 }

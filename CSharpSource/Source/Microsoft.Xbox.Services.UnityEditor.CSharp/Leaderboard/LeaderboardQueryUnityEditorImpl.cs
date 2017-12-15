@@ -1,12 +1,15 @@
-﻿
-using System;
+﻿// Copyright (c) Microsoft Corporation
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// 
 
 namespace Microsoft.Xbox.Services.Leaderboard
 {
+    using global::System;
+
     class LeaderboardQueryUnityEditorImpl : ILeaderboardQueryImpl
     {
         public IntPtr GetPtr() { return IntPtr.Zero; }
-        
+
         uint m_maxItems;
         public uint GetMaxItems()
         {

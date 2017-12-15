@@ -5,9 +5,7 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
     using global::System.IO;
-    using global::System.ComponentModel;
     using global::System.Runtime.InteropServices;
-    using Microsoft.Xbox.Services.Presence;
     using Microsoft.Xbox.Services.Social.Manager;
     using Microsoft.Xbox.Services.Statistics.Manager;
     using Microsoft.Xbox.Services.System;
@@ -16,7 +14,6 @@ namespace Microsoft.Xbox.Services
     {
         private bool disposed;
         private static XboxLive instance;
-        private XboxLiveSettings settings;
         private IStatisticManager statsManager;
         private ISocialManager socialManager;
 
@@ -32,24 +29,23 @@ namespace Microsoft.Xbox.Services
 
         private XboxLive()
         {
-            this.settings = new XboxLiveSettings();
-
             try
             {
-                this.appConfig = XboxLiveAppConfiguration.Instance;
+#if WINDOWS_UWP
+                var result = XBLGlobalInitialize();
+                if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
+                {
+                    throw new XboxException(result);
+                }
+#endif
+                // TODO flat C APIs for settings
+                //this.Settings = null;
+                this.appConfig = XboxLiveAppConfiguration.SingletonInstance;
             }
             catch (FileLoadException)
             {
                 this.appConfig = null;
             }
-
-#if WINDOWS_UWP
-            var result = XBLGlobalInitialize();
-            if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
-            {
-                throw new XboxException(result);
-            }
-#endif
         }
 
         ~XboxLive()
@@ -104,15 +100,14 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        public XboxLiveSettings Settings
-        {
-            get { return Instance.settings; }
-            set { Instance.settings = value; }
-        }
+        //public XboxLiveContextSettings Settings { get; private set; }
 
         public XboxLiveAppConfiguration AppConfig
         {
-            get { return Instance.appConfig; }
+            get
+            {
+                return Instance.appConfig;
+            }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -134,7 +129,7 @@ namespace Microsoft.Xbox.Services
             GC.SuppressFinalize(this);
         }
 
-        public static Int64 DefaultTaskGroupId
+        internal static Int64 DefaultTaskGroupId
         {
             get
             {

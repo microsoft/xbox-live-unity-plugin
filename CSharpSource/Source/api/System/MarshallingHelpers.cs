@@ -6,6 +6,7 @@ namespace Microsoft.Xbox.Services
 {
     using global::System;
     using global::System.Collections.Generic;
+    using global::System.Linq;
     using global::System.Runtime.InteropServices;
     using global::System.Text;
 
@@ -51,9 +52,9 @@ namespace Microsoft.Xbox.Services
         /// <param name="arrayPtr">Pointer to the C-style string array</param>
         /// <param name="length">Number of strings in the array</param>
         /// <returns></returns>
-        internal static IList<string> Utf8StringArrayToStringList(IntPtr arrayPtr, int length)
+        internal static IList<string> Utf8StringArrayToStringList(IntPtr arrayPtr, uint length)
         {
-            var list = new List<string>(length);
+            var list = new List<string>((int)length);
             for (int i = 0; i < length; ++i)
             {
                 string str = MarshalingHelpers.Utf8ToString(Marshal.ReadIntPtr(arrayPtr));
@@ -69,9 +70,9 @@ namespace Microsoft.Xbox.Services
         /// </summary>
         /// <param name="strings">The array of string to allocate</param>
         /// <returns>An IntPtr to the first Utf8String pointer</returns>
-        internal static IntPtr StringListToHGlobalUtf8StringArray(IList<string> strings)
+        internal static IntPtr StringListToHGlobalUtf8StringArray(IEnumerable<string> strings)
         {
-            var firstString = Marshal.AllocHGlobal(IntPtr.Size * strings.Count);
+            var firstString = Marshal.AllocHGlobal(IntPtr.Size * strings.Count());
             int offset = 0;
             foreach (var str in strings)
             {

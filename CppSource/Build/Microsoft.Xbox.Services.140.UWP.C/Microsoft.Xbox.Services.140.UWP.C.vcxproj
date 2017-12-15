@@ -64,7 +64,7 @@
     <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.targets')" />
     <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.targets')" />
     <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets')" />
-    <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" />
+    <Import Project="..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets" Condition="Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.08.20170829.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="..\..\External\libHttpClient\libHttpClient.props" />
@@ -184,7 +184,6 @@
     <ClInclude Include="..\..\Source\Services\Common\pch.h" />
     <ClInclude Include="..\..\Source\Services\Common\pch_common.h" />
     <ClInclude Include="..\..\Source\Services\Common\taskargs.h" />
-    <ClInclude Include="..\..\Source\Services\Common\xbox_live_app_config_impl.h" />
     <ClInclude Include="..\..\Source\Services\Common\xbox_live_context_impl.h" />
     <ClInclude Include="..\..\Source\Services\Leaderboard\leaderboard_helper.h" />
     <ClInclude Include="..\..\Source\Services\Privacy\privacy_multiple_permissions_check_result_impl.h" />
@@ -233,6 +232,6 @@
     <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.ARM.targets'))" />
     <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x64.targets'))" />
     <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.v141.x86.targets'))" />
-    <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.11.20171204.01\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets'))" />
+    <Error Condition="!Exists('..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.08.20170829.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\CSharpSource\external\packages\Microsoft.Xbox.Live.SDK.Cpp.UWP.2017.08.20170829.001\build\native\Microsoft.Xbox.Live.SDK.Cpp.UWP.targets'))" />
   </Target>
 </Project>

@@ -9,10 +9,5 @@ namespace Microsoft.Xbox.Services
         {
             get { return false; }
         }
-
-        public static bool UseMockHttp
-        {
-            get { return false; }
-        }
     }
 }

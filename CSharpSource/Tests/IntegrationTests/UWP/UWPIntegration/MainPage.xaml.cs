@@ -219,7 +219,7 @@ namespace UWPIntegration
             string resultText = string.Format("Allowed: {0}", result.IsAllowed);
             if (!result.IsAllowed)
             {
-                foreach (var reason in result.Reasons)
+                foreach (var reason in result.DenyReasons)
                 {
                     resultText += string.Format("\tReason: {0}", reason.Reason);
                 }
@@ -249,7 +249,7 @@ namespace UWPIntegration
                     resultText += string.Format("\tPermission {0} allowed: {1}", permissionResult.PermissionRequested, permissionResult.IsAllowed);
                     if (!permissionResult.IsAllowed)
                     {
-                        foreach (var reason in permissionResult.Reasons)
+                        foreach (var reason in permissionResult.DenyReasons)
                         {
                             resultText += string.Format("\tReason: {0}", reason.Reason);
                         }
@@ -333,7 +333,7 @@ namespace UWPIntegration
         private async void TitleStorageGetQuota_Click(object sender, RoutedEventArgs e)
         {
             var quota = await this.User.Services.TitleStorageService.GetQuotaAsync(
-                XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal);
+                XboxLive.Instance.AppConfig.ServiceConfigurationId, TitleStorageType.Universal);
 
             this.TitleStorageData.Text = string.Format("Used bytes = {0}, Quota bytes = {1}", quota.UsedBytes, quota.QuotaBytes);
         }
@@ -343,7 +343,7 @@ namespace UWPIntegration
             try
             {
                 var metadataResult = await this.User.Services.TitleStorageService.GetBlobMetadataAsync(
-                    XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/", this.User.XboxUserId);
+                    XboxLive.Instance.AppConfig.ServiceConfigurationId, TitleStorageType.Universal, "path/to/", this.User.XboxUserId);
 
                 var items = metadataResult.Items;
                 if (items.Count > 0)
@@ -362,7 +362,7 @@ namespace UWPIntegration
         {
             try
             {
-                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.ServiceConfigurationId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
 
                 var bytes = System.Text.Encoding.Unicode.GetBytes("Hello, world!");
 
@@ -403,7 +403,7 @@ namespace UWPIntegration
         {
             try
             {
-                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.PrimaryServiceConfigId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
+                var metadata = new TitleStorageBlobMetadata(XboxLive.Instance.AppConfig.ServiceConfigurationId, TitleStorageType.Universal, "path/to/newfile.txt", TitleStorageBlobType.Binary, this.user.XboxUserId);
                 await this.User.Services.TitleStorageService.DeleteBlobAsync(metadata, false);
 
                 this.TitleStorageData.Text = string.Format("Successfully deleted blob with path \"path/to/newfile.txt\"", metadata.Length);
@@ -457,7 +457,7 @@ namespace UWPIntegration
                         }
                         this.StatsData.Text = string.Join(Environment.NewLine, statNames.Select(n => this.StatsManager.GetStatistic(this.User, n)).Select(s => $"{s.Name} ({s.DataType}) = {GetStatValue(s)}"));
                     }
-                    
+
                     IList<SocialEvent> socialEvents = this.SocialManager.DoWork();
                     foreach (SocialEvent ev in socialEvents)
                     {

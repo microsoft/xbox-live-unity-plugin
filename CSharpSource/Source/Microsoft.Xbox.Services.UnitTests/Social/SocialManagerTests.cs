@@ -16,7 +16,6 @@ namespace Microsoft.Xbox.Services.UnitTests.Social
         public override void TestInitialize()
         {
             base.TestInitialize();
-            MockXboxLiveData.Load(Environment.CurrentDirectory + "\\Social\\SocialManagerUT.json");
         }
         
         [TestMethod]

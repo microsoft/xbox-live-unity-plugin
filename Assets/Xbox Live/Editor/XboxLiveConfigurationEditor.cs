@@ -56,7 +56,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
 
         if (this.configuration != null)
         {
-            if (string.IsNullOrEmpty(this.configuration.PrimaryServiceConfigId) || this.configuration.TitleId == 0 || string.IsNullOrEmpty(this.configuration.AppId))
+            if (string.IsNullOrEmpty(this.configuration.ServiceConfigurationId) || this.configuration.TitleId == 0 || string.IsNullOrEmpty(this.configuration.AppId))
             {
                 EditorGUILayout.HelpBox("Your Xbox Live configuration appears invalid.  You will need to re-associate your game before you can create a finished build.", MessageType.Warning, true);
             }
@@ -67,7 +67,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
             PropertyLabel("Publisher", this.configuration.PublisherDisplayName);
             PropertyLabel("App ID", this.configuration.AppId);
             PropertyLabel("Product Family Name", this.configuration.ProductFamilyName);
-            PropertyLabel("SCID", this.configuration.PrimaryServiceConfigId);
+            PropertyLabel("SCID", this.configuration.ServiceConfigurationId);
             PropertyLabel("Title ID", this.configuration.TitleId.ToString());
             PropertyLabel("Sandbox", this.configuration.Sandbox);
         }

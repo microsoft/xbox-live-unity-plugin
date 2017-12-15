@@ -30,6 +30,11 @@ namespace Microsoft.Xbox.Services
         {
         }
 
+        internal XboxException(XSAPI_RESULT result, IntPtr errorMessagePtr)
+            : base(string.Format("Xbox Services flat C API return error code {0} with message \"{1}\"", result.ToString("g"), MarshalingHelpers.Utf8ToString(errorMessagePtr)))
+        {
+        }
+
         internal XboxException(XSAPI_RESULT_INFO resultInfo)
             : base (string.Format("Xbox Services flat C API return error code {0} with message \"{1}\"", resultInfo.errorCode.ToString("g"), MarshalingHelpers.Utf8ToString(resultInfo.errorMessage)))
         {

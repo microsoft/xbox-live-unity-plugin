@@ -64,7 +64,7 @@ public class UserProfile : MonoBehaviour
     public void Start()
     {
         // Disable the sign-in button if there's no configuration available.
-        if (XboxLive.Instance.AppConfig == null || XboxLive.Instance.AppConfig.AppId == null)
+        if (XboxLive.Instance.AppConfig == null || XboxLive.Instance.AppConfig.ServiceConfigurationId == null)
         {
             this.ConfigAvailable = false;
 
@@ -86,7 +86,7 @@ public class UserProfile : MonoBehaviour
             {
                 XboxLiveUserManager.Instance.UserForSingleUserMode = Instantiate(this.XboxLiveUserPrefab);
                 this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
-                if (XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.AppId != null)
+                if (XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.ServiceConfigurationId != null)
                 {
                     this.SignIn();
                 }

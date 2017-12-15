@@ -5,6 +5,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
 {
     using global::System;
     using global::System.Collections.Generic;
+    using global::System.Linq;
     using global::System.Runtime.InteropServices;
     using global::System.Threading.Tasks;
     using Microsoft.Xbox.Services.Shared.TitleStorage;
@@ -38,7 +39,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             var tcs = new TaskCompletionSource<TitleStorageQuota>();
             Task.Run(() =>
             {
-                var scid = MarshalingHelpers.StringToHGlobalUtf8(XboxLive.Instance.AppConfig.PrimaryServiceConfigId);
+                var scid = MarshalingHelpers.StringToHGlobalUtf8(XboxLive.Instance.AppConfig.ServiceConfigurationId);
 
                 int contextKey;
                 var context = XsapiCallbackContext<object, TitleStorageQuota>.CreateContext(null, tcs, out contextKey);
@@ -246,7 +247,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
         /// <param name="etagMatchCondition">The ETag match condition used to determine if the blob data should be uploaded.</param>
         /// <param name="preferredDownloadBlockSize">The preferred upload block size in bytes for binary blobs. </param>
         /// <returns>An instance of the <see cref="TitleStorageBlobMetadata"/> class with updated ETag and Length Properties.</returns>
-        public Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, List<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize)
+        public Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, IReadOnlyList<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize)
         {
             var tcs = new TaskCompletionSource<TitleStorageBlobMetadata>();
             Task.Run(() =>
@@ -255,7 +256,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
                 var context = XsapiCallbackContext<TitleStorageBlobMetadata, TitleStorageBlobMetadata>.CreateContext(blobMetadata, tcs, out contextKey);
 
                 var buffer = Marshal.AllocHGlobal(blobBuffer.Count);
-                Marshal.Copy(blobBuffer.ToArray(), 0, buffer, blobBuffer.Count);
+                Marshal.Copy(Enumerable.ToArray<byte>(blobBuffer), 0, buffer, blobBuffer.Count);
                 context.PointersToFree = new List<IntPtr> { buffer };
 
                 var xsapiResult = TitleStorageUploadBlob(

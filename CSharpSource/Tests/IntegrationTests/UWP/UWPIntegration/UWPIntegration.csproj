@@ -99,6 +99,9 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
+    <Content Include="Microsoft.Xbox.Services.140.UWP.C.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="XboxServices.config">
       <SubType>Designer</SubType>
     </Content>
@@ -153,8 +156,8 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <Target Name="CopyCdllToAppx" AfterTargets="Build">
     <Message Importance="high" Text="Copying C dll to Appx folder from $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\ to $(TargetDir)AppX\" />
-    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.dll $(TargetDir)AppX\" />    
-    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.pdb $(TargetDir)AppX\" /> 
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.dll $(TargetDir)AppX\" />
+    <Exec Command="xcopy /y /d $(BuildRoot)\..\CppSource\binaries\$(Configuration)\$(CDllPlatform)\Microsoft.Xbox.Services.140.UWP.C\*.pdb $(TargetDir)AppX\" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

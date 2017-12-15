@@ -14,16 +14,14 @@ namespace Microsoft.Xbox.Services.System
         string AgeGroup { get; }
         string Privileges { get; }
         string WebAccountId { get; }
-        AuthConfig AuthConfig { get; }
 #if WINDOWS_UWP
         Windows.System.User CreationContext { get; }
 #endif
 #if !UNITY_EDITOR
         IntPtr XboxLiveUserPtr { get; }
 #endif
-
         Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh);
 
-        Task<TokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh);
+        Task<GetTokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh);
     }
 }

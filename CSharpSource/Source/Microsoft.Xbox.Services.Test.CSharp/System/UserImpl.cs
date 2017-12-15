@@ -29,7 +29,6 @@ namespace Microsoft.Xbox.Services.System
         public string AgeGroup { get; set; }
         public string Privileges { get; set; }
         public string WebAccountId { get; set; }
-        public AuthConfig AuthConfig { get; set; }
         public IntPtr XboxLiveUserPtr { get; }
 
         public Task<SignInResult> SignInImpl(bool showUI, bool forceRefresh)
@@ -37,10 +36,10 @@ namespace Microsoft.Xbox.Services.System
             return Task.FromResult(new SignInResult(SignInStatus.Success));
         }
 
-        public Task<TokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
+        public Task<GetTokenAndSignatureResult> InternalGetTokenAndSignatureAsync(string httpMethod, string url, string headers, byte[] body, bool promptForCredentialsIfNeeded, bool forceRefresh)
         {
             string[] authHeaderParts = authHeader.Substring(9).Split(';');
-            return Task.FromResult(new TokenAndSignatureResult
+            return Task.FromResult(new GetTokenAndSignatureResult
             {
                 Gamertag = this.Gamertag,
                 XboxUserId = this.XboxUserId,

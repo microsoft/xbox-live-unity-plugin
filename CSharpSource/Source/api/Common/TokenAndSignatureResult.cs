@@ -8,7 +8,7 @@ using Windows.Security.Authentication.Web.Core;
 
 namespace Microsoft.Xbox.Services
 {
-    public class TokenAndSignatureResult
+    public class GetTokenAndSignatureResult
     {
         public string WebAccountId { get; set; }
 
@@ -25,10 +25,5 @@ namespace Microsoft.Xbox.Services
         public string Signature { get; set; }
 
         public string Token { get; set; }
-
-        internal string Reserved { get; set; }
-#if WINDOWS_UWP
-        internal WebTokenRequestStatus TokenRequestResultStatus { get; set; }
-#endif
     }
 }

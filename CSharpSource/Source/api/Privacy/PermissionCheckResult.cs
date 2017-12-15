@@ -11,7 +11,7 @@ namespace Microsoft.Xbox.Services.Privacy
 
     public class PermissionCheckResult
     {
-        public IList<PermissionDenyReason> Reasons { get; private set; }
+        public IReadOnlyList<PermissionDenyReason> DenyReasons { get; private set; }
 
         public string PermissionRequested { get; private set; }
 
@@ -27,17 +27,17 @@ namespace Microsoft.Xbox.Services.Privacy
             IsAllowed = permissionCheckResultStruct.isAllowed;
             PermissionRequested = MarshalingHelpers.Utf8ToString(permissionCheckResultStruct.permissionRequested);
 
-            Reasons = new List<PermissionDenyReason>((int)permissionCheckResultStruct.denyReasonsCount);
+            var denyReasons = new List<PermissionDenyReason>((int)permissionCheckResultStruct.denyReasonsCount);
 
             int size = MarshalingHelpers.SizeOf<XSAPI_PRIVACY_PERMISSION_DENY_REASON>();
             IntPtr denyReasonPtr = permissionCheckResultStruct.denyReasons;
 
             for (ulong i = 0; i < permissionCheckResultStruct.denyReasonsCount; ++i)
             {
-                Reasons.Add(new PermissionDenyReason(denyReasonPtr));
+                denyReasons.Add(new PermissionDenyReason(denyReasonPtr));
                 denyReasonPtr = denyReasonPtr.Increment(size);
             }
-            
+            DenyReasons = denyReasons;
         }
     }
 

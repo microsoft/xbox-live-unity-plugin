@@ -100,7 +100,6 @@
     <Compile Include="Statistics\Manager\StatisticEvent.cs" />
     <Compile Include="Statistics\Manager\StatisticManager.cs" />
     <Compile Include="System\TitleCallableUI.cs" />
-    <Compile Include="System\TokenRequestResult.cs" />
     <Compile Include="System\UserImpl.cs" />
     <Compile Include="Common\XboxLiveUser.cs" />
     <Compile Include="Common\XboxLiveAppConfiguration.cs" />

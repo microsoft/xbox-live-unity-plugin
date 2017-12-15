@@ -49,6 +49,7 @@ External/**/lib/
 External/**/bin/
 External/**/Debug/
 External/**/Release/
+Tests/**/*.dll
 
 **/*.classpath
 

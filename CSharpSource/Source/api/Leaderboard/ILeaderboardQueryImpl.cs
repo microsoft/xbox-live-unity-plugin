@@ -6,7 +6,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
     internal interface ILeaderboardQueryImpl
     {
         IntPtr GetPtr();
-        
+
         uint GetSkipResultToRank();
         void SetSkipResultToRank(uint skipResultToRank);
 

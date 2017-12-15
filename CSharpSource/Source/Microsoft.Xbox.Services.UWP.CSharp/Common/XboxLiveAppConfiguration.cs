@@ -4,28 +4,43 @@
 
 namespace Microsoft.Xbox.Services
 {
-    using global::System.IO;
+    using global::Microsoft.Xbox.Services.System;
+    using global::System;
+    using global::System.Runtime.InteropServices;
 
     public partial class XboxLiveAppConfiguration
     {
-        public static XboxLiveAppConfiguration Load(string path)
+        private static XboxLiveAppConfiguration Load()
         {
-            Windows.ApplicationModel.Package package = Windows.ApplicationModel.Package.Current;
-            Windows.Storage.StorageFolder installedLocation = package.InstalledLocation;
-
-            string fullPath = Path.Combine(installedLocation.Path, path);
-            if (!File.Exists(fullPath))
+            IntPtr appConfigPtr;
+            var result = GetXboxLiveAppConfigSingleton(out appConfigPtr);
+            if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
-                throw new FileNotFoundException(string.Format("Unable to find Xbox Live app configuration file '{0}'.", path));
+                throw new XboxException(result);
             }
 
-            string content = File.ReadAllText(fullPath);
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                throw new XboxException(string.Format("Xbox Live app configeration file '{0}' was empty.", path));
-            }
+            var appConfigStruct = Marshal.PtrToStructure<XSAPI_XBOX_LIVE_APP_CONFIG>(appConfigPtr);
 
-            return JsonSerialization.FromJson<XboxLiveAppConfiguration>(content);
+            return new XboxLiveAppConfiguration
+            {
+                TitleId = appConfigStruct.titleId,
+                Environment = MarshalingHelpers.Utf8ToString(appConfigStruct.environment),
+                Sandbox = MarshalingHelpers.Utf8ToString(appConfigStruct.sandbox),
+                ServiceConfigurationId = MarshalingHelpers.Utf8ToString(appConfigStruct.scid)
+            };
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct XSAPI_XBOX_LIVE_APP_CONFIG
+        {
+            public UInt32 titleId;
+            public IntPtr scid;
+            public IntPtr environment;
+            public IntPtr sandbox;
+        };
+
+        [DllImport(XboxLive.FlatCDllName)]
+        private static extern XSAPI_RESULT GetXboxLiveAppConfigSingleton(
+            out IntPtr ppConfig);
     }
 }

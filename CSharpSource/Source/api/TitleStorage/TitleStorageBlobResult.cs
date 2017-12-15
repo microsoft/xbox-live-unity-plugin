@@ -3,8 +3,8 @@
 // 
 namespace Microsoft.Xbox.Services.TitleStorage
 {
-    using global::System.Runtime.InteropServices;
     using global::System;
+    using global::System.Runtime.InteropServices;
 
     /// <summary>
     /// Blob data returned from the cloud.
