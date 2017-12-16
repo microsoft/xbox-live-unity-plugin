@@ -4,6 +4,7 @@
 
 namespace Microsoft.Xbox.Services.Privacy
 {
+    using global::AOT;
     using global::Microsoft.Xbox.Services.System;
     using global::System;
     using global::System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE))]
         private void GetPrivacyUserListComplete(XSAPI_RESULT_INFO result, IntPtr xboxUserIdList, UInt32 count, IntPtr contextKey)
         {
             XsapiCallbackContext<object, IList<string>> context;
@@ -92,6 +94,7 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_PRIVACY_CHECK_PERMISSION_WITH_TARGET_USER_COMPLETION_ROUTINE))]
         private void CheckPermissionWithTargetUserComplete(XSAPI_RESULT_INFO result, XSAPI_PRIVACY_PERMISSION_CHECK_RESULT payload, IntPtr contextKey)
         {
             XsapiCallbackContext<object, PermissionCheckResult> context;
@@ -138,6 +141,7 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE))]
         private void CheckMultiplePermissionsWithMultipleTargetUsersComplete(XSAPI_RESULT_INFO result, IntPtr resultsPtr, UInt32 privacyCheckResultCount, IntPtr contextKey)
         {
             XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>> context;

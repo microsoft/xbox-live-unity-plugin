@@ -3,6 +3,7 @@
 
 namespace Microsoft.Xbox.Services.System
 {
+    using global::AOT;
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Runtime.InteropServices;
@@ -104,6 +105,7 @@ namespace Microsoft.Xbox.Services.System
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE))]
         private static void ShowProfileCardUIComplete(XSAPI_RESULT_INFO result, IntPtr completionRoutineContext)
         {
             int contextKey = completionRoutineContext.ToInt32();
@@ -116,6 +118,7 @@ namespace Microsoft.Xbox.Services.System
             }
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE))]
         private static void CheckGamingPrivilegeComplete(XSAPI_RESULT_INFO result, bool hasPrivilege, IntPtr completionRoutineContext)
         {
             int contextKey = completionRoutineContext.ToInt32();
@@ -141,7 +144,7 @@ namespace Microsoft.Xbox.Services.System
         private delegate void XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE(XSAPI_RESULT_INFO result, IntPtr completionRoutineContext);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT(XSAPI_RESULT_INFO result, bool hasPrivilege, IntPtr completionRoutineContext);
+        private delegate void XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE(XSAPI_RESULT_INFO result, bool hasPrivilege, IntPtr completionRoutineContext);
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT TCUIShowProfileCardUI(
@@ -152,16 +155,16 @@ namespace Microsoft.Xbox.Services.System
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT TCUICheckGamingPrivilegeSilently(
-            GamingPrivilege privilege, 
-            XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT completionRoutine, 
+            GamingPrivilege privilege,
+            XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE completionRoutine, 
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT TCUICheckGamingPrivilegeWithUI(
             GamingPrivilege privilege, 
-            IntPtr friendlyMessage, 
-            XSAPI_TCUI_CHECK_GAMING_PRIVILEGE_RESULT completionRoutine, 
+            IntPtr friendlyMessage,
+            XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE completionRoutine, 
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
     }

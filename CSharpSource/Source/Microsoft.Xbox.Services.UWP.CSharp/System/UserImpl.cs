@@ -3,6 +3,7 @@
 
 namespace Microsoft.Xbox.Services.System
 {
+    using global::AOT;
     using global::System;
     using global::System.Collections.Concurrent;
     using global::System.Collections.Generic;
@@ -72,7 +73,8 @@ namespace Microsoft.Xbox.Services.System
                 XboxLiveUserDelete(XboxLiveUserPtr);
             }
         }
-        
+
+        [MonoPInvokeCallback(typeof(XSAPI_SIGN_OUT_COMPLETED_HANDLER))]
         private static void OnSignOutCompleted(IntPtr xboxLiveUser_c)
         {
             UserImpl @this = xboxLiveUserInstanceMap[xboxLiveUser_c];
@@ -143,6 +145,7 @@ namespace Microsoft.Xbox.Services.System
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_SIGN_IN_COMPLETION_ROUTINE))]
         private static void SignInComplete(XSAPI_RESULT_INFO result, XSAPI_SIGN_IN_RESULT payload, IntPtr context)
         {
             int contextKey = context.ToInt32();
@@ -207,7 +210,7 @@ namespace Microsoft.Xbox.Services.System
             return tcs.Task;
         }
 
-
+        [MonoPInvokeCallback(typeof(XSAPI_GET_TOKEN_AND_SIGNATURE_COMPLETION_ROUTINE))]
         private static void GetTokenAndSignatureComplete(XSAPI_RESULT_INFO result, XSAPI_TOKEN_AND_SIGNATURE_RESULT payload, IntPtr context)
         {
             int contextKey = context.ToInt32();

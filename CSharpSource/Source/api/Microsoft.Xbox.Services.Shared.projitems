@@ -80,6 +80,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\LeaderboardStatType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\MockLeaderboardResultImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Leaderboard\MockLeaderboardService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Unity\MonoPInvokeCallbackAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\IPrivacyService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Privacy\Models\PrivacySettingsRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Social\Manager\ISocialManagerPresenceRecord.cs" />
