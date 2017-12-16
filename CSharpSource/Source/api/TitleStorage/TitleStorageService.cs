@@ -3,6 +3,7 @@
 // 
 namespace Microsoft.Xbox.Services.TitleStorage
 {
+    using global::AOT;
     using global::System;
     using global::System.Collections.Generic;
     using global::System.Linq;
@@ -56,6 +57,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_GET_QUOTA_COMPLETION_ROUTINE))]
         private void GetQuotaComplete(XSAPI_RESULT_INFO result, XSAPI_TITLE_STORAGE_QUOTA quota, IntPtr contextKey)
         {
             XsapiCallbackContext<object, TitleStorageQuota> context;
@@ -109,6 +111,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_GET_BLOB_METADATA_COMPLETION_ROUTINE))]
         internal void GetBlobMetadataComplete(XSAPI_RESULT_INFO result, XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT payload, IntPtr contextKey)
         {
             XsapiCallbackContext<object, TitleStorageBlobMetadataResult> context;
@@ -151,6 +154,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_DELETE_BLOB_COMPLETION_ROUTINE))]
         private void DeleteBlobComplete(XSAPI_RESULT_INFO result, IntPtr contextKey)
         {
             XsapiCallbackContext<object, object> context;
@@ -217,6 +221,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_DOWNLOAD_BLOB_COMPLETION_ROUTINE))]
         private void DownloadBlobComplete(XSAPI_RESULT_INFO result, XSAPI_TITLE_STORAGE_BLOB_RESULT blobResult, IntPtr contextKey)
         {
             XsapiCallbackContext<TitleStorageBlobMetadata, TitleStorageBlobResult> context;
@@ -271,6 +276,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             return tcs.Task;
         }
 
+        [MonoPInvokeCallback(typeof(XSAPI_UPLOAD_BLOB_COMPLETION_ROUTINE))]
         private void UploadBlobComplete(XSAPI_RESULT_INFO result, IntPtr pBlobMetadata, IntPtr contextKey)
         {
             XsapiCallbackContext<TitleStorageBlobMetadata, TitleStorageBlobMetadata> context;

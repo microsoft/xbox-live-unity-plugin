@@ -86,10 +86,20 @@ namespace Assets.Xbox_Live.Editor
 
         private static void UpdateProjectFile(string projectFolder, XboxLiveAppConfiguration configuration)
         {
-            string projectFile = Path.Combine(projectFolder, Application.productName + ".csproj");
+            var scriptingBackend = PlayerSettings.GetScriptingBackend(BuildTargetGroup.WSA);
 
             // Copy the XboxServices.config file over to the project folder.
             CopyConfigurationFile(XboxLiveAppConfiguration.FileName, projectFolder);
+
+            string projectFile = null;
+            if (scriptingBackend == ScriptingImplementation.WinRTDotNET)
+            {
+                projectFile = Path.Combine(projectFolder, Application.productName + ".csproj");
+            }
+            else if (scriptingBackend == ScriptingImplementation.IL2CPP)
+            {
+                projectFile = Path.Combine(projectFolder, Application.productName + ".vcxproj");
+            }
 
             XDocument project = XDocument.Load(projectFile);
             XNamespace msb = "http://schemas.microsoft.com/developer/msbuild/2003";
@@ -100,10 +110,20 @@ namespace Assets.Xbox_Live.Editor
             XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
             if (identityItemGroup.XPathSelectElement("msb:Content[@Include='XboxServices.config']", ns) == null)
             {
-                identityItemGroup.Add(
-                    new XElement(msb + "Content",
+                XElement element = null;
+                if (scriptingBackend == ScriptingImplementation.WinRTDotNET)
+                {
+                    element = new XElement(msb + "Content",
                         new XAttribute("Include", "XboxServices.config"),
-                        new XElement(msb + "CopyToOutputDirectory", "PreserveNewest")));
+                        new XElement(msb + "CopyToOutputDirectory", "PreserveNewest"));
+                }
+                else if (scriptingBackend == ScriptingImplementation.IL2CPP)
+                {
+                    element = new XElement(msb + "None",
+                        new XAttribute("Include", "XboxServices.config"),
+                        new XElement(msb + "DeploymentContent", "true"));
+                }
+                identityItemGroup.Add(element);
             }
 
             project.Save(projectFile);
