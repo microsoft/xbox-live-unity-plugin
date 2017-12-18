@@ -75,7 +75,7 @@ typedef int32_t FUNCTION_CONTEXT;
 
 #include "xsapi/types_c.h"
 #include "xsapi/errors_c.h"
-#include "xsapi/services_c.h"
+#include "xsapi/xbox_live_global_c.h"
 #include "utils.h"
 #include "singleton.h"
 

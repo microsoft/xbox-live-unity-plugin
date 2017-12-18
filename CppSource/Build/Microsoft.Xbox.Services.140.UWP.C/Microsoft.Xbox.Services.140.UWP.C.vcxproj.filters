@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\xsapi\services_c.h">
-      <Filter>C++ Public Includes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Services\Common\pch.h">
       <Filter>C++ Source\Services\Common</Filter>
     </ClInclude>
@@ -144,6 +141,9 @@
     <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h">
       <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\xbox_live_global_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
@@ -166,9 +166,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\threadpool.cpp">
       <Filter>C++ Source\Shared</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Common\services_global.cpp">
-      <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\singleton.cpp">
       <Filter>C++ Source\Shared</Filter>
@@ -220,6 +217,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Services\Social\Manager\social_manager_helper.cpp">
       <Filter>C++ Source\Services\Social\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Common\xbox_live_global.cpp">
+      <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

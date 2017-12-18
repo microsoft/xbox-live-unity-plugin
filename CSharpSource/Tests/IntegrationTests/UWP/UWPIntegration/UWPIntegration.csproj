@@ -99,9 +99,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <Content Include="Microsoft.Xbox.Services.140.UWP.C.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="XboxServices.config">
       <SubType>Designer</SubType>
     </Content>
