@@ -46,6 +46,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             TCUIShowProfileCardUIExecute,
             static_cast<void*>(args),
@@ -88,6 +89,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             TCUICheckGamingPrivilegeSilentlyExecute,
             static_cast<void*>(tcuiArgs),
@@ -137,6 +139,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             TCUICheckGamingPrivilegeWithUIExecute,
             static_cast<void*>(tcuiArgs),

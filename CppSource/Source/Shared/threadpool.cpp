@@ -13,6 +13,8 @@ xsapi_thread_pool::xsapi_thread_pool() :
 {
     memset(m_hActiveThreads, 0, sizeof(HANDLE) * MAX_THREADS);
     m_stopRequestedHandle.set(CreateEvent(nullptr, true, false, nullptr));
+    m_completeReadyHandle.set(CreateEvent(nullptr, false, false, nullptr));
+    m_pendingReadyHandle.set(CreateEvent(nullptr, false, false, nullptr));
 }
 
 long xsapi_thread_pool::get_num_active_threads()
@@ -34,34 +36,51 @@ void xsapi_thread_pool::set_target_num_active_threads(long targetNumThreads)
     }
 }
 
+HANDLE xsapi_thread_pool::get_pending_ready_handle()
+{
+    return m_pendingReadyHandle.get();
+}
+
+HANDLE xsapi_thread_pool::get_complete_ready_handle()
+{
+    return m_completeReadyHandle.get();
+}
+
 HANDLE xsapi_thread_pool::get_stop_handle()
 {
     return m_stopRequestedHandle.get();
 }
 
-HANDLE xsapi_thread_pool::get_ready_handle()
-{
-    return m_readyHandle.get();
-}
-
-void xsapi_thread_pool::set_async_op_ready()
-{
-    SetEvent(get_ready_handle());
-}
-
 DWORD WINAPI xbox_live_thread_proc(LPVOID lpParam)
 {
-    HANDLE stopRequestedHandle = *((HANDLE*)(lpParam));
+    auto threadPool = reinterpret_cast<xsapi_thread_pool*>(lpParam);
+    HANDLE hEvents[3] =
+    {
+        threadPool->get_pending_ready_handle(),
+        threadPool->get_complete_ready_handle(),
+        threadPool->get_stop_handle()
+    };
 
     bool stop = false;
     while (!stop)
     {
-        DWORD dwResult = WaitForSingleObject(stopRequestedHandle, 20);
+        DWORD dwResult = WaitForMultipleObjectsEx(3, hEvents, false, INFINITE, false);
         switch (dwResult)
         {
-        case WAIT_TIMEOUT:
-            HCTaskProcessNextPendingTask();
-            HCTaskProcessNextCompletedTask(0);
+        case WAIT_OBJECT_0:
+            HCTaskProcessNextPendingTask(HC_SUBSYSTEM_ID_XSAPI);
+            if (HCTaskGetPendingTaskQueueSize(HC_SUBSYSTEM_ID_XSAPI) > 0)
+            {
+                SetEvent(threadPool->get_pending_ready_handle());
+            };
+
+            break;
+        case WAIT_OBJECT_0 + 1:
+            HCTaskProcessNextCompletedTask(HC_SUBSYSTEM_ID_XSAPI, 0);
+            if (HCTaskGetCompletedTaskQueueSize(HC_SUBSYSTEM_ID_XSAPI, 0) > 0)
+            {
+                SetEvent(threadPool->get_complete_ready_handle());
+            }
             break;
 
         default:
@@ -73,11 +92,38 @@ DWORD WINAPI xbox_live_thread_proc(LPVOID lpParam)
     return 0;
 }
 
+HC_RESULT libhttpclient_event_handler(
+    _In_opt_ void* context,
+    _In_ HC_TASK_EVENT_TYPE eventType,
+    _In_ HC_TASK_HANDLE taskHandle
+    )
+{
+    UNREFERENCED_PARAMETER(taskHandle);
+
+    auto threadPool = reinterpret_cast<xsapi_thread_pool*>(context);
+    switch (eventType)
+    {
+    case HC_TASK_EVENT_TYPE::HC_TASK_EVENT_PENDING:
+        SetEvent(threadPool->get_pending_ready_handle());
+        break;
+
+    case HC_TASK_EVENT_TYPE::HC_TASK_EVENT_EXECUTE_STARTED:
+        break;
+
+    case HC_TASK_EVENT_TYPE::HC_TASK_EVENT_EXECUTE_COMPLETED:
+        SetEvent(threadPool->get_complete_ready_handle());
+        break;
+    }
+    return HC_OK;
+}
+
 void xsapi_thread_pool::start_threads()
 {
+    HCAddTaskEventHandler(HC_SUBSYSTEM_ID_XSAPI, this, libhttpclient_event_handler, &m_hcEventHandle);
+
     for (int i = 0; i < m_targetNumThreads; i++)
     {
-        m_hActiveThreads[i] = CreateThread(nullptr, 0, xbox_live_thread_proc, &m_stopRequestedHandle, 0, nullptr);
+        m_hActiveThreads[i] = CreateThread(nullptr, 0, xbox_live_thread_proc, this, 0, nullptr);
         if (m_defaultIdealProcessor != MAXIMUM_PROCESSORS)
         {
             SetThreadIdealProcessor(m_hActiveThreads[i], m_defaultIdealProcessor);
@@ -89,6 +135,8 @@ void xsapi_thread_pool::start_threads()
 
 void xsapi_thread_pool::shutdown_active_threads()
 {
+    HCRemoveTaskEventHandler(m_hcEventHandle);
+
     SetEvent(m_stopRequestedHandle.get());
     DWORD dwResult = WaitForMultipleObjectsEx(m_numActiveThreads, m_hActiveThreads, true, INFINITE, false);
     if (dwResult >= WAIT_OBJECT_0 && dwResult <= WAIT_OBJECT_0 + m_numActiveThreads - 1)

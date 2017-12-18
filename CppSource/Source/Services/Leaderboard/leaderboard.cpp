@@ -134,6 +134,7 @@ try
     );
 
     return utils::xsapi_result_from_hc_result(HCTaskCreate(
+        HC_SUBSYSTEM_ID_XSAPI,
         taskGroupId,
         LeaderboardResultGetNextExecute,
         static_cast<void*>(args),

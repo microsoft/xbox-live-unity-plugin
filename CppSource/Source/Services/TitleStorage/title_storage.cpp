@@ -61,6 +61,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             get_quota_execute,
             static_cast<void*>(args),
@@ -141,6 +142,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             get_blob_metadata_execute,
             static_cast<void*>(args),
@@ -201,6 +203,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             blob_metadata_result_get_next_execute,
             static_cast<void*>(args),
@@ -309,6 +312,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             delete_blob_execute,
             static_cast<void*>(args),
@@ -387,6 +391,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             download_blob_execute,
             static_cast<void*>(args),
@@ -454,6 +459,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             upload_blob_execute,
             static_cast<void*>(args),

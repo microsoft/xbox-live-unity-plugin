@@ -229,10 +229,6 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             // Invokes the c method
             XSAPI_RESULT errCode = StatsManagerGetStatNames(user.Impl.XboxLiveUserPtr, out cStatListPtr, out statListCount, out cErrMessage);
 
-            // Handles error
-            string errMessage = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(cErrMessage));
-            Marshal.FreeHGlobal(cErrMessage);
-
             if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 throw new XboxException(errCode, cErrMessage);

@@ -4,7 +4,7 @@
 #include "pch.h"
 
 HC_API void HC_CALLING_CONV
-XSAPIMemSetFunctions(
+XsapiMemSetFunctions(
     _In_opt_ XSAPI_MEM_ALLOC_FUNC memAllocFunc,
     _In_opt_ XSAPI_MEM_FREE_FUNC memFreeFunc
     ) XSAPI_NOEXCEPT
@@ -13,7 +13,7 @@ XSAPIMemSetFunctions(
 }
 
 HC_API XSAPI_RESULT HC_CALLING_CONV
-XSAPIMemGetFunctions(
+XsapiMemGetFunctions(
     _Out_ XSAPI_MEM_ALLOC_FUNC* memAllocFunc,
     _Out_ XSAPI_MEM_FREE_FUNC* memFreeFunc
     ) XSAPI_NOEXCEPT
@@ -22,7 +22,7 @@ XSAPIMemGetFunctions(
 }
 
 XBL_API XSAPI_RESULT XBL_CALLING_CONV
-XSAPIGlobalInitialize() XSAPI_NOEXCEPT
+XsapiGlobalInitialize() XSAPI_NOEXCEPT
 try
 {
     auto singleton = get_xsapi_singleton(true);
@@ -38,10 +38,15 @@ try
 CATCH_RETURN()
 
 XBL_API void XBL_CALLING_CONV
-XSAPIGlobalCleanup() XSAPI_NOEXCEPT
+XsapiGlobalCleanup() XSAPI_NOEXCEPT
 try
 {
-    cleanup_xsapi_singleton();
+    auto singleton = get_xsapi_singleton();
+    if (singleton != nullptr)
+    {
+        singleton->m_threadPool->shutdown_active_threads();
+        cleanup_xsapi_singleton();
+    }
     HCGlobalCleanup();
 }
 CATCH_RETURN_WITH(;)

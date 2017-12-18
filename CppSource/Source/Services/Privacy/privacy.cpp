@@ -65,6 +65,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             get_privacy_list_execute,
             static_cast<void*>(args),
@@ -94,6 +95,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             get_privacy_list_execute,
             static_cast<void*>(args),
@@ -150,6 +152,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             check_permission_execute,
             static_cast<void*>(args),
@@ -228,6 +231,7 @@ try
     
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             check_multiple_permissions_execute,
             static_cast<void*>(args),

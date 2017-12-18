@@ -32,7 +32,7 @@ namespace Microsoft.Xbox.Services
             try
             {
 #if WINDOWS_UWP
-                var result = XBLGlobalInitialize();
+                var result = XsapiGlobalInitialize();
                 if (result != XSAPI_RESULT.XSAPI_RESULT_OK)
                 {
                     throw new XboxException(result);
@@ -50,7 +50,7 @@ namespace Microsoft.Xbox.Services
 
         ~XboxLive()
         {
-            XBLGlobalCleanup();
+            XsapiGlobalCleanup();
         }
 
         public static XboxLive Instance
@@ -138,9 +138,9 @@ namespace Microsoft.Xbox.Services
         }
         
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern XSAPI_RESULT XBLGlobalInitialize();
+        private static extern XSAPI_RESULT XsapiGlobalInitialize();
 
         [DllImport(XboxLive.FlatCDllName)]
-        private static extern void XBLGlobalCleanup();
+        private static extern void XsapiGlobalCleanup();
     }
 }

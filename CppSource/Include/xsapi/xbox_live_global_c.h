@@ -72,7 +72,7 @@ typedef void
 /// <param name="memFreeFunc">A pointer to the custom freeing callback to use, or a null 
 /// pointer to restore the default.</param>
 HC_API void HC_CALLING_CONV
-XSAPIMemSetFunctions(
+XsapiMemSetFunctions(
     _In_opt_ XSAPI_MEM_ALLOC_FUNC memAllocFunc,
     _In_opt_ XSAPI_MEM_FREE_FUNC memFreeFunc
     ) XSAPI_NOEXCEPT;
@@ -88,7 +88,7 @@ XSAPIMemSetFunctions(
 /// routine if not previously set</param>
 /// <returns>Result code for this API operation.  Possible values are XSAPI_RESULT_OK, XSAPI_RESULT_E_HC_INVALIDARG, or XSAPI_RESULT_E_HC_FAIL.</returns>
 HC_API XSAPI_RESULT HC_CALLING_CONV
-XSAPIMemGetFunctions(
+XsapiMemGetFunctions(
     _Out_ XSAPI_MEM_ALLOC_FUNC* memAllocFunc,
     _Out_ XSAPI_MEM_FREE_FUNC* memFreeFunc
     ) XSAPI_NOEXCEPT;
@@ -103,14 +103,14 @@ XSAPIMemGetFunctions(
 /// Should have a corresponding call to XSAPIGlobalCleanup().
 /// </summary>
 XBL_API XSAPI_RESULT XBL_CALLING_CONV
-XSAPIGlobalInitialize() XSAPI_NOEXCEPT;
+XsapiGlobalInitialize() XSAPI_NOEXCEPT;
 
 /// <summary>
 /// Immediately reclaims all resources associated with the library.
 /// If you called XSAPIMemSetFunctions(), call this before shutting down your app's memory manager.
 /// </summary>
 XBL_API void XBL_CALLING_CONV
-XSAPIGlobalCleanup() XSAPI_NOEXCEPT;
+XsapiGlobalCleanup() XSAPI_NOEXCEPT;
 
 #if defined(__cplusplus)
 } // end extern "C"
