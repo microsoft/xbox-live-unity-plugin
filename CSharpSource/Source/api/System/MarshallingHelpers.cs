@@ -59,7 +59,7 @@ namespace Microsoft.Xbox.Services
             {
                 string str = MarshalingHelpers.Utf8ToString(Marshal.ReadIntPtr(arrayPtr));
                 list.Add(str);
-                arrayPtr.Increment(IntPtr.Size);
+                arrayPtr = arrayPtr.Increment(IntPtr.Size);
             }
             return list;
         }

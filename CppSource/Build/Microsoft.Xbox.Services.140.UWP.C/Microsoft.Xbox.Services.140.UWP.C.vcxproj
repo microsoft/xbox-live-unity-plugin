@@ -191,7 +191,9 @@
     <ClInclude Include="..\..\Source\Services\Privacy\privacy_permission_deny_reason_impl.h" />
     <ClInclude Include="..\..\Source\Services\Privacy\privacy_taskargs.h" />
     <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h" />
+    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_vars.h" />
     <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.h" />
+    <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_vars.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_impl.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_blob_metadata_result_impl.h" />
     <ClInclude Include="..\..\Source\Services\TitleStorage\title_storage_state.h" />

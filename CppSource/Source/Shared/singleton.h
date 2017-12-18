@@ -5,6 +5,8 @@
 #include "threadpool.h"
 #include "xsapi/xbox_live_app_config_c.h"
 #include "title_storage_state.h"
+#include "social_manager_vars.h"
+#include "stats_manager_vars.h"
 
 struct XSAPI_XBOX_LIVE_USER;
 
@@ -25,6 +27,9 @@ struct xsapi_singleton
     std::string m_scid;
     std::string m_environment;
     std::string m_sandbox;
+
+    std::unique_ptr<XSAPI_SOCIAL_MANAGER_VARS> m_socialVars;
+    std::unique_ptr<XSAPI_STATS_MANAGER_VARS> m_statsVars;
 };
 
 xsapi_singleton* get_xsapi_singleton(_In_ bool createIfRequired = false);

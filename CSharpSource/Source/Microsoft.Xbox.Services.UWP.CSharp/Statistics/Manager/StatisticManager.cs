@@ -5,6 +5,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 {
     using global::System;
     using global::System.Collections.Generic;
+    using global::System.Linq;
     using global::System.Runtime.InteropServices;
 
     using Microsoft.Xbox.Services.Leaderboard;
@@ -12,7 +13,17 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
     public partial class StatisticManager : IStatisticManager
     {
-        private readonly List<XboxLiveUser> m_localUsers = new List<XboxLiveUser>();
+        private readonly Dictionary<IntPtr, XboxLiveUser> m_localUsers = new Dictionary<IntPtr, XboxLiveUser>();
+
+        internal XboxLiveUser GetUser(IntPtr userPtr)
+        {
+            if (m_localUsers.ContainsKey(userPtr))
+            {
+                return m_localUsers[userPtr];
+            }
+
+            throw new XboxException("User doesn't exist. Did you call AddLocalUser?");
+        }
 
         [DllImport(XboxLive.FlatCDllName)]
         private static extern XSAPI_RESULT StatsManagerAddLocalUser(IntPtr user, out IntPtr errMessage);
@@ -30,7 +41,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
 
             // Does local work
-            m_localUsers.Add(user);
+            m_localUsers[user.Impl.XboxLiveUserPtr] = user;
         }
 
         [DllImport(XboxLive.FlatCDllName)]
@@ -49,7 +60,10 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
 
             // Does local work
-            m_localUsers.Remove(user);
+            if (m_localUsers.ContainsKey(user.Impl.XboxLiveUserPtr))
+            {
+                m_localUsers.Remove(user.Impl.XboxLiveUserPtr);
+            }
         }
 
         [DllImport(XboxLive.FlatCDllName)]
@@ -90,7 +104,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 }
 
                 // Refresh objects
-                foreach (XboxLiveUser user in m_localUsers)
+                foreach (XboxLiveUser user in m_localUsers.Values.ToList())
                 {
                     user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
                 }
@@ -211,7 +225,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 throw new XboxException(errCode, cErrMessage);
             }
 
-            // Handles returned objects
+            // Does local work
             StatisticValue statValue = new StatisticValue(cStatValue);
 
             return statValue;

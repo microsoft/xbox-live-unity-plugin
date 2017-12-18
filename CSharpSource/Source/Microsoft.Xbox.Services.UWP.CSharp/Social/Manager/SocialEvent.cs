@@ -14,7 +14,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             SOCIAL_EVENT cSocialEvent = Marshal.PtrToStructure<SOCIAL_EVENT>(socialEventPtr);
             EventType = cSocialEvent.EventType;
 
-            User = new XboxLiveUser(cSocialEvent.User);
+            var manager = (SocialManager)XboxLive.Instance.SocialManager;
+            User = manager.GetUser(cSocialEvent.User);
 
             try
             {

@@ -5,19 +5,30 @@ namespace Microsoft.Xbox.Services.Social.Manager
 {
     using global::System;
     using global::System.Collections.Generic;
+    using global::System.Linq;
     using global::System.Runtime.InteropServices;
     using System;
 
     public partial class SocialManager : ISocialManager
     {
-        private readonly List<XboxLiveUser> m_localUsers = new List<XboxLiveUser>();
+        private readonly Dictionary<IntPtr, XboxLiveUser> m_localUsers = new Dictionary<IntPtr, XboxLiveUser>();
         private readonly List<XboxSocialUserGroup> m_groups = new List<XboxSocialUserGroup>();
+
+        internal XboxLiveUser GetUser(IntPtr userPtr)
+        {
+            if (m_localUsers.ContainsKey(userPtr))
+            {
+                return m_localUsers[userPtr];
+            }
+
+            throw new XboxException("User doesn't exist. Did you call AddLocalUser?");
+        }
 
         public IList<XboxLiveUser> LocalUsers
         {
             get
             {
-                return this.m_localUsers.AsReadOnly();
+                return this.m_localUsers.Values.ToList().AsReadOnly();
             }
         }
 
@@ -34,8 +45,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             {
                 throw new XboxException(errCode, cErrMessage);
             }
-
-            m_localUsers.Add(user);
+            
+            m_localUsers[user.Impl.XboxLiveUserPtr] = user;
         }
 
         public void RemoveLocalUser(XboxLiveUser user)
@@ -50,8 +61,11 @@ namespace Microsoft.Xbox.Services.Social.Manager
             {
                 throw new XboxException(errCode, cErrMessage);
             }
-
-            m_localUsers.Remove(user);
+            
+            if (m_localUsers.ContainsKey(user.Impl.XboxLiveUserPtr))
+            {
+                m_localUsers.Remove(user.Impl.XboxLiveUserPtr);
+            }
         }
 
         public XboxSocialUserGroup CreateSocialUserGroupFromFilters(XboxLiveUser user, PresenceFilter presenceFilter, RelationshipFilter relationshipFilter)
@@ -94,8 +108,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
             if (errCode != XSAPI_RESULT.XSAPI_RESULT_OK)
             {
                 throw new XboxException(errCode, cErrMessage);
-            }
 
+            }
+            
             // Handles returned objects
             XboxSocialUserGroup socialUserGroup = new XboxSocialUserGroup(cGroupPtr);
             m_groups.Add(socialUserGroup);
@@ -171,9 +186,10 @@ namespace Microsoft.Xbox.Services.Social.Manager
                         group.Refresh();
                     }
                 }
-                foreach (XboxLiveUser user in m_localUsers)
+
+                foreach (IntPtr userPtr in m_localUsers.Keys)
                 {
-                    user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
+                    m_localUsers[userPtr].Impl.UpdatePropertiesFromXboxLiveUserPtr();
                 }
             }
 
