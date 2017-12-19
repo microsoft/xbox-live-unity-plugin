@@ -187,9 +187,9 @@ namespace Microsoft.Xbox.Services.Social.Manager
                     }
                 }
 
-                foreach (IntPtr userPtr in m_localUsers.Keys)
+                foreach (XboxLiveUser user in m_localUsers.Values)
                 {
-                    m_localUsers[userPtr].Impl.UpdatePropertiesFromXboxLiveUserPtr();
+                    user.Impl.UpdatePropertiesFromXboxLiveUserPtr();
                 }
             }
 
