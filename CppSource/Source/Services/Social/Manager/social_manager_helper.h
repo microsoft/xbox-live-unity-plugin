@@ -121,11 +121,15 @@ public:
 
     std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> cppSocialUserGroup() const;
 
+    XSAPI_XBOX_SOCIAL_USER** getUsersFromXboxUserIds(_In_ std::vector<xbox_user_id_container> xuids, _Out_ uint32_t* xboxSocialUsersCount);
+
 private:
     void Init();
 
     std::vector<XSAPI_XBOX_SOCIAL_USER *> m_users;
     std::vector<XSAPI_XBOX_USER_ID_CONTAINER *> m_usersTrackedBySocialUserGroup;
+
+    std::vector<XSAPI_XBOX_SOCIAL_USER*> m_getUsersFromXboxUserIdsList;
 
     XSAPI_XBOX_SOCIAL_USER_GROUP* m_cSocialUserGroup;
     std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> m_cppSocialUserGroup;

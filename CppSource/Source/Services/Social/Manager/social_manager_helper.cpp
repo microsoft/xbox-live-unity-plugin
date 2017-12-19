@@ -182,6 +182,22 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
     }
 }
 
+XSAPI_XBOX_SOCIAL_USER** XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::getUsersFromXboxUserIds(
+    _In_ std::vector<xbox_user_id_container> xuids,
+    _Out_ uint32_t* xboxSocialUsersCount
+)
+{
+    auto cppXboxSocialUsers = m_cppSocialUserGroup->get_users_from_xbox_user_ids(xuids);
+    *xboxSocialUsersCount = (uint32_t)cppXboxSocialUsers.size();
+
+    m_getUsersFromXboxUserIdsList = std::vector<XSAPI_XBOX_SOCIAL_USER*>(*xboxSocialUsersCount);
+    for (uint32_t i = 0; i < *xboxSocialUsersCount; i++)
+    {
+        m_getUsersFromXboxUserIdsList[i] = CreateXboxSocialUserFromCpp(cppXboxSocialUsers[i]);
+    }
+    return m_getUsersFromXboxUserIdsList.data();
+}
+
 std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::cppSocialUserGroup() const
 {
     return m_cppSocialUserGroup;

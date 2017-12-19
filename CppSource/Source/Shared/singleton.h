@@ -5,8 +5,8 @@
 #include "threadpool.h"
 #include "xsapi/xbox_live_app_config_c.h"
 #include "title_storage_state.h"
-#include "social_manager_vars.h"
-#include "stats_manager_vars.h"
+#include "social_manager_state.h"
+#include "stats_manager_state.h"
 
 struct XSAPI_XBOX_LIVE_USER;
 

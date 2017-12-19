@@ -53,18 +53,8 @@ try
         cXboxUserIds[i] = utils::to_utf16string(xboxUserIds[i]);
         cXboxUserIdContainers[i] = xbox_user_id_container(cXboxUserIds[i].c_str());
     }
-
-    auto cppXboxSocialUsers = group->pImpl->cppSocialUserGroup()->get_users_from_xbox_user_ids(cXboxUserIdContainers);
-    *xboxSocialUsersCount = (uint32_t)cppXboxSocialUsers.size();
-
-    auto userGroupUsers = get_singleton_for_social()->m_socialVars->cXboxSocialUserGroupUsers;
-    userGroupUsers = std::vector<XSAPI_XBOX_SOCIAL_USER*>(*xboxSocialUsersCount);
-    for (uint32_t i = 0; i < *xboxSocialUsersCount; i++)
-    {
-        userGroupUsers[i] = CreateXboxSocialUserFromCpp(cppXboxSocialUsers[i]);
-    }
-    
-    return userGroupUsers.data();
+       
+    return group->pImpl->getUsersFromXboxUserIds(cXboxUserIdContainers, xboxSocialUsersCount);
 }
 CATCH_RETURN_WITH(nullptr)
 

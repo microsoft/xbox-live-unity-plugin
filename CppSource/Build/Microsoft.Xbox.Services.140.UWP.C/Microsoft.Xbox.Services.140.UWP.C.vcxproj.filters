@@ -138,13 +138,13 @@
     <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h">
       <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_vars.h">
+    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_state.h">
       <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.h">
       <Filter>C++ Source\Services\Stats\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_vars.h">
+    <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_state.h">
       <Filter>C++ Source\Services\Stats\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\xbox_live_global_c.h">
