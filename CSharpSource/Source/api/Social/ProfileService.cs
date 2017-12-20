@@ -18,12 +18,12 @@ namespace Microsoft.Xbox.Services.Social
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyList<XboxUserProfile>> GetUserProfilesAsync(IReadOnlyList<string> xboxUserIds)
+        public Task<IList<XboxUserProfile>> GetUserProfilesAsync(IList<string> xboxUserIds)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyList<XboxUserProfile>> GetUserProfilesForSocialGroupAsync(string socialGroup)
+        public Task<IList<XboxUserProfile>> GetUserProfilesForSocialGroupAsync(string socialGroup)
         {
             throw new NotImplementedException();
         }

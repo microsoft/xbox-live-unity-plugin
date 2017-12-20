@@ -10,7 +10,14 @@ namespace Microsoft.Xbox.Services.Privacy
 
     public class MultiplePermissionsCheckResult
     {
-        public IReadOnlyList<PermissionCheckResult> Items { get; private set; }
+        private List<PermissionCheckResult> items;
+        public IList<PermissionCheckResult> Items
+        {
+            get
+            {
+                return this.items.AsReadOnly();
+            }
+        }
 
         public string XboxUserId { get; private set; }
 
@@ -31,7 +38,7 @@ namespace Microsoft.Xbox.Services.Privacy
                 items.Add(new PermissionCheckResult(permissionCheckResultStruct));
                 permissionStructPtr = permissionStructPtr.Increment(size);
             }
-            Items = items;
+            this.items = items;
         }
     }
 

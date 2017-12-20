@@ -108,22 +108,24 @@ namespace Assets.Xbox_Live.Editor
 
             // Add the XboxService.config to the project if it doesn't exist already.
             XElement identityItemGroup = project.XPathSelectElement("msb:Project/msb:ItemGroup[msb:AppxManifest]", ns);
-            if (identityItemGroup.XPathSelectElement("msb:Content[@Include='XboxServices.config']", ns) == null)
+
+            if (scriptingBackend == ScriptingImplementation.WinRTDotNET)
             {
-                XElement element = null;
-                if (scriptingBackend == ScriptingImplementation.WinRTDotNET)
+                if (identityItemGroup.XPathSelectElement("msb:Content[@Include='XboxServices.config']", ns) == null)
                 {
-                    element = new XElement(msb + "Content",
+                    identityItemGroup.Add(new XElement(msb + "Content",
                         new XAttribute("Include", "XboxServices.config"),
-                        new XElement(msb + "CopyToOutputDirectory", "PreserveNewest"));
+                        new XElement(msb + "CopyToOutputDirectory", "PreserveNewest")));
                 }
-                else if (scriptingBackend == ScriptingImplementation.IL2CPP)
+            }
+            else if (scriptingBackend == ScriptingImplementation.IL2CPP)
+            {
+                if (identityItemGroup.XPathSelectElement("msb:None[@Include='XboxServices.config']", ns) == null)
                 {
-                    element = new XElement(msb + "None",
+                    identityItemGroup.Add(new XElement(msb + "None",
                         new XAttribute("Include", "XboxServices.config"),
-                        new XElement(msb + "DeploymentContent", "true"));
+                        new XElement(msb + "DeploymentContent", "true")));
                 }
-                identityItemGroup.Add(element);
             }
 
             project.Save(projectFile);

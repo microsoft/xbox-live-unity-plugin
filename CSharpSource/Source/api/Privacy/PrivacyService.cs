@@ -20,12 +20,12 @@ namespace Microsoft.Xbox.Services.Privacy
             this.pCXboxLiveContext = pCXboxLiveContext;
         }
 
-        public Task<IReadOnlyList<string>> GetAvoidListAsync()
+        public Task<IList<string>> GetAvoidListAsync()
         {
-            var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
+            var tcs = new TaskCompletionSource<IList<string>>();
             Task.Run(() =>
             {
-                int contextKey = XsapiCallbackContext<object, IReadOnlyList<string>>.CreateContext(null, tcs);
+                int contextKey = XsapiCallbackContext<object, IList<string>>.CreateContext(null, tcs);
 
                 var xsapiResult = PrivacyGetAvoidList(this.pCXboxLiveContext, GetPrivacyUserListComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -36,12 +36,12 @@ namespace Microsoft.Xbox.Services.Privacy
             return tcs.Task;
         }
 
-        public Task<IReadOnlyList<string>> GetMuteListAsync()
+        public Task<IList<string>> GetMuteListAsync()
         {
-            var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
+            var tcs = new TaskCompletionSource<IList<string>>();
             Task.Run(() =>
             {
-                int contextKey = XsapiCallbackContext<object, IReadOnlyList<string>>.CreateContext(null, tcs);
+                int contextKey = XsapiCallbackContext<object, IList<string>>.CreateContext(null, tcs);
 
                 var xsapiResult = PrivacyGetMuteList(this.pCXboxLiveContext, GetPrivacyUserListComplete, (IntPtr)contextKey, XboxLive.DefaultTaskGroupId);
                 if (xsapiResult != XSAPI_RESULT.XSAPI_RESULT_OK)
@@ -112,15 +112,15 @@ namespace Microsoft.Xbox.Services.Privacy
             }
         }
 
-        public Task<IReadOnlyList<MultiplePermissionsCheckResult>> CheckMultiplePermissionsWithMultipleTargetUsersAsync(IReadOnlyList<string> permissionIds, IReadOnlyList<string> targetXboxUserIds)
+        public Task<IList<MultiplePermissionsCheckResult>> CheckMultiplePermissionsWithMultipleTargetUsersAsync(IList<string> permissionIds, IList<string> targetXboxUserIds)
         {
-            var tcs = new TaskCompletionSource<IReadOnlyList<MultiplePermissionsCheckResult>>();
+            var tcs = new TaskCompletionSource<IList<MultiplePermissionsCheckResult>>();
             Task.Run(() =>
             {
                 var permissionIdsArray = MarshalingHelpers.StringListToHGlobalUtf8StringArray(permissionIds);
                 var xuidsArray = MarshalingHelpers.StringListToHGlobalUtf8StringArray(targetXboxUserIds);
 
-                int contextKey = XsapiCallbackContext<CheckMultiplePermissionsContext, IReadOnlyList<MultiplePermissionsCheckResult>>.CreateContext(
+                int contextKey = XsapiCallbackContext<CheckMultiplePermissionsContext, IList<MultiplePermissionsCheckResult>>.CreateContext(
                     new CheckMultiplePermissionsContext
                     {
                         permissionIdsArray = permissionIdsArray,
@@ -144,8 +144,8 @@ namespace Microsoft.Xbox.Services.Privacy
         [MonoPInvokeCallback(typeof(XSAPI_PRIVACY_CHECK_PERMISSION_WITH_MULTIPLE_TARGET_USERS_COMPLETION_ROUTINE))]
         private void CheckMultiplePermissionsWithMultipleTargetUsersComplete(XSAPI_RESULT_INFO result, IntPtr resultsPtr, UInt32 privacyCheckResultCount, IntPtr contextKey)
         {
-            XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>> context;
-            if (XsapiCallbackContext<CheckMultiplePermissionsContext, List<MultiplePermissionsCheckResult>>.TryRemove(contextKey.ToInt32(), out context))
+            XsapiCallbackContext<CheckMultiplePermissionsContext, IList<MultiplePermissionsCheckResult>> context;
+            if (XsapiCallbackContext<CheckMultiplePermissionsContext, IList<MultiplePermissionsCheckResult>>.TryRemove(contextKey.ToInt32(), out context))
             {
                 if (result.errorCode == XSAPI_RESULT.XSAPI_RESULT_OK)
                 {
@@ -157,7 +157,7 @@ namespace Microsoft.Xbox.Services.Privacy
                         results.Add(new MultiplePermissionsCheckResult(resultsPtr));
                         resultsPtr = resultsPtr.Increment(structSize);
                     }
-                    context.TaskCompletionSource.SetResult(results);
+                    context.TaskCompletionSource.SetResult(results.AsReadOnly());
                 }
                 else
                 {

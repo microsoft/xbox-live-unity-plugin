@@ -160,7 +160,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr clientTimePtr = IntPtr.Zero;
             if (this.ClientTimeStamp != null)
             {
-                var clientTime = this.ClientTimeStamp.ToUnixTimeMilliseconds();
+                var clientTime = this.ClientTimeStamp.ToUnixTimeSeconds();
                 clientTimePtr = Marshal.AllocHGlobal(MarshalingHelpers.SizeOf<UInt64>());
                 Marshal.WriteInt64(clientTimePtr, clientTime);
             }
@@ -187,6 +187,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             this.ETag = MarshalingHelpers.Utf8ToString(CStruct.ETag);
             this.Length = CStruct.length;
             this.XboxUserId = MarshalingHelpers.Utf8ToString(CStruct.xboxUserId);
+            this.ClientTimeStamp = MarshalingHelpers.FromUnixTimeSeconds(CStruct.clientTimestamp);
         }
 
         [DllImport(XboxLive.FlatCDllName)]

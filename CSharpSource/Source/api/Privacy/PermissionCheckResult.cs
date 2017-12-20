@@ -11,7 +11,14 @@ namespace Microsoft.Xbox.Services.Privacy
 
     public class PermissionCheckResult
     {
-        public IReadOnlyList<PermissionDenyReason> DenyReasons { get; private set; }
+        private List<PermissionDenyReason> denyReasons;
+        public IList<PermissionDenyReason> DenyReasons
+        {
+            get
+            {
+                return denyReasons.AsReadOnly();
+            }
+        }
 
         public string PermissionRequested { get; private set; }
 
@@ -37,7 +44,7 @@ namespace Microsoft.Xbox.Services.Privacy
                 denyReasons.Add(new PermissionDenyReason(denyReasonPtr));
                 denyReasonPtr = denyReasonPtr.Increment(size);
             }
-            DenyReasons = denyReasons;
+            this.denyReasons = denyReasons;
         }
     }
 
