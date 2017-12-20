@@ -124,5 +124,29 @@ namespace Microsoft.Xbox.Services
             return Marshal.PtrToStructure<T>(ptr);
 #endif
         }
+
+
+        internal static DateTimeOffset FromUnixTimeSeconds(long seconds)
+        {
+#if DOTNET_3_5
+            return new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero).AddSeconds(Convert.ToDouble(seconds));
+#else
+            return DateTimeOffset.FromUnixTimeSeconds(seconds);
+#endif
+        }
+
+#if DOTNET_3_5
+        /// <summary>
+        /// Converts a DateTimeOffset to a time_t to be used in flat C code. A similar extension method
+        /// already exists in .NET4.6
+        /// </summary>
+        /// <param name="dateTimeOffset">The DateTimeOffset to convert</param>
+        /// <returns></returns>
+        internal static long ToUnixTimeSeconds(this DateTimeOffset dateTimeOffset)
+        {
+            TimeSpan span = dateTimeOffset - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            return Convert.ToInt64(span.TotalSeconds);
+        }
+#endif
     }
 }

@@ -75,7 +75,7 @@ namespace Microsoft.Xbox.Services.Shared.TitleStorage
         /// <param name="etagMatchCondition">The ETag match condition used to determine if the blob data should be uploaded.</param>
         /// <param name="preferredDownloadBlockSize">The preferred upload block size in bytes for binary blobs. </param>
         /// <returns>An instance of the <see cref="TitleStorageBlobMetadata"/> class with updated ETag and Length Properties.</returns>
-        Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, IReadOnlyList<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize);
+        Task<TitleStorageBlobMetadata> UploadBlobAsync(TitleStorageBlobMetadata blobMetadata, IList<byte> blobBuffer, TitleStorageETagMatchCondition etagMatchCondition, uint preferredUploadBlockSize);
 
     }
 }
