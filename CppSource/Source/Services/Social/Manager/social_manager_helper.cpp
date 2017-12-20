@@ -182,6 +182,22 @@ void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Refresh()
     }
 }
 
+XSAPI_XBOX_SOCIAL_USER** XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::getUsersFromXboxUserIds(
+    _In_ std::vector<xbox_user_id_container> xuids,
+    _Out_ uint32_t* xboxSocialUsersCount
+)
+{
+    auto cppXboxSocialUsers = m_cppSocialUserGroup->get_users_from_xbox_user_ids(xuids);
+    *xboxSocialUsersCount = (uint32_t)cppXboxSocialUsers.size();
+
+    m_getUsersFromXboxUserIdsList = std::vector<XSAPI_XBOX_SOCIAL_USER*>(*xboxSocialUsersCount);
+    for (uint32_t i = 0; i < *xboxSocialUsersCount; i++)
+    {
+        m_getUsersFromXboxUserIdsList[i] = CreateXboxSocialUserFromCpp(cppXboxSocialUsers[i]);
+    }
+    return m_getUsersFromXboxUserIdsList.data();
+}
+
 std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::cppSocialUserGroup() const
 {
     return m_cppSocialUserGroup;
@@ -189,8 +205,17 @@ std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> XSAPI_X
 
 void XSAPI_XBOX_SOCIAL_USER_GROUP_IMPL::Init()
 {
+    auto mapping = get_xsapi_singleton()->m_socialVars->cUsersMapping;
+
     auto user = new XSAPI_XBOX_LIVE_USER();
-    user->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppSocialUserGroup->local_user(), user);
+    if (mapping.find(m_cppSocialUserGroup->local_user()) != mapping.end())
+    {
+        user = mapping[m_cppSocialUserGroup->local_user()];
+    }
+    else
+    {
+        throw new std::exception("User doesn't exist. Did you call AddLocalUser?");
+    }
     m_cSocialUserGroup->localUser = user;
 
     Refresh();
@@ -202,8 +227,17 @@ XSAPI_SOCIAL_EVENT_IMPL::XSAPI_SOCIAL_EVENT_IMPL(
     _In_ std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> groups
 ) : m_cEvent(cEvent), m_cppEvent(cppEvent)
 {
+    auto mapping = get_xsapi_singleton()->m_socialVars->cUsersMapping;
+
     auto user = new XSAPI_XBOX_LIVE_USER();
-    user->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppEvent.user(), user);
+    if (mapping.find(m_cppEvent.user()) != mapping.end())
+    {
+        user = mapping[m_cppEvent.user()];
+    }
+    else
+    {
+        throw new std::exception("User doesn't exist. Did you call AddLocalUser?");
+    }
     m_cEvent->user = user;
 
     m_cEvent->eventType = static_cast<XSAPI_SOCIAL_EVENT_TYPE>(m_cppEvent.event_type());

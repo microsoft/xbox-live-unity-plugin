@@ -65,8 +65,15 @@ XSAPI_STAT_EVENT_IMPL::XSAPI_STAT_EVENT_IMPL(
     }
     m_cStatEvent->eventArgs = m_args;
 
-    m_localUser = new XSAPI_XBOX_LIVE_USER();
-    m_localUser->pImpl = new XSAPI_XBOX_LIVE_USER_IMPL(m_cppStatEvent.local_user(), m_localUser);
+    auto mapping = get_xsapi_singleton()->m_statsVars->cUsersMapping;
+    if (mapping.find(m_cppStatEvent.local_user()) != mapping.end())
+    {
+        m_localUser = mapping[m_cppStatEvent.local_user()];
+    }
+    else
+    {
+        throw new std::exception("User doesn't exist. Did you call AddLocalUser?");
+    }
     m_cStatEvent->localUser = m_localUser;
 
     m_errorInfo = m_cppStatEvent.error_info();

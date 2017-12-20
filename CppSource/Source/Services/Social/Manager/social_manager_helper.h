@@ -3,22 +3,13 @@
 
 #pragma once
 #include "user_impl.h"
+#include "singleton.h"
 #include "xsapi/social_manager_c.h"
 #include<time.h>
 
 using namespace xbox::services;
 using namespace xbox::services::system;
 using namespace xbox::services::social::manager;
-
-struct XSAPI_SOCIAL_MANAGER_VARS
-{
-    public:
-        std::vector<XSAPI_XBOX_SOCIAL_USER*> cXboxSocialUserGroupUsers;
-        std::vector<XSAPI_XBOX_SOCIAL_USER_GROUP*> cGroups;
-        std::vector<XSAPI_SOCIAL_EVENT*> cEvents;
-        xbox_live_result<void> cppVoidResult;
-        xbox_live_result<std::shared_ptr<xbox_social_user_group>> cppGroupResult;
-};
 
 struct XSAPI_SOCIAL_MANAGER_PRESENCE_TITLE_RECORD_IMPL
 {
@@ -130,11 +121,15 @@ public:
 
     std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> cppSocialUserGroup() const;
 
+    XSAPI_XBOX_SOCIAL_USER** getUsersFromXboxUserIds(_In_ std::vector<xbox_user_id_container> xuids, _Out_ uint32_t* xboxSocialUsersCount);
+
 private:
     void Init();
 
     std::vector<XSAPI_XBOX_SOCIAL_USER *> m_users;
     std::vector<XSAPI_XBOX_USER_ID_CONTAINER *> m_usersTrackedBySocialUserGroup;
+
+    std::vector<XSAPI_XBOX_SOCIAL_USER*> m_getUsersFromXboxUserIdsList;
 
     XSAPI_XBOX_SOCIAL_USER_GROUP* m_cSocialUserGroup;
     std::shared_ptr<xbox::services::social::manager::xbox_social_user_group> m_cppSocialUserGroup;

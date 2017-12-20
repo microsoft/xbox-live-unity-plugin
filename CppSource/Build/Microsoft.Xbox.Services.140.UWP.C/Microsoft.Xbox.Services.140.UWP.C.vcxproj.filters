@@ -135,11 +135,17 @@
     <ClInclude Include="..\..\Source\Services\Leaderboard\leaderboard_helper.h">
       <Filter>C++ Source\Services\Leaderboard</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h">
+      <Filter>C++ Source\Services\Social\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_state.h">
+      <Filter>C++ Source\Services\Social\Manager</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.h">
       <Filter>C++ Source\Services\Stats\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Services\Social\Manager\social_manager_helper.h">
-      <Filter>C++ Source\Services\Social\Manager</Filter>
+    <ClInclude Include="..\..\Source\Services\Stats\Manager\stats_manager_state.h">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xsapi\xbox_live_global_c.h">
       <Filter>C++ Public Includes</Filter>
@@ -206,17 +212,17 @@
     <ClCompile Include="..\..\Source\Services\Leaderboard\leaderboard_helper.cpp">
       <Filter>C++ Source\Services\Leaderboard</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager.cpp">
-      <Filter>C++ Source\Services\Stats\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.cpp">
-      <Filter>C++ Source\Services\Stats\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Services\Social\Manager\social_manager.cpp">
       <Filter>C++ Source\Services\Social\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Services\Social\Manager\social_manager_helper.cpp">
       <Filter>C++ Source\Services\Social\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager.cpp">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Stats\Manager\stats_manager_helper.cpp">
+      <Filter>C++ Source\Services\Stats\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Services\Common\xbox_live_global.cpp">
       <Filter>C++ Source\Services\Common</Filter>

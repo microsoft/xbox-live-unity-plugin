@@ -37,7 +37,8 @@ namespace Microsoft.Xbox.Services.Social.Manager
             // Local User
             if (LocalUser == null)
             {
-                LocalUser = new XboxLiveUser(cSocialUserGroup.LocalUser);
+                var manager = (SocialManager)XboxLive.Instance.SocialManager;
+                LocalUser = manager.GetUser(cSocialUserGroup.LocalUser);
             }
             LocalUser.Impl.UpdatePropertiesFromXboxLiveUserPtr();
 

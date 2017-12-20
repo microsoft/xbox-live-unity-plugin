@@ -23,7 +23,8 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 // not LeaderboardResultEventArgs
             }
 
-            User = new XboxLiveUser(cStatEvent.LocalUser);
+            var manager = (StatisticManager)XboxLive.Instance.StatsManager;
+            User = manager.GetUser(cStatEvent.LocalUser);
 
             ErrorCode = cStatEvent.ErrorCode;
             ErrorMessage = MarshalingHelpers.Utf8ToString(cStatEvent.ErrorMessage);
