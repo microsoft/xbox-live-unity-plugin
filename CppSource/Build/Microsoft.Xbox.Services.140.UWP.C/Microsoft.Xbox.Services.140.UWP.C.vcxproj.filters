@@ -153,13 +153,16 @@
     <ClInclude Include="..\..\Include\xsapi\xbox_live_global_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\xsapi\achievements_c.h">
-      <Filter>C++ Source\Services\Achievements</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Services\Achievements\achievements_helper.h">
       <Filter>C++ Source\Services\Achievements</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Services\Achievements\achievements_taskargs.h">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\achievements_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Achievements\achievements_state.h">
       <Filter>C++ Source\Services\Achievements</Filter>
     </ClInclude>
   </ItemGroup>

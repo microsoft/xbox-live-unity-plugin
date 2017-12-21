@@ -6,6 +6,7 @@
 #include "types_c.h"
 #include "xsapi/errors_c.h"
 #include "xsapi/system_c.h"
+#include "xbox_live_context_impl.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -158,10 +159,11 @@ typedef struct XSAPI_ACHIEVEMENTS_RESULT
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 AchievementsResultHasNext(
     _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult
-) XSAPI_NOEXCEPT;
+    ) XSAPI_NOEXCEPT;
 
 typedef void(*XSAPI_GET_NEXT_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
+    _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult,
     _In_opt_ void* context
     );
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -171,8 +173,7 @@ AchievementsResultGetNext(
     _In_ XSAPI_GET_NEXT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-) XSAPI_NOEXCEPT;
-
+    ) XSAPI_NOEXCEPT;
 
 typedef void(*XSAPI_UPDATE_ACVHIEVEMENT_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
@@ -182,7 +183,7 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceUpdateAchievement(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ PCSTR xboxUserId,
-    _In_opt_ uint32_t titleId,
+    _In_opt_ uint32_t* titleId,
     _In_opt_ PCSTR serviceConfigurationId,
     _In_ PCSTR achievementId,
     _In_ uint32_t percentComplete,
@@ -225,6 +226,16 @@ AchievementServiceGetAchievement(
     _In_ XSAPI_GET_ACHIEVEMENT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
+    ) XSAPI_NOEXCEPT;
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+AchievementServiceReleaseAchievementsResult(
+    _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult
+    ) XSAPI_NOEXCEPT;
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+AchievementServiceReleaseAchievement(
+    _In_ XSAPI_ACHIEVEMENT* achievement
     ) XSAPI_NOEXCEPT;
 #if !XDK_API
 

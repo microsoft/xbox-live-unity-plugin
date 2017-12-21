@@ -5,31 +5,54 @@
 #include "xsapi/achievements_c.h"
 #include "achievements_helper.h"
 #include "achievements_taskargs.h"
+#include "achievements_state.h"
 #include "xbox_live_context_impl.h"
 
 using namespace xbox::services;
 using namespace xbox::services::achievements;
 
+xsapi_singleton* get_singleton_for_achievements()
+{
+    auto singleton = get_xsapi_singleton();
+
+    if (singleton->m_achievementsState == nullptr)
+    {
+        singleton->m_achievementsState = std::make_unique<XSAPI_ACHIEVEMENTS_STATE>();
+    }
+
+    return singleton;
+}
+
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 AchievementsResultHasNext(
     _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult
-) XSAPI_NOEXCEPT
+    ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
 
     return achievementsResult->pImpl->cppAchievementsResult().has_next();
 }
-CATCH_RETURN()
+CATCH_RETURN_WITH(false)
 
 HC_RESULT get_next_execute(
     _In_opt_ void* context,
     _In_ HC_TASK_HANDLE taskHandle
-)
+    )
 {
     auto args = reinterpret_cast<get_next_taskargs*>(context);
     xbox_live_result<achievements_result> result = args->achievementsResult->pImpl->cppAchievementsResult().get_next(args->maxItems).get();
     args->copy_xbox_live_result(result);
+
+    if (!result.err())
+    {
+        auto singleton = get_singleton_for_achievements();
+        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
+        auto achievementsResult = CreateAchievementsResultFromCpp(result.payload());
+        singleton->m_achievementsState->m_achievementResults.insert(achievementsResult);
+        args->completionRoutinePayload = achievementsResult;
+    }
 
     return HCTaskSetCompleted(taskHandle);
 }
@@ -41,7 +64,7 @@ AchievementsResultGetNext(
     _In_ XSAPI_GET_NEXT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-) XSAPI_NOEXCEPT
+    ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -52,10 +75,11 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             get_next_execute,
             static_cast<void*>(args),
-            utils::execute_completion_routine<get_next_taskargs, XSAPI_GET_NEXT_COMPLETION_ROUTINE>,
+            utils::execute_completion_routine_with_payload<get_next_taskargs, XSAPI_GET_NEXT_COMPLETION_ROUTINE>,
             static_cast<void*>(args),
             static_cast<void*>(completionRoutine),
             completionRoutineContext,
@@ -67,14 +91,14 @@ CATCH_RETURN()
 HC_RESULT update_achievement_execute(
     _In_opt_ void* context,
     _In_ HC_TASK_HANDLE taskHandle
-)
+    )
 {
     auto args = reinterpret_cast<update_achievement_taskargs*>(context);
     auto achievementService = args->pXboxLiveContext->pImpl->cppObject().achievement_service();
 
     xbox_live_result<void> result;
     
-    if (args->serviceConfigurationId.length() == 0)
+    if (args->titleId == nullptr)
     {
         result = achievementService.update_achievement(args->xboxUserId, 
                                                        args->achievementId, 
@@ -83,7 +107,7 @@ HC_RESULT update_achievement_execute(
     else
     {
         result = achievementService.update_achievement(args->xboxUserId, 
-                                                       args->titleId, 
+                                                       *args->titleId, 
                                                        args->serviceConfigurationId, 
                                                        args->achievementId, 
                                                        args->percentComplete).get();
@@ -98,14 +122,14 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceUpdateAchievement(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
     _In_ PCSTR xboxUserId,
-    _In_opt_ uint32_t titleId,
+    _In_opt_ uint32_t* titleId,
     _In_opt_ PCSTR serviceConfigurationId,
     _In_ PCSTR achievementId,
     _In_ uint32_t percentComplete,
     _In_ XSAPI_UPDATE_ACVHIEVEMENT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-) XSAPI_NOEXCEPT
+    ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -120,6 +144,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             update_achievement_execute,
             static_cast<void*>(args),
@@ -135,7 +160,7 @@ CATCH_RETURN()
 HC_RESULT get_achievements_for_title_id_execute(
     _In_opt_ void* context,
     _In_ HC_TASK_HANDLE taskHandle
-)
+    )
 {
     auto args = reinterpret_cast<get_achievement_for_title_id_taskargs*>(context);
     auto achievementService = args->pXboxLiveContext->pImpl->cppObject().achievement_service();
@@ -152,7 +177,12 @@ HC_RESULT get_achievements_for_title_id_execute(
 
     if (!result.err())
     {
-        args->completionRoutinePayload = CreateAchievementsResultFromCpp(result.payload());
+        auto singleton = get_singleton_for_achievements();
+        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
+        auto achievementsResult = CreateAchievementsResultFromCpp(result.payload());
+        singleton->m_achievementsState->m_achievementResults.insert(achievementsResult);
+        args->completionRoutinePayload = achievementsResult;
     }
 
     return HCTaskSetCompleted(taskHandle);
@@ -170,7 +200,7 @@ AchievementServiceGetAchievementsForTitleId(
     _In_ XSAPI_GET_ACHIEVEMENTS_FOR_TITLE_ID_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-) XSAPI_NOEXCEPT
+    ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -186,6 +216,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             update_achievement_execute,
             static_cast<void*>(args),
@@ -201,7 +232,7 @@ CATCH_RETURN()
 HC_RESULT get_achievement_execute(
     _In_opt_ void* context,
     _In_ HC_TASK_HANDLE taskHandle
-)
+    )
 {
     auto args = reinterpret_cast<get_achievement_taskargs*>(context);
     auto achievementService = args->pXboxLiveContext->pImpl->cppObject().achievement_service();
@@ -214,7 +245,12 @@ HC_RESULT get_achievement_execute(
 
     if (!result.err())
     {
-        args->completionRoutinePayload = CreateAchievementFromCpp(result.payload());
+        auto singleton = get_singleton_for_achievements();
+        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
+        auto achievement = CreateAchievementFromCpp(result.payload());
+        singleton->m_achievementsState->m_achievements.insert(achievement);
+        args->completionRoutinePayload = achievement;
     }
 
     return HCTaskSetCompleted(taskHandle);
@@ -228,7 +264,7 @@ AchievementServiceGetAchievement(
     _In_ XSAPI_GET_ACHIEVEMENT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-) XSAPI_NOEXCEPT
+    ) XSAPI_NOEXCEPT
 try
 {
     verify_global_init();
@@ -241,6 +277,7 @@ try
 
     return utils::xsapi_result_from_hc_result(
         HCTaskCreate(
+            HC_SUBSYSTEM_ID_XSAPI,
             taskGroupId,
             update_achievement_execute,
             static_cast<void*>(args),
@@ -250,5 +287,47 @@ try
             completionRoutineContext,
             nullptr
         ));
+}
+CATCH_RETURN()
+
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+AchievementServiceReleaseAchievementsResult(
+    _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult
+    ) XSAPI_NOEXCEPT
+try
+{
+    verify_global_init();
+
+    auto singleton = get_xsapi_singleton();
+    std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
+    size_t erasedItems = singleton->m_achievementsState->m_achievementResults.erase(achievementsResult);
+    if (erasedItems > 0 && achievementsResult->pImpl != nullptr)
+    {
+        delete achievementsResult->pImpl;
+    }
+    return XSAPI_RESULT_OK;
+}
+CATCH_RETURN()
+
+
+XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
+AchievementServiceReleaseAchievement(
+    _In_ XSAPI_ACHIEVEMENT* achievement
+    ) XSAPI_NOEXCEPT
+try
+{
+    verify_global_init();
+
+    auto singleton = get_xsapi_singleton();
+    std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
+    size_t erasedItems = singleton->m_achievementsState->m_achievements.erase(achievement);
+    if (erasedItems > 0 && achievement->pImpl != nullptr)
+    {
+        delete achievement->pImpl;
+    }
+    return XSAPI_RESULT_OK;
 }
 CATCH_RETURN()

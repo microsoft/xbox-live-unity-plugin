@@ -22,7 +22,7 @@ struct achievements_taskargs
 struct update_achievement_taskargs : public achievements_taskargs, public taskargs
 {
     string_t xboxUserId;
-    uint32_t titleId;
+    uint32_t* titleId;
     string_t serviceConfigurationId;
     string_t achievementId;
     uint32_t percentComplete;

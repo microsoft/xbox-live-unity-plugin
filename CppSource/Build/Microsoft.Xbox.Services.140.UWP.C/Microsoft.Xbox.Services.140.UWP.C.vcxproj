@@ -94,7 +94,7 @@
       <AdditionalOptions>/bigobj /Zm300 %(AdditionalOptions)</AdditionalOptions>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Source\Services\TitleStorage;$(ProjectDir);$(ProjectDir)..\..\Source\Services\Common;$(ProjectDir)..\..\Source\Services\Social;$(ProjectDir)..\..\Source\Services\Multiplayer;$(ProjectDir)..\..\Source\Services\Presence;$(ProjectDir)..\..\Source\Services\Misc;$(ProjectDir)..\..\Source\Services\Social\Manager;$(ProjectDir)..\..\Source\Services\RealTimeActivity;$(ProjectDir)..\..\Source\Shared;$(ProjectDir)..\..\Source\Shared\WinRT;$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Source\System;$(ProjectDir)..\..\Source\Services\Leaderboard;$(ProjectDir)..\..\Source\Services\Stats\Manager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\Source\Services\TitleStorage;$(ProjectDir);$(ProjectDir)..\..\Source\Services\Common;$(ProjectDir)..\..\Source\Services\Social;$(ProjectDir)..\..\Source\Services\Multiplayer;$(ProjectDir)..\..\Source\Services\Presence;$(ProjectDir)..\..\Source\Services\Misc;$(ProjectDir)..\..\Source\Services\Social\Manager;$(ProjectDir)..\..\Source\Services\RealTimeActivity;$(ProjectDir)..\..\Source\Services\Achievements;$(ProjectDir)..\..\Source\Shared;$(ProjectDir)..\..\Source\Shared\WinRT;$(ProjectDir)..\..\Include;$(ProjectDir)..\..\Source\System;$(ProjectDir)..\..\Source\Services\Leaderboard;$(ProjectDir)..\..\Source\Services\Stats\Manager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAsWinRT>true</CompileAsWinRT>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
     </ClCompile>
@@ -208,6 +208,7 @@
     <ClInclude Include="..\..\Source\Shared\utils.h" />
     <ClInclude Include="..\..\Source\System\user_impl.h" />
     <ClInclude Include="..\..\Source\System\user_taskargs.h" />
+    <ClInclude Include="..\..\Source\Services\Achievements\achievements_state.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\External\libHttpClient\Build\libHttpClient.140.UWP.C\libHttpClient.140.UWP.C.vcxproj">

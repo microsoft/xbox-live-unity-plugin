@@ -4,9 +4,10 @@
 
 #include "threadpool.h"
 #include "xsapi/xbox_live_app_config_c.h"
-#include "title_storage_state.h"
+#include "achievements_state.h"
 #include "social_manager_state.h"
 #include "stats_manager_state.h"
+#include "title_storage_state.h"
 
 struct XSAPI_XBOX_LIVE_USER;
 
@@ -28,6 +29,7 @@ struct xsapi_singleton
     std::string m_environment;
     std::string m_sandbox;
 
+    std::unique_ptr<XSAPI_ACHIEVEMENTS_STATE> m_achievementsState;
     std::unique_ptr<XSAPI_SOCIAL_MANAGER_VARS> m_socialVars;
     std::unique_ptr<XSAPI_STATS_MANAGER_VARS> m_statsVars;
 };
