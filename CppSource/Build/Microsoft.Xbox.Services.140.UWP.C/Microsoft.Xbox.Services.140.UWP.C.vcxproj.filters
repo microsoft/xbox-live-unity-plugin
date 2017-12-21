@@ -10,6 +10,9 @@
     <Filter Include="C++ Source\Services">
       <UniqueIdentifier>{f846991a-979e-44b1-814c-940fe71f9688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="C++ Source\Services\Achievements">
+      <UniqueIdentifier>{d1b70c59-0c14-4c78-bdab-16a351ae30d4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="C++ Source\Services\Common">
       <UniqueIdentifier>{5eb1bf88-b7c6-4004-8f89-a51e2a57015b}</UniqueIdentifier>
     </Filter>
@@ -150,8 +153,26 @@
     <ClInclude Include="..\..\Include\xsapi\xbox_live_global_c.h">
       <Filter>C++ Public Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Achievements\achievements_helper.h">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Achievements\achievements_taskargs.h">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\xsapi\achievements_c.h">
+      <Filter>C++ Public Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Services\Achievements\achievements_state.h">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Services\Achievements\achievements.cpp">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Services\Achievements\achievements_helper.cpp">
+      <Filter>C++ Source\Services\Achievements</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Services\Common\pch.cpp">
       <Filter>C++ Source\Services\Common</Filter>
     </ClCompile>
