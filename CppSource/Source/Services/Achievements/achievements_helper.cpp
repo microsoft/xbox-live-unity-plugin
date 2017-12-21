@@ -179,8 +179,14 @@ XSAPI_ACHIEVEMENT* CreateAchievementFromCpp(
     _In_ achievement cppAchievement
 )
 {
+    auto singleton = get_xsapi_singleton();
+    std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
     auto achievement = new XSAPI_ACHIEVEMENT();
     achievement->pImpl = new XSAPI_ACHIEVEMENT_IMPL(cppAchievement, achievement);
+
+    singleton->m_achievementsState->m_achievements.insert(achievement);
+
     return achievement;
 }
 
@@ -188,7 +194,12 @@ XSAPI_ACHIEVEMENTS_RESULT* CreateAchievementsResultFromCpp(
     _In_ achievements_result cppResult
 )
 {
+    auto singleton = get_xsapi_singleton();
+    std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
+
     auto result = new XSAPI_ACHIEVEMENTS_RESULT();
     result->pImpl = new XSAPI_ACHIEVEMENTS_RESULT_IMPL(cppResult, result);
+
+    singleton->m_achievementsState->m_achievementResults.insert(result);
     return result;
 }

@@ -11,18 +11,6 @@
 using namespace xbox::services;
 using namespace xbox::services::achievements;
 
-xsapi_singleton* get_singleton_for_achievements()
-{
-    auto singleton = get_xsapi_singleton();
-
-    if (singleton->m_achievementsState == nullptr)
-    {
-        singleton->m_achievementsState = std::make_unique<XSAPI_ACHIEVEMENTS_STATE>();
-    }
-
-    return singleton;
-}
-
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 AchievementsResultHasNext(
     _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult
@@ -46,12 +34,7 @@ HC_RESULT get_next_execute(
 
     if (!result.err())
     {
-        auto singleton = get_singleton_for_achievements();
-        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
-
-        auto achievementsResult = CreateAchievementsResultFromCpp(result.payload());
-        singleton->m_achievementsState->m_achievementResults.insert(achievementsResult);
-        args->completionRoutinePayload = achievementsResult;
+        args->completionRoutinePayload = CreateAchievementsResultFromCpp(result.payload());
     }
 
     return HCTaskSetCompleted(taskHandle);
@@ -177,12 +160,7 @@ HC_RESULT get_achievements_for_title_id_execute(
 
     if (!result.err())
     {
-        auto singleton = get_singleton_for_achievements();
-        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
-
-        auto achievementsResult = CreateAchievementsResultFromCpp(result.payload());
-        singleton->m_achievementsState->m_achievementResults.insert(achievementsResult);
-        args->completionRoutinePayload = achievementsResult;
+        args->completionRoutinePayload = CreateAchievementsResultFromCpp(result.payload());
     }
 
     return HCTaskSetCompleted(taskHandle);
@@ -245,12 +223,7 @@ HC_RESULT get_achievement_execute(
 
     if (!result.err())
     {
-        auto singleton = get_singleton_for_achievements();
-        std::lock_guard<std::recursive_mutex> lock(singleton->m_achievementsState->m_lock);
-
-        auto achievement = CreateAchievementFromCpp(result.payload());
-        singleton->m_achievementsState->m_achievements.insert(achievement);
-        args->completionRoutinePayload = achievement;
+        args->completionRoutinePayload = CreateAchievementFromCpp(result.payload());
     }
 
     return HCTaskSetCompleted(taskHandle);

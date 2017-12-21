@@ -21,6 +21,8 @@ xsapi_singleton* get_xsapi_singleton(_In_ bool createIfRequired)
         if (g_xblSingleton == nullptr)
         {
             g_xblSingleton = std::make_unique<xsapi_singleton>();
+
+            g_xblSingleton->m_achievementsState = std::make_unique<XSAPI_ACHIEVEMENTS_STATE>();
         }
     }
 
