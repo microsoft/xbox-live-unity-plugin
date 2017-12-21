@@ -19,24 +19,6 @@ echo [start] Copying %TFS_SourcesDirectory% to %TFS_DropLocation%\Source
 robocopy /NJS /NJH /MT:16 /S /NP %TFS_SourcesDirectory% %TFS_DropLocation%\Source
 echo [done] Copying %TFS_SourcesDirectory% to %TFS_DropLocation%\Source
 
-echo [start] Binplacing c dlls into Plugins folder
-set PLUGIN_BUILD_SHARE_x86=%TFS_DropLocation%\Release\x86
-set PLUGIN_BUILD_SHARE_x64=%TFS_DropLocation%\Release\x64
-set PLUGIN_BIN_SHARE_x86=%TFS_DropLocation%\Source\Assets\Plugins\x86
-set PLUGIN_BIN_SHARE_x64=%TFS_DropLocation%\Source\Assets\Plugins\x64
-copy %PLUGIN_BUILD_SHARE_x86%\Microsoft.Xbox.Services.140.UWP.C.dll %PLUGIN_BIN_SHARE_x86%\Microsoft.Xbox.Services.140.UWP.C.dll
-copy %PLUGIN_BUILD_SHARE_x64%\Microsoft.Xbox.Services.140.UWP.C.dll %PLUGIN_BIN_SHARE_x64%\Microsoft.Xbox.Services.140.UWP.C.dll
-echo [done] Binplacing c dlls into Plugins folder
-
-set exportPath=%TFS_DropLocation%\Source\Assets
-set projectPath=%TFS_DropLocation%\Packages\XboxLive.unitypackage
-set libPath=%exportPath%\Xbox Live\Libs
-
-mkdir "%exportPath%\Xbox Live\Libs"
-
-robocopy /NJS /NJH /MT:16 /S /NP "%TFS_DropLocation%\UWP" "%libPath%\UWP"
-robocopy /NJS /NJH /MT:16 /S /NP "%TFS_DropLocation%\UnityEditor" "%libPath%\UnityEditor"
-
 mkdir %TFS_DropLocation%\Packages
 
 set SRC_GAMESAVE=%exportPath%\Xbox Live\GameSave
