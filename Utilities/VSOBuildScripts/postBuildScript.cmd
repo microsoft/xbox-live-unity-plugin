@@ -15,17 +15,26 @@ goto done
 
 :ready
 
-echo [start] Copying %TFS_SourcesDirectory% to %TFS_DropLocation%\Source
+set packageDir=%TFS_DropLocation%\Packages
+set packagePath=%packageDir%\XboxLive.unitypackage
+mkdir %packageDir%
+
+set remoteAssetsPath=%TFS_DropLocation%\Source\Assets
+set localAssetsPath=%TFS_SourcesDirectory%\Assets
+
+echo [start] Copying output from other build agents locally from %remoteAssetsPath% to %localAssetsPath%
+robocopy /NJS /NJH /MT:16 /S /NP %remoteAssetsPath% %localAssetsPath%
+echo [done] Copying %remoteAssetsPath% to %localAssetsPath%
+
+echo [start] Copying local sources to build share from %TFS_SourcesDirectory% to %TFS_DropLocation%\Source
 robocopy /NJS /NJH /MT:16 /S /NP %TFS_SourcesDirectory% %TFS_DropLocation%\Source
 echo [done] Copying %TFS_SourcesDirectory% to %TFS_DropLocation%\Source
 
-mkdir %TFS_DropLocation%\Packages
-
-set SRC_GAMESAVE=%exportPath%\Xbox Live\GameSave
-set SRC_GAMESAVE_PACKAGE=%exportPath%\Xbox Live\GameSave\GameSave.unitypackage
+set SRC_GAMESAVE=%localAssetsPath%\Xbox Live\GameSave
+set SRC_GAMESAVE_PACKAGE=%localAssetsPath%\Xbox Live\GameSave\GameSave.unitypackage
 set DEST_GAMESAVE=%TFS_DropLocation%\TempGameSave
 
-"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\gamesave-unity.log" -projectPath "%TFS_DropLocation%\Source" -exportPackage "Assets\Xbox Live\GameSave" "%SRC_GAMESAVE_PACKAGE%" -quit
+"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\gamesave-unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets\Xbox Live\GameSave" "%SRC_GAMESAVE_PACKAGE%" -quit
 
 rmdir /q /s "%DEST_GAMESAVE%"
 robocopy /NJS /NJH /MT:16 /S /NP "%SRC_GAMESAVE%" "%DEST_GAMESAVE%"
@@ -36,28 +45,13 @@ mkdir "%SRC_GAMESAVE%"
 copy "%DEST_GAMESAVE%\readme.txt" "%SRC_GAMESAVE%"
 copy "%DEST_GAMESAVE%\GameSave.unitypackage" "%SRC_GAMESAVE%"
 
-
-set DEST_SCENES=%TFS_DropLocation%\TempScenes
-rmdir /q /s "%DEST_SCENES%"
-mkdir "%DEST_SCENES%"
-robocopy /NJS /NJH /MT:16 /S /NP "%exportPath%\Scenes" "%DEST_SCENES%\Scenes"
-copy "%exportPath%\Scenes.meta" "%DEST_SCENES%"
-rmdir /q /s "%exportPath%\Scenes"
-del "%exportPath%\Scenes"
-del "%exportPath%\Scenes.meta"
-
-"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\unity.log" -projectPath "%TFS_DropLocation%\Source" -exportPackage "Assets" "%projectPath%" -quit
+"C:\Program Files\Unity\Editor\Unity.exe" -ea SilentlyContinue -batchmode -logFile "%TFS_DropLocation%\unity.log" -projectPath "%TFS_SourcesDirectory%" -exportPackage "Assets" "%packagePath%" -quit
 
 rmdir /q /s "%SRC_GAMESAVE%"
 robocopy /NJS /NJH /MT:16 /S /NP "%DEST_GAMESAVE%" "%SRC_GAMESAVE%"
 rmdir /q /s "%DEST_GAMESAVE%"
 del "%SRC_GAMESAVE%\GameSave.unitypackage"
 del "%SRC_GAMESAVE%\GameSave.unitypackage.meta"
-
-robocopy /NJS /NJH /MT:16 /S /NP "%DEST_SCENES%\Scenes" "%exportPath%\Scenes" 
-copy "%DEST_SCENES%\Scenes.meta" "%exportPath%\Scenes.meta"
-rmdir /q /s "%DEST_SCENES%"
-
 
 echo Running postBuildScript.cmd
 echo on
