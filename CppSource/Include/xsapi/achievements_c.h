@@ -11,6 +11,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
 struct XSAPI_ACHIEVEMENT_TITLE_ASSOCIATION_IMPL;
 struct XSAPI_ACHIEVEMENT_REQUIREMENT_IMPL;
 struct XSAPI_ACHIEVEMENT_PROGRESSION_IMPL;
@@ -105,7 +106,6 @@ typedef struct XSAPI_ACHIEVEMENT_MEDIA_ASSET
     XSAPI_ACHIEVEMENT_MEDIA_ASSET_IMPL* pImpl;
 } XSAPI_ACHIEVEMENT_MEDIA_ASSET;
 
-
 typedef struct XSAPI_ACHIEVEMENT_REWARD
 {
     PCSTR name;
@@ -166,6 +166,7 @@ typedef void(*XSAPI_GET_NEXT_COMPLETION_ROUTINE)(
     _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult,
     _In_opt_ void* context
     );
+
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementsResultGetNext(
     _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult,
@@ -179,6 +180,7 @@ typedef void(*XSAPI_UPDATE_ACVHIEVEMENT_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
     _In_opt_ void* context
     );
+
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceUpdateAchievement(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
@@ -194,9 +196,10 @@ AchievementServiceUpdateAchievement(
 
 typedef void(*XSAPI_GET_ACHIEVEMENTS_FOR_TITLE_ID_COMPLETION_ROUTINE)(
     _In_ XSAPI_RESULT_INFO result,
-    XSAPI_ACHIEVEMENTS_RESULT* achievementsResult,
+    _In_ XSAPI_ACHIEVEMENTS_RESULT* achievementsResult,
     _In_opt_ void* context
     );
+
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceGetAchievementsForTitleId(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
@@ -217,6 +220,7 @@ typedef void(*XSAPI_GET_ACHIEVEMENT_COMPLETION_ROUTINE)(
     _In_ XSAPI_ACHIEVEMENT* achievement,
     _In_opt_ void* context
     );
+
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceGetAchievement(
     _In_ XSAPI_XBOX_LIVE_CONTEXT* pContext,
@@ -237,9 +241,6 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 AchievementServiceReleaseAchievement(
     _In_ XSAPI_ACHIEVEMENT* achievement
     ) XSAPI_NOEXCEPT;
-#if !XDK_API
-
-#endif //!XDK_API
 
 #if defined(__cplusplus)
 } // end extern "C"
