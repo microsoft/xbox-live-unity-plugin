@@ -10,8 +10,6 @@
 extern "C" {
 #endif
 
-#if !XDK_API
-
 typedef enum XSAPI_PRESENCE_DEVICE_TYPE
 {
     XSAPI_PRESENCE_DEVICE_TYPE_UNKNOWN,
@@ -65,8 +63,6 @@ typedef enum XSAPI_TITLE_PRESENCE_STATE
     XSAPI_TITLE_PRESENCE_STATE_STARTED,
     XSAPI_TITLE_PRESENCE_STATE_ENDED
 } XSAPI_TITLE_PRESENCE_STATE;
-
-#endif //!XDK_API
 
 #if defined(__cplusplus)
 } // end extern "C"

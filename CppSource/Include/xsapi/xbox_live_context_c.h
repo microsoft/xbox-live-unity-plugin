@@ -4,6 +4,10 @@
 #pragma once
 #include "types_c.h"
 
+// TODO: Add XML doc comments to this file and elsewhere
+// TODO: Add SAL to structs in this file and elsewhere
+// TODO: Choose consistent naming XSAPI_ or XboxLive_ or Xbl_ here and elsewhere
+// TODO: run and clean code analysis errors
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -26,6 +30,7 @@ typedef struct XSAPI_XBOX_LIVE_CONTEXT
 
 #if !(XDK_API | XBOX_UWP)
 
+// TODO: Change to *CreateHandle
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 XboxLiveContextCreate(
     _In_ CONST XSAPI_XBOX_LIVE_USER* pUser,
@@ -34,6 +39,7 @@ XboxLiveContextCreate(
 
 #endif
 
+// TODO: Change to *CloseHandle, and *DuplicateHandle
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 XboxLiveContextDelete(
     XSAPI_XBOX_LIVE_CONTEXT* pContext

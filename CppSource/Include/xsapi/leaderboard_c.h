@@ -66,28 +66,31 @@ typedef struct XSAPI_LEADERBOARD_QUERY
 } XSAPI_LEADERBOARD_QUERY;
 
 XSAPI_DLLEXPORT XSAPI_LEADERBOARD_QUERY* XBL_CALLING_CONV
-LeaderboardQueryCreate(
-);
+LeaderboardQueryCreate();
+
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToMe(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ bool skipResultToMe
-);
+    );
+
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetSkipResultToRank(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t skipResultToRank
-);
+    );
+
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetMaxItems(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ uint32_t maxItems
-);
+    );
+
 XSAPI_DLLEXPORT void XBL_CALLING_CONV
 LeaderboardQuerySetOrder(
     _In_ XSAPI_LEADERBOARD_QUERY* leaderboardQuery,
     _In_ XSAPI_SORT_ORDER order
-);
+    );
 
 typedef struct XSAPI_LEADERBOARD_RESULT
 {
@@ -103,7 +106,7 @@ typedef struct XSAPI_LEADERBOARD_RESULT
 XSAPI_DLLEXPORT bool XBL_CALLING_CONV
 LeaderboardResultHasNext(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult
-);
+    );
 
 #if !defined(XBOX_LIVE_CREATORS_SDK)
 typedef struct XSAPI_GET_NEXT_RESULT_PAYLOAD
@@ -130,7 +133,7 @@ LeaderboardResultGetNext(
     _In_ GET_NEXT_COMPLETION_ROUTINE completionRoutine,
     _In_opt_ void* completionRoutineContext,
     _In_ uint64_t taskGroupId
-);
+    );
 #endif
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
@@ -138,12 +141,13 @@ LeaderboardResultGetNextQuery(
     _In_ XSAPI_LEADERBOARD_RESULT* leaderboardResult,
     _Out_ XSAPI_LEADERBOARD_QUERY** nextQuery,
     _Out_ PCSTR* errMessage
-);
+    );
 
 typedef struct XSAPI_LEADERBOARD_SERVICE
 {
-    // todo implement
+    // TODO: implement
 } XSAPI_LEADERBOARD_SERVICE;
+
 #endif //!XDK_API
 
 #if defined(__cplusplus)

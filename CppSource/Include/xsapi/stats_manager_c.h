@@ -68,25 +68,25 @@ XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerAddLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRemoveLocalUser(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerRequestFlushToService(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ bool isHighPriority,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_STAT_EVENT** XBL_CALLING_CONV
 StatsManagerDoWork(
     _Out_ uint32_t* statEventsCount
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticNumberData(
@@ -94,7 +94,7 @@ StatsManagerSetStatisticNumberData(
     _In_ PCSTR statName,
     _In_ double statValue,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticIntegerData(
@@ -102,7 +102,7 @@ StatsManagerSetStatisticIntegerData(
     _In_ PCSTR statName,
     _In_ int64_t statValue,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerSetStatisticStringData(
@@ -110,7 +110,7 @@ StatsManagerSetStatisticStringData(
     _In_ PCSTR statName,
     _In_ PCSTR statValue,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStatNames(
@@ -118,7 +118,7 @@ StatsManagerGetStatNames(
     _Out_ PCSTR** statNameList,
     _Out_ uint32_t* statNameListCount,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetStat(
@@ -126,14 +126,14 @@ StatsManagerGetStat(
     _In_ PCSTR statName,
     _Out_ XSAPI_STAT_VALUE** statValue,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerDeleteStat(
     _In_ XSAPI_XBOX_LIVE_USER* user,
     _In_ PCSTR statName,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetLeaderboard(
@@ -141,7 +141,7 @@ StatsManagerGetLeaderboard(
     _In_ PCSTR statName,
     _In_ XSAPI_LEADERBOARD_QUERY* query,
     _Out_ PCSTR* errMessage
-);
+    );
 
 XSAPI_DLLEXPORT XSAPI_RESULT XBL_CALLING_CONV
 StatsManagerGetSocialLeaderboard(
@@ -150,7 +150,8 @@ StatsManagerGetSocialLeaderboard(
     _In_ PCSTR socialGroup,
     _In_ XSAPI_LEADERBOARD_QUERY* query,
     _Out_ PCSTR* errMessage
-);
+    );
+
 #endif //!XDK_API
 
 #if defined(__cplusplus)

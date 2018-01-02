@@ -143,10 +143,6 @@ XSAPI_RESULT utils::xsapi_result_from_hc_result(HC_RESULT hcr)
     {
         return XSAPI_RESULT_OK;
     }
-    else if (hcr < XSAPI_RESULT_E_HC_MIN || hcr > XSAPI_RESULT_E_HC_MAX)
-    {
-        return XSAPI_RESULT_E_HC_FAIL;
-    }
     return static_cast<XSAPI_RESULT>(hcr);
 }
 
