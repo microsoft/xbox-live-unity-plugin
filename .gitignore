@@ -24,6 +24,9 @@ ExportedObj/
 *.svd
 *.log
 
+#nuget packages
+External/Packages/*
+
 #CppSource files to ignore
 CppSource/External/Packages/*
 CppSource/Obj/
