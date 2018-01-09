@@ -108,11 +108,8 @@ public class UserProfile : MonoBehaviour
             XboxLive.Instance.SocialManager.RemoveLocalUser(xboxLiveUser);
         }
 
-        UnityEngine.WSA.Application.InvokeOnAppThread(() =>
-        {
-            // Refresh updates UX elements so that needs to be called on the App thread
-            this.Refresh();
-        }, false);
+        // Refresh updates UX elements so that needs to be called on the App thread
+        UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
     }
 
     public void SignIn()
@@ -151,8 +148,15 @@ public class UserProfile : MonoBehaviour
                         {
                             if (task.Status == TaskStatus.RanToCompletion)
                             {
-                                this.XboxLiveUser.Initialize(task.Result);
-                                this.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(this.SignInAsync()); });
+                                if (task.Result == null)
+                                {
+                                    UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
+                                }
+                                else
+                                {
+                                    this.XboxLiveUser.Initialize(task.Result);
+                                    this.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(this.SignInAsync()); });
+                                }
                             }
                             else
                             {
@@ -160,6 +164,7 @@ public class UserProfile : MonoBehaviour
                                 {
                                     Debug.Log("Exception occured: " + task.Exception.Message);
                                 }
+                                UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
                             }
                         });
         }
@@ -188,17 +193,38 @@ public class UserProfile : MonoBehaviour
 
     public IEnumerator SignInAsync()
     {
-        SignInStatus signInStatus;
+        SignInStatus signInStatus = SignInStatus.Success;
         TaskYieldInstruction<SignInResult> signInSilentlyTask = this.XboxLiveUser.User.SignInSilentlyAsync().AsCoroutine();
         yield return signInSilentlyTask;
 
-        signInStatus = signInSilentlyTask.Result.Status;
-        if (signInSilentlyTask.Result.Status != SignInStatus.Success)
+        try
+        {
+            signInStatus = signInSilentlyTask.Result.Status;
+        }
+        catch(Exception ex)
+        {
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.Log("Exception occured: " + ex.Message);
+            }
+        }
+
+        if (signInStatus != SignInStatus.Success)
         {
             TaskYieldInstruction<SignInResult> signInTask = this.XboxLiveUser.User.SignInAsync().AsCoroutine();
             yield return signInTask;
 
-            signInStatus = signInTask.Result.Status;
+            try
+            {
+                signInStatus = signInTask.Result.Status;
+            }
+            catch (Exception ex)
+            {
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                {
+                    Debug.Log("Exception occured: " + ex.Message);
+                }
+            }
         }
 
         // Throw any exceptions if needed.
@@ -207,6 +233,7 @@ public class UserProfile : MonoBehaviour
             XboxLive.Instance.StatsManager.AddLocalUser(this.XboxLiveUser.User);
             XboxLive.Instance.SocialManager.AddLocalUser(this.XboxLiveUser.User, SocialManagerExtraDetailLevel.PreferredColorLevel);
         }
+
         this.Refresh();
     }
 
