@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class XboxLiveUserManager : Singleton<XboxLiveUserManager>
 {
-
+    /*
     public List<XboxLiveUserInfo> AvailableXboxLiveUsers { get; private set; }
 
     public XboxLiveUserInfo UserForSingleUserMode { get; set; }
@@ -39,4 +39,5 @@ public class XboxLiveUserManager : Singleton<XboxLiveUserManager>
     {
         return Instance.SingleUserModeEnabled ? Instance.UserForSingleUserMode : null;
     }
+    */
 }

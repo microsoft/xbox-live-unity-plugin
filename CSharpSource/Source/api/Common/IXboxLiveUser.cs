@@ -19,7 +19,7 @@ namespace Microsoft.Xbox.Services
 
         string XboxUserId { get; }
 
-        XboxLiveServices Services { get; }
+        XboxLiveContext Services { get; }
 
 #if WINDOWS_UWP
         Windows.System.User WindowsSystemUser { get; }

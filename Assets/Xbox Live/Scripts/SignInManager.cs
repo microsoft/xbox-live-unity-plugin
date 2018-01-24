@@ -1,12 +1,20 @@
 ﻿using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.Social.Manager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SignInManager : MonoBehaviour {
+#if ENABLE_WINMD_SUPPORT
+using Windows.System;
+#endif
+
+public class SignInManager : Singleton<SignInManager> {
 
     private Dictionary<int, XboxLivePlayerInfo> CurrentPlayers;
+
+    private int CurrentNumberOfPlayers = 0;
 
     public void Awake()
     {
@@ -41,24 +49,26 @@ public class SignInManager : MonoBehaviour {
     /// AddUser might fail if the player number is not within the range of supported users.
     /// </summary>
     /// <param name="playerNumber">The Player Number that should be assigned to the Xbox Live User</param>
-    IEnumerator AddUser(int playerNumber)
+    public IEnumerator AddUser(int playerNumber)
     {
         yield return null;
-        if (ValidatePlayerNumber(playerNumber, "Add User")) {
+        if (ValidatePlayerNumber(playerNumber, "Add User", XboxLiveOperationType.SignIn)) {
             if (!CurrentPlayers.ContainsKey(playerNumber)) {
                 var playerInfo = new XboxLivePlayerInfo() {
                     SignInCallbacks = new List<UnityAction<XboxLiveUser, XboxLiveAuthStatus, string>>(),
                     SignOutCallbacks = new List<UnityAction<XboxLiveUser, XboxLiveAuthStatus, string>>()
                 };
-                CurrentPlayers.Add(playerNumber, playerInfo);
+                this.CurrentPlayers.Add(playerNumber, playerInfo);
             }
 
-            if (CurrentPlayers[playerNumber].XboxLiveUser != null) {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("Add User Failed");
-                }
-            }
+            //todo: Add User Picker here 
+#if ENABLE_WINMD_SUPPORT
+             throw new NotImplementedException();
+#else
+            this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
+#endif
+            XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
+            yield return this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]);
         }
     }
 
@@ -67,9 +77,11 @@ public class SignInManager : MonoBehaviour {
     /// Note: Sign out might not be supported on some platforms.
     /// </summary>
     /// <param name="playerNumber">The Player Number that should be assigned to the Xbox Live User</param>
-    IEnumerator RemoveUser(int playerNumber) {
+    public IEnumerator RemoveUser(int playerNumber) {
         yield return null;
-        
+        if (ValidatePlayerNumber(playerNumber, "Remove User", XboxLiveOperationType.SignOut)) {
+            this.RemoveUserHelper(this.CurrentPlayers[playerNumber].XboxLiveUser);
+        }
     }
 
     /// <summary>
@@ -77,8 +89,15 @@ public class SignInManager : MonoBehaviour {
     /// Note: Switching users might not be supported on some platforms.
     /// </summary>
     /// <param name="playerNumber">The Player Number that should be assigned to the Xbox Live User</param>
-    IEnumerator SwitchUser(int playerNumber) {
+    public IEnumerator SwitchUser(int playerNumber) {
         yield return null;
+
+        //todo: How do we know when Switch user is allowed?
+
+        if (ValidatePlayerNumber(playerNumber, "Switch User", XboxLiveOperationType.SignOut)) {
+            yield return this.RemoveUser(playerNumber);
+            yield return this.AddUser(playerNumber);
+        }
        
     }
 
@@ -87,14 +106,26 @@ public class SignInManager : MonoBehaviour {
     /// </summary>
     /// <param name="playerNumber">The Player Number that should be assigned to the Xbox Live User</param>
     /// <returns>The Xbox Live User  with the assigned player number if exists. Null, otherwise.</returns>
-    XboxLiveUser GetUser(int playerNumber) { return null; }
+    public XboxLiveUser GetUser(int playerNumber) {
+        if (ValidatePlayerNumber(playerNumber, "Get User", XboxLiveOperationType.GetUser)) {
+            return this.CurrentPlayers[playerNumber].XboxLiveUser;
+        }
+        return null;
+    }
 
     /// <summary>
     /// Returns the Xbox Live User with the assigned xuid if they exist. If no user is signed in for that player number, null is returned.
     /// </summary>
     /// <param name="xuid">The Xuid of the requested Xbox Live User</param>
     /// <returns>The Xbox Live User if exists. Null, otherwise.</returns>
-    XboxLiveUser GetUser(string xuid) { return null; }
+    public XboxLiveUser GetUser(string xuid) {
+        foreach (var playerInfo in this.CurrentPlayers) {
+            if (playerInfo.Value.XboxLiveUser != null && playerInfo.Value.XboxLiveUser.XboxUserId.Equals(xuid)) {
+                return playerInfo.Value.XboxLiveUser;
+            }
+        }
+        return null;
+    }
 
     /// <summary>
     /// Adds a callback method for when the Xbox Live User with player number signs in.
@@ -106,7 +137,13 @@ public class SignInManager : MonoBehaviour {
     /// - <see cref="XboxLiveAuthStatus"/> which is the status of sign in: Succeeded, Failed and Unsupported.
     /// - A string which will contain the error message if sign in failed.</param>
     /// <returns>True if callback was added successfully, false otherwise.</returns>
-    bool OnPlayerSignIn(int playerNumber, UnityAction<XboxLiveUser, XboxLiveAuthStatus, string> callback) { return false; }
+    public bool OnPlayerSignIn(int playerNumber, UnityAction<XboxLiveUser, XboxLiveAuthStatus, string> callback) {
+        if (AddCallbackHelper(playerNumber, "OnPlayerSignIn")) {
+            this.CurrentPlayers[playerNumber].SignInCallbacks.Add(callback);
+            return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// Adds a callback method for when the Xbox Live User with player number signs out.
@@ -118,25 +155,51 @@ public class SignInManager : MonoBehaviour {
     /// - <see cref="XboxLiveAuthStatus"/> which is the status of sign out: Succeeded, Failed and Unsupported.
     /// - A string which will contain the error message if sign out failed.</param>
     /// <returns>True if callback was added successfully, false otherwise.</returns>
-    bool OnPlayerSignOut(int playerNumber, UnityAction<XboxLiveUser, XboxLiveAuthStatus, string> callback) { return false; }
-    
+    public bool OnPlayerSignOut(int playerNumber, UnityAction<XboxLiveUser, XboxLiveAuthStatus, string> callback)
+    {
+        if (AddCallbackHelper(playerNumber, "OnPlayerSignOut"))
+        {
+            this.CurrentPlayers[playerNumber].SignOutCallbacks.Add(callback);
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Adds a callback method for when a Social Event has been processed for the Xbox Live User
+    /// </summary>
+    /// <param name="playerNumber">The player number the developer is interested in</param>
+    /// <param name="callback">A call back method that should be expecting a <see cref="SocialEvent"/></param>
+    /// <returns>True of callback was added successfully, false otherwise.</returns>
+    public bool OnSocialEventProcessed(int playerNumber, UnityAction<SocialEvent> callback) { throw new NotImplementedException(); }
+
     /// <summary>
     /// Returns a list of the currently signed in Xbox Live Users and their assigned player numbers
     /// </summary>
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> with player number keys and Xbox Live User values.</returns>
-    Dictionary<int, XboxLiveUser> GetCurrentPlayers() { return null; }
+    public Dictionary<int, XboxLiveUser> GetCurrentPlayers() {
+        var currentPlayerDictionary = new Dictionary<int, XboxLiveUser>();
+        foreach (var playerInfo in this.CurrentPlayers) {
+            if (playerInfo.Value.XboxLiveUser != null) {
+                currentPlayerDictionary.Add(playerInfo.Key, playerInfo.Value.XboxLiveUser);
+            }
+        }
+        return currentPlayerDictionary;
+    }
 
     /// <summary>
     /// Returns the number of signed in Xbox Live Users.
     /// </summary>
     /// <returns>An integer representing the number of currently signed in players.</returns>
-    int GetCurrentNumberOfPlayers() { return 0; }
+    public int GetCurrentNumberOfPlayers() {
+        return this.GetCurrentPlayers().Count;
+    }
 
     /// <summary>
     /// Returns the maximum number of signed in Xbox Live Users supported on current platform.
     /// </summary>
     /// <returns>An integer representing the maximum number of players supported on the current platform.</returns>
-    int GetMaximumNumberOfPlayers() {
+    public int GetMaximumNumberOfPlayers() {
         if (Application.isEditor) {
             return 16;
         }
@@ -155,20 +218,35 @@ public class SignInManager : MonoBehaviour {
     /// </summary>
     /// <param name="xuid">The xuid of the Xbox Live User</param>
     /// <returns>The player number assigned to the Xbox Live User or -1 if no Xbox Live Users are signed in with that xuid.</returns>
-    int GetPlayerNumber(string xuid) { return 0; }
+    public int GetPlayerNumber(string xuid) {
+        foreach (var playerInfo in this.CurrentPlayers)
+        {
+            if (playerInfo.Value.XboxLiveUser != null && playerInfo.Value.XboxLiveUser.XboxUserId.Equals(xuid))
+            {
+                return playerInfo.Key;
+            }
+        }
+        return -1;
+    }
 
     /// <summary>
     /// Returns the Xbox Live Context for the Xbox Live User with the assigned player number.
     /// </summary>
     /// <param name="playerNumber">The player number.</param>
     /// <returns>The Xbox Live Context for the Xbox Live User with the assigned player number.</returns>
-    XboxLiveContextSettings GetXboxLiveContextForPlayer(int playerNumber) { return null; }
+    public XboxLiveContext GetXboxLiveContextForPlayer(int playerNumber) {
+        if (ValidatePlayerNumber(playerNumber, "Get Xbox Live Context", XboxLiveOperationType.GetUser))
+        {
+            return new XboxLiveContext(this.CurrentPlayers[playerNumber].XboxLiveUser);
+        }
+        return null;
+    }
 
     /// <summary>
     /// Validates whether the playerNumber if allowed for the operation requested or not
     /// </summary>
     /// <returns>True if valid. False, otherwise</returns>
-    private bool ValidatePlayerNumber(int playerNumber, string operationName, bool signIn = true) {
+    private bool ValidatePlayerNumber(int playerNumber, string operationName, XboxLiveOperationType operationType) {
         if (playerNumber <= 0) {
             if (XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
@@ -186,35 +264,37 @@ public class SignInManager : MonoBehaviour {
         }
 
         if (CurrentPlayers.ContainsKey(playerNumber)) {
-            if (signIn)
+            if (operationType == XboxLiveOperationType.SignIn)
             {
                 if (CurrentPlayers[playerNumber].XboxLiveUser != null)
                 {
                     if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                     {
-                        Debug.LogError(operationName + " Failed: Player " + playerNumber + " already exists.");
+                        Debug.LogError(operationName + " Failed: Player " + playerNumber + " is already signed in.");
                     }
                     NotifyAllCallbacks(
                         playerNumber, 
                         null, 
                         XboxLiveAuthStatus.Invalid, 
-                        operationName + " Failed: Player " + playerNumber + " already exists.", 
+                        operationName + " Failed: Player " + playerNumber + " is already signed in.", 
                         true);
                     return false;
                 }
             }
-            else {
+
+            if (operationType == XboxLiveOperationType.SignOut || operationType == XboxLiveOperationType.GetUser)
+            {
                 if (CurrentPlayers[playerNumber].XboxLiveUser == null)
                 {
                     if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                     {
-                        Debug.LogError(operationName + " Failed: Player " + playerNumber + " is already signed out.");
+                        Debug.LogError(operationName + " Failed: Player " + playerNumber + " is not signed in.");
                     }
                     NotifyAllCallbacks(
                         playerNumber,
                         null,
                         XboxLiveAuthStatus.Invalid,
-                        operationName + " Failed: Player " + playerNumber + " is already signed out.",
+                        operationName + " Failed: Player " + playerNumber + " is not signed in.",
                         false);
                     return false;
                 }
@@ -251,6 +331,107 @@ public class SignInManager : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Removed the xbox live user from StatsManager and Social manager when sign out is complete
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="signOutComlpetedEventArgs"></param>
+    private void XboxLiveUserSignOutCompleted(object sender, SignOutCompletedEventArgs signOutComlpetedEventArgs) {
+        var xboxLiveUser = signOutComlpetedEventArgs.User as XboxLiveUser;
+        this.RemoveUserHelper(xboxLiveUser);
+    }
+
+    /// <summary>
+    /// Assists with the handling of user removal
+    /// </summary>
+    /// <param name="xboxLiveUser">The Xbox Live user being removed</param>
+    private void RemoveUserHelper(XboxLiveUser xboxLiveUser) {
+        if (xboxLiveUser != null)
+        {
+            XboxLive.Instance.StatsManager.RemoveLocalUser(xboxLiveUser);
+            XboxLive.Instance.SocialManager.RemoveLocalUser(xboxLiveUser);
+        }
+        var playerNumber = GetPlayerNumber(xboxLiveUser.XboxUserId);
+        this.CurrentPlayers[playerNumber].XboxLiveUser = null;
+#if ENABLE_WINMD_SUPPORT
+        this.CurrentPlayers[playerNumber].WindowsUser = null;
+#endif
+        this.NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Succeeded, null, false);
+    }
+
+    /// <summary>
+    /// Assists with the validating and setting up for adding callbacks
+    /// </summary>
+    /// <param name="playerNumber">The Player Number</param>
+    /// <returns>True, if valid. False, otherwise</returns>
+    private bool AddCallbackHelper(int playerNumber, string callbackTypeName) {
+        if (ValidatePlayerNumber(playerNumber, "Adding " + callbackTypeName +" Callback", XboxLiveOperationType.AddCallback))
+        {
+            if (!CurrentPlayers.ContainsKey(playerNumber))
+            {
+                var playerInfo = new XboxLivePlayerInfo()
+                {
+                    SignInCallbacks = new List<UnityAction<XboxLiveUser, XboxLiveAuthStatus, string>>(),
+                    SignOutCallbacks = new List<UnityAction<XboxLiveUser, XboxLiveAuthStatus, string>>()
+                };
+                this.CurrentPlayers.Add(playerNumber, playerInfo);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Signs in a player. Attempts sign in silently first then sign in.
+    /// </summary>
+    /// <param name="playerNumber">The player number</param>
+    /// <param name="playerInfo">The player info of the the player being signed in</param>
+    /// <returns>A Coroutine</returns>
+    private IEnumerator SignInAsync(int playerNumber, XboxLivePlayerInfo playerInfo) {
+        SignInStatus signInStatus = SignInStatus.Success;
+        TaskYieldInstruction<SignInResult> signInSilentlyTask = playerInfo.XboxLiveUser.SignInSilentlyAsync().AsCoroutine();
+        yield return signInSilentlyTask;
+
+        try {
+            signInStatus = signInSilentlyTask.Result.Status;
+        }
+        catch (Exception ex) {
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.LogError("Exception occured: " + ex.Message);
+            }
+            
+        }
+
+        if (signInStatus != SignInStatus.Success) {
+            TaskYieldInstruction<SignInResult> signInTask = playerInfo.XboxLiveUser.SignInAsync().AsCoroutine();
+            yield return signInTask;
+
+            try
+            {
+                signInStatus = signInTask.Result.Status;
+            }
+            catch (Exception ex)
+            {
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                {
+                    Debug.LogError("Exception occured: " + ex.Message);
+                }
+            }
+        }
+
+        // Throw any exceptions if needed.
+        if (signInStatus == SignInStatus.Success)
+        {
+            CurrentNumberOfPlayers++;
+            XboxLive.Instance.StatsManager.AddLocalUser(playerInfo.XboxLiveUser);
+            XboxLive.Instance.SocialManager.AddLocalUser(playerInfo.XboxLiveUser, SocialManagerExtraDetailLevel.PreferredColorLevel);
+        }
+        else {
+            NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed. Sign In Status: " + signInStatus);
+        }
+    }
+
 
     /// <summary>
     /// An object that's used to track the current status of Xbox Live Users 
@@ -266,5 +447,15 @@ public class SignInManager : MonoBehaviour {
 #if ENABLE_WINMD_SUPPORT
         Windows.System.User WindowsSystemUser WindowsUser { get; set; }
 #endif
+    }
+
+    /// <summary>
+    /// An Enumeration used to signal the type of the operation being handled
+    /// </summary>
+    private enum XboxLiveOperationType {
+        SignIn,
+        SignOut,
+        GetUser,
+        AddCallback
     }
 }

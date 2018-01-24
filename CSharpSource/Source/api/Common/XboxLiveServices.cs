@@ -9,12 +9,12 @@ namespace Microsoft.Xbox.Services
     using Microsoft.Xbox.Services.System;
     using Microsoft.Xbox.Services.TitleStorage;
 
-    public partial class XboxLiveServices
+    public partial class XboxLiveContext
     {
         public PrivacyService PrivacyService { get; private set; }
         public TitleStorageService TitleStorageService { get; private set; }
         
-        public XboxLiveServices(XboxLiveUser user)
+        public XboxLiveContext(XboxLiveUser user)
         {
 #if WINDOWS_UWP
             IntPtr xboxLiveContext;
@@ -35,7 +35,7 @@ namespace Microsoft.Xbox.Services
 #endif
         }
 
-        ~XboxLiveServices()
+        ~XboxLiveContext()
         {
             XboxLiveContextDelete(XboxLiveContextPtr);
         }
