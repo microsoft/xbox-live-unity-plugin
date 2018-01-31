@@ -77,6 +77,16 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
                 throw new ArgumentException("Local User needs to be added.");
             }
 
+            if (!mStats.ContainsKey(statName))
+            {
+                mStats.Add(statName, new StatisticValue()
+                {
+                    Name = statName,
+                    AsInteger = 100,
+                    DataType = StatisticDataType.Number
+                });
+            }
+
             return mStats[statName];
         }
 
