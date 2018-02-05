@@ -19,25 +19,24 @@ using UnityEngine.UI;
 public class GameSaveUI : MonoBehaviour
 {
     private GameSaveHelper gameSaveHelper;
-
+    public int PlayerNumber = 1;
     public string GameSaveContainerName = "TestContainer";
     public string GameSaveBlobName = "TestBlob";
     public Text Console;
     public Scrollbar ScrollBar;
     public RectTransform ScrollRect;
-    public XboxLiveUserInfo XboxLiveUser;
     public string GenerateNewControllerButton;
     public string SaveDataControllerButton;
     public string LoadDataControllerButton;
     public string GetInfoControllerButton;
     public string DeleteContainerControllerButton;
-    
+
     private string logText;
     private System.Random random;
     private int gameData;
     private bool initializing;
     private List<string> logLines;
-
+    private XboxLiveUser xboxLiveUser;
     // Use this for initialization
     void Start()
     {
@@ -47,9 +46,23 @@ public class GameSaveUI : MonoBehaviour
         this.gameSaveHelper = new GameSaveHelper();
         this.logLines = new List<string>();
 
-        if (this.XboxLiveUser == null)
+        this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
+        if (this.xboxLiveUser != null && this.xboxLiveUser.IsSignedIn)
         {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            this.InitializeSaveSystem();
+        }
+        else
+        {
+            SignInManager.Instance.OnPlayerSignIn(this.PlayerNumber, this.HandlePlayerSignIn);
+        }
+    }
+
+    public void HandlePlayerSignIn(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus signinStatus, string errorMessage)
+    {
+        if (signinStatus == XboxLiveAuthStatus.Succeeded)
+        {
+            this.xboxLiveUser = xboxLiveUser;
+            this.InitializeSaveSystem();
         }
     }
 
@@ -65,18 +78,18 @@ public class GameSaveUI : MonoBehaviour
             }
 
             this.LogLine("Initializing save system...");
-            this.StartCoroutine(this.gameSaveHelper.Initialize(this.XboxLiveUser.User,
+            this.StartCoroutine(this.gameSaveHelper.Initialize(this.xboxLiveUser,
                 r =>
-                    {
-                        var status = r;
-                        this.LogLine(
-                            status == GameSaveStatus.Ok
-                                ? "Successfully initialized save system."
-                                : string.Format("InitializeSaveSystem failed: {0}", status));
+                {
+                    var status = r;
+                    this.LogLine(
+                        status == GameSaveStatus.Ok
+                            ? "Successfully initialized save system."
+                            : string.Format("InitializeSaveSystem failed: {0}", status));
 
-                        this.initializing = false;
+                    this.initializing = false;
 
-                    }));
+                }));
         }
         catch (Exception ex)
         {
@@ -87,19 +100,6 @@ public class GameSaveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.XboxLiveUser == null)
-        {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-        }
-        else
-        {
-            if (this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn && !this.gameSaveHelper.IsInitialized() && !this.initializing)
-            {
-                this.initializing = true;
-                this.InitializeSaveSystem();
-            }
-        }
-
 
         if (!string.IsNullOrEmpty(this.GenerateNewControllerButton) && Input.GetKeyDown(this.GenerateNewControllerButton))
         {

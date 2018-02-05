@@ -18,10 +18,10 @@ using UnityEngine;
 [Serializable]
 public abstract class StatBase : MonoBehaviour
 {
-    public XboxLiveUserInfo XboxLiveUser;
+    public int PlayerNumber = 1;
     protected bool isLocalUserAdded = false;
     private bool LocalUserAddedSetup = false;
-
+    internal XboxLiveUser xboxLiveUser;
     /// <summary>
     /// The name of the stat that is published to the stats service.
     /// </summary>
@@ -44,40 +44,34 @@ public abstract class StatBase : MonoBehaviour
 
     void Start()
     {
-        if (this.XboxLiveUser == null)
+        this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
+        StatsManagerComponent.Instance.LocalUserAdded += HandleGetStatHelper;
+        if (this.xboxLiveUser != null && this.xboxLiveUser.IsSignedIn)
         {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            this.HandleGetStat(this.xboxLiveUser, this.ID);
         }
 
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn)
-        {
-            this.HandleGetStat(this.XboxLiveUser.User, this.ID);
-        }
     }
 
-    protected void Update()
+    protected void HandleGetStatHelper(object sender, XboxLiveUserEventArgs args)
     {
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn
-            && !this.isLocalUserAdded && !this.LocalUserAddedSetup)
+        if (this.xboxLiveUser == null)
         {
-            StatsManagerComponent.Instance.LocalUserAdded += (sender, args) =>
-                {
-                    if (args.User.Gamertag == this.XboxLiveUser.User.Gamertag)
-                    {
-                        this.HandleGetStat(args.User, this.ID);
-                    }
-                };
-            this.LocalUserAddedSetup = true;
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
         }
-        else
+        if (this.xboxLiveUser != null && this.xboxLiveUser.IsSignedIn)
         {
-            if (this.XboxLiveUser == null)
+            if (args.User.Gamertag == this.xboxLiveUser.Gamertag)
             {
-                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+                this.HandleGetStat(args.User, this.ID);
             }
         }
     }
 
+    private void OnDestroy()
+    {
+        StatsManagerComponent.Instance.LocalUserAdded -= HandleGetStatHelper;
+    }
     protected abstract void HandleGetStat(XboxLiveUser user, string statName);
 }
 

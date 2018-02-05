@@ -25,7 +25,7 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
 #if ENABLE_WINMD_SUPPORT
         private GameSaveProvider gameSaveProvider;
 #endif
-        
+
         private bool isInitializedInterntal;
 
         public IEnumerator Initialize(XboxLiveUser xboxLiveUser, Action<GameSaveStatus> resultCallBack)
@@ -53,10 +53,10 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
         }
 
         public IEnumerator SubmitUpdates(
-            string containerName, 
-            Dictionary<string, byte[]> dataToSaveForBlobs, 
-            string[] blobsToDelete, 
-            Action<GameSaveStatus> resultCallBack, 
+            string containerName,
+            Dictionary<string, byte[]> dataToSaveForBlobs,
+            string[] blobsToDelete,
+            Action<GameSaveStatus> resultCallBack,
             string displayName = "")
         {
             yield return null;
@@ -119,11 +119,11 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
 #else
                 var blobContent = "Fake Content";
-            var blobContentBytes = Encoding.UTF8.GetBytes(blobContent);
-            foreach (var blob in blobsToRead)
-            {
-                returnDictionary.Add(blob, blobContentBytes );
-            }
+                var blobContentBytes = Encoding.UTF8.GetBytes(blobContent);
+                foreach (var blob in blobsToRead)
+                {
+                    returnDictionary.Add(blob, blobContentBytes);
+                }
 #endif
                 resultCallBack(returnDictionary);
             }
@@ -159,10 +159,10 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
 #else
                 var blobContent = "Fake Content";
-            foreach (var blob in blobsToRead)
-            {
-                returnDictionary.Add(blob, blobContent);
-            }
+                foreach (var blob in blobsToRead)
+                {
+                    returnDictionary.Add(blob, blobContent);
+                }
 #endif
                 resultCallBack(returnDictionary);
             }
@@ -202,7 +202,8 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
         {
             yield return null;
 
-            if(resultCallBack != null) {
+            if (resultCallBack != null)
+            {
 #if ENABLE_WINMD_SUPPORT
                 if (this.gameSaveProvider != null)
                 {
@@ -244,30 +245,30 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 }
 #else
                 var resultList = new List<StorageContainerInfo>();
-                    var firstContainer = new StorageContainerInfo
-                    {
-                        Name = "Container01",
-                        DisplayName = "Display Name 01",
-                        LastModifiedTime = DateTime.Now,
-                        NeedsSync = false,
-                        TotalSize = 1024
-                    };
-                    resultList.Add(firstContainer);
-                    var secondContainer = new StorageContainerInfo
-                    {
-                        Name = "Container02",
-                        DisplayName = "Display Name 02",
-                        LastModifiedTime = DateTime.Now,
-                        NeedsSync = false,
-                        TotalSize = 2048
-                    };
-                    resultList.Add(secondContainer);
-                    var queryResult = new StorageContainerQueryResult
-                    {
-                        Status = GameSaveStatus.Ok,
-                        Value = resultList
-                    };
-                    resultCallBack(queryResult);
+                var firstContainer = new StorageContainerInfo
+                {
+                    Name = "Container01",
+                    DisplayName = "Display Name 01",
+                    LastModifiedTime = DateTime.Now,
+                    NeedsSync = false,
+                    TotalSize = 1024
+                };
+                resultList.Add(firstContainer);
+                var secondContainer = new StorageContainerInfo
+                {
+                    Name = "Container02",
+                    DisplayName = "Display Name 02",
+                    LastModifiedTime = DateTime.Now,
+                    NeedsSync = false,
+                    TotalSize = 2048
+                };
+                resultList.Add(secondContainer);
+                var queryResult = new StorageContainerQueryResult
+                {
+                    Status = GameSaveStatus.Ok,
+                    Value = resultList
+                };
+                resultCallBack(queryResult);
 #endif
             }
         }

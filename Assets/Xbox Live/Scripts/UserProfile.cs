@@ -72,19 +72,29 @@ public class UserProfile : MonoBehaviour
         }
         this.Refresh();
 
-        SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
-        SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.XboxLiveUserOnSignOutCompleted);
-        SignInManager.Instance.OnPlayerSignIn(this.PlayerNumber, this.x)
-        this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
-        if (this.xboxLiveUser != null) {
-            this.LoadProfileInfo();
+        try
+        {
+            SocialManagerComponent.Instance.EventProcessed += SocialManagerEventProcessed;
+            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.XboxLiveUserOnSignOutCompleted);
+            SignInManager.Instance.OnPlayerSignIn(this.PlayerNumber, this.SetupForRefresh);
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
+            if (this.xboxLiveUser != null)
+            {
+                this.LoadProfileInfo();
+                this.StartCoroutine(this.FinishLoadingProfileInfo());
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning(ex.Message);
         }
     }
 
     private void XboxLiveUserOnSignOutCompleted(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
     {
         // Refresh updates UX elements so that needs to be called on the App thread
-        UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
+        //UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
+        this.Refresh();
     }
 
     public void SignIn()
@@ -159,39 +169,46 @@ public class UserProfile : MonoBehaviour
         }
         */
 #else
-       /*
-        this.XboxLiveUser.Initialize();
-        yield return this.SignInAsync();
-        */
+        /*
+         this.XboxLiveUser.Initialize();
+         yield return this.SignInAsync();
+         */
 #endif
-    }
-
-    public IEnumerator SignInAsync()
-    {
-        
-
-        this.Refresh();
     }
 
     private void LoadProfileInfo(bool userAdded = true)
     {
-        this.gamertag.text = this.XboxLiveUser.User.Gamertag;
+        this.gamertag.text = this.xboxLiveUser.Gamertag;
 
         if (userAdded)
         {
-            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.XboxLiveUser.User, new List<string> { this.XboxLiveUser.User.XboxUserId });
+            try
+            {
+                userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.xboxLiveUser, new List<string> { this.xboxLiveUser.XboxUserId });
+            }
+            catch (Exception ex)
+            {
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                {
+                    Debug.LogError("Exception occured: " + ex.Message);
+                }
+            }
         }
     }
 
     private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
     {
-        if (this.xboxLiveUser == null ||
-            socialEvent.User.XboxUserId != this.XboxLiveUser.User.XboxUserId)
+        if (this.xboxLiveUser == null)
+        {
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
+        }
+
+        if (socialEvent.User.XboxUserId != this.xboxLiveUser.XboxUserId)
         {
             // Ignore the social event
             return;
         }
-        
+
         if (socialEvent.EventType == SocialEventType.LocalUserAdded)
         {
             if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
@@ -220,7 +237,7 @@ public class UserProfile : MonoBehaviour
 
     private IEnumerator FinishLoadingProfileInfo()
     {
-        var socialUser = userGroup.GetUsersFromXboxUserIds(new List<string> { this.XboxLiveUser.User.XboxUserId })[0];
+        var socialUser = userGroup.GetUsersFromXboxUserIds(new List<string> { this.xboxLiveUser.XboxUserId })[0];
 
         var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
         yield return www;
@@ -264,6 +281,14 @@ public class UserProfile : MonoBehaviour
         return new Color(r, g, b);
     }
 
+    private void SetupForRefresh(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
+    {
+        if (authStatus == XboxLiveAuthStatus.Succeeded && xboxLiveUser != null)
+        {
+            this.xboxLiveUser = xboxLiveUser;
+        }
+    }
+
     private void Refresh()
     {
         var isSignedIn = this.xboxLiveUser != null && this.xboxLiveUser.IsSignedIn;
@@ -272,5 +297,11 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
     }
-    
+
+    private void OnDestroy()
+    {
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.XboxLiveUserOnSignOutCompleted);
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.SetupForRefresh);
+        SocialManagerComponent.Instance.EventProcessed -= SocialManagerEventProcessed;
+    }
 }

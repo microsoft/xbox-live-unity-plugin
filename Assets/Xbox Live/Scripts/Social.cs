@@ -17,14 +17,14 @@ public class Social : MonoBehaviour
     public Dropdown presenceFilterDropdown;
     public Transform contentPanel;
     public ScrollRect scrollRect;
-    public XboxLiveUserInfo XboxLiveUser;
+    public int PlayerNumber = 1;
     public string toggleFilterControllerButton;
     public string verticalScrollInputAxis;
 
     private Dictionary<int, XboxSocialUserGroup> socialUserGroups = new Dictionary<int, XboxSocialUserGroup>();
     private ObjectPool entryObjectPool;
     public float scrollSpeedMultiplier = 0.1f;
-
+    private XboxLiveUser xboxLiveUser;
     private void Awake()
     {
         this.EnsureEventSystem();
@@ -46,12 +46,9 @@ public class Social : MonoBehaviour
 
     private void Start()
     {
-        if (this.XboxLiveUser == null)
-        {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-        }
+        this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
 
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && this.XboxLiveUser.User.IsSignedIn)
+        if (this.xboxLiveUser != null && this.xboxLiveUser.IsSignedIn)
         {
             this.CreateDefaultSocialGraphs();
             this.RefreshSocialGroups();
@@ -61,13 +58,16 @@ public class Social : MonoBehaviour
 
     private void Update()
     {
-        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0){
+        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+        {
             var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
             this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
         }
 
-        if (!string.IsNullOrEmpty(this.toggleFilterControllerButton) && Input.GetKeyDown(this.toggleFilterControllerButton)) {
-            switch (this.presenceFilterDropdown.value) {
+        if (!string.IsNullOrEmpty(this.toggleFilterControllerButton) && Input.GetKeyDown(this.toggleFilterControllerButton))
+        {
+            switch (this.presenceFilterDropdown.value)
+            {
                 case 0: this.presenceFilterDropdown.value = 1; break;
                 case 1: this.presenceFilterDropdown.value = 0; break;
             }
@@ -76,12 +76,9 @@ public class Social : MonoBehaviour
 
     private void OnEventProcessed(object sender, SocialEvent socialEvent)
     {
-        if (this.XboxLiveUser == null)
-        {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-        }
+        this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
 
-        if (this.XboxLiveUser != null && this.XboxLiveUser.User != null && socialEvent.User.Gamertag == this.XboxLiveUser.User.Gamertag)
+        if (this.xboxLiveUser != null && socialEvent.User.Gamertag == this.xboxLiveUser.Gamertag)
         {
             switch (socialEvent.EventType)
             {
@@ -100,10 +97,7 @@ public class Social : MonoBehaviour
         }
         else
         {
-            if (this.XboxLiveUser == null)
-            {
-                this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-            }
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
         }
     }
 
@@ -114,10 +108,10 @@ public class Social : MonoBehaviour
 
     private void CreateDefaultSocialGraphs()
     {
-        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.All, RelationshipFilter.Friends);
+        XboxSocialUserGroup allSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.xboxLiveUser, PresenceFilter.All, RelationshipFilter.Friends);
         this.socialUserGroups.Add(0, allSocialUserGroup);
 
-        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.XboxLiveUser.User, PresenceFilter.AllOnline, RelationshipFilter.Friends);
+        XboxSocialUserGroup allOnlineSocialUserGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromFilters(this.xboxLiveUser, PresenceFilter.AllOnline, RelationshipFilter.Friends);
         this.socialUserGroups.Add(1, allOnlineSocialUserGroup);
     }
 
@@ -130,21 +124,29 @@ public class Social : MonoBehaviour
             return;
         }
 
-        while (this.contentPanel.childCount > 0)
+        Debug.LogWarning("Content Panel = " + this.contentPanel);
+
+        try
         {
-            var entry = this.contentPanel.GetChild(0).gameObject;
-            this.entryObjectPool.ReturnObject(entry);
-        }
+            while (this.contentPanel.childCount > 0)
+            {
+                var entry = this.contentPanel.GetChild(0).gameObject;
+                this.entryObjectPool.ReturnObject(entry);
+            }
 
-        foreach (XboxSocialUser user in socialUserGroup.Users)
+            foreach (XboxSocialUser user in socialUserGroup.Users)
+            {
+                GameObject entryObject = this.entryObjectPool.GetObject();
+                XboxSocialUserEntry entry = entryObject.GetComponent<XboxSocialUserEntry>();
+
+                entry.Data = user;
+                entryObject.transform.SetParent(this.contentPanel);
+            }
+        }
+        catch (Exception ex)
         {
-            GameObject entryObject = this.entryObjectPool.GetObject();
-            XboxSocialUserEntry entry = entryObject.GetComponent<XboxSocialUserEntry>();
-
-            entry.Data = user;
-            entryObject.transform.SetParent(this.contentPanel);
+            Debug.LogError("An exception occured: " + ex.ToString());
         }
-
         // Reset the scroll view to the top.
         this.scrollRect.verticalNormalizedPosition = 1;
     }
@@ -156,5 +158,10 @@ public class Social : MonoBehaviour
         float b = (float)byte.Parse(color.Substring(4, 2), NumberStyles.HexNumber) / 255;
 
         return new Color(r, g, b);
+    }
+
+    private void OnDestroy()
+    {
+        SocialManagerComponent.Instance.EventProcessed -= this.OnEventProcessed;
     }
 }

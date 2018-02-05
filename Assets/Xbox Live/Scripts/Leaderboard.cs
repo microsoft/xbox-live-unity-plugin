@@ -64,12 +64,14 @@ public class Leaderboard : MonoBehaviour
 
     public ScrollRect scrollRect;
 
-    public XboxLiveUserInfo XboxLiveUser;
+    public int PlayerNumber = 1;
 
     public float scrollSpeedMultiplier = 0.1f;
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
+    private XboxLiveUser xboxLiveUser;
+
     private bool isLocalUserAdded
     {
         get
@@ -103,25 +105,25 @@ public class Leaderboard : MonoBehaviour
         this.statsAddedLocalUser = false;
         this.socialAddedLocalUser = false;
     }
-    
+
     private void Start()
     {
-        if (this.XboxLiveUser == null
-            && XboxLiveUserManager.Instance.SingleUserModeEnabled
-            && XboxLiveUserManager.Instance.GetSingleModeUser() != null
-            && XboxLiveUserManager.Instance.GetSingleModeUser().User != null
-            && XboxLiveUserManager.Instance.GetSingleModeUser().User.IsSignedIn)
+
+        if (this.xboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
-            this.statsAddedLocalUser = true;
-            this.socialAddedLocalUser = true;
-            this.UpdateData(0);
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
+            if (this.xboxLiveUser != null)
+            {
+                this.statsAddedLocalUser = true;
+                this.socialAddedLocalUser = true;
+                this.UpdateData(0);
+            }
         }
     }
 
     public void RequestFlushToService(bool isHighPriority)
     {
-        StatsManagerComponent.Instance.RequestFlushToService(this.XboxLiveUser.User, isHighPriority);
+        StatsManagerComponent.Instance.RequestFlushToService(this.xboxLiveUser, isHighPriority);
     }
 
     void Update()
@@ -198,9 +200,9 @@ public class Leaderboard : MonoBehaviour
             return;
         }
 
-        if (this.XboxLiveUser == null)
+        if (this.xboxLiveUser == null)
         {
-            this.XboxLiveUser = XboxLiveUserManager.Instance.GetSingleModeUser();
+            this.xboxLiveUser = SignInManager.Instance.GetUser(this.PlayerNumber);
         }
 
         LeaderboardQuery query;
@@ -231,7 +233,7 @@ public class Leaderboard : MonoBehaviour
         }
 
         this.currentPage = newPage;
-        XboxLive.Instance.StatsManager.GetLeaderboard(this.XboxLiveUser.User, this.stat.ID, query);
+        XboxLive.Instance.StatsManager.GetLeaderboard(this.xboxLiveUser, this.stat.ID, query);
     }
 
     private void SocialManagerEventProcessed(object sender, SocialEvent socialEvent)
@@ -241,7 +243,7 @@ public class Leaderboard : MonoBehaviour
             socialAddedLocalUser = true;
             this.Refresh();
         }
-        else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded && 
+        else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
             ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == this.userGroup)
         {
             var entries = this.contentPanel.GetComponentsInChildren<LeaderboardEntry>();
@@ -317,8 +319,9 @@ public class Leaderboard : MonoBehaviour
 
             entryObject.transform.SetParent(this.contentPanel);
         }
+        /*
         userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(XboxLiveUserManager.Instance.UserForSingleUserMode.User, xuids);
-
+        */
         // Reset the scroll view to the top.
         this.scrollRect.verticalNormalizedPosition = 1;
         this.UpdateButtons();
