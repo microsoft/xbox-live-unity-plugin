@@ -91,7 +91,17 @@ public class SignInManager : Singleton<SignInManager>
             }
             else
             {
-                this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
+                var usersTask = Windows.System.User.FindAllAsync().AsTask();
+                if (usersTask.Status == TaskStatus.RanToCompletion && usersTask.Result != null && usersTask.Result.Count > 0)
+                {
+                    var windowsUser = usersTask.Result[0];
+                    this.CurrentPlayers[playerNumber].WindowsUser = windowsUser;
+                    this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser(windowsUser);
+                }
+                else
+                {
+                    this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
+                }
             }
 #else
             this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
