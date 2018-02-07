@@ -17,10 +17,12 @@ public class SignInManager : Singleton<SignInManager>
     private Dictionary<int, XboxLivePlayerInfo> CurrentPlayers;
     public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
     private int CurrentNumberOfPlayers = 0;
+    private List<int> PlayersPendingSignIn;
 
     public void Awake()
     {
         CurrentPlayers = new Dictionary<int, XboxLivePlayerInfo>();
+        this.PlayersPendingSignIn = new List<int>();
         DontDestroyOnLoad(this);
     }
 
@@ -79,6 +81,9 @@ public class SignInManager : Singleton<SignInManager>
                             {
                                 playerInfo.WindowsUser = task.Result;
                                 playerInfo.XboxLiveUser = new XboxLiveUser(playerInfo.WindowsUser);
+                                XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
+                                this.PlayersPendingSignIn.Add(playerNumber);
+                                this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
                             }
                             else
                             {
@@ -97,17 +102,20 @@ public class SignInManager : Singleton<SignInManager>
                     var windowsUser = usersTask.Result[0];
                     this.CurrentPlayers[playerNumber].WindowsUser = windowsUser;
                     this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser(windowsUser);
+                    this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
                 }
                 else
                 {
                     this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
+                    XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
+                    this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
                 }
             }
 #else
             this.CurrentPlayers[playerNumber].XboxLiveUser = new XboxLiveUser();
-#endif
             XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
-            yield return this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]);
+            this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
+#endif
         }
     }
 
@@ -280,11 +288,14 @@ public class SignInManager : Singleton<SignInManager>
         }
         else
         {
-#if CONSOLE
-            return 16;
-#else
-            return 1;
-#endif
+            if (SystemInfo.deviceType == DeviceType.Console)
+            {
+                return 16;
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 
@@ -507,7 +518,6 @@ public class SignInManager : Singleton<SignInManager>
             try
             {
                 signInStatus = signInTask.Result.Status;
-                this.NotifyAllCallbacks(playerNumber, playerInfo.XboxLiveUser, XboxLiveAuthStatus.Succeeded, null, true);
             }
             catch (Exception ex)
             {
@@ -518,19 +528,40 @@ public class SignInManager : Singleton<SignInManager>
             }
         }
 
-        // Throw any exceptions if needed.
-        if (signInStatus == SignInStatus.Success)
+        try
         {
-            CurrentNumberOfPlayers++;
-            XboxLive.Instance.StatsManager.AddLocalUser(playerInfo.XboxLiveUser);
-            XboxLive.Instance.SocialManager.AddLocalUser(playerInfo.XboxLiveUser, SocialManagerExtraDetailLevel.PreferredColorLevel);
+            // Throw any exceptions if needed.
+            if (signInStatus == SignInStatus.Success)
+            {
+                CurrentNumberOfPlayers++;
+                XboxLive.Instance.StatsManager.AddLocalUser(playerInfo.XboxLiveUser);
+                XboxLive.Instance.SocialManager.AddLocalUser(playerInfo.XboxLiveUser, SocialManagerExtraDetailLevel.PreferredColorLevel);
+                this.NotifyAllCallbacks(playerNumber, playerInfo.XboxLiveUser, XboxLiveAuthStatus.Succeeded, null, true);
+
+            }
+            else
+            {
+                NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed. Sign In Status: " + signInStatus);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed. Sign In Status: " + signInStatus);
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.LogError("Exception occured: " + ex.Message);
+            }
         }
     }
 
+    private void Update()
+    {
+        if (this.PlayersPendingSignIn.Count > 0)
+        {
+            var playerNumber = this.PlayersPendingSignIn[0];
+            this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
+            this.PlayersPendingSignIn.Remove(playerNumber);
+        }
+    }
 
     /// <summary>
     /// An object that's used to track the current status of Xbox Live Users 

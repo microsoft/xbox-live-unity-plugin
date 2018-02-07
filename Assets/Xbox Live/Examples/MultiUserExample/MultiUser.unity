@@ -42,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 11
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 8
+    serializedVersion: 9
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -71,23 +71,26 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-    m_MixedBakeMode: 3
+    m_MixedBakeMode: 2
     m_BakeBackend: 0
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFiltering: 0
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 1
-    m_PVRFilteringAtrousNormalSigma: 1
-    m_PVRFilteringAtrousPositionSigma: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
-  m_ShadowMaskMode: 2
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -107,6 +110,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    debug:
+      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1001 &68723149
 Prefab:
@@ -213,7 +218,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 1639834287}
+      objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: AllowGuestAccounts
@@ -353,7 +358,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 1476567750}
+      objectReference: {fileID: 0}
     - target: {fileID: 224310838892952966, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_AnchorMax.x
@@ -623,7 +628,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 567525396}
+      objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: InputControllerButton
@@ -679,110 +684,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b8f49ee71ade254da6555182196f225, type: 2}
   m_IsPrefabParent: 0
---- !u!1001 &567525395
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &567525396 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 567525395}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
---- !u!1001 &745702892
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser3
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &745702893 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 745702892}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
 --- !u!1 &792567072
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,7 +759,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!4 &792567077
 Transform:
   m_ObjectHideFlags: 0
@@ -973,7 +873,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 1476567750}
+      objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
       value: UserProfile1
@@ -991,58 +891,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
     type: 2}
   m_PrefabInternal: {fileID: 1471834036}
---- !u!1001 &1476567749
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &1476567750 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1476567749}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
 --- !u!1 &1496209378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,58 +1030,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1572906896}
---- !u!1001 &1639834286
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser4
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &1639834287 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1639834286}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
 --- !u!1 &2035348803
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,7 +1197,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 745702893}
+      objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: InputControllerButton

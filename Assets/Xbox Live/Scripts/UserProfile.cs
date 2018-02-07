@@ -81,7 +81,6 @@ public class UserProfile : MonoBehaviour
             if (this.xboxLiveUser != null)
             {
                 this.LoadProfileInfo();
-                this.StartCoroutine(this.FinishLoadingProfileInfo());
             }
         }
         catch (Exception ex)
@@ -118,62 +117,6 @@ public class UserProfile : MonoBehaviour
         {
             this.SignIn();
         }
-    }
-
-
-    public IEnumerator InitializeXboxLiveUser()
-    {
-        yield return null;
-
-#if ENABLE_WINMD_SUPPORT
-        /*
-        if (!XboxLiveUserManager.Instance.SingleUserModeEnabled && this.XboxLiveUser != null && this.XboxLiveUser.WindowsSystemUser == null)
-        {
-            var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = this.AllowGuestAccounts };
-            autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
-                    task =>
-                        {
-                            if (task.Status == TaskStatus.RanToCompletion)
-                            {
-                                if (task.Result == null)
-                                {
-                                    UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
-                                }
-                                else
-                                {
-                                    this.XboxLiveUser.Initialize(task.Result);
-                                    this.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(this.SignInAsync()); });
-                                }
-                            }
-                            else
-                            {
-                                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                                {
-                                    Debug.Log("Exception occured: " + task.Exception.Message);
-                                }
-                                UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
-                            }
-                        });
-        }
-        else
-        {
-            if (this.XboxLiveUser == null)
-            {
-                this.XboxLiveUser = XboxLiveUserManager.Instance.UserForSingleUserMode;
-            }
-            if (this.XboxLiveUser.User == null)
-            {
-                this.XboxLiveUser.Initialize();
-            }
-            yield return this.SignInAsync();
-        }
-        */
-#else
-        /*
-         this.XboxLiveUser.Initialize();
-         yield return this.SignInAsync();
-         */
-#endif
     }
 
     private void LoadProfileInfo(bool userAdded = true)
@@ -286,6 +229,11 @@ public class UserProfile : MonoBehaviour
         if (authStatus == XboxLiveAuthStatus.Succeeded && xboxLiveUser != null)
         {
             this.xboxLiveUser = xboxLiveUser;
+        }
+        else
+        {
+            this.signInPanel.GetComponentInChildren<Button>().interactable = true;
+            this.AllowSignInAttempt = true;
         }
     }
 
