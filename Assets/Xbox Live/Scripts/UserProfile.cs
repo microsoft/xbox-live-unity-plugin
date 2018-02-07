@@ -16,13 +16,19 @@ using UnityEngine.UI;
 
 public class UserProfile : MonoBehaviour
 {
+    public bool EnableControllerInput = false;
 
-    public string InputControllerButton;
+    public int JoystickNumber = 1;
+
+    public XboxControllerButtons SignInButton;
+
+    public XboxControllerButtons SignOutButton;
 
     public int PlayerNumber = 1;
 
-    private bool AllowSignInAttempt = true;
-    private bool ConfigAvailable = true;
+    private string signInInputButton;
+
+    private string signOutInputButton;
 
     [HideInInspector]
     public GameObject signInPanel;
@@ -42,7 +48,7 @@ public class UserProfile : MonoBehaviour
     [HideInInspector]
     public Text gamerscore;
 
-    public bool AllowGuestAccounts = false;
+    private bool AllowGuestAccounts = false;
 
     public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
@@ -50,10 +56,26 @@ public class UserProfile : MonoBehaviour
 
     private XboxSocialUserGroup userGroup;
 
+    private bool AllowSignInAttempt = true;
+
+    private bool ConfigAvailable = true;
     public void Awake()
     {
         this.EnsureEventSystem();
         XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
+
+        if (this.EnableControllerInput)
+        {
+            if (this.SignInButton != XboxControllerButtons.None)
+            {
+                this.signInInputButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.SignInButton);
+            }
+
+            if (this.SignOutButton != XboxControllerButtons.None)
+            {
+                this.signOutInputButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.SignOutButton);
+            }
+        }
     }
 
     public void Start()
@@ -91,8 +113,8 @@ public class UserProfile : MonoBehaviour
 
     private void XboxLiveUserOnSignOutCompleted(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
     {
-        // Refresh updates UX elements so that needs to be called on the App thread
-        //UnityEngine.WSA.Application.InvokeOnAppThread(() => this.Refresh(), false);
+        this.signInPanel.GetComponentInChildren<Button>().interactable = true;
+        this.AllowSignInAttempt = true;
         this.Refresh();
     }
 
@@ -113,9 +135,14 @@ public class UserProfile : MonoBehaviour
             ExecuteOnMainThread.Dequeue().Invoke();
         }
 
-        if (this.AllowSignInAttempt && !string.IsNullOrEmpty(this.InputControllerButton) && Input.GetKeyDown(this.InputControllerButton))
+        if (this.AllowSignInAttempt && this.EnableControllerInput && !string.IsNullOrEmpty(this.signInInputButton) && Input.GetKeyDown(this.signInInputButton))
         {
             this.SignIn();
+        }
+
+        if (!this.AllowSignInAttempt && this.EnableControllerInput && !string.IsNullOrEmpty(this.signOutInputButton) && Input.GetKeyDown(this.signOutInputButton))
+        {
+            this.SignOut();
         }
     }
 
@@ -187,7 +214,6 @@ public class UserProfile : MonoBehaviour
 
         try
         {
-
             if (www.isDone && string.IsNullOrEmpty(www.error))
             {
                 var t = www.texture;
@@ -244,6 +270,10 @@ public class UserProfile : MonoBehaviour
         this.signInPanel.GetComponentInChildren<Button>().interactable = this.AllowSignInAttempt;
         this.signInPanel.SetActive(!isSignedIn);
         this.profileInfoPanel.SetActive(isSignedIn);
+    }
+
+    private void SignOut() {
+        this.StartCoroutine(SignInManager.Instance.RemoveUser(this.PlayerNumber));
     }
 
     private void OnDestroy()
