@@ -493,14 +493,14 @@ public class SignInManager : Singleton<SignInManager>
     private IEnumerator SignInAsync(int playerNumber, XboxLivePlayerInfo playerInfo)
     {
         SignInStatus signInStatus = SignInStatus.Success;
+
         TaskYieldInstruction<SignInResult> signInSilentlyTask = playerInfo.XboxLiveUser.SignInSilentlyAsync().AsCoroutine();
         yield return signInSilentlyTask;
 
         try
         {
             signInStatus = signInSilentlyTask.Result.Status;
-            this.NotifyAllCallbacks(playerNumber, playerInfo.XboxLiveUser, XboxLiveAuthStatus.Succeeded, null, true);
-        }
+        }       
         catch (Exception ex)
         {
             if (XboxLiveServicesSettings.Instance.DebugLogsOn)
@@ -537,7 +537,6 @@ public class SignInManager : Singleton<SignInManager>
                 XboxLive.Instance.StatsManager.AddLocalUser(playerInfo.XboxLiveUser);
                 XboxLive.Instance.SocialManager.AddLocalUser(playerInfo.XboxLiveUser, SocialManagerExtraDetailLevel.PreferredColorLevel);
                 this.NotifyAllCallbacks(playerNumber, playerInfo.XboxLiveUser, XboxLiveAuthStatus.Succeeded, null, true);
-
             }
             else
             {
