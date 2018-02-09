@@ -125,10 +125,6 @@ public class Social : MonoBehaviour
     private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus xboxAuthStatus, string error) {
         if (xboxAuthStatus == XboxLiveAuthStatus.Succeeded) {
             this.xboxLiveUser = null;
-
-            this.presenceFilterDropdown.options.Clear();
-            this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
-            this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = "All Online" });
             this.presenceFilterDropdown.value = 0;
             this.presenceFilterDropdown.RefreshShownValue();
 
