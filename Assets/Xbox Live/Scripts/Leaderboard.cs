@@ -48,29 +48,39 @@ public class Leaderboard : MonoBehaviour
     [HideInInspector]
     public Button lastButton;
 
-    public string firstControllerButton;
+    public bool EnableControllerInput = false;
 
-    public string lastControllerButton;
+    public int JoystickNumber = 1;
 
-    public string nextControllerButton;
+    public XboxControllerButtons FirstPageButton;
 
-    public string prevControllerButton;
+    public XboxControllerButtons LastPageButton;
 
-    public string refreshControllerButton;
+    public XboxControllerButtons NextPageButton;
+
+    public XboxControllerButtons PreviousPageButton;
+
+    public XboxControllerButtons RefreshButton;
+
+    public int PlayerNumber = 1;
 
     public string verticalScrollInputAxis;
 
     public Transform contentPanel;
 
-    public ScrollRect scrollRect;
-
-    public int PlayerNumber = 1;
+    public ScrollRect scrollRect; 
 
     public float scrollSpeedMultiplier = 0.1f;
 
     private LeaderboardResult leaderboardData;
     private ObjectPool entryObjectPool;
     private XboxLiveUser xboxLiveUser;
+    private string firstControllerButton;
+    private string lastControllerButton;
+    private string nextControllerButton;
+    private string prevControllerButton;
+    private string refreshControllerButton;
+
 
     private bool isLocalUserAdded
     {
@@ -102,8 +112,36 @@ public class Leaderboard : MonoBehaviour
         SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
         StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
         StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
+        SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
         this.statsAddedLocalUser = false;
         this.socialAddedLocalUser = false;
+
+        if (EnableControllerInput) {
+            if (this.FirstPageButton != XboxControllerButtons.None)
+            {
+                this.firstControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.FirstPageButton);
+            }
+
+            if (this.LastPageButton != XboxControllerButtons.None)
+            {
+                this.lastControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.LastPageButton);
+            }
+
+            if (this.NextPageButton != XboxControllerButtons.None)
+            {
+                this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageButton);
+            }
+
+            if (this.PreviousPageButton != XboxControllerButtons.None)
+            {
+                this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageButton);
+            }
+
+            if (this.RefreshButton != XboxControllerButtons.None)
+            {
+                this.refreshControllerButton= "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.RefreshButton);
+            }
+        }
     }
 
     private void Start()
@@ -128,35 +166,38 @@ public class Leaderboard : MonoBehaviour
 
     void Update()
     {
-        if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
+        if (this.EnableControllerInput)
         {
-            this.Refresh();
-        }
+            if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
+            {
+                this.Refresh();
+            }
 
-        if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
-        {
-            this.PreviousPage();
-        }
+            if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
+            {
+                this.PreviousPage();
+            }
 
-        if (this.currentPage != this.totalPages && !string.IsNullOrEmpty(this.nextControllerButton) && Input.GetKeyDown(this.nextControllerButton))
-        {
-            this.NextPage();
-        }
+            if (this.currentPage != this.totalPages && !string.IsNullOrEmpty(this.nextControllerButton) && Input.GetKeyDown(this.nextControllerButton))
+            {
+                this.NextPage();
+            }
 
-        if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
-        {
-            this.LastPage();
-        }
+            if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
+            {
+                this.LastPage();
+            }
 
-        if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
-        {
-            this.FirstPage();
-        }
+            if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
+            {
+                this.FirstPage();
+            }
 
-        if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
-        {
-            var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
-            this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+            if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+            {
+                var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
+                this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+            }
         }
     }
 
@@ -331,5 +372,35 @@ public class Leaderboard : MonoBehaviour
     {
         this.firstButton.interactable = this.previousButton.interactable = this.currentPage != 0;
         this.nextButton.interactable = this.lastButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+    }
+
+    private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string error) {
+        if (authStatus == XboxLiveAuthStatus.Succeeded) {
+            this.xboxLiveUser = null;
+            var children = new List<GameObject>();
+            for (int i = 0; i < this.contentPanel.childCount; i++)
+            {
+                GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
+                children.Add(child);
+            }
+
+            this.contentPanel.DetachChildren();
+
+            foreach (var child in children)
+            {
+                Destroy(child);
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        this.statsAddedLocalUser = false;
+        this.socialAddedLocalUser = false;
+        SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
+        StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
+        StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.OnPlayerSignOut);
+
     }
 }

@@ -17,9 +17,19 @@ public class Social : MonoBehaviour
     public Dropdown presenceFilterDropdown;
     public Transform contentPanel;
     public ScrollRect scrollRect;
+
+    public bool EnableControllerInput = false;
+
+    public int JoystickNumber = 1;
+
+    public XboxControllerButtons ToggleFilterButton;
+
     public int PlayerNumber = 1;
-    public string toggleFilterControllerButton;
+
     public string verticalScrollInputAxis;
+
+    private string toggleFilterControllerButton;
+
 
     private Dictionary<int, XboxSocialUserGroup> socialUserGroups = new Dictionary<int, XboxSocialUserGroup>();
     private ObjectPool entryObjectPool;
@@ -42,6 +52,17 @@ public class Social : MonoBehaviour
         {
             this.PresenceFilterValueChangedHandler(this.presenceFilterDropdown);
         });
+
+
+        if (this.EnableControllerInput)
+        {
+            if (this.ToggleFilterButton != XboxControllerButtons.None)
+            {
+                this.toggleFilterControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.ToggleFilterButton);
+            }
+        }
+
+        SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
     }
 
     private void Start()
@@ -64,7 +85,7 @@ public class Social : MonoBehaviour
             this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
         }
 
-        if (!string.IsNullOrEmpty(this.toggleFilterControllerButton) && Input.GetKeyDown(this.toggleFilterControllerButton))
+        if (this.EnableControllerInput && !string.IsNullOrEmpty(this.toggleFilterControllerButton) && Input.GetKeyDown(this.toggleFilterControllerButton))
         {
             switch (this.presenceFilterDropdown.value)
             {
@@ -101,6 +122,20 @@ public class Social : MonoBehaviour
         }
     }
 
+    private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus xboxAuthStatus, string error) {
+        if (xboxAuthStatus == XboxLiveAuthStatus.Succeeded) {
+            this.xboxLiveUser = null;
+
+            this.presenceFilterDropdown.options.Clear();
+            this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = PresenceFilter.All.ToString() });
+            this.presenceFilterDropdown.options.Add(new Dropdown.OptionData() { text = "All Online" });
+            this.presenceFilterDropdown.value = 0;
+            this.presenceFilterDropdown.RefreshShownValue();
+
+            this.RefreshSocialGroups();
+        }
+    }
+
     private void PresenceFilterValueChangedHandler(Dropdown target)
     {
         this.RefreshSocialGroups();
@@ -117,36 +152,56 @@ public class Social : MonoBehaviour
 
     private void RefreshSocialGroups()
     {
-        XboxSocialUserGroup socialUserGroup;
-        if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup) && XboxLiveServicesSettings.Instance.DebugLogsOn)
+        if (this.xboxLiveUser != null)
         {
-            Debug.Log("An Exception Occured: Invalid Presence Filter selected");
-            return;
-        }
-
-        Debug.LogWarning("Content Panel = " + this.contentPanel);
-
-        try
-        {
-            while (this.contentPanel.childCount > 0)
+            XboxSocialUserGroup socialUserGroup;
+            if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup) && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                var entry = this.contentPanel.GetChild(0).gameObject;
-                this.entryObjectPool.ReturnObject(entry);
+                Debug.Log("An Exception Occured: Invalid Presence Filter selected");
+                return;
             }
 
-            foreach (XboxSocialUser user in socialUserGroup.Users)
-            {
-                GameObject entryObject = this.entryObjectPool.GetObject();
-                XboxSocialUserEntry entry = entryObject.GetComponent<XboxSocialUserEntry>();
+            Debug.LogWarning("Content Panel = " + this.contentPanel);
 
-                entry.Data = user;
-                entryObject.transform.SetParent(this.contentPanel);
+            try
+            {
+                while (this.contentPanel.childCount > 0)
+                {
+                    var entry = this.contentPanel.GetChild(0).gameObject;
+                    this.entryObjectPool.ReturnObject(entry);
+                }
+
+                foreach (XboxSocialUser user in socialUserGroup.Users)
+                {
+                    GameObject entryObject = this.entryObjectPool.GetObject();
+                    XboxSocialUserEntry entry = entryObject.GetComponent<XboxSocialUserEntry>();
+
+                    entry.Data = user;
+                    entryObject.transform.SetParent(this.contentPanel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("An exception occured: " + ex.ToString());
             }
         }
-        catch (Exception ex)
-        {
-            Debug.LogError("An exception occured: " + ex.ToString());
+        else {
+            this.socialUserGroups = null;
+            var children = new List<GameObject>();
+            for (int i = 0; i < this.contentPanel.childCount; i++)
+            {
+                GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
+                children.Add(child);
+            }
+
+            this.contentPanel.DetachChildren();
+         
+            foreach (var child in children)
+            {
+                Destroy(child);
+            }
         }
+
         // Reset the scroll view to the top.
         this.scrollRect.verticalNormalizedPosition = 1;
     }
@@ -163,5 +218,6 @@ public class Social : MonoBehaviour
     private void OnDestroy()
     {
         SocialManagerComponent.Instance.EventProcessed -= this.OnEventProcessed;
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.OnPlayerSignOut);
     }
 }

@@ -25,11 +25,19 @@ public class GameSaveUI : MonoBehaviour
     public Text Console;
     public Scrollbar ScrollBar;
     public RectTransform ScrollRect;
-    public string GenerateNewControllerButton;
-    public string SaveDataControllerButton;
-    public string LoadDataControllerButton;
-    public string GetInfoControllerButton;
-    public string DeleteContainerControllerButton;
+    public bool EnableControllerInput = false;
+    public int JoystickNumber = 1;
+    public XboxControllerButtons GenerateDataButton;
+    public XboxControllerButtons SaveDataButton;
+    public XboxControllerButtons LoadDataButton;
+    public XboxControllerButtons GetInfoButton;
+    public XboxControllerButtons DeleteContainerButton;
+
+    private string generateNewControllerButton;
+    private string saveDataControllerButton;
+    private string loadDataControllerButton;
+    private string getInfoControllerButton;
+    private string deleteContainerControllerButton;
 
     private string logText;
     private System.Random random;
@@ -54,6 +62,35 @@ public class GameSaveUI : MonoBehaviour
         else
         {
             SignInManager.Instance.OnPlayerSignIn(this.PlayerNumber, this.HandlePlayerSignIn);
+            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
+        }
+
+        if (this.EnableControllerInput)
+        {
+            if (this.GenerateDataButton != XboxControllerButtons.None)
+            {
+                this.generateNewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.GenerateDataButton);
+            }
+
+            if (this.SaveDataButton != XboxControllerButtons.None)
+            {
+                this.saveDataControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.SaveDataButton);
+            }
+
+            if (this.LoadDataButton != XboxControllerButtons.None)
+            {
+                this.loadDataControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.LoadDataButton);
+            }
+
+            if (this.GetInfoButton != XboxControllerButtons.None)
+            {
+                this.getInfoControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.GetInfoButton);
+            }
+
+            if (this.DeleteContainerButton != XboxControllerButtons.None)
+            {
+                this.deleteContainerControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.DeleteContainerButton);
+            }
         }
     }
 
@@ -100,30 +137,32 @@ public class GameSaveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (!string.IsNullOrEmpty(this.GenerateNewControllerButton) && Input.GetKeyDown(this.GenerateNewControllerButton))
+        if (this.EnableControllerInput)
         {
-            this.GenerateData();
-        }
+            if (!string.IsNullOrEmpty(this.generateNewControllerButton) && Input.GetKeyDown(this.generateNewControllerButton))
+            {
+                this.GenerateData();
+            }
 
-        if (!string.IsNullOrEmpty(this.SaveDataControllerButton) && Input.GetKeyDown(this.SaveDataControllerButton))
-        {
-            this.SaveData();
-        }
+            if (!string.IsNullOrEmpty(this.saveDataControllerButton) && Input.GetKeyDown(this.saveDataControllerButton))
+            {
+                this.SaveData();
+            }
 
-        if (!string.IsNullOrEmpty(this.LoadDataControllerButton) && Input.GetKeyDown(this.LoadDataControllerButton))
-        {
-            this.LoadData();
-        }
+            if (!string.IsNullOrEmpty(this.loadDataControllerButton) && Input.GetKeyDown(this.loadDataControllerButton))
+            {
+                this.LoadData();
+            }
 
-        if (!string.IsNullOrEmpty(this.GetInfoControllerButton) && Input.GetKeyDown(this.GetInfoControllerButton))
-        {
-            this.GetContainerInfo();
-        }
+            if (!string.IsNullOrEmpty(this.getInfoControllerButton) && Input.GetKeyDown(this.getInfoControllerButton))
+            {
+                this.GetContainerInfo();
+            }
 
-        if (!string.IsNullOrEmpty(this.DeleteContainerControllerButton) && Input.GetKeyDown(this.DeleteContainerControllerButton))
-        {
-            this.DeleteContainer();
+            if (!string.IsNullOrEmpty(this.deleteContainerControllerButton) && Input.GetKeyDown(this.deleteContainerControllerButton))
+            {
+                this.DeleteContainer();
+            }
         }
     }
 
@@ -317,5 +356,23 @@ public class GameSaveUI : MonoBehaviour
                 this.logText += "\n";
             }
         }
+    }
+
+    private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string error) {
+        if (authStatus == XboxLiveAuthStatus.Succeeded) {
+            this.xboxLiveUser = null;
+            this.initializing = false;
+            lock (this.logText)
+            {
+                this.logLines.Clear();
+                this.logText = string.Empty;
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.HandlePlayerSignIn);
+        SignInManager.Instance.RemoveCallback(this.PlayerNumber, this.OnPlayerSignOut);
     }
 }

@@ -48,8 +48,6 @@ public class UserProfile : MonoBehaviour
     [HideInInspector]
     public Text gamerscore;
 
-    private bool AllowGuestAccounts = false;
-
     public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
     private XboxLiveUser xboxLiveUser;
@@ -113,9 +111,13 @@ public class UserProfile : MonoBehaviour
 
     private void XboxLiveUserOnSignOutCompleted(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
     {
-        this.signInPanel.GetComponentInChildren<Button>().interactable = true;
-        this.AllowSignInAttempt = true;
-        this.Refresh();
+        if (authStatus == XboxLiveAuthStatus.Succeeded)
+        {
+            this.signInPanel.GetComponentInChildren<Button>().interactable = true;
+            this.AllowSignInAttempt = true;
+            this.xboxLiveUser = null;
+            this.Refresh();
+        }
     }
 
     public void SignIn()

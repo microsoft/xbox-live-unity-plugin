@@ -123,6 +123,10 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
         public void RemoveLocalUser(XboxLiveUser user)
         {
+            if (!this.mLocalUsers.Contains(user)) {
+                throw new ArgumentException("Local User needs to be added.");
+            }
+
             mLocalUsers.Remove(user);
             mEvents.Add(new SocialEvent(SocialEventType.LocalUserRemoved, user));
         }

@@ -127,9 +127,25 @@ public class SignInManager : Singleton<SignInManager>
     public IEnumerator RemoveUser(int playerNumber)
     {
         yield return null;
-        if (ValidatePlayerNumber(playerNumber, "Remove User", XboxLiveOperationType.SignOut))
+        if (CurrentNumberOfPlayers > 1)
         {
-            this.RemoveUserHelper(this.CurrentPlayers[playerNumber].XboxLiveUser);
+            if (ValidatePlayerNumber(playerNumber, "Remove User", XboxLiveOperationType.SignOut))
+            {
+                this.RemoveUserHelper(this.CurrentPlayers[playerNumber].XboxLiveUser);
+            }
+        }
+        else
+        {
+            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+            {
+                Debug.LogError("Remove User Failed: At least one player should be signed in. Removing Player " + playerNumber + " would leave zero signed in players.");
+            }
+            NotifyAllCallbacks(
+                playerNumber,
+                null,
+                XboxLiveAuthStatus.Invalid,
+                "Remove User Failed: At least one player should be signed in. Removing Player " + playerNumber + " would leave zero signed in players.",
+                false);
         }
     }
 
@@ -141,9 +157,6 @@ public class SignInManager : Singleton<SignInManager>
     public IEnumerator SwitchUser(int playerNumber)
     {
         yield return null;
-
-        //todo: How do we know when Switch user is allowed?
-
         if (ValidatePlayerNumber(playerNumber, "Switch User", XboxLiveOperationType.SignOut))
         {
             yield return this.RemoveUser(playerNumber);
@@ -500,7 +513,7 @@ public class SignInManager : Singleton<SignInManager>
         try
         {
             signInStatus = signInSilentlyTask.Result.Status;
-        }       
+        }
         catch (Exception ex)
         {
             if (XboxLiveServicesSettings.Instance.DebugLogsOn)
