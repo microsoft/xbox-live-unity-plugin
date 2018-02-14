@@ -2,93 +2,94 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
 using System;
-
-using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Statistics.Manager;
 
 using UnityEngine;
 using System.Collections.Generic;
 
-public class StatsManagerComponent : Singleton<StatsManagerComponent>
+namespace Microsoft.Xbox.Services.Client
 {
-    public event EventHandler<XboxLiveUserEventArgs> LocalUserAdded;
-
-    public event EventHandler<XboxLiveUserEventArgs> LocalUserRemoved;
-
-    public event EventHandler<XboxLivePrefab.StatEventArgs> GetLeaderboardCompleted;
-
-    public event EventHandler StatUpdateComplete;
-
-    private IStatisticManager manager;
-
-    protected StatsManagerComponent()
+    public class StatsManagerComponent : Singleton<StatsManagerComponent>
     {
-    }
+        public event EventHandler<XboxLiveUserEventArgs> LocalUserAdded;
 
-    private void Awake()
-    {
-        this.manager = XboxLive.Instance.StatsManager;
-    }
+        public event EventHandler<XboxLiveUserEventArgs> LocalUserRemoved;
 
-    private void Update()
-    {
-        if (this.manager == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
+        public event EventHandler<StatEventArgs> GetLeaderboardCompleted;
+
+        public event EventHandler StatUpdateComplete;
+
+        private IStatisticManager manager;
+
+        protected StatsManagerComponent()
         {
-            Debug.LogWarning("Somehow the manager got nulled out.");
-            return;
         }
-        IList<StatisticEvent> events = this.manager.DoWork();
-        foreach (StatisticEvent statEvent in events)
+
+        private void Awake()
         {
-            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-            {
-                Debug.LogFormat("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.User.Gamertag);
-            }
+            this.manager = XboxLive.Instance.StatsManager;
+        }
 
-            switch (statEvent.EventType)
+        private void Update()
+        {
+            if (this.manager == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
             {
-                case StatisticEventType.LocalUserAdded:
-                    this.OnLocalUserAdded(statEvent.User);
-                    break;
-                case StatisticEventType.LocalUserRemoved:
-                    this.OnLocalUserRemoved(statEvent.User);
-                    break;
-                case StatisticEventType.StatisticUpdateComplete:
-                    this.OnStatUpdateComplete();
-                    break;
-                case StatisticEventType.GetLeaderboardComplete:
-                    this.OnGetLeaderboardCompleted(new XboxLivePrefab.StatEventArgs(statEvent));
-                    break;
+                Debug.LogWarning("Somehow the manager got nulled out.");
+                return;
+            }
+            IList<StatisticEvent> events = this.manager.DoWork();
+            foreach (StatisticEvent statEvent in events)
+            {
+                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                {
+                    Debug.LogFormat("[StatsManager] Processed {0} event for {1}.", statEvent.EventType, statEvent.User.Gamertag);
+                }
+
+                switch (statEvent.EventType)
+                {
+                    case StatisticEventType.LocalUserAdded:
+                        this.OnLocalUserAdded(statEvent.User);
+                        break;
+                    case StatisticEventType.LocalUserRemoved:
+                        this.OnLocalUserRemoved(statEvent.User);
+                        break;
+                    case StatisticEventType.StatisticUpdateComplete:
+                        this.OnStatUpdateComplete();
+                        break;
+                    case StatisticEventType.GetLeaderboardComplete:
+                        this.OnGetLeaderboardCompleted(new StatEventArgs(statEvent));
+                        break;
+                }
             }
         }
-    }
 
-    public void RequestFlushToService(XboxLiveUser user, bool isHighPriority)
-    {
-        this.manager.RequestFlushToService(user, isHighPriority);
-    }
+        public void RequestFlushToService(XboxLiveUser user, bool isHighPriority)
+        {
+            this.manager.RequestFlushToService(user, isHighPriority);
+        }
 
-    protected virtual void OnLocalUserAdded(XboxLiveUser user)
-    {
-        var handler = this.LocalUserAdded;
-        if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
-    }
+        protected virtual void OnLocalUserAdded(XboxLiveUser user)
+        {
+            var handler = this.LocalUserAdded;
+            if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
+        }
 
-    protected virtual void OnLocalUserRemoved(XboxLiveUser user)
-    {
-        var handler = this.LocalUserRemoved;
-        if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
-    }
+        protected virtual void OnLocalUserRemoved(XboxLiveUser user)
+        {
+            var handler = this.LocalUserRemoved;
+            if (handler != null) handler(this, new XboxLiveUserEventArgs(user));
+        }
 
-    protected virtual void OnStatUpdateComplete()
-    {
-        var handler = this.StatUpdateComplete;
-        if (handler != null) handler(this, EventArgs.Empty);
-    }
+        protected virtual void OnStatUpdateComplete()
+        {
+            var handler = this.StatUpdateComplete;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
 
-    protected virtual void OnGetLeaderboardCompleted(XboxLivePrefab.StatEventArgs statEvent)
-    {
-        var handler = this.GetLeaderboardCompleted;
-        if (handler != null) handler(this, statEvent);
+        protected virtual void OnGetLeaderboardCompleted(StatEventArgs statEvent)
+        {
+            var handler = this.GetLeaderboardCompleted;
+            if (handler != null) handler(this, statEvent);
+        }
     }
 }

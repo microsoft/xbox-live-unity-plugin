@@ -6,27 +6,30 @@ using Microsoft.Xbox.Services.Social.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class XboxSocialUserEntry : MonoBehaviour
+namespace Microsoft.Xbox.Services.Client
 {
-    public Button entryButton;
-    public Image gamerpicImage;
-    public Image gamerpicMask;
-    public Text gamertagText;
-    public Text presenceText;
-
-    private XboxSocialUser data;
-
-    public XboxSocialUser Data
+    public class XboxSocialUserEntry : MonoBehaviour
     {
-        get
+        public Button entryButton;
+        public Image gamerpicImage;
+        public Image gamerpicMask;
+        public Text gamertagText;
+        public Text presenceText;
+
+        private XboxSocialUser data;
+
+        public XboxSocialUser Data
         {
-            return this.data;
-        }
-        set
-        {
-            this.data = value;
-            this.gamertagText.text = this.data.Gamertag;
-            this.presenceText.text = this.data.PresenceRecord.UserState.ToString();
+            get
+            {
+                return this.data;
+            }
+            set
+            {
+                this.data = value;
+                this.gamertagText.text = this.data.Gamertag;
+                this.presenceText.text = this.data.PresenceRecord.UserState.ToString();
+            }
         }
     }
 }

@@ -3,14 +3,15 @@
 // 
 using System;
 
-using Microsoft.Xbox.Services;
-
-public class XboxLiveUserEventArgs : EventArgs
+namespace Microsoft.Xbox.Services.Client
 {
-    public XboxLiveUserEventArgs(XboxLiveUser user)
+    public class XboxLiveUserEventArgs : EventArgs
     {
-        this.User = user;
-    }
+        public XboxLiveUserEventArgs(XboxLiveUser user)
+        {
+            this.User = user;
+        }
 
-    public XboxLiveUser User { get; private set; }
+        public XboxLiveUser User { get; private set; }
+    }
 }

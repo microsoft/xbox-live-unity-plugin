@@ -8,53 +8,56 @@ using Microsoft.Xbox.Services.Social.Manager;
 
 using UnityEngine;
 
-public delegate void SocialEventHandler(object sender, SocialEvent socialEvent);
-
-public class SocialManagerComponent : Singleton<SocialManagerComponent>
+namespace Microsoft.Xbox.Services.Client
 {
-    public event SocialEventHandler EventProcessed;
+    public delegate void SocialEventHandler(object sender, SocialEvent socialEvent);
 
-    private ISocialManager manager;
-
-    protected SocialManagerComponent()
+    public class SocialManagerComponent : Singleton<SocialManagerComponent>
     {
-    }
+        public event SocialEventHandler EventProcessed;
 
-    /// <summary>
-    /// Awake is called when the script instance is being loaded
-    /// </summary>
-    private void Awake()
-    {
-        this.manager = XboxLive.Instance.SocialManager;
-    }
+        private ISocialManager manager;
 
-    private void Update()
-    {
-        try
+        protected SocialManagerComponent()
         {
-            var socialEvents = this.manager.DoWork();
+        }
 
-            foreach (SocialEvent socialEvent in socialEvents)
+        /// <summary>
+        /// Awake is called when the script instance is being loaded
+        /// </summary>
+        private void Awake()
+        {
+            this.manager = XboxLive.Instance.SocialManager;
+        }
+
+        private void Update()
+        {
+            try
+            {
+                var socialEvents = this.manager.DoWork();
+
+                foreach (SocialEvent socialEvent in socialEvents)
+                {
+                    if (XboxLiveServicesSettings.Instance.DebugLogsOn)
+                    {
+                        Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
+                    }
+                    this.OnEventProcessed(socialEvent);
+                }
+            }
+            catch (Exception e)
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                 {
-                    Debug.LogFormat("[SocialManager] Processed {0} event.", socialEvent.EventType);
+                    Debug.LogError("An Exception Occured: " + e.ToString());
                 }
-                this.OnEventProcessed(socialEvent);
             }
         }
-        catch (Exception e)
-        {
-            if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-            {
-                Debug.Log("An Exception Occured: " + e.ToString());
-            }
-        }
-    }
 
-    protected virtual void OnEventProcessed(SocialEvent socialEvent)
-    {
-        var handler = this.EventProcessed;
-        if (handler != null) handler(this, socialEvent);
+        protected virtual void OnEventProcessed(SocialEvent socialEvent)
+        {
+            var handler = this.EventProcessed;
+            if (handler != null) handler(this, socialEvent);
+        }
     }
 }

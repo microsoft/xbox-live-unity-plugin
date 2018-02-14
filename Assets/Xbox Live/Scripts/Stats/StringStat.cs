@@ -2,36 +2,37 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
 using System;
-
-using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Statistics.Manager;
 
-[Serializable]
-public class StringStat : StatBase<string>
+namespace Microsoft.Xbox.Services.Client
 {
-    protected override void HandleGetStat(XboxLiveUser user, string statName)
+    [Serializable]
+    public class StringStat : StatBase<string>
     {
-        this.isLocalUserAdded = true;
-        StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
-        if (statValue != null)
+        protected override void HandleGetStat(XboxLiveUser user, string statName)
         {
-            this.Value = statValue.AsString;
-        }
-    }
-
-    public override string Value
-    {
-        get
-        {
-            return base.Value;
-        }
-        set
-        {
-            if (this.isLocalUserAdded)
+            this.isLocalUserAdded = true;
+            StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
+            if (statValue != null)
             {
-                XboxLive.Instance.StatsManager.SetStatisticStringData(this.xboxLiveUser, this.ID, value);
+                this.Value = statValue.AsString;
             }
-            base.Value = value;
+        }
+
+        public override string Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if (this.isLocalUserAdded)
+                {
+                    XboxLive.Instance.StatsManager.SetStatisticStringData(this.xboxLiveUser, this.ID, value);
+                }
+                base.Value = value;
+            }
         }
     }
 }

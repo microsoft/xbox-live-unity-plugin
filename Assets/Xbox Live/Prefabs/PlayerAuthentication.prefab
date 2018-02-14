@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114711088535908484}
   - component: {fileID: 114446761597343264}
   m_Layer: 5
-  m_Name: UserProfile
+  m_Name: PlayerAuthentication
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -467,17 +467,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45829806981fe345a581299f7f690ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XboxLiveUser: {fileID: 0}
-  SignInKeyName: 
+  EnableControllerInput: 0
+  JoystickNumber: 1
+  SignInButton: 0
+  SignOutButton: 0
+  PlayerNumber: 1
   signInPanel: {fileID: 1425324911720662}
   profileInfoPanel: {fileID: 1459055263276308}
   gamerpic: {fileID: 114221693092568988}
   gamerpicMask: {fileID: 114479037797460790}
   gamertag: {fileID: 114619943725070090}
   gamerscore: {fileID: 114555573291129008}
-  XboxLiveUserPrefab: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  AllowGuestAccounts: 0
 --- !u!114 &114731041677292638
 MonoBehaviour:
   m_ObjectHideFlags: 1

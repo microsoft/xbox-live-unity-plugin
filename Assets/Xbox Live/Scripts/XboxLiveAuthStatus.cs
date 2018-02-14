@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public enum XboxLiveAuthStatus{
-    Unknown,
-    Succeeded,
-    Unsupported,
-    Invalid,
-    Failed
+﻿namespace Microsoft.Xbox.Services.Client
+{
+    public enum XboxLiveAuthStatus
+    {
+        Unknown,
+        Succeeded,
+        Unsupported,
+        Invalid,
+        Failed
+    }
 }
