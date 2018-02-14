@@ -2,47 +2,48 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // 
 using System;
-
-using Microsoft.Xbox.Services;
 using Microsoft.Xbox.Services.Statistics.Manager;
 
-[Serializable]
-public class DoubleStat : StatBase<double>
+namespace Microsoft.Xbox.Services.Client
 {
-    protected override void HandleGetStat(XboxLiveUser user, string statName)
+    [Serializable]
+    public class DoubleStat : StatBase<double>
     {
-        this.isLocalUserAdded = true;
-        StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
-        if (statValue != null)
+        protected override void HandleGetStat(XboxLiveUser user, string statName)
         {
-            this.Value = statValue.AsNumber;
-        }
-    }
-
-    public void Multiply(float multiplier)
-    {
-        this.Value = this.Value * multiplier;
-    }
-
-    public void Square()
-    {
-        var value = this.Value;
-        this.Value = value * value;
-    }
-
-    public override double Value
-    {
-        get
-        {
-            return base.Value;
-        }
-        set
-        {
-            if (this.isLocalUserAdded)
+            this.isLocalUserAdded = true;
+            StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
+            if (statValue != null)
             {
-                XboxLive.Instance.StatsManager.SetStatisticNumberData(this.XboxLiveUser.User, this.ID, value);
+                this.Value = statValue.AsNumber;
             }
-            base.Value = value;
+        }
+
+        public void Multiply(float multiplier)
+        {
+            this.Value = this.Value * multiplier;
+        }
+
+        public void Square()
+        {
+            var value = this.Value;
+            this.Value = value * value;
+        }
+
+        public override double Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                if (this.isLocalUserAdded)
+                {
+                    XboxLive.Instance.StatsManager.SetStatisticNumberData(this.xboxLiveUser, this.ID, value);
+                }
+                base.Value = value;
+            }
         }
     }
 }

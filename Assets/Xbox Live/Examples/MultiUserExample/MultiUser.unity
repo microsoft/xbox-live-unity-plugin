@@ -71,7 +71,7 @@ LightmapSettings:
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
-    m_MixedBakeMode: 3
+    m_MixedBakeMode: 2
     m_BakeBackend: 0
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 32
@@ -108,130 +108,6 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &68723149
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 409756864}
-    m_Modifications:
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: -301
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_Pivot.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: m_Pivot.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
-      propertyPath: m_Name
-      value: UserProfile4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: XboxLiveUser
-      value: 
-      objectReference: {fileID: 1639834287}
-    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: AllowGuestAccounts
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
-        type: 2}
-      propertyPath: InputControllerButton
-      value: joystick button 3
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
-  m_IsPrefabParent: 0
---- !u!224 &68723150 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
-    type: 2}
-  m_PrefabInternal: {fileID: 68723149}
 --- !u!1001 &74180634
 Prefab:
   m_ObjectHideFlags: 0
@@ -282,22 +158,22 @@ Prefab:
     - target: {fileID: 224363205643076876, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -287
+      value: -211
       objectReference: {fileID: 0}
     - target: {fileID: 224363205643076876, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 92
+      value: -1.75
       objectReference: {fileID: 0}
     - target: {fileID: 224363205643076876, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 600
+      value: 531
       objectReference: {fileID: 0}
     - target: {fileID: 224363205643076876, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 400
+      value: 555.5
       objectReference: {fileID: 0}
     - target: {fileID: 224363205643076876, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
@@ -353,7 +229,7 @@ Prefab:
         type: 2}
       propertyPath: XboxLiveUser
       value: 
-      objectReference: {fileID: 1476567750}
+      objectReference: {fileID: 0}
     - target: {fileID: 224310838892952966, guid: 35fb2ee2a61d5ca4eafc9ee1e66325e0,
         type: 2}
       propertyPath: m_AnchorMax.x
@@ -492,10 +368,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1471834037}
-  - {fileID: 471108508}
-  - {fileID: 2065602999}
-  - {fileID: 68723150}
+  - {fileID: 1542472540}
+  - {fileID: 483687562}
+  - {fileID: 1486106614}
+  - {fileID: 2126188931}
   - {fileID: 74180635}
   - {fileID: 1572906897}
   m_Father: {fileID: 0}
@@ -518,7 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OfflineStatus: {fileID: 1572906896}
---- !u!1001 &471108507
+--- !u!1001 &483687561
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -573,7 +449,7 @@ Prefab:
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -99
+      value: -106
       objectReference: {fileID: 0}
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
@@ -617,26 +493,41 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
-      value: UserProfile2
+      value: Player2Authentication
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: XboxLiveUser
-      value: 
-      objectReference: {fileID: 567525396}
+      propertyPath: EnableControllerInput
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: InputControllerButton
-      value: joystick button 1
+      propertyPath: JoystickNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: PlayerNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignInButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignOutButton
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &471108508 stripped
+--- !u!224 &483687562 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
     type: 2}
-  m_PrefabInternal: {fileID: 471108507}
+  m_PrefabInternal: {fileID: 483687561}
 --- !u!1001 &491855031
 Prefab:
   m_ObjectHideFlags: 0
@@ -679,110 +570,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b8f49ee71ade254da6555182196f225, type: 2}
   m_IsPrefabParent: 0
---- !u!1001 &567525395
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &567525396 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 567525395}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
---- !u!1001 &745702892
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser3
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &745702893 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 745702892}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
 --- !u!1 &792567072
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,7 +659,206 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1471834036
+--- !u!1001 &1486106613
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 409756864}
+    m_Modifications:
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -219
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: m_Pivot.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
+      propertyPath: m_Name
+      value: Player3Authentication
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: EnableControllerInput
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: JoystickNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: PlayerNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignInButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignOutButton
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
+  m_IsPrefabParent: 0
+--- !u!224 &1486106614 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
+    type: 2}
+  m_PrefabInternal: {fileID: 1486106613}
+--- !u!1 &1496209378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1496209380}
+  - component: {fileID: 1496209379}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1496209379
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1496209378}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 1
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1496209380
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1496209378}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &1542472539
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -971,143 +957,27 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: XboxLiveUser
-      value: 
-      objectReference: {fileID: 1476567750}
-    - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
-      propertyPath: m_Name
-      value: UserProfile1
+      propertyPath: EnableControllerInput
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: InputControllerButton
-      value: joystick button 0
+      propertyPath: SignInButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignOutButton
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &1471834037 stripped
+--- !u!224 &1542472540 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
     type: 2}
-  m_PrefabInternal: {fileID: 1471834036}
---- !u!1001 &1476567749
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &1476567750 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1476567749}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
---- !u!1 &1496209378
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1496209380}
-  - component: {fileID: 1496209379}
-  m_Layer: 0
-  m_Name: Directional Light
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!108 &1496209379
-Light:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1496209378}
-  m_Enabled: 1
-  serializedVersion: 8
-  m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
-  m_Range: 10
-  m_SpotAngle: 30
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 2
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_Lightmapping: 4
-  m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
---- !u!4 &1496209380
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1496209378}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_PrefabInternal: {fileID: 1542472539}
 --- !u!1 &1572906896
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,58 +1052,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1572906896}
---- !u!1001 &1639834286
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4655926431238944, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1325449487049718, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-      propertyPath: m_Name
-      value: XboxLiveUser4
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: fa83b4b6dffdbf942b709a5ced72c19d, type: 2}
-  m_IsPrefabParent: 0
---- !u!114 &1639834287 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114394158878499100, guid: fa83b4b6dffdbf942b709a5ced72c19d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1639834286}
-  m_Script: {fileID: 11500000, guid: d55824f79eac22642a2cba22c1e4da5e, type: 3}
 --- !u!1 &2035348803
 GameObject:
   m_ObjectHideFlags: 0
@@ -1296,7 +1114,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &2065602998
+--- !u!1001 &2126188930
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1341,7 +1159,7 @@ Prefab:
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
@@ -1351,7 +1169,7 @@ Prefab:
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -198
+      value: -337
       objectReference: {fileID: 0}
     - target: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
@@ -1395,23 +1213,38 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000963774984766, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
       propertyPath: m_Name
-      value: UserProfile3
+      value: Player4Authentication
       objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: XboxLiveUser
-      value: 
-      objectReference: {fileID: 745702893}
+      propertyPath: JoystickNumber
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
         type: 2}
-      propertyPath: InputControllerButton
-      value: joystick button 2
+      propertyPath: PlayerNumber
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignInButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: SignOutButton
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114711088535908484, guid: f9c76770c5e766a4f83203b145924f14,
+        type: 2}
+      propertyPath: EnableControllerInput
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9c76770c5e766a4f83203b145924f14, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &2065602999 stripped
+--- !u!224 &2126188931 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 224507845527857528, guid: f9c76770c5e766a4f83203b145924f14,
     type: 2}
-  m_PrefabInternal: {fileID: 2065602998}
+  m_PrefabInternal: {fileID: 2126188930}

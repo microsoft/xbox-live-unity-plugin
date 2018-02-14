@@ -61,7 +61,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
 
         public void RemoveLocalUser(XboxLiveUser user)
         {
-            if (LocalUsers.Contains(user))
+            if (!LocalUsers.Contains(user))
             {
                 throw new ArgumentException("Local User needs to be added.");
             }

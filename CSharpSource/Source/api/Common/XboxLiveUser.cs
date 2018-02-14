@@ -13,7 +13,7 @@ namespace Microsoft.Xbox.Services
         private static readonly object instanceLock = new object();
 
         private readonly IUserImpl userImpl;
-        private XboxLiveServices xboxLiveServices;
+        private XboxLiveContext xboxLiveServices;
 
         public static event EventHandler<SignInCompletedEventArgs> SignInCompleted;
         public static event EventHandler<SignOutCompletedEventArgs> SignOutCompleted;
@@ -66,7 +66,7 @@ namespace Microsoft.Xbox.Services
             }
         }
 
-        public XboxLiveServices Services
+        public XboxLiveContext Services
         {
             get
             {
@@ -76,7 +76,7 @@ namespace Microsoft.Xbox.Services
                     {
                         if (this.xboxLiveServices == null)
                         {
-                            this.xboxLiveServices = new XboxLiveServices(this);
+                            this.xboxLiveServices = new XboxLiveContext(this);
                         }
                     }
                 }

@@ -6,55 +6,58 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Logic for the StatsPanel prefab that displays name and value of a <see cref="StatBase"/>.
-/// </summary>
-[Serializable]
-public class StatPanel : MonoBehaviour
+namespace Microsoft.Xbox.Services.Client
 {
-    [HideInInspector]
-    public Text StatLabelText;
-
-    [HideInInspector]
-    public Text StatValueText;
-
-    [Tooltip("The stat object that this panel renders.")]
-    public StatBase Stat;
-
-    public bool ShowStatLabel;
-
-    private void Awake()
-    {
-        this.EnsureEventSystem();
-        XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
-        this.StatLabelText.text = string.Empty;
-        this.StatValueText.text = string.Empty;
-    }
-
     /// <summary>
-    /// OnGUI is called for rendering and handling GUI events
+    /// Logic for the StatsPanel prefab that displays name and value of a <see cref="StatBase"/>.
     /// </summary>
-    private void OnGUI()
+    [Serializable]
+    public class StatPanel : MonoBehaviour
     {
-        if (this.ShowStatLabel)
+        [HideInInspector]
+        public Text StatLabelText;
+
+        [HideInInspector]
+        public Text StatValueText;
+
+        [Tooltip("The stat object that this panel renders.")]
+        public StatBase Stat;
+
+        public bool ShowStatLabel;
+
+        private void Awake()
         {
-            Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = this.StatLabelText.rectTransform.position.x + this.StatLabelText.rectTransform.rect.xMax + 10;
-            this.StatValueText.rectTransform.position = position;
-            this.StatLabelText.text = string.IsNullOrEmpty(this.Stat.DisplayName) ? this.Stat.ID : this.Stat.DisplayName;
-            this.StatLabelText.gameObject.SetActive(true);
-        }
-        else
-        {
-            this.StatLabelText.gameObject.SetActive(false);
-            Vector3 position = this.StatValueText.rectTransform.position;
-            position.x = this.StatLabelText.rectTransform.position.x;
-            this.StatValueText.rectTransform.position = position;
+            this.EnsureEventSystem();
+            XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
+            this.StatLabelText.text = string.Empty;
+            this.StatValueText.text = string.Empty;
         }
 
-        if (this.Stat != null)
+        /// <summary>
+        /// OnGUI is called for rendering and handling GUI events
+        /// </summary>
+        private void OnGUI()
         {
-            this.StatValueText.text = this.Stat.ToString();
+            if (this.ShowStatLabel)
+            {
+                Vector3 position = this.StatValueText.rectTransform.position;
+                position.x = this.StatLabelText.rectTransform.position.x + this.StatLabelText.rectTransform.rect.xMax + 10;
+                this.StatValueText.rectTransform.position = position;
+                this.StatLabelText.text = string.IsNullOrEmpty(this.Stat.DisplayName) ? this.Stat.ID : this.Stat.DisplayName;
+                this.StatLabelText.gameObject.SetActive(true);
+            }
+            else
+            {
+                this.StatLabelText.gameObject.SetActive(false);
+                Vector3 position = this.StatValueText.rectTransform.position;
+                position.x = this.StatLabelText.rectTransform.position.x;
+                this.StatValueText.rectTransform.position = position;
+            }
+
+            if (this.Stat != null)
+            {
+                this.StatValueText.text = this.Stat.ToString();
+            }
         }
     }
 }
