@@ -31,23 +31,17 @@ namespace Microsoft.Xbox.Services.Client
         private string signInInputButton;
 
         private string signOutInputButton;
-
-        [HideInInspector]
+        
         public GameObject signInPanel;
-
-        [HideInInspector]
+        
         public GameObject profileInfoPanel;
-
-        [HideInInspector]
+        
         public Image gamerpic;
-
-        [HideInInspector]
+        
         public Image gamerpicMask;
-
-        [HideInInspector]
+        
         public Text gamertag;
-
-        [HideInInspector]
+        
         public Text gamerscore;
 
         public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
