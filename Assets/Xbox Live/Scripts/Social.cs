@@ -167,7 +167,7 @@ namespace Microsoft.Xbox.Services.Client
                     Debug.Log("An Exception Occured: Invalid Presence Filter selected");
                     return;
                 }
-
+                
                 Debug.LogWarning("Content Panel = " + this.contentPanel);
 
                 try

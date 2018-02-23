@@ -26,26 +26,19 @@ namespace Microsoft.Xbox.Services.Client
         public uint entryCount = 10;
 
         public Text headerText;
-
-        [HideInInspector]
+        
         public uint currentPage;
-
-        [HideInInspector]
+        
         public uint totalPages;
-
-        [HideInInspector]
+        
         public Text pageText;
-
-        [HideInInspector]
+        
         public Button firstButton;
-
-        [HideInInspector]
+        
         public Button previousButton;
-
-        [HideInInspector]
+        
         public Button nextButton;
-
-        [HideInInspector]
+        
         public Button lastButton;
 
         public bool EnableControllerInput = false;
@@ -288,13 +281,13 @@ namespace Microsoft.Xbox.Services.Client
             else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
                 ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == this.userGroup)
             {
-                var entries = this.contentPanel.GetComponentsInChildren<LeaderboardEntry>();
+                var entries = this.contentPanel.GetComponentsInChildren<PlayerProfile>();
                 for (int i = 0; i < entries.Length; i++)
                 {
-                    XboxSocialUser user = userGroup.Users.FirstOrDefault(x => x.Gamertag == entries[i].gamertagText.text);
+                    XboxSocialUser user = userGroup.Users.FirstOrDefault(x => x.Gamertag == entries[i].GamerTagText.text);
                     if (user != null)
                     {
-                        entries[i].GamerpicUrl = user.DisplayPicRaw + "&w=128";
+                        this.StartCoroutine(entries[i].LoadGamerpic(user.DisplayPicRaw + "&w=128"));
                     }
                 }
             }
@@ -350,15 +343,25 @@ namespace Microsoft.Xbox.Services.Client
             }
 
             IList<string> xuids = new List<string>();
+
+            var useSecondRow = false;
             foreach (LeaderboardRow row in this.leaderboardData.Rows)
             {
                 xuids.Add(row.XboxUserId);
 
                 GameObject entryObject = this.entryObjectPool.GetObject();
-                LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
-
-                entry.Data = row;
-
+                PlayerProfile entry = entryObject.GetComponent<PlayerProfile>();
+                if (this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag)) {
+                    entry.IsCurrentPlayer = true;
+                }
+                entry.BackgroundColor = (useSecondRow? PlayerProfileBackgrounds.RowBackground01: PlayerProfileBackgrounds.RowBackground02);
+                useSecondRow = !useSecondRow;
+                entry.UpdateGamerTag(row.Gamertag);
+                entry.UpdateRank(true, row.Rank);
+                if (row.Values != null && row.Values.Count > 0)
+                {
+                    entry.UpdateScore(true, row.Values[0]);
+                }
                 entryObject.transform.SetParent(this.contentPanel);
             }
             /*
