@@ -343,8 +343,8 @@ namespace Microsoft.Xbox.Services.Client
             }
 
             IList<string> xuids = new List<string>();
-
-            var useSecondRow = false;
+            
+            var rowCount = 0;
             foreach (LeaderboardRow row in this.leaderboardData.Rows)
             {
                 xuids.Add(row.XboxUserId);
@@ -354,8 +354,15 @@ namespace Microsoft.Xbox.Services.Client
                 if (this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag)) {
                     entry.IsCurrentPlayer = true;
                 }
-                entry.BackgroundColor = (useSecondRow? PlayerProfileBackgrounds.RowBackground01: PlayerProfileBackgrounds.RowBackground02);
-                useSecondRow = !useSecondRow;
+                if (rowCount == 0)
+                {
+                    entry.IsHighlighted = true;
+                }
+                else
+                {
+                    entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
+                }
+
                 entry.UpdateGamerTag(row.Gamertag);
                 entry.UpdateRank(true, row.Rank);
                 if (row.Values != null && row.Values.Count > 0)
@@ -363,6 +370,7 @@ namespace Microsoft.Xbox.Services.Client
                     entry.UpdateScore(true, row.Values[0]);
                 }
                 entryObject.transform.SetParent(this.contentPanel);
+                rowCount++;
             }
             /*
             userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(XboxLiveUserManager.Instance.UserForSingleUserMode.User, xuids);
@@ -410,10 +418,21 @@ namespace Microsoft.Xbox.Services.Client
         {
             this.statsAddedLocalUser = false;
             this.socialAddedLocalUser = false;
-            SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
-            StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
-            StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
-            SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
+            if (SocialManagerComponent.Instance != null)
+            {
+                SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
+            }
+
+            if (StatsManagerComponent.Instance != null)
+            {
+                StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
+                StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
+            }
+
+            if (SignInManager.Instance != null)
+            {
+                SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
+            }
         }
     }
 }
