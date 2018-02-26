@@ -73,7 +73,7 @@ namespace Microsoft.Xbox.Services.Client
         private string nextControllerButton;
         private string prevControllerButton;
         private string refreshControllerButton;
-
+        private LeaderboardFilter viewFilter = LeaderboardFilter.All;
 
         private bool isLocalUserAdded
         {
@@ -148,7 +148,7 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     this.statsAddedLocalUser = true;
                     this.socialAddedLocalUser = true;
-                    this.UpdateData(0);
+                    this.UpdateData(0, viewFilter);
                 }
             }
         }
@@ -202,29 +202,36 @@ namespace Microsoft.Xbox.Services.Client
 
         public void NextPage()
         {
-            this.UpdateData(this.currentPage + 1);
+            this.UpdateData(this.currentPage + 1, viewFilter);
         }
 
         public void PreviousPage()
         {
             if (this.currentPage > 0)
             {
-                this.UpdateData(this.currentPage - 1);
+                this.UpdateData(this.currentPage - 1, viewFilter);
             }
         }
 
         public void FirstPage()
         {
-            this.UpdateData(0);
+            this.UpdateData(0, viewFilter);
         }
 
         public void LastPage()
         {
-            this.UpdateData(this.totalPages - 1);
+            this.UpdateData(this.totalPages - 1, viewFilter);
         }
 
-        private void UpdateData(uint newPage)
+        public void LoadView(int newFilter) {
+            this.Clear();
+            this.UpdateData(0, (LeaderboardFilter)newFilter);
+        }
+
+        private void UpdateData(uint pageNumber, LeaderboardFilter filter)
         {
+            this.viewFilter = filter;
+
             if (!this.isLocalUserAdded)
             {
                 return;
@@ -241,7 +248,7 @@ namespace Microsoft.Xbox.Services.Client
             }
 
             LeaderboardQuery query;
-            if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
+            if (pageNumber == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
             {
                 query = this.leaderboardData.GetNextQuery();
             }
@@ -260,14 +267,24 @@ namespace Microsoft.Xbox.Services.Client
                         break;
                 }
 
-                query = new LeaderboardQuery()
+                if (filter == LeaderboardFilter.All)
                 {
-                    SkipResultToRank = newPage == 0 ? 0 : ((newPage - 1) * this.entryCount),
-                    MaxItems = this.entryCount,
-                };
+                    query = new LeaderboardQuery()
+                    {
+                        SkipResultToRank = pageNumber == 0 ? 0 : ((pageNumber - 1) * this.entryCount),
+                        MaxItems = this.entryCount,
+                    };
+                } else {
+
+                    query = new LeaderboardQuery()
+                    {
+                        SkipResultToMe = true,
+                        MaxItems = this.entryCount,
+                    };
+                }
             }
 
-            this.currentPage = newPage;
+            this.currentPage = pageNumber;
             XboxLive.Instance.StatsManager.GetLeaderboard(this.xboxLiveUser, this.stat.ID, query);
         }
 
@@ -386,24 +403,28 @@ namespace Microsoft.Xbox.Services.Client
             this.nextButton.interactable = this.lastButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
         }
 
+        private void Clear() {
+            var children = new List<GameObject>();
+            for (int i = 0; i < this.contentPanel.childCount; i++)
+            {
+                GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
+                children.Add(child);
+            }
+
+            this.contentPanel.DetachChildren();
+
+            foreach (var child in children)
+            {
+                Destroy(child);
+            }
+        }
+
         private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
         {
             if (authStatus == XboxLiveAuthStatus.Succeeded)
             {
                 this.xboxLiveUser = null;
-                var children = new List<GameObject>();
-                for (int i = 0; i < this.contentPanel.childCount; i++)
-                {
-                    GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
-                    children.Add(child);
-                }
-
-                this.contentPanel.DetachChildren();
-
-                foreach (var child in children)
-                {
-                    Destroy(child);
-                }
+                this.Clear();
             }
             else
             {
@@ -434,5 +455,10 @@ namespace Microsoft.Xbox.Services.Client
                 SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
             }
         }
+    }
+
+    public enum LeaderboardFilter {
+        All,
+        NearestMe
     }
 }
