@@ -18,6 +18,8 @@ namespace Microsoft.Xbox.Services.Client
     {
         private string socialGroup;
 
+        public Themes Theme = Themes.Light;
+
         public StatBase stat;
 
         public LeaderboardTypes leaderboardType;
@@ -55,6 +57,10 @@ namespace Microsoft.Xbox.Services.Client
 
         public XboxControllerButtons RefreshButton;
 
+        public XboxControllerButtons NextViewButton;
+
+        public XboxControllerButtons PrevViewButton;
+
         public int PlayerNumber = 1;
 
         public string verticalScrollInputAxis;
@@ -62,6 +68,10 @@ namespace Microsoft.Xbox.Services.Client
         public Transform contentPanel;
 
         public ScrollRect scrollRect;
+
+        public Image NextViewImage;
+
+        public Image PrevViewImage;
 
         public float scrollSpeedMultiplier = 0.1f;
 
@@ -73,6 +83,8 @@ namespace Microsoft.Xbox.Services.Client
         private string nextControllerButton;
         private string prevControllerButton;
         private string refreshControllerButton;
+        private string prevViewControllerButton;
+        private string nextViewControllerButton;
         private LeaderboardFilter viewFilter = LeaderboardFilter.All;
 
         private bool isLocalUserAdded
@@ -99,7 +111,7 @@ namespace Microsoft.Xbox.Services.Client
                 return;
             }
 
-            this.headerText.text = this.stat.DisplayName;
+            this.headerText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
             this.UpdateButtons();
             SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
@@ -135,6 +147,32 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     this.refreshControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.RefreshButton);
                 }
+
+                if (this.NextViewButton != XboxControllerButtons.None)
+                {
+                    this.nextViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextViewButton);
+                    this.NextViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextViewButton);
+                    this.NextViewImage.SetNativeSize();
+                }
+                else
+                {
+                    this.NextViewImage.enabled = false;
+                }
+
+                if (this.PrevViewButton != XboxControllerButtons.None)
+                {
+                    this.prevViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PrevViewButton);
+                    this.PrevViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PrevViewButton);
+                    this.PrevViewImage.SetNativeSize();
+                }
+                else
+                {
+                   
+                }
+            }
+            else {
+                this.NextViewImage.enabled = false;
+                this.PrevViewImage.enabled = false;
             }
         }
 

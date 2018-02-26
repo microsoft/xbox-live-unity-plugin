@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Xbox.Services.Client
+﻿using UnityEngine;
+
+namespace Microsoft.Xbox.Services.Client
 {
     /// <summary>
     /// Enum used for Xbox Controller Buttons
@@ -38,5 +40,26 @@
                 default: return -1;
             }
         }
+
+        public static Sprite GetXboxButtonSpite (Themes theme, XboxControllerButtons xboxButton) {
+            var iconName = string.Empty;
+            switch (xboxButton) {
+                case XboxControllerButtons.A:
+                case XboxControllerButtons.B:
+                case XboxControllerButtons.X:
+                case XboxControllerButtons.Y:
+                    iconName = iconName + xboxButton; break;
+                case XboxControllerButtons.LeftBumper: iconName = "LB"; break;
+                case XboxControllerButtons.RightBumper: iconName = "RB"; break;
+                default: iconName = string.Empty; break;
+            }
+
+            if (string.IsNullOrEmpty(iconName)) {
+                return null;
+            }
+            else {
+                return ThemeHelper.LoadSprite(theme, "Controller/" + iconName);
+            }
+        }
     }
-}
+} 
