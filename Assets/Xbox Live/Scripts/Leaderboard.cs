@@ -16,9 +16,12 @@ namespace Microsoft.Xbox.Services.Client
     [Serializable]
     public class Leaderboard : MonoBehaviour
     {
-        private string socialGroup;
-
+        [Header("Theme and Display Settings")]
         public Themes Theme = Themes.Light;
+
+        [Header("Stat Configuration")]
+
+        public int PlayerNumber = 1;
 
         public StatBase stat;
 
@@ -27,44 +30,25 @@ namespace Microsoft.Xbox.Services.Client
         [Range(1, 100)]
         public uint entryCount = 10;
 
-        public Text headerText;
-        
-        public uint currentPage;
-        
-        public uint totalPages;
-        
-        public Text pageText;
-        
-        public Button firstButton;
-        
-        public Button previousButton;
-        
-        public Button nextButton;
-        
-        public Button lastButton;
-
+        [Header("Controller Configuration")]
         public bool EnableControllerInput = false;
 
         public int JoystickNumber = 1;
-
-        public XboxControllerButtons FirstPageButton;
-
-        public XboxControllerButtons LastPageButton;
 
         public XboxControllerButtons NextPageButton;
 
         public XboxControllerButtons PreviousPageButton;
 
-        public XboxControllerButtons RefreshButton;
-
         public XboxControllerButtons NextViewButton;
 
         public XboxControllerButtons PrevViewButton;
 
-        public int PlayerNumber = 1;
-
         public string verticalScrollInputAxis;
 
+        public float scrollSpeedMultiplier = 0.1f;
+
+
+        [Header("UI References")]
         public Transform contentPanel;
 
         public ScrollRect scrollRect;
@@ -73,16 +57,28 @@ namespace Microsoft.Xbox.Services.Client
 
         public Image PrevViewImage;
 
-        public float scrollSpeedMultiplier = 0.1f;
+        public Image NextPageImage;
 
+        public Image PreviousPageImage;
+
+        public Transform ViewSelector;
+
+        public Text headerText;
+
+        public Text pageText;
+
+        public Button previousButton;
+
+        public Button nextButton;
+
+        private uint currentPage;
+        private uint totalPages;
+        private string socialGroup;
         private LeaderboardResult leaderboardData;
         private ObjectPool entryObjectPool;
         private XboxLiveUser xboxLiveUser;
-        private string firstControllerButton;
-        private string lastControllerButton;
         private string nextControllerButton;
         private string prevControllerButton;
-        private string refreshControllerButton;
         private string prevViewControllerButton;
         private string nextViewControllerButton;
         private LeaderboardFilter viewFilter = LeaderboardFilter.All;
@@ -122,30 +118,26 @@ namespace Microsoft.Xbox.Services.Client
             this.socialAddedLocalUser = false;
 
             if (EnableControllerInput)
-            {
-                if (this.FirstPageButton != XboxControllerButtons.None)
-                {
-                    this.firstControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.FirstPageButton);
-                }
-
-                if (this.LastPageButton != XboxControllerButtons.None)
-                {
-                    this.lastControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.LastPageButton);
-                }
+            { 
 
                 if (this.NextPageButton != XboxControllerButtons.None)
                 {
                     this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageButton);
+                    this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageButton);
+                    this.NextPageImage.SetNativeSize();
+                }
+                else {
+                    this.NextPageImage.enabled = false;
                 }
 
                 if (this.PreviousPageButton != XboxControllerButtons.None)
                 {
                     this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageButton);
+                    this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageButton);
+                    this.PreviousPageImage.SetNativeSize();
                 }
-
-                if (this.RefreshButton != XboxControllerButtons.None)
-                {
-                    this.refreshControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.RefreshButton);
+                else {
+                    this.PreviousPageImage.enabled = false;
                 }
 
                 if (this.NextViewButton != XboxControllerButtons.None)
@@ -167,7 +159,7 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 else
                 {
-                   
+                    this.PrevViewImage.enabled = false;
                 }
             }
             else {
@@ -200,11 +192,6 @@ namespace Microsoft.Xbox.Services.Client
         {
             if (this.EnableControllerInput)
             {
-                if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
-                {
-                    this.Refresh();
-                }
-
                 if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
                 {
                     this.PreviousPage();
@@ -215,20 +202,20 @@ namespace Microsoft.Xbox.Services.Client
                     this.NextPage();
                 }
 
-                if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
-                {
-                    this.LastPage();
-                }
-
-                if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
-                {
-                    this.FirstPage();
-                }
-
                 if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
                 {
                     var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
                     this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+                }
+
+                if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
+                {
+                    this.LoadView(((int) this.viewFilter) + 1);
+                }
+
+                if (!string.IsNullOrEmpty(this.prevViewControllerButton) && Input.GetKeyDown(this.prevViewControllerButton))
+                {
+                   this.LoadView(((int) this.viewFilter) - 1);
                 }
             }
         }
@@ -240,7 +227,10 @@ namespace Microsoft.Xbox.Services.Client
 
         public void NextPage()
         {
-            this.UpdateData(this.currentPage + 1, viewFilter);
+            if (this.currentPage + 1 < this.totalPages)
+            {
+                this.UpdateData(this.currentPage + 1, viewFilter);
+            }
         }
 
         public void PreviousPage()
@@ -261,9 +251,35 @@ namespace Microsoft.Xbox.Services.Client
             this.UpdateData(this.totalPages - 1, viewFilter);
         }
 
-        public void LoadView(int newFilter) {
+        public void LoadView(int newFilterNumber) {
+
+            if (newFilterNumber >= Enum.GetNames(typeof(LeaderboardFilter)).Length)
+            {
+                newFilterNumber = 0;
+            }
+
+            if (newFilterNumber < 0)
+            {
+                newFilterNumber = Enum.GetNames(typeof(LeaderboardFilter)).Length - 1;
+            }
+
+            this.viewFilter = (LeaderboardFilter)newFilterNumber;
+
             this.Clear();
-            this.UpdateData(0, (LeaderboardFilter)newFilter);
+            this.UpdateData(0, this.viewFilter);
+            var filterList = this.GetComponentsInChildren<FilterSelect>();
+            for (var i = 0; i < filterList.Length; i++)
+            {
+                var filter = filterList[i];
+                if (i == (int) this.viewFilter)
+                {
+                    filter.UpdateStatus(true);
+                }
+                else
+                {
+                    filter.UpdateStatus(false);
+                }
+            }
         }
 
         private void UpdateData(uint pageNumber, LeaderboardFilter filter)
@@ -389,13 +405,9 @@ namespace Microsoft.Xbox.Services.Client
                 this.totalPages = this.leaderboardData.TotalRowCount / this.entryCount;
             }
 
-            this.pageText.text = string.Format("Page: {0} / {1}", displayCurrentPage, this.totalPages);
+            this.pageText.text = string.Format("{0} | {1}", displayCurrentPage, this.totalPages);
 
-            while (this.contentPanel.childCount > 0)
-            {
-                var entry = this.contentPanel.GetChild(0).gameObject;
-                this.entryObjectPool.ReturnObject(entry);
-            }
+            this.Clear();
 
             IList<string> xuids = new List<string>();
             
@@ -406,9 +418,7 @@ namespace Microsoft.Xbox.Services.Client
 
                 GameObject entryObject = this.entryObjectPool.GetObject();
                 PlayerProfile entry = entryObject.GetComponent<PlayerProfile>();
-                if (this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag)) {
-                    entry.IsCurrentPlayer = true;
-                }
+                entry.IsCurrentPlayer = this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag);
                 if (rowCount == 0)
                 {
                     entry.IsHighlighted = true;
@@ -437,8 +447,8 @@ namespace Microsoft.Xbox.Services.Client
 
         public void UpdateButtons()
         {
-            this.firstButton.interactable = this.previousButton.interactable = this.currentPage != 0;
-            this.nextButton.interactable = this.lastButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+            this.previousButton.interactable = this.currentPage != 0;
+            this.nextButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
         }
 
         private void Clear() {
