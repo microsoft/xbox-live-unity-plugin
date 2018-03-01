@@ -18,6 +18,10 @@ namespace Microsoft.Xbox.Services.Client
 {
     public class PlayerAuthentication : MonoBehaviour
     {
+        [Header("Xbox Live Settings")]
+        public int PlayerNumber = 1;
+
+        [Header("Controller Settings")]
         public bool EnableControllerInput = false;
 
         public int JoystickNumber = 1;
@@ -26,23 +30,25 @@ namespace Microsoft.Xbox.Services.Client
 
         public XboxControllerButtons SignOutButton;
 
-        public int PlayerNumber = 1;
+        [Header("UI Component References")]
+        public GameObject signInPanel;
+
+        public GameObject profileInfoPanel;
+
+        public Image gamerpic;
+
+        public Image gamerpicMask;
+
+        public Text gamertag;
+
+        public Text gamerscore;
+
 
         private string signInInputButton;
 
         private string signOutInputButton;
         
-        public GameObject signInPanel;
-        
-        public GameObject profileInfoPanel;
-        
-        public Image gamerpic;
-        
-        public Image gamerpicMask;
-        
-        public Text gamertag;
-        
-        public Text gamerscore;
+       
 
         public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
@@ -125,12 +131,12 @@ namespace Microsoft.Xbox.Services.Client
 
         public void SignIn()
         {
-            // Disable the sign-in button
-            this.signInPanel.GetComponentInChildren<Button>().interactable = false;
+                // Disable the sign-in button
+                this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-            // Don't allow subsequent sign in attempts until the current attempt completes
-            this.AllowSignInAttempt = false;
-            this.StartCoroutine(SignInManager.Instance.SignInPlayer(this.PlayerNumber));
+                // Don't allow subsequent sign in attempts until the current attempt completes
+                this.AllowSignInAttempt = false;
+                this.StartCoroutine(SignInManager.Instance.SignInPlayer(this.PlayerNumber));
         }
 
         public void Update()
