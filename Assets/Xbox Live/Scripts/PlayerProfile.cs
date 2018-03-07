@@ -9,12 +9,17 @@ namespace Microsoft.Xbox.Services.Client
 {
     public class PlayerProfile : MonoBehaviour
     {
-        public Themes Theme = Themes.Light;
-        public PlayerProfileBackgrounds BackgroundColor = PlayerProfileBackgrounds.RowBackground01;
+        [Header("Profile Settings")]
         public bool IsHighlighted = false;
         public bool IsCurrentPlayer = false;
         public bool ShowScore = false;
         public bool ShowRank = false;
+
+        [Header("Theme Settings")]
+        public Themes Theme = Themes.Light;
+        public PlayerProfileBackgrounds BackgroundColor = PlayerProfileBackgrounds.RowBackground01;
+
+        [Header("UI Components")]
         public Image ProfileBackgroundImage;
         public Text GamerTagText;
         public Image GamerPicImage;
@@ -23,12 +28,24 @@ namespace Microsoft.Xbox.Services.Client
         public Image CurrentPlayerIndicator;
         public Text ScoreText;
         public Text RankText;
+        public Image GamerPicMask;
 
-        private XboxSocialUser xboxLiveSocialUser;
+        private Color[] lightThemeBackgroundColors;
+        private Color lightThemeHighlightedColor;
+        private Color[] darkThemeBackgroundColors;
+        private Color darkThemeHighlightedColor;
 
         private void Awake()
         {
             this.StartCoroutine(this.Reload());
+            this.lightThemeBackgroundColors = new Color[] {
+                new Color(46.0f / 255.0f, 138.0f / 255.0f, 170.0f / 255.0f),
+                new Color(39.0f / 255.0f, 113.0f / 255.0f, 130.0f / 255.0f) };
+            this.lightThemeHighlightedColor = new Color( 206.0f / 255.0f, 61.0f / 255.0f, 54.0f / 255.0f);
+            this.darkThemeBackgroundColors = new Color[] {
+                new Color(43.0f / 255.0f, 62.0f / 255.0f, 114.0f / 255.0f),
+                new Color(31.0f / 255.0f, 53.0f / 255.0f, 68.0f / 255.0f) };
+            this.darkThemeHighlightedColor = new Color(133.0f / 255.0f, 186.0f / 255.0f, 58.0f / 255.0f);
         }
 
         public void UpdateGamerTag(string gamerTag) {
@@ -59,9 +76,18 @@ namespace Microsoft.Xbox.Services.Client
             if (!IsHighlighted)
             {
                 backgroundImageToUse = ThemeHelper.LoadSprite(this.Theme, this.BackgroundColor.ToString());
+                switch (this.Theme) {
+                    case Themes.Light: this.GamerPicMask.color = this.lightThemeBackgroundColors[(int)this.BackgroundColor]; break;
+                    case Themes.Dark: this.GamerPicMask.color = this.darkThemeBackgroundColors[(int)this.BackgroundColor]; break;
+                }
             }
             else {
                 backgroundImageToUse = ThemeHelper.LoadSprite(this.Theme, "RowBackground-Highlighted");
+                switch (this.Theme)
+                {
+                    case Themes.Light: this.GamerPicMask.color = this.lightThemeHighlightedColor; break;
+                    case Themes.Dark: this.GamerPicMask.color = this.darkThemeHighlightedColor; break;
+                }
             }
 
             if (IsCurrentPlayer)

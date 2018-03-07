@@ -61,7 +61,7 @@ namespace Microsoft.Xbox.Services.Client
 
         public Image PreviousPageImage;
 
-        public Transform ViewSelector;
+        public FilterManager ViewSelector;
 
         public Text headerText;
 
@@ -70,7 +70,9 @@ namespace Microsoft.Xbox.Services.Client
         public Button previousButton;
 
         public Button nextButton;
-
+        
+        private int currentHighlightedEntryPosition = 0;
+        private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
         private uint currentPage;
         private uint totalPages;
         private string socialGroup;
@@ -81,7 +83,7 @@ namespace Microsoft.Xbox.Services.Client
         private string prevControllerButton;
         private string prevViewControllerButton;
         private string nextViewControllerButton;
-        private LeaderboardFilter viewFilter = LeaderboardFilter.All;
+        private LeaderboardFilter viewFilter = LeaderboardFilter.Default;
 
         private bool isLocalUserAdded
         {
@@ -202,10 +204,22 @@ namespace Microsoft.Xbox.Services.Client
                     this.NextPage();
                 }
 
-                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
+                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) > 0)
                 {
-                    var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
-                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+                    if (this.currentHighlightedEntryPosition < this.currentEntries.Count - 1)
+                    {
+                        this.currentHighlightedEntryPosition++;
+                        this.HandleScrolling(this.currentHighlightedEntryPosition, this.currentHighlightedEntryPosition - 1);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) < 0)
+                {
+                    if (this.currentHighlightedEntryPosition > 0)
+                    {
+                        this.currentHighlightedEntryPosition--;
+                        this.HandleScrolling(this.currentHighlightedEntryPosition, this.currentHighlightedEntryPosition + 1);
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
@@ -216,6 +230,17 @@ namespace Microsoft.Xbox.Services.Client
                 if (!string.IsNullOrEmpty(this.prevViewControllerButton) && Input.GetKeyDown(this.prevViewControllerButton))
                 {
                    this.LoadView(((int) this.viewFilter) - 1);
+                }
+
+                // For testing only
+                if (Input.GetKeyDown(KeyCode.D))
+                {
+                    this.LoadView(((int)this.viewFilter) + 1);
+                }
+
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    this.LoadView(((int)this.viewFilter) - 1);
                 }
             }
         }
@@ -267,19 +292,7 @@ namespace Microsoft.Xbox.Services.Client
 
             this.Clear();
             this.UpdateData(0, this.viewFilter);
-            var filterList = this.GetComponentsInChildren<FilterSelect>();
-            for (var i = 0; i < filterList.Length; i++)
-            {
-                var filter = filterList[i];
-                if (i == (int) this.viewFilter)
-                {
-                    filter.UpdateStatus(true);
-                }
-                else
-                {
-                    filter.UpdateStatus(false);
-                }
-            }
+            this.ViewSelector.SelectFilter(newFilterNumber);
         }
 
         private void UpdateData(uint pageNumber, LeaderboardFilter filter)
@@ -313,7 +326,7 @@ namespace Microsoft.Xbox.Services.Client
                     case LeaderboardTypes.Global:
                         socialGroup = "";
                         break;
-                    case LeaderboardTypes.Favorites:
+                    case LeaderboardTypes.Favorite:
                         socialGroup = "favorite";
                         break;
                     case LeaderboardTypes.Friends:
@@ -321,7 +334,7 @@ namespace Microsoft.Xbox.Services.Client
                         break;
                 }
 
-                if (filter == LeaderboardFilter.All)
+                if (filter == LeaderboardFilter.Default)
                 {
                     query = new LeaderboardQuery()
                     {
@@ -412,6 +425,7 @@ namespace Microsoft.Xbox.Services.Client
             IList<string> xuids = new List<string>();
             
             var rowCount = 0;
+            this.currentHighlightedEntryPosition = 0;
             foreach (LeaderboardRow row in this.leaderboardData.Rows)
             {
                 xuids.Add(row.XboxUserId);
@@ -419,13 +433,10 @@ namespace Microsoft.Xbox.Services.Client
                 GameObject entryObject = this.entryObjectPool.GetObject();
                 PlayerProfile entry = entryObject.GetComponent<PlayerProfile>();
                 entry.IsCurrentPlayer = this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag);
+                entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
                 if (rowCount == 0)
                 {
                     entry.IsHighlighted = true;
-                }
-                else
-                {
-                    entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
                 }
 
                 entry.UpdateGamerTag(row.Gamertag);
@@ -435,11 +446,12 @@ namespace Microsoft.Xbox.Services.Client
                     entry.UpdateScore(true, row.Values[0]);
                 }
                 entryObject.transform.SetParent(this.contentPanel);
+                this.currentEntries.Add(entry);
                 rowCount++;
             }
-            /*
-            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(XboxLiveUserManager.Instance.UserForSingleUserMode.User, xuids);
-            */
+
+            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.xboxLiveUser, xuids);
+        
             // Reset the scroll view to the top.
             this.scrollRect.verticalNormalizedPosition = 1;
             this.UpdateButtons();
@@ -459,12 +471,23 @@ namespace Microsoft.Xbox.Services.Client
                 children.Add(child);
             }
 
+            this.currentEntries.Clear();
             this.contentPanel.DetachChildren();
 
             foreach (var child in children)
             {
                 Destroy(child);
             }
+        }
+
+        private void HandleScrolling(int newHighlightedPosition, int oldHighlightedPosition) {
+
+            this.currentEntries[oldHighlightedPosition].IsHighlighted = false;
+            this.StartCoroutine(this.currentEntries[oldHighlightedPosition].Reload());
+
+
+            this.currentEntries[newHighlightedPosition].IsHighlighted = true;
+            this.StartCoroutine(this.currentEntries[newHighlightedPosition].Reload());
         }
 
         private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
@@ -506,7 +529,7 @@ namespace Microsoft.Xbox.Services.Client
     }
 
     public enum LeaderboardFilter {
-        All,
+        Default,
         NearestMe
     }
 }

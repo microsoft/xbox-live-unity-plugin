@@ -7,6 +7,6 @@ namespace Microsoft.Xbox.Services.Client
     {
         Global,
         Friends,
-        Favorites
+        Favorite
     }
 }
