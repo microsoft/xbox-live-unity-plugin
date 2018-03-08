@@ -13,11 +13,7 @@ namespace Microsoft.Xbox.Services.Client
         X,
         Y,
         LeftBumper,
-        RightBumper,
-        BackButton,
-        StartButton,
-        LeftStickClick,
-        RightStickClick
+        RightBumper
     }
 
     public class XboxControllerConverter
@@ -32,16 +28,12 @@ namespace Microsoft.Xbox.Services.Client
                 case XboxControllerButtons.Y: return 3;
                 case XboxControllerButtons.LeftBumper: return 4;
                 case XboxControllerButtons.RightBumper: return 5;
-                case XboxControllerButtons.BackButton: return 6;
-                case XboxControllerButtons.StartButton: return 7;
-                case XboxControllerButtons.LeftStickClick: return 8;
-                case XboxControllerButtons.RightStickClick: return 9;
                 case XboxControllerButtons.None:
                 default: return -1;
             }
         }
 
-        public static Sprite GetXboxButtonSpite (Themes theme, XboxControllerButtons xboxButton) {
+        public static Sprite GetXboxButtonSpite (Theme theme, XboxControllerButtons xboxButton) {
             var iconName = string.Empty;
             switch (xboxButton) {
                 case XboxControllerButtons.A:

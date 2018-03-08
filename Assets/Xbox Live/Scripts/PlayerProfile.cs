@@ -16,7 +16,7 @@ namespace Microsoft.Xbox.Services.Client
         public bool ShowRank = false;
 
         [Header("Theme Settings")]
-        public Themes Theme = Themes.Light;
+        public Theme Theme = Theme.Light;
         public PlayerProfileBackgrounds BackgroundColor = PlayerProfileBackgrounds.RowBackground01;
 
         [Header("UI Components")]
@@ -30,26 +30,33 @@ namespace Microsoft.Xbox.Services.Client
         public Text RankText;
         public Image GamerPicMask;
 
-        private Color[] lightThemeBackgroundColors;
-        private Color lightThemeHighlightedColor;
-        private Color[] darkThemeBackgroundColors;
-        private Color darkThemeHighlightedColor;
+        private static Color[] lightThemeBackgroundColors;
+        private static Color[] darkThemeBackgroundColors;
 
         private void Awake()
         {
-            this.StartCoroutine(this.Reload());
-            this.lightThemeBackgroundColors = new Color[] {
+            lightThemeBackgroundColors = new Color[] {
                 new Color(46.0f / 255.0f, 138.0f / 255.0f, 170.0f / 255.0f),
                 new Color(39.0f / 255.0f, 113.0f / 255.0f, 130.0f / 255.0f) };
-            this.lightThemeHighlightedColor = new Color( 206.0f / 255.0f, 61.0f / 255.0f, 54.0f / 255.0f);
-            this.darkThemeBackgroundColors = new Color[] {
-                new Color(43.0f / 255.0f, 62.0f / 255.0f, 114.0f / 255.0f),
+            darkThemeBackgroundColors = new Color[] {
+                new Color(43.0f / 255.0f, 78.0f / 255.0f, 114.0f / 255.0f),
                 new Color(31.0f / 255.0f, 53.0f / 255.0f, 68.0f / 255.0f) };
-            this.darkThemeHighlightedColor = new Color(133.0f / 255.0f, 186.0f / 255.0f, 58.0f / 255.0f);
-        }
+
+            this.ProfileBackgroundImage.enabled = false;
+            this.GamerPicImage.enabled = false;
+            this.RankBackgroundImage.enabled = false;
+            this.ScoreBackgroundImage.enabled = false;
+            this.ScoreText.enabled = false;
+            this.RankText.enabled = false;
+            this.CurrentPlayerIndicator.enabled = false;
+            this.GamerTagText.enabled = false;
+            this.GamerPicMask.enabled = false;
+    }
+        
 
         public void UpdateGamerTag(string gamerTag) {
             this.GamerTagText.text = gamerTag;
+           
         }
 
         public void UpdateScore(bool enableScore, string score) {
@@ -72,22 +79,19 @@ namespace Microsoft.Xbox.Services.Client
         {
             yield return null;
 
+            var fontColor = this.IsHighlighted? Color.white: ThemeHelper.GetThemeProfileFontColor(this.Theme);
             Sprite backgroundImageToUse  = null;
             if (!IsHighlighted)
             {
                 backgroundImageToUse = ThemeHelper.LoadSprite(this.Theme, this.BackgroundColor.ToString());
                 switch (this.Theme) {
-                    case Themes.Light: this.GamerPicMask.color = this.lightThemeBackgroundColors[(int)this.BackgroundColor]; break;
-                    case Themes.Dark: this.GamerPicMask.color = this.darkThemeBackgroundColors[(int)this.BackgroundColor]; break;
+                    case Theme.Light: this.GamerPicMask.color = lightThemeBackgroundColors[(int)this.BackgroundColor]; break;
+                    case Theme.Dark: this.GamerPicMask.color = darkThemeBackgroundColors[(int)this.BackgroundColor]; break;
                 }
             }
             else {
                 backgroundImageToUse = ThemeHelper.LoadSprite(this.Theme, "RowBackground-Highlighted");
-                switch (this.Theme)
-                {
-                    case Themes.Light: this.GamerPicMask.color = this.lightThemeHighlightedColor; break;
-                    case Themes.Dark: this.GamerPicMask.color = this.darkThemeHighlightedColor; break;
-                }
+                this.GamerPicMask.color = ThemeHelper.GetThemeHighlightColor(this.Theme); 
             }
 
             if (IsCurrentPlayer)
@@ -99,14 +103,24 @@ namespace Microsoft.Xbox.Services.Client
             {
                 this.CurrentPlayerIndicator.enabled = false;
             }
+
+            this.GamerTagText.color = fontColor;
+            this.ScoreText.color = fontColor;
+            this.RankText.color = fontColor;
+
             this.ProfileBackgroundImage.sprite = backgroundImageToUse;
             this.RankBackgroundImage.sprite = backgroundImageToUse;
             this.ScoreBackgroundImage.sprite = backgroundImageToUse;
-
+            
             this.RankBackgroundImage.enabled = this.ShowRank;
             this.RankText.enabled = this.ShowRank;
             this.ScoreBackgroundImage.enabled = this.ShowScore;
             this.ScoreText.enabled = this.ShowScore;
+
+            this.ProfileBackgroundImage.enabled = true;
+            this.GamerPicMask.enabled = true;
+            this.GamerPicImage.enabled = true;
+            this.GamerTagText.enabled = true;
         }
 
         public IEnumerator LoadGamerpic(string gamerpicUrl)

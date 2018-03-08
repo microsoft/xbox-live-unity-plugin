@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Microsoft.Xbox.Services.Social.Manager;
 using System.Linq;
+using System.Collections;
 
 namespace Microsoft.Xbox.Services.Client
 {
@@ -17,7 +18,7 @@ namespace Microsoft.Xbox.Services.Client
     public class Leaderboard : MonoBehaviour
     {
         [Header("Theme and Display Settings")]
-        public Themes Theme = Themes.Light;
+        public Theme Theme = Theme.Light;
 
         [Header("Stat Configuration")]
 
@@ -35,13 +36,13 @@ namespace Microsoft.Xbox.Services.Client
 
         public int JoystickNumber = 1;
 
-        public XboxControllerButtons NextPageButton;
+        public XboxControllerButtons NextPageControllerButton;
 
-        public XboxControllerButtons PreviousPageButton;
+        public XboxControllerButtons PreviousPageControllerButton;
 
-        public XboxControllerButtons NextViewButton;
+        public XboxControllerButtons NextViewControllerButton;
 
-        public XboxControllerButtons PrevViewButton;
+        public XboxControllerButtons PrevViewControllerButton;
 
         public string verticalScrollInputAxis;
 
@@ -53,6 +54,10 @@ namespace Microsoft.Xbox.Services.Client
 
         public ScrollRect scrollRect;
 
+        public Image BackgroundImage;
+
+        public Image HeaderRowImage;
+
         public Image NextViewImage;
 
         public Image PrevViewImage;
@@ -63,14 +68,22 @@ namespace Microsoft.Xbox.Services.Client
 
         public FilterManager ViewSelector;
 
-        public Text headerText;
+        public Text HeaderText;
 
         public Text pageText;
 
-        public Button previousButton;
+        public Button PreviousPageButton;
 
-        public Button nextButton;
-        
+        public Text PreviousPageText;
+
+        public Button NextPageButton;
+
+        public Text NextPageText;
+
+        public Image TopLine;
+
+        public Image BottomLine;
+
         private int currentHighlightedEntryPosition = 0;
         private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
         private uint currentPage;
@@ -99,7 +112,8 @@ namespace Microsoft.Xbox.Services.Client
         {
             this.EnsureEventSystem();
             XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
-
+            this.ViewSelector.Theme = this.Theme;
+            this.ViewSelector.SelectFilter((int)this.viewFilter);
             if (this.stat == null)
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
@@ -109,7 +123,7 @@ namespace Microsoft.Xbox.Services.Client
                 return;
             }
 
-            this.headerText.text = this.stat.DisplayName.ToUpper();
+            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
             this.UpdateButtons();
             SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
@@ -122,30 +136,30 @@ namespace Microsoft.Xbox.Services.Client
             if (EnableControllerInput)
             { 
 
-                if (this.NextPageButton != XboxControllerButtons.None)
+                if (this.NextPageControllerButton != XboxControllerButtons.None)
                 {
-                    this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageButton);
-                    this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageButton);
+                    this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageControllerButton);
+                    this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageControllerButton);
                     this.NextPageImage.SetNativeSize();
                 }
                 else {
                     this.NextPageImage.enabled = false;
                 }
 
-                if (this.PreviousPageButton != XboxControllerButtons.None)
+                if (this.PreviousPageControllerButton != XboxControllerButtons.None)
                 {
-                    this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageButton);
-                    this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageButton);
+                    this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageControllerButton);
+                    this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageControllerButton);
                     this.PreviousPageImage.SetNativeSize();
                 }
                 else {
                     this.PreviousPageImage.enabled = false;
                 }
 
-                if (this.NextViewButton != XboxControllerButtons.None)
+                if (this.NextViewControllerButton != XboxControllerButtons.None)
                 {
-                    this.nextViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextViewButton);
-                    this.NextViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextViewButton);
+                    this.nextViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextViewControllerButton);
+                    this.NextViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextViewControllerButton);
                     this.NextViewImage.SetNativeSize();
                 }
                 else
@@ -153,10 +167,10 @@ namespace Microsoft.Xbox.Services.Client
                     this.NextViewImage.enabled = false;
                 }
 
-                if (this.PrevViewButton != XboxControllerButtons.None)
+                if (this.PrevViewControllerButton != XboxControllerButtons.None)
                 {
-                    this.prevViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PrevViewButton);
-                    this.PrevViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PrevViewButton);
+                    this.prevViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PrevViewControllerButton);
+                    this.PrevViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PrevViewControllerButton);
                     this.PrevViewImage.SetNativeSize();
                 }
                 else
@@ -167,11 +181,14 @@ namespace Microsoft.Xbox.Services.Client
             else {
                 this.NextViewImage.enabled = false;
                 this.PrevViewImage.enabled = false;
+                this.NextPageImage.enabled = false;
+                this.PreviousPageImage.enabled = false;
             }
         }
 
         private void Start()
         {
+            this.StartCoroutine(this.LoadTheme(this.Theme));
 
             if (this.xboxLiveUser == null)
             {
@@ -204,22 +221,10 @@ namespace Microsoft.Xbox.Services.Client
                     this.NextPage();
                 }
 
-                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) > 0)
+                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
                 {
-                    if (this.currentHighlightedEntryPosition < this.currentEntries.Count - 1)
-                    {
-                        this.currentHighlightedEntryPosition++;
-                        this.HandleScrolling(this.currentHighlightedEntryPosition, this.currentHighlightedEntryPosition - 1);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) < 0)
-                {
-                    if (this.currentHighlightedEntryPosition > 0)
-                    {
-                        this.currentHighlightedEntryPosition--;
-                        this.HandleScrolling(this.currentHighlightedEntryPosition, this.currentHighlightedEntryPosition + 1);
-                    }
+                    var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
+                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
                 }
 
                 if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
@@ -230,17 +235,6 @@ namespace Microsoft.Xbox.Services.Client
                 if (!string.IsNullOrEmpty(this.prevViewControllerButton) && Input.GetKeyDown(this.prevViewControllerButton))
                 {
                    this.LoadView(((int) this.viewFilter) - 1);
-                }
-
-                // For testing only
-                if (Input.GetKeyDown(KeyCode.D))
-                {
-                    this.LoadView(((int)this.viewFilter) + 1);
-                }
-
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    this.LoadView(((int)this.viewFilter) - 1);
                 }
             }
         }
@@ -432,6 +426,7 @@ namespace Microsoft.Xbox.Services.Client
 
                 GameObject entryObject = this.entryObjectPool.GetObject();
                 PlayerProfile entry = entryObject.GetComponent<PlayerProfile>();
+                entry.Theme = this.Theme;
                 entry.IsCurrentPlayer = this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag);
                 entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
                 if (rowCount == 0)
@@ -445,6 +440,7 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     entry.UpdateScore(true, row.Values[0]);
                 }
+                this.StartCoroutine(entry.Reload());
                 entryObject.transform.SetParent(this.contentPanel);
                 this.currentEntries.Add(entry);
                 rowCount++;
@@ -459,8 +455,8 @@ namespace Microsoft.Xbox.Services.Client
 
         public void UpdateButtons()
         {
-            this.previousButton.interactable = this.currentPage != 0;
-            this.nextButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+            this.PreviousPageButton.interactable = this.currentPage != 0;
+            this.NextPageButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
         }
 
         private void Clear() {
@@ -478,6 +474,20 @@ namespace Microsoft.Xbox.Services.Client
             {
                 Destroy(child);
             }
+        }
+
+        private IEnumerator LoadTheme(Theme theme) {
+            yield return null;
+            this.HeaderRowImage.sprite = ThemeHelper.LoadSprite(this.Theme, "LabelRowBackground");
+            this.BackgroundImage.color = ThemeHelper.GetThemeBackgroundColor(this.Theme);
+            var fontColor = ThemeHelper.GetThemeBaseFontColor(this.Theme);
+            this.HeaderText.color = fontColor;
+            this.pageText.color = ThemeHelper.GetThemeHighlightColor(this.Theme);
+            this.NextPageText.color = fontColor;
+            this.PreviousPageText.color = fontColor;
+            var lineSprite = ThemeHelper.LoadSprite(this.Theme, "Line");
+            this.BottomLine.sprite = lineSprite;
+            this.TopLine.sprite = lineSprite;
         }
 
         private void HandleScrolling(int newHighlightedPosition, int oldHighlightedPosition) {
