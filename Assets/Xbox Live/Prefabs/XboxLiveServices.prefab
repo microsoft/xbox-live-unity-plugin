@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4896899429925906}
   - component: {fileID: 114670622419244234}
+  - component: {fileID: 114181878708962228}
   m_Layer: 0
   m_Name: XboxLiveServices
   m_TagString: Untagged
@@ -40,6 +41,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114181878708962228
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1408291712461230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d9fc9fe32bb6ed4ba42cd7c7ca404e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114670622419244234
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,3 +63,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c3fc2fb1cdcdf141b837e2c558f3a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DebugLogsOn: 1
