@@ -588,7 +588,7 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                     {
-                        Debug.LogError("Exception occured: " + ex.Message);
+                        Debug.LogError("Exception occurred: " + ex.Message);
                     }
                 }
             }
@@ -612,7 +612,7 @@ namespace Microsoft.Xbox.Services.Client
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                 {
-                    Debug.LogError("Exception occured: " + ex.Message);
+                    Debug.LogError("Exception occurred: " + ex.Message);
                 }
             }
         }

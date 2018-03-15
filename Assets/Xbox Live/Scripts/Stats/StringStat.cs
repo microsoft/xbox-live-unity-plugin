@@ -12,14 +12,23 @@ namespace Microsoft.Xbox.Services.Client
         protected override void HandleGetStat(XboxLiveUser user, string statName)
         {
             this.isLocalUserAdded = true;
-            StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
-            if (statValue != null)
-            {
-                this.Value = statValue.AsString;
+            try
+            { 
+                StatisticValue statValue = XboxLive.Instance.StatsManager.GetStatistic(user, statName);
+                if (statValue != null)
+                {
+                    this.Value = statValue.AsString;
+                }
             }
-        }
+            catch (Exception )
+            {
+                // GetStatistic will fail with an exception if if its the 
+                // first time reading the stat for example. 
+            }
 
-        public override string Value
+}
+
+public override string Value
         {
             get
             {
