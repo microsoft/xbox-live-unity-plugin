@@ -303,7 +303,7 @@ public class XboxLiveConfigurationEditor : EditorWindow
         }
         catch (Exception ex)
         {
-            Debug.LogWarning(string.Format("Xbox Live config file exists but failed to load: {0}", ex.Message);
+            Debug.LogWarning(string.Format("Xbox Live config file exists but failed to load: {0}", ex.Message));
             return null;
         }
     }
