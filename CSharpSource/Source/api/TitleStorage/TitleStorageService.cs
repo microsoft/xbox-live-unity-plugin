@@ -301,7 +301,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             XSAPI_TITLE_STORAGE_QUOTA quota, 
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageGetQuota(
             IntPtr xboxLiveContext, 
             IntPtr serviceConfigurationId,
@@ -316,7 +316,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT payload,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageGetBlobMetadata(
             IntPtr xboxLiveContext,
             IntPtr serviceConfigurationId,
@@ -329,7 +329,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr completionRoutineContext,
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageCreateBlobMetadata(
             IntPtr serviceConfigurationId,
             TitleStorageType storageType,
@@ -340,7 +340,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr etag,
             IntPtr ppBlobMetadata);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageReleaseBlobMetadata(
             IntPtr serviceConfigurationId);
 
@@ -349,7 +349,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             XSAPI_RESULT_INFO result,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageDeleteBlob(
             IntPtr xboxLiveContext,
             IntPtr blobMetadataPointer,
@@ -364,7 +364,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             XSAPI_TITLE_STORAGE_BLOB_RESULT blobResult,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageDownloadBlob(
             IntPtr xboxLiveContext,
             IntPtr blobMetadataPointer,
@@ -383,7 +383,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr pBlobMetadata,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageUploadBlob(
             IntPtr xboxLiveContext,
             IntPtr blobMetadataPointer,

@@ -39,7 +39,7 @@ namespace Microsoft.Xbox.Services
             public IntPtr sandbox;
         };
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT GetXboxLiveAppConfigSingleton(
             out IntPtr ppConfig);
     }

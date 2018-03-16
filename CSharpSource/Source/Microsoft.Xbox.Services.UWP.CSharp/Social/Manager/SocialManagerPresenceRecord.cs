@@ -10,7 +10,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
 
     public partial class SocialManagerPresenceRecord : ISocialManagerPresenceRecord, IEquatable<SocialManagerPresenceRecord>
     {
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool SocialManagerPresenceRecordIsUserPlayingTitle(IntPtr socialManagerPresenceRecord, uint titleId);
 
         public bool IsUserPlayingTitle(uint titleId)

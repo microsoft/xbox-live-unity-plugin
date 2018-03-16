@@ -22,7 +22,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             m_maxItems = maxItems;
             LeaderboardQuerySetMaxItems(m_leaderboardQueryPtr, m_maxItems);
         }
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void LeaderboardQuerySetMaxItems(IntPtr leaderboardQuery, UInt32 maxItems);
 
         // Order
@@ -36,7 +36,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             m_order = order;
             LeaderboardQuerySetOrder(m_leaderboardQueryPtr, m_order);
         }
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void LeaderboardQuerySetOrder(IntPtr leaderboardQuery, SortOrder order);
 
         // SkipResultToMe
@@ -50,7 +50,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             m_skipResultToMe = skipResultToMe;
             LeaderboardQuerySetSkipResultToMe(m_leaderboardQueryPtr, m_skipResultToMe);
         }
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void LeaderboardQuerySetSkipResultToMe(IntPtr leaderboardQuery, bool skipResultToMe);
 
         // SkipResultToRank
@@ -64,7 +64,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
             m_skipResultToRank = skipResultToRank;
             LeaderboardQuerySetSkipResultToRank(m_leaderboardQueryPtr, skipResultToRank);
         }
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void LeaderboardQuerySetSkipResultToRank(IntPtr leaderboardQuery, UInt32 setSkipResultToRank);
         
         public LeaderboardQueryImpl(IntPtr ptr, LeaderboardQuery query)

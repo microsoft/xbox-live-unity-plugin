@@ -43,10 +43,10 @@ namespace Microsoft.Xbox.Services
         internal IntPtr XboxLiveContextPtr { get; private set; }
 
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         internal static extern XSAPI_RESULT XboxLiveContextCreate(IntPtr xboxLiveUser, out IntPtr xboxLiveContext);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void XboxLiveContextDelete(IntPtr xboxLiveContext);
     }
 }

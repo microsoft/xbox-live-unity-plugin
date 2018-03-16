@@ -11,14 +11,14 @@ namespace Microsoft.Xbox.Services.Leaderboard
     {
         IntPtr m_leaderboardResultPtr;
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool LeaderboardResultHasNext(IntPtr leaderboard);
         public bool GetHasNext()
         {
             return LeaderboardResultHasNext(m_leaderboardResultPtr);
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT LeaderboardResultGetNextQuery(IntPtr leaderboard, IntPtr nextQuery, IntPtr errMessage);
         public LeaderboardQuery GetNextQueryImpl()
         {

@@ -83,7 +83,7 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr XboxSocialUserGroupGetUsersFromXboxUserIds(IntPtr group, IntPtr xboxUserIds, UInt32 xboxUserIdsCount, IntPtr usersSize);
         public IList<XboxSocialUser> GetUsersFromXboxUserIds(IList<string> xboxUserIds)
         {
