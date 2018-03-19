@@ -214,28 +214,28 @@ namespace Microsoft.Xbox.Services.Social.Manager
         }
 
         // Marshaling
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerAddLocalUser(IntPtr user, SocialManagerExtraDetailLevel extraDetailLevel, out IntPtr errMessage);
         
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerRemoveLocalUser(IntPtr user, out IntPtr errMessage);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromFilters(IntPtr user, PresenceFilter presenceDetailFilter, RelationshipFilter filter, out IntPtr returnGroup, out IntPtr errMessage);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerCreateSocialUserGroupFromList(IntPtr group, IntPtr users, UInt32 usersCount, out IntPtr returnGroup, out IntPtr errMessage);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerUpdateSocialUserGroup(IntPtr group, IntPtr users, UInt32 usersCount, out IntPtr errMessage);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerDestroySocialUserGroup(IntPtr group, out IntPtr errMessage);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr SocialManagerDoWork(out UInt32 numOfEvents);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT SocialManagerSetRichPresencePollingStatus(IntPtr user, bool shouldEnablePolling, out IntPtr errMessage);
 
 

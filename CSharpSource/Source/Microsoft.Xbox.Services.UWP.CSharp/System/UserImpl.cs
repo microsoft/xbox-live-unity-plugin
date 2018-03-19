@@ -269,15 +269,15 @@ namespace Microsoft.Xbox.Services.System
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void XSAPI_SIGN_OUT_COMPLETED_HANDLER(IntPtr xboxLiveUserPtr);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT XboxLiveUserCreateFromSystemUser(
             IntPtr systemUser, 
             out IntPtr xboxLiveUserPtr);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void XboxLiveUserDelete(IntPtr xboxLiveUserPtr);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT XboxLiveUserSignInWithCoreDispatcher(
             IntPtr xboxLiveUserPtr, 
             IntPtr coreDispatcher, 
@@ -285,14 +285,14 @@ namespace Microsoft.Xbox.Services.System
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT XboxLiveUserSignInSilently(
             IntPtr xboxLiveUserPtr, 
             XSAPI_SIGN_IN_COMPLETION_ROUTINE completionRoutine, 
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT XboxLiveUserGetTokenAndSignature(
             IntPtr xboxLiveUserPtr, 
             IntPtr httpMethod,
@@ -303,10 +303,10 @@ namespace Microsoft.Xbox.Services.System
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 AddSignOutCompletedHandler(XSAPI_SIGN_OUT_COMPLETED_HANDLER handler);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void RemoveSignOutCompletedHandler(Int32 functionContext);
 
         [StructLayout(LayoutKind.Sequential)]

@@ -25,7 +25,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             throw new XboxException("User doesn't exist. Did you call AddLocalUser?");
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerAddLocalUser(IntPtr user, out IntPtr errMessage);
         public void AddLocalUser(XboxLiveUser user)
         {
@@ -44,7 +44,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             m_localUsers[user.Impl.XboxLiveUserPtr] = user;
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerRemoveLocalUser(IntPtr user, out IntPtr errMessage);
         public void RemoveLocalUser(XboxLiveUser user)
         {
@@ -66,7 +66,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerRequestFlushToService(IntPtr user, bool isHighPriority, out IntPtr errMessage);
         public void RequestFlushToService(XboxLiveUser user, bool isHighPriority = false)
         {
@@ -82,7 +82,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr StatsManagerDoWork(out Int32 numOfEvents);
         public IList<StatisticEvent> DoWork()
         {
@@ -113,7 +113,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             return events.AsReadOnly();
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerSetStatisticNumberData(IntPtr user, string statName, double value, out IntPtr errMessage);
         public void SetStatisticNumberData(XboxLiveUser user, string statName, double value)
         {
@@ -129,7 +129,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerSetStatisticIntegerData(IntPtr user, string statName, long value, out IntPtr errMessage);
         public void SetStatisticIntegerData(XboxLiveUser user, string statName, long value)
         {
@@ -143,7 +143,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerSetStatisticStringData(IntPtr user, string statName, string value, out IntPtr errMessage);
         public void SetStatisticStringData(XboxLiveUser user, string statName, string value)
         {
@@ -157,7 +157,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerDeleteStat(IntPtr user, string statName, out IntPtr errMessage);
         public void DeleteStatistic(XboxLiveUser user, string statName)
         {
@@ -173,7 +173,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerGetLeaderboard(IntPtr user, string statName, IntPtr query, out IntPtr errMessage);
         public void GetLeaderboard(XboxLiveUser user, string statName, LeaderboardQuery query)
         {
@@ -189,7 +189,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerGetSocialLeaderboard(IntPtr user, string statName, string socialGroup, IntPtr query, out IntPtr errMessage);
         public void GetSocialLeaderboard(XboxLiveUser user, string statName, string socialGroup, LeaderboardQuery query)
         {
@@ -205,7 +205,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             }
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerGetStat(IntPtr user, IntPtr statName, out IntPtr statValue, out IntPtr errMessage);
         public StatisticValue GetStatistic(XboxLiveUser user, string statName)
         {
@@ -231,7 +231,7 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
             return statValue;
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT StatsManagerGetStatNames(IntPtr user, out IntPtr statNameList, out UInt32 statNameListCount, out IntPtr errMessage);
         public IList<string> GetStatisticNames(XboxLiveUser user)
         {

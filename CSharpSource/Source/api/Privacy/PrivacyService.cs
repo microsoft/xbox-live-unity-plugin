@@ -184,14 +184,14 @@ namespace Microsoft.Xbox.Services.Privacy
             UInt32 xboxUserIdsCount,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT PrivacyGetAvoidList(
             IntPtr xboxLiveContext, 
             XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE completionRoutine,
             IntPtr completionRoutineContext,
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT PrivacyGetMuteList(
             IntPtr xboxLiveContext, 
             XSAPI_PRIVACY_GET_USER_LIST_COMPLETION_ROUTINE completionRoutine,
@@ -204,7 +204,7 @@ namespace Microsoft.Xbox.Services.Privacy
             XSAPI_PRIVACY_PERMISSION_CHECK_RESULT payload,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT PrivacyCheckPermissionWithTargetUser(
             IntPtr xboxLiveContext,
             IntPtr permissionId,
@@ -220,7 +220,7 @@ namespace Microsoft.Xbox.Services.Privacy
             UInt32 privacyCheckResultsCount,
             IntPtr context);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT PrivacyCheckMultiplePermissionsWithMultipleTargetUsers(
             IntPtr xboxLiveContext,
             IntPtr permissionIds,

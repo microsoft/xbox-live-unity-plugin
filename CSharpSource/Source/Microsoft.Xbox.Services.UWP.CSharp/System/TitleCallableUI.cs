@@ -146,21 +146,21 @@ namespace Microsoft.Xbox.Services.System
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE(XSAPI_RESULT_INFO result, bool hasPrivilege, IntPtr completionRoutineContext);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TCUIShowProfileCardUI(
             IntPtr targetXboxUserId, 
             XSAPI_SHOW_PROFILE_CARD_UI_COMPLETION_ROUTINE completionRoutine, 
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TCUICheckGamingPrivilegeSilently(
             GamingPrivilege privilege,
             XSAPI_CHECK_GAMING_PRIVILEGE_COMPLETION_ROUTINE completionRoutine, 
             IntPtr completionRoutineContext, 
             Int64 taskGroupId);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TCUICheckGamingPrivilegeWithUI(
             GamingPrivilege privilege, 
             IntPtr friendlyMessage,
