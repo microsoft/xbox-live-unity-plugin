@@ -605,6 +605,11 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 else
                 {
+                    this.CurrentPlayers[playerNumber].XboxLiveUser = null;
+                    this.CurrentPlayers[playerNumber].XboxLiveContext = null;
+#if ENABLE_WINMD_SUPPORT
+                    this.CurrentPlayers[playerNumber].WindowsUser = null;
+#endif
                     NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed. Sign In Status: " + signInStatus);
                 }
             }
