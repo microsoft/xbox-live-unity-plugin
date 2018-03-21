@@ -439,8 +439,11 @@ namespace Microsoft.Xbox.Services.Client
                 rowCount++;
             }
 
-            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.xboxLiveUser, xuids);
-        
+            if (xuids.Count > 0)
+            {
+                userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.xboxLiveUser, xuids);
+            }
+
             // Reset the scroll view to the top.
             this.scrollRect.verticalNormalizedPosition = 1;
             this.UpdateButtons();
