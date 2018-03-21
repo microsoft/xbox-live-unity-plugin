@@ -113,7 +113,6 @@ namespace Microsoft.Xbox.Services.Client
             this.EnsureEventSystem();
             XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
             this.ViewSelector.Theme = this.Theme;
-            this.ViewSelector.SelectFilter((int)this.viewFilter);
             if (this.stat == null)
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
@@ -125,13 +124,6 @@ namespace Microsoft.Xbox.Services.Client
 
             this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
-            this.UpdateButtons();
-            SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
-            StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
-            StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
-            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
-            this.statsAddedLocalUser = false;
-            this.socialAddedLocalUser = false;
 
             if (EnableControllerInput)
             { 
@@ -190,6 +182,7 @@ namespace Microsoft.Xbox.Services.Client
         {
             this.StartCoroutine(this.LoadTheme(this.Theme));
 
+            this.ViewSelector.SelectFilter((int)this.viewFilter);
             if (this.xboxLiveUser == null)
             {
                 this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
@@ -500,6 +493,16 @@ namespace Microsoft.Xbox.Services.Client
             this.StartCoroutine(this.currentEntries[newHighlightedPosition].Reload());
         }
 
+        private void SetupForAddingUser() {
+            this.UpdateButtons();
+            SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
+            StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
+            StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
+            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
+            this.statsAddedLocalUser = false;
+            this.socialAddedLocalUser = false;
+        }
+
         private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
         {
             if (authStatus == XboxLiveAuthStatus.Succeeded)
@@ -513,6 +516,40 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     Debug.LogError(errorMessage);
                 }
+            }
+        }
+
+        private void OnEnable()
+        {
+            this.SetupForAddingUser();
+
+            this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
+            if (this.xboxLiveUser != null)
+            {
+                this.statsAddedLocalUser = true;
+                this.socialAddedLocalUser = true;
+                this.Refresh();
+            }
+        }
+
+        private void OnDisable()
+        {
+            this.statsAddedLocalUser = false;
+            this.socialAddedLocalUser = false;
+            if (SocialManagerComponent.Instance != null)
+            {
+                SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
+            }
+
+            if (StatsManagerComponent.Instance != null)
+            {
+                StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
+                StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
+            }
+
+            if (SignInManager.Instance != null)
+            {
+                SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
             }
         }
 
