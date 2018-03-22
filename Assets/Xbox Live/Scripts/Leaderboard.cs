@@ -405,7 +405,7 @@ namespace Microsoft.Xbox.Services.Client
                 this.totalPages = this.leaderboardData.TotalRowCount / this.entryCount;
             }
 
-            this.pageText.text = string.Format("{0} | {1}", displayCurrentPage, this.totalPages);
+            this.pageText.text = string.Format("{0} | {1}", displayCurrentPage, Mathf.Max(displayCurrentPage, this.totalPages)); 
 
             this.Clear();
 
@@ -437,6 +437,8 @@ namespace Microsoft.Xbox.Services.Client
                 entryObject.transform.SetParent(this.contentPanel);
                 this.currentEntries.Add(entry);
                 rowCount++;
+                
+                entryObject.transform.localScale = Vector3.one;
             }
 
             if (xuids.Count > 0)
