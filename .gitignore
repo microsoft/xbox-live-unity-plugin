@@ -4,6 +4,7 @@
 /[Bb]uilds/
 /UWP/
 /Assets/AssetStoreTools*
+/VSBuild/**
 
 Build/nuget.exe
 /CSharpSource/Plugins/
