@@ -308,19 +308,7 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                switch (leaderboardType)
-                {
-                    case LeaderboardTypes.Global:
-                        socialGroup = "";
-                        break;
-                    case LeaderboardTypes.Favorite:
-                        socialGroup = "favorite";
-                        break;
-                    case LeaderboardTypes.Friends:
-                        socialGroup = "all";
-                        break;
-                }
-
+                socialGroup = LeaderboardHelper.GetSocialGroupFromLeaderboardType(this.leaderboardType);
                 if (filter == LeaderboardFilter.Default)
                 {
                     query = new LeaderboardQuery()
@@ -581,5 +569,23 @@ namespace Microsoft.Xbox.Services.Client
     public enum LeaderboardFilter {
         Default,
         NearestMe
+    }
+
+    public class LeaderboardHelper {
+
+        public static string GetSocialGroupFromLeaderboardType(LeaderboardTypes leaderboardType)
+        {
+            switch (leaderboardType)
+            {
+                case LeaderboardTypes.Global:
+                    return "";
+                case LeaderboardTypes.Favorite:
+                    return "favorite";
+                case LeaderboardTypes.Friends:
+                    return "all";
+            }
+
+            return null;
+        }
     }
 }
