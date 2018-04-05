@@ -78,7 +78,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             this.metadataResultStruct = cObject;
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageBlobMetadataResultGetNext(
             XSAPI_TITLE_STORAGE_BLOB_METADATA_RESULT metadataResult,
             UInt32 maxItems,

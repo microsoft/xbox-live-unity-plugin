@@ -34,7 +34,6 @@ namespace Microsoft.Xbox.Services.Client
 
         public XboxControllerButtons SignOutButton;
 
-
         [Header("UI Component References")]
         public GameObject signInPanel;
 
@@ -56,7 +55,12 @@ namespace Microsoft.Xbox.Services.Client
         private string signInInputButton;
 
         private string signOutInputButton;
+
+        private string signInInputButton;
+
+        private string signOutInputButton;
         
+       
 
         public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
@@ -142,12 +146,12 @@ namespace Microsoft.Xbox.Services.Client
 
         public void SignIn()
         {
-            // Disable the sign-in button
-            this.signInPanel.GetComponentInChildren<Button>().interactable = false;
+                // Disable the sign-in button
+                this.signInPanel.GetComponentInChildren<Button>().interactable = false;
 
-            // Don't allow subsequent sign in attempts until the current attempt completes
-            this.AllowSignInAttempt = false;
-            this.StartCoroutine(SignInManager.Instance.SignInPlayer(this.PlayerNumber));
+                // Don't allow subsequent sign in attempts until the current attempt completes
+                this.AllowSignInAttempt = false;
+                this.StartCoroutine(SignInManager.Instance.SignInPlayer(this.PlayerNumber));
         }
 
         public void Update()

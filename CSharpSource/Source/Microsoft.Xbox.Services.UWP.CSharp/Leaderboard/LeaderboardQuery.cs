@@ -11,7 +11,7 @@ namespace Microsoft.Xbox.Services.Leaderboard
         /// <summary>
         /// Create a new query
         /// </summary>
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr LeaderboardQueryCreate();
         public LeaderboardQuery()
         {

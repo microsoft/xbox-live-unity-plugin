@@ -194,7 +194,7 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                this.socialUserGroups = null;
+                this.socialUserGroups.Clear();
                 var children = new List<GameObject>();
                 for (int i = 0; i < this.contentPanel.childCount; i++)
                 {

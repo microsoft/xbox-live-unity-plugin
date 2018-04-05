@@ -137,10 +137,10 @@ namespace Microsoft.Xbox.Services
             }
         }
         
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT XsapiGlobalInitialize();
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void XsapiGlobalCleanup();
     }
 }

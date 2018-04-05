@@ -190,7 +190,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             this.ClientTimeStamp = MarshalingHelpers.FromUnixTimeSeconds(CStruct.clientTimestamp);
         }
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageCreateBlobMetadata(
             IntPtr serviceConfigurationId,
             TitleStorageType storageType,
@@ -202,7 +202,7 @@ namespace Microsoft.Xbox.Services.TitleStorage
             IntPtr pClientTimestamp,
             out IntPtr ppMetadata);
 
-        [DllImport(XboxLive.FlatCDllName)]
+        [DllImport(XboxLive.FlatCDllName, CallingConvention = CallingConvention.Cdecl)]
         private static extern XSAPI_RESULT TitleStorageReleaseBlobMetadata(
             IntPtr pMetadata);
     }
