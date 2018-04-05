@@ -588,7 +588,7 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                     {
-                        Debug.LogError("Exception occured: " + ex.Message);
+                        Debug.LogError("Exception occurred: " + ex.Message);
                     }
                 }
             }
@@ -605,6 +605,11 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 else
                 {
+                    this.CurrentPlayers[playerNumber].XboxLiveUser = null;
+                    this.CurrentPlayers[playerNumber].XboxLiveContext = null;
+#if ENABLE_WINMD_SUPPORT
+                    this.CurrentPlayers[playerNumber].WindowsUser = null;
+#endif
                     NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed. Sign In Status: " + signInStatus);
                 }
             }
@@ -612,7 +617,7 @@ namespace Microsoft.Xbox.Services.Client
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
                 {
-                    Debug.LogError("Exception occured: " + ex.Message);
+                    Debug.LogError("Exception occurred: " + ex.Message);
                 }
             }
         }

@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Xbox.Services.Client
+﻿using UnityEngine;
+
+namespace Microsoft.Xbox.Services.Client
 {
     /// <summary>
     /// Enum used for Xbox Controller Buttons
@@ -11,11 +13,7 @@
         X,
         Y,
         LeftBumper,
-        RightBumper,
-        BackButton,
-        StartButton,
-        LeftStickClick,
-        RightStickClick
+        RightBumper
     }
 
     public class XboxControllerConverter
@@ -30,13 +28,30 @@
                 case XboxControllerButtons.Y: return 3;
                 case XboxControllerButtons.LeftBumper: return 4;
                 case XboxControllerButtons.RightBumper: return 5;
-                case XboxControllerButtons.BackButton: return 6;
-                case XboxControllerButtons.StartButton: return 7;
-                case XboxControllerButtons.LeftStickClick: return 8;
-                case XboxControllerButtons.RightStickClick: return 9;
                 case XboxControllerButtons.None:
                 default: return -1;
             }
         }
+
+        public static Sprite GetXboxButtonSpite (Theme theme, XboxControllerButtons xboxButton) {
+            var iconName = string.Empty;
+            switch (xboxButton) {
+                case XboxControllerButtons.A:
+                case XboxControllerButtons.B:
+                case XboxControllerButtons.X:
+                case XboxControllerButtons.Y:
+                    iconName = iconName + xboxButton; break;
+                case XboxControllerButtons.LeftBumper: iconName = "LB"; break;
+                case XboxControllerButtons.RightBumper: iconName = "RB"; break;
+                default: iconName = string.Empty; break;
+            }
+
+            if (string.IsNullOrEmpty(iconName)) {
+                return null;
+            }
+            else {
+                return ThemeHelper.LoadSprite(theme, "Controller/" + iconName);
+            }
+        }
     }
-}
+} 

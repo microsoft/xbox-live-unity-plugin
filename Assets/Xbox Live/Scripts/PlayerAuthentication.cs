@@ -18,8 +18,12 @@ namespace Microsoft.Xbox.Services.Client
 {
     public class PlayerAuthentication : MonoBehaviour
     {
+
         [Header("Xbox Live Settings")]
         public int PlayerNumber = 1;
+
+        [Header("Display Settings")]
+        public Theme Theme = Theme.Light;
 
         [Header("Controller Settings")]
         public bool EnableControllerInput = false;
@@ -39,10 +43,18 @@ namespace Microsoft.Xbox.Services.Client
 
         public Image gamerpicMask;
 
+        public Image signInPanelImage;
+
+        public Image profileInfoPanelImage;
+
         public Text gamertag;
 
-        public Text gamerscore;
+        public Text playerNumberText;
 
+
+        private string signInInputButton;
+
+        private string signOutInputButton;
 
         private string signInInputButton;
 
@@ -92,6 +104,7 @@ namespace Microsoft.Xbox.Services.Client
                     signInButtonText.text = "Xbox Live is not enabled.\nSee errors for detail.";
                 }
             }
+            this.playerNumberText.text = "P" + this.PlayerNumber;
             this.Refresh();
 
             try
@@ -109,6 +122,8 @@ namespace Microsoft.Xbox.Services.Client
             {
                 Debug.LogWarning(ex.Message);
             }
+
+            this.StartCoroutine(this.LoadTheme());
         }
 
         private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
@@ -218,6 +233,7 @@ namespace Microsoft.Xbox.Services.Client
 
         private IEnumerator FinishLoadingProfileInfo()
         {
+            this.playerNumberText.color = ThemeHelper.GetThemeBaseFontColor(this.Theme);
             var socialUser = userGroup.GetUsersFromXboxUserIds(new List<string> { this.xboxLiveUser.XboxUserId })[0];
 
             var www = new WWW(socialUser.DisplayPicRaw + "&w=128");
@@ -230,15 +246,6 @@ namespace Microsoft.Xbox.Services.Client
                     var t = www.texture;
                     var r = new Rect(0, 0, t.width, t.height);
                     this.gamerpic.sprite = Sprite.Create(t, r, Vector2.zero);
-                }
-
-                this.gamerscore.text = socialUser.Gamerscore;
-
-                if (socialUser.PreferredColor != null)
-                {
-                    this.profileInfoPanel.GetComponent<Image>().color =
-                        ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
-                    this.gamerpicMask.color = ColorFromHexString(socialUser.PreferredColor.PrimaryColor);
                 }
 
             }
@@ -287,8 +294,19 @@ namespace Microsoft.Xbox.Services.Client
             this.profileInfoPanel.SetActive(isSignedIn);
         }
 
+        private IEnumerator LoadTheme() {
+            yield return null;
+
+            var backgroundColor = ThemeHelper.GetThemeBackgroundColor(this.Theme);
+            this.profileInfoPanelImage.color = backgroundColor;
+            this.gamerpicMask.color = backgroundColor;
+            this.signInPanelImage.sprite = ThemeHelper.LoadSprite(this.Theme, "RowBackground-Highlighted");
+            this.gamertag.color = ThemeHelper.GetThemeBaseFontColor(this.Theme);
+        }
+
         private void SignOut()
         {
+            this.playerNumberText.color = Color.white;
             this.StartCoroutine(SignInManager.Instance.SignOutPlayer(this.PlayerNumber));
         }
 

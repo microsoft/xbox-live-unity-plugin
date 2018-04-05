@@ -69,7 +69,10 @@ namespace Microsoft.Xbox.Services.Client
 
         private void OnDestroy()
         {
-            StatsManagerComponent.Instance.LocalUserAdded -= HandleGetStatHelper;
+            if (StatsManagerComponent.Instance != null)
+            {
+                StatsManagerComponent.Instance.LocalUserAdded -= HandleGetStatHelper;
+            }
         }
         protected abstract void HandleGetStat(XboxLiveUser user, string statName);
     }

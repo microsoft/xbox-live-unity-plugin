@@ -10,13 +10,19 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Microsoft.Xbox.Services.Social.Manager;
 using System.Linq;
+using System.Collections;
 
 namespace Microsoft.Xbox.Services.Client
 {
     [Serializable]
     public class Leaderboard : MonoBehaviour
     {
-        private string socialGroup;
+        [Header("Theme and Display Settings")]
+        public Theme Theme = Theme.Light;
+
+        [Header("Stat Configuration")]
+
+        public int PlayerNumber = 1;
 
         public StatBase stat;
 
@@ -25,62 +31,72 @@ namespace Microsoft.Xbox.Services.Client
         [Range(1, 100)]
         public uint entryCount = 10;
 
-        public Text headerText;
-
-        [HideInInspector]
-        public uint currentPage;
-
-        [HideInInspector]
-        public uint totalPages;
-
-        [HideInInspector]
-        public Text pageText;
-
-        [HideInInspector]
-        public Button firstButton;
-
-        [HideInInspector]
-        public Button previousButton;
-
-        [HideInInspector]
-        public Button nextButton;
-
-        [HideInInspector]
-        public Button lastButton;
-
+        [Header("Controller Configuration")]
         public bool EnableControllerInput = false;
 
         public int JoystickNumber = 1;
 
-        public XboxControllerButtons FirstPageButton;
+        public XboxControllerButtons NextPageControllerButton;
 
-        public XboxControllerButtons LastPageButton;
+        public XboxControllerButtons PreviousPageControllerButton;
 
-        public XboxControllerButtons NextPageButton;
+        public XboxControllerButtons NextViewControllerButton;
 
-        public XboxControllerButtons PreviousPageButton;
-
-        public XboxControllerButtons RefreshButton;
-
-        public int PlayerNumber = 1;
+        public XboxControllerButtons PrevViewControllerButton;
 
         public string verticalScrollInputAxis;
 
+        public float scrollSpeedMultiplier = 0.1f;
+
+
+        [Header("UI References")]
         public Transform contentPanel;
 
         public ScrollRect scrollRect;
 
-        public float scrollSpeedMultiplier = 0.1f;
+        public Image BackgroundImage;
 
+        public Image HeaderRowImage;
+
+        public Image NextViewImage;
+
+        public Image PrevViewImage;
+
+        public Image NextPageImage;
+
+        public Image PreviousPageImage;
+
+        public FilterManager ViewSelector;
+
+        public Text HeaderText;
+
+        public Text pageText;
+
+        public Button PreviousPageButton;
+
+        public Text PreviousPageText;
+
+        public Button NextPageButton;
+
+        public Text NextPageText;
+
+        public Image TopLine;
+
+        public Image BottomLine;
+
+        private int currentHighlightedEntryPosition = 0;
+        private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
+        private uint currentPage;
+        private uint totalPages;
+        private string socialGroup;
         private LeaderboardResult leaderboardData;
         private ObjectPool entryObjectPool;
         private XboxLiveUser xboxLiveUser;
-        private string firstControllerButton;
-        private string lastControllerButton;
         private string nextControllerButton;
         private string prevControllerButton;
-        private string refreshControllerButton;
-
+        private string prevViewControllerButton;
+        private string nextViewControllerButton;
+        private LeaderboardFilter viewFilter = LeaderboardFilter.Default;
 
         private bool isLocalUserAdded
         {
@@ -96,7 +112,7 @@ namespace Microsoft.Xbox.Services.Client
         {
             this.EnsureEventSystem();
             XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
-
+            this.ViewSelector.Theme = this.Theme;
             if (this.stat == null)
             {
                 if (XboxLiveServicesSettings.Instance.DebugLogsOn)
@@ -106,48 +122,67 @@ namespace Microsoft.Xbox.Services.Client
                 return;
             }
 
-            this.headerText.text = this.stat.DisplayName;
+            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
-            this.UpdateButtons();
-            SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
-            StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
-            StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
-            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
-            this.statsAddedLocalUser = false;
-            this.socialAddedLocalUser = false;
 
             if (EnableControllerInput)
-            {
-                if (this.FirstPageButton != XboxControllerButtons.None)
+            { 
+
+                if (this.NextPageControllerButton != XboxControllerButtons.None)
                 {
-                    this.firstControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.FirstPageButton);
+                    this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageControllerButton);
+                    this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageControllerButton);
+                    this.NextPageImage.SetNativeSize();
+                }
+                else {
+                    this.NextPageImage.enabled = false;
                 }
 
-                if (this.LastPageButton != XboxControllerButtons.None)
+                if (this.PreviousPageControllerButton != XboxControllerButtons.None)
                 {
-                    this.lastControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.LastPageButton);
+                    this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageControllerButton);
+                    this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageControllerButton);
+                    this.PreviousPageImage.SetNativeSize();
+                }
+                else {
+                    this.PreviousPageImage.enabled = false;
                 }
 
-                if (this.NextPageButton != XboxControllerButtons.None)
+                if (this.NextViewControllerButton != XboxControllerButtons.None)
                 {
-                    this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageButton);
+                    this.nextViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextViewControllerButton);
+                    this.NextViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextViewControllerButton);
+                    this.NextViewImage.SetNativeSize();
+                }
+                else
+                {
+                    this.NextViewImage.enabled = false;
                 }
 
-                if (this.PreviousPageButton != XboxControllerButtons.None)
+                if (this.PrevViewControllerButton != XboxControllerButtons.None)
                 {
-                    this.prevControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PreviousPageButton);
+                    this.prevViewControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.PrevViewControllerButton);
+                    this.PrevViewImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PrevViewControllerButton);
+                    this.PrevViewImage.SetNativeSize();
                 }
-
-                if (this.RefreshButton != XboxControllerButtons.None)
+                else
                 {
-                    this.refreshControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.RefreshButton);
+                    this.PrevViewImage.enabled = false;
                 }
+            }
+            else {
+                this.NextViewImage.enabled = false;
+                this.PrevViewImage.enabled = false;
+                this.NextPageImage.enabled = false;
+                this.PreviousPageImage.enabled = false;
             }
         }
 
         private void Start()
         {
+            this.StartCoroutine(this.LoadTheme(this.Theme));
 
+            this.ViewSelector.SelectFilter((int)this.viewFilter);
             if (this.xboxLiveUser == null)
             {
                 this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
@@ -155,7 +190,7 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     this.statsAddedLocalUser = true;
                     this.socialAddedLocalUser = true;
-                    this.UpdateData(0);
+                    this.UpdateData(0, viewFilter);
                 }
             }
         }
@@ -169,11 +204,6 @@ namespace Microsoft.Xbox.Services.Client
         {
             if (this.EnableControllerInput)
             {
-                if (!string.IsNullOrEmpty(this.refreshControllerButton) && Input.GetKeyDown(this.refreshControllerButton))
-                {
-                    this.Refresh();
-                }
-
                 if (this.currentPage != 0 && !string.IsNullOrEmpty(this.prevControllerButton) && Input.GetKeyDown(this.prevControllerButton))
                 {
                     this.PreviousPage();
@@ -184,20 +214,20 @@ namespace Microsoft.Xbox.Services.Client
                     this.NextPage();
                 }
 
-                if (!string.IsNullOrEmpty(this.lastControllerButton) && Input.GetKeyDown(this.lastControllerButton))
-                {
-                    this.LastPage();
-                }
-
-                if (!string.IsNullOrEmpty(this.firstControllerButton) && Input.GetKeyDown(this.firstControllerButton))
-                {
-                    this.FirstPage();
-                }
-
                 if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
                 {
                     var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
                     this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+                }
+
+                if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
+                {
+                    this.LoadView(((int) this.viewFilter) + 1);
+                }
+
+                if (!string.IsNullOrEmpty(this.prevViewControllerButton) && Input.GetKeyDown(this.prevViewControllerButton))
+                {
+                   this.LoadView(((int) this.viewFilter) - 1);
                 }
             }
         }
@@ -209,29 +239,53 @@ namespace Microsoft.Xbox.Services.Client
 
         public void NextPage()
         {
-            this.UpdateData(this.currentPage + 1);
+            if (this.currentPage + 1 < this.totalPages)
+            {
+                this.UpdateData(this.currentPage + 1, viewFilter);
+            }
         }
 
         public void PreviousPage()
         {
             if (this.currentPage > 0)
             {
-                this.UpdateData(this.currentPage - 1);
+                this.UpdateData(this.currentPage - 1, viewFilter);
             }
         }
 
         public void FirstPage()
         {
-            this.UpdateData(0);
+            this.UpdateData(0, viewFilter);
         }
 
         public void LastPage()
         {
-            this.UpdateData(this.totalPages - 1);
+            this.UpdateData(this.totalPages - 1, viewFilter);
         }
 
-        private void UpdateData(uint newPage)
+        public void LoadView(int newFilterNumber) {
+
+            if (newFilterNumber >= Enum.GetNames(typeof(LeaderboardFilter)).Length)
+            {
+                newFilterNumber = 0;
+            }
+
+            if (newFilterNumber < 0)
+            {
+                newFilterNumber = Enum.GetNames(typeof(LeaderboardFilter)).Length - 1;
+            }
+
+            this.viewFilter = (LeaderboardFilter)newFilterNumber;
+
+            this.Clear();
+            this.UpdateData(0, this.viewFilter);
+            this.ViewSelector.SelectFilter(newFilterNumber);
+        }
+
+        private void UpdateData(uint pageNumber, LeaderboardFilter filter)
         {
+            this.viewFilter = filter;
+
             if (!this.isLocalUserAdded)
             {
                 return;
@@ -248,33 +302,31 @@ namespace Microsoft.Xbox.Services.Client
             }
 
             LeaderboardQuery query;
-            if (newPage == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
+            if (pageNumber == this.currentPage + 1 && this.leaderboardData != null && this.leaderboardData.HasNext)
             {
                 query = this.leaderboardData.GetNextQuery();
             }
             else
             {
-                switch (leaderboardType)
+                socialGroup = LeaderboardHelper.GetSocialGroupFromLeaderboardType(this.leaderboardType);
+                if (filter == LeaderboardFilter.Default)
                 {
-                    case LeaderboardTypes.Global:
-                        socialGroup = "";
-                        break;
-                    case LeaderboardTypes.Favorites:
-                        socialGroup = "favorite";
-                        break;
-                    case LeaderboardTypes.Friends:
-                        socialGroup = "all";
-                        break;
-                }
+                    query = new LeaderboardQuery()
+                    {
+                        SkipResultToRank = pageNumber == 0 ? 0 : ((pageNumber - 1) * this.entryCount),
+                        MaxItems = this.entryCount,
+                    };
+                } else {
 
-                query = new LeaderboardQuery()
-                {
-                    SkipResultToRank = newPage == 0 ? 0 : ((newPage - 1) * this.entryCount),
-                    MaxItems = this.entryCount,
-                };
+                    query = new LeaderboardQuery()
+                    {
+                        SkipResultToMe = true,
+                        MaxItems = this.entryCount,
+                    };
+                }
             }
 
-            this.currentPage = newPage;
+            this.currentPage = pageNumber;
             XboxLive.Instance.StatsManager.GetLeaderboard(this.xboxLiveUser, this.stat.ID, query);
         }
 
@@ -288,13 +340,13 @@ namespace Microsoft.Xbox.Services.Client
             else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
                 ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == this.userGroup)
             {
-                var entries = this.contentPanel.GetComponentsInChildren<LeaderboardEntry>();
+                var entries = this.contentPanel.GetComponentsInChildren<PlayerProfile>();
                 for (int i = 0; i < entries.Length; i++)
                 {
-                    XboxSocialUser user = userGroup.Users.FirstOrDefault(x => x.Gamertag == entries[i].gamertagText.text);
+                    XboxSocialUser user = userGroup.Users.FirstOrDefault(x => x.Gamertag == entries[i].GamerTagText.text);
                     if (user != null)
                     {
-                        entries[i].GamerpicUrl = user.DisplayPicRaw + "&w=128";
+                        this.StartCoroutine(entries[i].LoadGamerpic(user.DisplayPicRaw + "&w=128"));
                     }
                 }
             }
@@ -341,29 +393,47 @@ namespace Microsoft.Xbox.Services.Client
                 this.totalPages = this.leaderboardData.TotalRowCount / this.entryCount;
             }
 
-            this.pageText.text = string.Format("Page: {0} / {1}", displayCurrentPage, this.totalPages);
+            this.pageText.text = string.Format("{0} | {1}", displayCurrentPage, Mathf.Max(displayCurrentPage, this.totalPages)); 
 
-            while (this.contentPanel.childCount > 0)
-            {
-                var entry = this.contentPanel.GetChild(0).gameObject;
-                this.entryObjectPool.ReturnObject(entry);
-            }
+            this.Clear();
 
             IList<string> xuids = new List<string>();
+            
+            var rowCount = 0;
+            this.currentHighlightedEntryPosition = 0;
             foreach (LeaderboardRow row in this.leaderboardData.Rows)
             {
                 xuids.Add(row.XboxUserId);
 
                 GameObject entryObject = this.entryObjectPool.GetObject();
-                LeaderboardEntry entry = entryObject.GetComponent<LeaderboardEntry>();
+                PlayerProfile entry = entryObject.GetComponent<PlayerProfile>();
+                entry.Theme = this.Theme;
+                entry.IsCurrentPlayer = this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag);
+                entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
+                if (rowCount == 0)
+                {
+                    entry.IsHighlighted = true;
+                }
 
-                entry.Data = row;
-
+                entry.UpdateGamerTag(row.Gamertag);
+                entry.UpdateRank(true, row.Rank);
+                if (row.Values != null && row.Values.Count > 0)
+                {
+                    entry.UpdateScore(true, row.Values[0]);
+                }
+                this.StartCoroutine(entry.Reload());
                 entryObject.transform.SetParent(this.contentPanel);
+                this.currentEntries.Add(entry);
+                rowCount++;
+                
+                entryObject.transform.localScale = Vector3.one;
             }
-            /*
-            userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(XboxLiveUserManager.Instance.UserForSingleUserMode.User, xuids);
-            */
+
+            if (xuids.Count > 0)
+            {
+                userGroup = XboxLive.Instance.SocialManager.CreateSocialUserGroupFromList(this.xboxLiveUser, xuids);
+            }
+
             // Reset the scroll view to the top.
             this.scrollRect.verticalNormalizedPosition = 1;
             this.UpdateButtons();
@@ -371,8 +441,59 @@ namespace Microsoft.Xbox.Services.Client
 
         public void UpdateButtons()
         {
-            this.firstButton.interactable = this.previousButton.interactable = this.currentPage != 0;
-            this.nextButton.interactable = this.lastButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+            this.PreviousPageButton.interactable = this.currentPage != 0;
+            this.NextPageButton.interactable = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
+        }
+
+        private void Clear() {
+            var children = new List<GameObject>();
+            for (int i = 0; i < this.contentPanel.childCount; i++)
+            {
+                GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
+                children.Add(child);
+            }
+
+            this.currentEntries.Clear();
+            this.contentPanel.DetachChildren();
+
+            foreach (var child in children)
+            {
+                Destroy(child);
+            }
+        }
+
+        private IEnumerator LoadTheme(Theme theme) {
+            yield return null;
+            this.HeaderRowImage.sprite = ThemeHelper.LoadSprite(this.Theme, "LabelRowBackground");
+            this.BackgroundImage.color = ThemeHelper.GetThemeBackgroundColor(this.Theme);
+            var fontColor = ThemeHelper.GetThemeBaseFontColor(this.Theme);
+            this.HeaderText.color = fontColor;
+            this.pageText.color = ThemeHelper.GetThemeHighlightColor(this.Theme);
+            this.NextPageText.color = fontColor;
+            this.PreviousPageText.color = fontColor;
+            var lineSprite = ThemeHelper.LoadSprite(this.Theme, "Line");
+            this.BottomLine.sprite = lineSprite;
+            this.TopLine.sprite = lineSprite;
+        }
+
+        private void HandleScrolling(int newHighlightedPosition, int oldHighlightedPosition) {
+
+            this.currentEntries[oldHighlightedPosition].IsHighlighted = false;
+            this.StartCoroutine(this.currentEntries[oldHighlightedPosition].Reload());
+
+
+            this.currentEntries[newHighlightedPosition].IsHighlighted = true;
+            this.StartCoroutine(this.currentEntries[newHighlightedPosition].Reload());
+        }
+
+        private void SetupForAddingUser() {
+            this.UpdateButtons();
+            SocialManagerComponent.Instance.EventProcessed += this.SocialManagerEventProcessed;
+            StatsManagerComponent.Instance.LocalUserAdded += this.LocalUserAdded;
+            StatsManagerComponent.Instance.GetLeaderboardCompleted += this.GetLeaderboardCompleted;
+            SignInManager.Instance.OnPlayerSignOut(this.PlayerNumber, this.OnPlayerSignOut);
+            this.statsAddedLocalUser = false;
+            this.socialAddedLocalUser = false;
         }
 
         private void OnPlayerSignOut(XboxLiveUser xboxLiveUser, XboxLiveAuthStatus authStatus, string errorMessage)
@@ -380,19 +501,7 @@ namespace Microsoft.Xbox.Services.Client
             if (authStatus == XboxLiveAuthStatus.Succeeded)
             {
                 this.xboxLiveUser = null;
-                var children = new List<GameObject>();
-                for (int i = 0; i < this.contentPanel.childCount; i++)
-                {
-                    GameObject child = this.contentPanel.transform.GetChild(i).gameObject;
-                    children.Add(child);
-                }
-
-                this.contentPanel.DetachChildren();
-
-                foreach (var child in children)
-                {
-                    Destroy(child);
-                }
+                this.Clear();
             }
             else
             {
@@ -403,14 +512,64 @@ namespace Microsoft.Xbox.Services.Client
             }
         }
 
+        private void OnEnable()
+        {
+            this.SetupForAddingUser();
+
+            this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
+            if (this.xboxLiveUser != null)
+            {
+                this.statsAddedLocalUser = true;
+                this.socialAddedLocalUser = true;
+                this.Refresh();
+            }
+        }
+
+        private void OnDisable()
+        {
+            this.statsAddedLocalUser = false;
+            this.socialAddedLocalUser = false;
+            if (SocialManagerComponent.Instance != null)
+            {
+                SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
+            }
+
+            if (StatsManagerComponent.Instance != null)
+            {
+                StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
+                StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
+            }
+
+            if (SignInManager.Instance != null)
+            {
+                SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
+            }
+        }
+
         private void OnDestroy()
         {
             this.statsAddedLocalUser = false;
             this.socialAddedLocalUser = false;
-            SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
-            StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
-            StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
-            SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
+            if (SocialManagerComponent.Instance != null)
+            {
+                SocialManagerComponent.Instance.EventProcessed -= this.SocialManagerEventProcessed;
+            }
+
+            if (StatsManagerComponent.Instance != null)
+            {
+                StatsManagerComponent.Instance.LocalUserAdded -= this.LocalUserAdded;
+                StatsManagerComponent.Instance.GetLeaderboardCompleted -= this.GetLeaderboardCompleted;
+            }
+
+            if (SignInManager.Instance != null)
+            {
+                SignInManager.Instance.RemoveCallbackFromPlayer(this.PlayerNumber, this.OnPlayerSignOut);
+            }
         }
+    }
+
+    public enum LeaderboardFilter {
+        Default,
+        NearestMe
     }
 }
