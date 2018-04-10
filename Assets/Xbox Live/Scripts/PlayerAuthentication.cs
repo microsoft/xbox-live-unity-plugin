@@ -55,11 +55,6 @@ namespace Microsoft.Xbox.Services.Client
         private string signInInputButton;
 
         private string signOutInputButton;
-
-        private string signInInputButton;
-
-        private string signOutInputButton;
-        
        
 
         public readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
