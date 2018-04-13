@@ -14,6 +14,12 @@ using System.Collections;
 
 namespace Microsoft.Xbox.Services.Client
 {
+    public enum LeaderboardFilter
+    {
+        Default,
+        NearestMe
+    }
+
     [Serializable]
     public class Leaderboard : MonoBehaviour
     {
@@ -47,7 +53,6 @@ namespace Microsoft.Xbox.Services.Client
         public string verticalScrollInputAxis;
 
         public float scrollSpeedMultiplier = 0.1f;
-
 
         [Header("UI References")]
         public Transform contentPanel;
@@ -83,8 +88,7 @@ namespace Microsoft.Xbox.Services.Client
         public Image TopLine;
 
         public Image BottomLine;
-
-        private int currentHighlightedEntryPosition = 0;
+        
         private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
         private uint currentPage;
         private uint totalPages;
@@ -127,14 +131,14 @@ namespace Microsoft.Xbox.Services.Client
 
             if (EnableControllerInput)
             { 
-
                 if (this.NextPageControllerButton != XboxControllerButtons.None)
                 {
                     this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageControllerButton);
                     this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageControllerButton);
                     this.NextPageImage.SetNativeSize();
                 }
-                else {
+                else
+                {
                     this.NextPageImage.enabled = false;
                 }
 
@@ -144,7 +148,8 @@ namespace Microsoft.Xbox.Services.Client
                     this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageControllerButton);
                     this.PreviousPageImage.SetNativeSize();
                 }
-                else {
+                else
+                {
                     this.PreviousPageImage.enabled = false;
                 }
 
@@ -170,7 +175,8 @@ namespace Microsoft.Xbox.Services.Client
                     this.PrevViewImage.enabled = false;
                 }
             }
-            else {
+            else
+            {
                 this.NextViewImage.enabled = false;
                 this.PrevViewImage.enabled = false;
                 this.NextPageImage.enabled = false;
@@ -217,7 +223,7 @@ namespace Microsoft.Xbox.Services.Client
                 if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
                 {
                     var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
-                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + (inputValue * scrollSpeedMultiplier);
                 }
 
                 if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
@@ -400,7 +406,6 @@ namespace Microsoft.Xbox.Services.Client
             IList<string> xuids = new List<string>();
             
             var rowCount = 0;
-            this.currentHighlightedEntryPosition = 0;
             foreach (LeaderboardRow row in this.leaderboardData.Rows)
             {
                 xuids.Add(row.XboxUserId);
@@ -410,11 +415,6 @@ namespace Microsoft.Xbox.Services.Client
                 entry.Theme = this.Theme;
                 entry.IsCurrentPlayer = this.xboxLiveUser != null && row.Gamertag.Equals(this.xboxLiveUser.Gamertag);
                 entry.BackgroundColor = ((rowCount % 2 == 0) ? PlayerProfileBackgrounds.RowBackground02 : PlayerProfileBackgrounds.RowBackground01);
-                if (rowCount == 0)
-                {
-                    entry.IsHighlighted = true;
-                }
-
                 entry.UpdateGamerTag(row.Gamertag);
                 entry.UpdateRank(true, row.Rank);
                 if (row.Values != null && row.Values.Count > 0)
@@ -568,8 +568,4 @@ namespace Microsoft.Xbox.Services.Client
         }
     }
 
-    public enum LeaderboardFilter {
-        Default,
-        NearestMe
-    }
 }

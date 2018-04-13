@@ -13,9 +13,9 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
     using global::System.Collections.Generic;
     using global::System.Text;
 
-    using UnityEngine;
-
     using Microsoft.Xbox.Services.Client;
+
+    using UnityEngine;
 
 #if ENABLE_WINMD_SUPPORT
     using global::System.Runtime.InteropServices.WindowsRuntime;
