@@ -88,8 +88,7 @@ namespace Microsoft.Xbox.Services.Client
         public Image TopLine;
 
         public Image BottomLine;
-
-        private int currentHighlightedEntryPosition = 0;
+        
         private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
         private uint currentPage;
         private uint totalPages;
