@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// 
+ 
 using System;
 using Microsoft.Xbox.Services.Statistics.Manager;
 
@@ -25,7 +25,6 @@ namespace Microsoft.Xbox.Services.Client
                 // GetStatistic will fail with an exception if if its the 
                 // first time reading the stat for example. 
             }
-
 }
 
 public override string Value
@@ -34,12 +33,14 @@ public override string Value
             {
                 return base.Value;
             }
+
             set
             {
                 if (this.isLocalUserAdded)
                 {
                     XboxLive.Instance.StatsManager.SetStatisticStringData(this.xboxLiveUser, this.ID, value);
                 }
+
                 base.Value = value;
             }
         }
