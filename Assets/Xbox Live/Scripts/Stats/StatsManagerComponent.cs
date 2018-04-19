@@ -32,9 +32,12 @@ namespace Microsoft.Xbox.Services.Client
 
         private void Update()
         {
-            if (this.manager == null && XboxLiveServicesSettings.Instance.DebugLogsOn)
+            if (this.manager == null)
             {
-                Debug.LogWarning("Somehow the manager got nulled out.");
+                ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.StatManager,
+                            ExceptionType.UnexpectedException,
+                            new Exception("Somehow the manager got nulled out."));
                 return;
             }
             IList<StatisticEvent> events = this.manager.DoWork();

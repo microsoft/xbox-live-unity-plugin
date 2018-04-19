@@ -100,11 +100,6 @@ namespace Microsoft.Xbox.Services.Client
                 this.xboxLiveUser = xboxLiveUser;
                 this.InitializeSaveSystem();
             }
-            else {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn) {
-                    Debug.LogError(errorMessage);
-                }
-            }
         }
 
         public void InitializeSaveSystem()
@@ -372,13 +367,6 @@ namespace Microsoft.Xbox.Services.Client
                 {
                     this.logLines.Clear();
                     this.logText = string.Empty;
-                }
-            }
-            else
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
                 }
             }
         }

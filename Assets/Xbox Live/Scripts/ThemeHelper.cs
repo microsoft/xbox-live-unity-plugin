@@ -67,10 +67,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("An exception occured in LoadSprite: " + ex.Message);
-                }
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.ThemeHelper,
+                           ExceptionType.LoadSpriteFailed,
+                           ex);
             }
 
             return null;

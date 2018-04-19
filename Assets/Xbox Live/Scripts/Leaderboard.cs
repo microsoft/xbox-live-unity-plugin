@@ -113,20 +113,10 @@ namespace Microsoft.Xbox.Services.Client
         private XboxSocialUserGroup userGroup;
 
         private void Awake()
-        {
+        { 
             this.EnsureEventSystem();
             XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
             this.ViewSelector.Theme = this.Theme;
-            if (this.stat == null)
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogFormat("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
-                }
-                return;
-            }
-
-            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
 
             if (EnableControllerInput)
@@ -186,10 +176,21 @@ namespace Microsoft.Xbox.Services.Client
 
         private void Start()
         {
+            if (this.stat == null)
+            {
+                var errorMessage = string.Format("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.Leaderboard,
+                           ExceptionType.StatIsNotConfigured,
+                           new Exception(errorMessage));
+                return;
+            }
+
+            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.StartCoroutine(this.LoadTheme(this.Theme));
 
             this.ViewSelector.SelectFilter((int)this.viewFilter);
-            if (this.xboxLiveUser == null)
+            if (this.xboxLiveUser == null && SignInManager.Instance.GetCurrentNumberOfPlayers() > 0)
             {
                 this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
                 if (this.xboxLiveUser != null)
@@ -503,18 +504,14 @@ namespace Microsoft.Xbox.Services.Client
                 this.xboxLiveUser = null;
                 this.Clear();
             }
-            else
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
-                }
-            }
         }
 
         private void OnEnable()
         {
-            this.SetupForAddingUser();
+            if (this.xboxLiveUser == null && SignInManager.Instance.GetCurrentNumberOfPlayers() > 0)
+            {
+                this.SetupForAddingUser();
+            }
 
             this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
             if (this.xboxLiveUser != null)

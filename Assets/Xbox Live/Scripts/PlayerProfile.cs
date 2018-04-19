@@ -140,7 +140,10 @@ namespace Microsoft.Xbox.Services.Client
             {
                 if (!string.IsNullOrEmpty(www.error))
                 {
-                    throw new Exception(www.error);
+                    ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.PlayerProfile,
+                            ExceptionType.LoadGamerPicFailed,
+                            new Exception(www.error));
                 }
 
                 var t = www.texture;
@@ -150,10 +153,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.Log("There was an error while loading " + this.GamerTagText.text + "'s gamerpic. Exception: " + ex.Message);
-                }
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.PlayerProfile,
+                           ExceptionType.LoadGamerPicFailed,
+                           ex);
             }
         }
 

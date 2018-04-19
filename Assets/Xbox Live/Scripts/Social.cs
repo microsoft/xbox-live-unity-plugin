@@ -134,13 +134,6 @@ namespace Microsoft.Xbox.Services.Client
 
                 this.RefreshSocialGroups();
             }
-            else
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
-                }
-            }
         }
 
         private void PresenceFilterValueChangedHandler(Dropdown target)
@@ -162,14 +155,16 @@ namespace Microsoft.Xbox.Services.Client
             if (this.xboxLiveUser != null)
             {
                 XboxSocialUserGroup socialUserGroup;
-                if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup) && XboxLiveServicesSettings.Instance.DebugLogsOn)
+                if (!this.socialUserGroups.TryGetValue(this.presenceFilterDropdown.value, out socialUserGroup))
                 {
-                    Debug.Log("An Exception Occured: Invalid Presence Filter selected");
+                    var errorMessage = "An Invalid Presence Filter selected";
+                    ExceptionManager.Instance.ThrowException(
+                        ExceptionSource.Social,
+                        ExceptionType.UnexpectedException,
+                        new Exception(errorMessage));
                     return;
                 }
                 
-                Debug.LogWarning("Content Panel = " + this.contentPanel);
-
                 try
                 {
                     while (this.contentPanel.childCount > 0)
@@ -189,7 +184,10 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError("An exception occured: " + ex.ToString());
+                    ExceptionManager.Instance.ThrowException(
+                       ExceptionSource.Social,
+                       ExceptionType.UnexpectedException,
+                       ex);
                 }
             }
             else

@@ -45,12 +45,12 @@ namespace Microsoft.Xbox.Services.Client
                     this.OnEventProcessed(socialEvent);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("An Exception Occured: " + e.ToString());
-                }
+                ExceptionManager.Instance.ThrowException(
+                        ExceptionSource.SocialManager,
+                        ExceptionType.UnexpectedException,
+                        ex);
             }
         }
 

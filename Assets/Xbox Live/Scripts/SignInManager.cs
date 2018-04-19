@@ -90,10 +90,10 @@ namespace Microsoft.Xbox.Services.Client
                             }
                             else
                             {
-                                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                                {
-                                    Debug.Log("Exception occured: " + task.Exception.Message);
-                                }
+                                ExceptionManager.Instance.ThrowException(
+                                        ExceptionSource.SignInManager,
+                                        ExceptionType.SignInFailed,
+                                        task.Exception);
                             }
                         });
             }
@@ -139,15 +139,18 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("Remove User Failed: At least one player should be signed in. Removing Player " + playerNumber + " would leave zero signed in players.");
-                }
+                var errorMessage = "Remove User Failed: At least one player should be signed in. Player " + playerNumber + " is the last signed in player.";
+                ExceptionManager.Instance.ThrowException(
+                    ExceptionSource.SignInManager,
+                    ExceptionType.MinimumPlayerNumberReached,
+                    new Exception(errorMessage)
+                    );
+
                 NotifyAllCallbacks(
                     playerNumber,
                     null,
                     XboxLiveAuthStatus.Invalid,
-                    "Remove User Failed: At least one player should be signed in. Removing Player " + playerNumber + " would leave zero signed in players.",
+                    errorMessage,
                     false);
             }
         }
@@ -408,19 +411,21 @@ namespace Microsoft.Xbox.Services.Client
         {
             if (playerNumber <= 0)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(operationName + " Failed: Player Number needs to be greater than zero.");
-                }
+                var errorMessage = operationName + " Failed: Player Number needs to be greater than zero.";
+                ExceptionManager.Instance.ThrowException(
+                                        ExceptionSource.SignInManager,
+                                        ExceptionType.NoPlayersAreSignedIn,
+                                        new Exception (errorMessage));
                 return false;
             }
 
             if (playerNumber > GetMaximumNumberOfPlayers())
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(operationName + " Failed: Player Number exceeds the maximum number of users allowed on this platform.");
-                }
+                var errorMessage = operationName + " Failed: Player Number exceeds the maximum number of users allowed on this platform.";
+                ExceptionManager.Instance.ThrowException(
+                                        ExceptionSource.SignInManager,
+                                        ExceptionType.MaximumPlayerNumberReached,
+                                        new Exception(errorMessage));
                 return false;
             }
 
@@ -428,15 +433,17 @@ namespace Microsoft.Xbox.Services.Client
             {
                 if (CurrentPlayers[playerNumber].XboxLiveUser != null)
                 {
-                    if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                    {
-                        Debug.LogError(operationName + " Failed: Player " + playerNumber + " is already signed in.");
-                    }
+                    var errorMessage = operationName + " Failed: Player " + playerNumber + " is already signed in.";
+                    ExceptionManager.Instance.ThrowException(
+                        ExceptionSource.SignInManager,
+                        ExceptionType.PlayerIsAlreadySignedIn,
+                        new Exception(errorMessage));
+
                     NotifyAllCallbacks(
                         playerNumber,
                         null,
                         XboxLiveAuthStatus.Invalid,
-                        operationName + " Failed: Player " + playerNumber + " is already signed in.",
+                        errorMessage,
                         true);
                     return false;
                 }
@@ -446,10 +453,11 @@ namespace Microsoft.Xbox.Services.Client
             {
                 if (!CurrentPlayers.ContainsKey(playerNumber) || CurrentPlayers[playerNumber].XboxLiveUser == null)
                 {
-                    if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                    {
-                        Debug.LogWarning(operationName + " Failed: Player " + playerNumber + " is not signed in.");
-                    }
+                    var errorMessage = operationName + " Failed: Player " + playerNumber + " is not signed in.";
+                    ExceptionManager.Instance.ThrowException(
+                        ExceptionSource.SignInManager,
+                        ExceptionType.PlayerRequestedIsNotSignedIn,
+                        new Exception(errorMessage));
 
                     if (operationType == XboxLiveOperationType.SignOut)
                     {
@@ -457,7 +465,7 @@ namespace Microsoft.Xbox.Services.Client
                             playerNumber,
                             null,
                             XboxLiveAuthStatus.Invalid,
-                            operationName + " Failed: Player " + playerNumber + " is not signed in.",
+                            errorMessage,
                             false);
                     }
                     return false;
@@ -571,11 +579,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("Exception occured: " + ex.Message);
-                }
-
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.SignInManager,
+                           ExceptionType.SignInSilentlyFailed,
+                           ex);
             }
 
             if (signInStatus != SignInStatus.Success)
@@ -589,10 +596,10 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 catch (Exception ex)
                 {
-                    if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                    {
-                        Debug.LogError("Exception occurred: " + ex.Message);
-                    }
+                    ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.SignInManager,
+                           ExceptionType.SignInFailed,
+                           ex);
                 }
             }
 
@@ -618,10 +625,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError("Exception occurred: " + ex.Message);
-                }
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.SignInManager,
+                           ExceptionType.SignInFailed,
+                           ex);
             }
         }
 
