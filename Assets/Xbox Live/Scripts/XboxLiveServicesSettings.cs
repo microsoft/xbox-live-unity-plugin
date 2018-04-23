@@ -19,6 +19,11 @@ namespace Microsoft.Xbox.Services.Client
             DontDestroyOnLoad(this);
         }
 
+        private void Start()
+        {
+            ExceptionManager.Instance.OnAnyException(this.HandleExceptions);
+        }
+
 
         /// <summary>
         /// Ensures that there is an Xbox Live Debug Manager instance on the scene used to configure debug settings of Xbox Live Prefabs
@@ -33,6 +38,12 @@ namespace Microsoft.Xbox.Services.Client
 
         public static bool EnsureXboxLiveServiceConfiguration() {
             return XboxLive.Instance.AppConfig != null && XboxLive.Instance.AppConfig.ServiceConfigurationId != null;
+        }
+
+        private void HandleExceptions(XboxLiveException ex) {
+            if (DebugLogsOn) {
+                Debug.LogWarning("An exception occured in " + ex.Source + "of type: " + ex.Type + " Details: " + ex.InnerException.Message);
+            }
         }
     }
 }

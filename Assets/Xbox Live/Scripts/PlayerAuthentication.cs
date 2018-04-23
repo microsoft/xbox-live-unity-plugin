@@ -115,7 +115,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                Debug.LogWarning(ex.Message);
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.PlayerAuthentication,
+                           ExceptionType.UnexpectedException,
+                           ex);
             }
 
             this.StartCoroutine(this.LoadTheme());
@@ -132,10 +135,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
-                }
+                ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.PlayerAuthentication,
+                            ExceptionType.UnexpectedException,
+                            new Exception (errorMessage));
             }
         }
 
@@ -179,10 +182,10 @@ namespace Microsoft.Xbox.Services.Client
                 }
                 catch (Exception ex)
                 {
-                    if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                    {
-                        Debug.LogError("Exception occured: " + ex.Message);
-                    }
+                    ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.PlayerAuthentication,
+                            ExceptionType.CreateSocialUserGroupFailed,
+                            ex);
                 }
             }
         }
@@ -202,9 +205,12 @@ namespace Microsoft.Xbox.Services.Client
 
             if (socialEvent.EventType == SocialEventType.LocalUserAdded)
             {
-                if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
+                if (socialEvent.ErrorCode != 0)
                 {
-                    Debug.LogFormat("Failed to add local user to SocialManager: {0}", socialEvent.ErrorMessge);
+                    ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.SocialManager,
+                            ExceptionType.AddLocalUserFailed,
+                            new Exception(socialEvent.ErrorMessge));
                     LoadProfileInfo(false);
                 }
                 else
@@ -215,9 +221,12 @@ namespace Microsoft.Xbox.Services.Client
             else if (socialEvent.EventType == SocialEventType.SocialUserGroupLoaded &&
                      ((SocialUserGroupLoadedEventArgs)socialEvent.EventArgs).SocialUserGroup == userGroup)
             {
-                if (socialEvent.ErrorCode != 0 && XboxLiveServicesSettings.Instance.DebugLogsOn)
+                if (socialEvent.ErrorCode != 0)
                 {
-                    Debug.LogFormat("Failed to load the SocialUserGroup: {0}", socialEvent.ErrorMessge);
+                    ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.SocialManager,
+                           ExceptionType.LoadSocialUserGroupFailed,
+                           new Exception(socialEvent.ErrorMessge));
                 }
                 else
                 {
@@ -246,10 +255,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.Log("There was an error while loading Profile Info. Exception: " + ex.Message);
-                }
+                ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.PlayerAuthentication,
+                            ExceptionType.LoadGamerPicFailed,
+                            ex);
             }
             this.Refresh();
         }
@@ -271,10 +280,10 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
-                }
+                ExceptionManager.Instance.ThrowException(
+                            ExceptionSource.PlayerAuthentication,
+                            ExceptionType.SignInFailed,
+                            new Exception(errorMessage));
                 this.signInPanel.GetComponentInChildren<Button>().interactable = true;
                 this.AllowSignInAttempt = true;
             }
