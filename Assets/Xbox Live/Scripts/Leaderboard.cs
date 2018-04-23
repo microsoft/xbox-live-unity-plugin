@@ -200,6 +200,11 @@ namespace Microsoft.Xbox.Services.Client
                     this.UpdateData(0, viewFilter);
                 }
             }
+            else {
+                if (this.xboxLiveUser == null) {
+
+                }
+            }
         }
 
         public void RequestFlushToService(bool isHighPriority)
@@ -508,12 +513,12 @@ namespace Microsoft.Xbox.Services.Client
 
         private void OnEnable()
         {
+            this.SetupForAddingUser();
             if (this.xboxLiveUser == null && SignInManager.Instance.GetCurrentNumberOfPlayers() > 0)
             {
-                this.SetupForAddingUser();
+                this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
             }
 
-            this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
             if (this.xboxLiveUser != null)
             {
                 this.statsAddedLocalUser = true;
