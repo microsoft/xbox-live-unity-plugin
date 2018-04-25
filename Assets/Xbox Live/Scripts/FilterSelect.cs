@@ -18,18 +18,14 @@ namespace Microsoft.Xbox.Services.Client
         [Header("UI Components")]
         public Image SelectedLineImage;
         public Text FilterText;
-
-        public void Start()
-        {
-            this.SelectedLineImage.sprite = ThemeHelper.LoadSprite(this.Theme, "RowBackground-Highlighted");    
-        }
-
+        
         public void UpdateStatus(bool enable) {
             isEnabled = enable;
             SelectedLineImage.GetComponent<Image>().enabled = isEnabled;
             FilterText.color = isEnabled ? 
                 ThemeHelper.GetThemeHighlightColor(this.Theme) : 
                 ThemeHelper.GetThemeBaseFontColor(this.Theme);
+            this.SelectedLineImage.sprite = ThemeHelper.LoadSprite(this.Theme, "RowBackground-Highlighted");
         }
     }
 }
