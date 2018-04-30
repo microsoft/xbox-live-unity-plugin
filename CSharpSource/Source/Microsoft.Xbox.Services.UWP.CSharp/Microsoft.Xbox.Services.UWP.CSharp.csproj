@@ -120,7 +120,7 @@
   <Target Name="CopyToUnityLibs" AfterTargets="Build">
     <Message Importance="high" Text="Copying binaries to plugin layout path $(AssetLibsBasePath)" />
     <Exec Command="xcopy /y /d &quot;$(OutDir)*.dll&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" />
-    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" Condition="'$(Configuration)' == 'Debug'" />
+    <Exec Command="xcopy /y /d &quot;$(OutDir)*.pdb&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" />
     <Exec Command="xcopy /y /d &quot;$(ProjectDir)..\..\..\External\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll&quot; &quot;$(AssetLibsBasePath)UWP\&quot;" />
   </Target>
 </Project>
