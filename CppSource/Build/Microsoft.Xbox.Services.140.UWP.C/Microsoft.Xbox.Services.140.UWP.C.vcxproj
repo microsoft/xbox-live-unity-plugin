@@ -228,7 +228,7 @@
     </PropertyGroup>
     <Message Importance="high" Text="Copying binaries from $(OutDir) to Unity Libs folder $(ProjectDir)..\..\..\Assets\Plugins\" />
     <Exec Command="xcopy /y /d /i &quot;$(OutDir)*.dll&quot; &quot;$(ProjectDir)..\..\..\Assets\Plugins\$(PluginPlatform)&quot;" />
-    <Exec Command="xcopy /y /d /i &quot;$(OutDir)*.pdb&quot; &quot;$(ProjectDir)..\..\..\Assets\Plugins\$(PluginPlatform)&quot;"/>
+    <Exec Command="xcopy /y /d /i &quot;$(OutDir)*.pdb&quot; &quot;$(ProjectDir)..\..\..\Assets\Plugins\$(PluginPlatform)&quot;" Condition="'$(Configuration)' == 'Debug'"/>
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
