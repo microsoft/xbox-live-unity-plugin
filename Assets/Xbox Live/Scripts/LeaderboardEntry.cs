@@ -72,10 +72,11 @@ namespace Microsoft.Xbox.Services.Client
             }
             catch (Exception ex)
             {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.Log("There was an error while loading " + gamertagText.text + "'s gamerpic. Exception: " + ex.Message);
-                }
+                var errorMessage = "There was an error while loading " + gamertagText.text + "'s gamerpic. Exception: " + ex.Message;
+                ExceptionManager.Instance.ThrowException(
+                               ExceptionSource.Leaderboard,
+                               ExceptionType.LoadGamerPicFailed,
+                               new Exception(errorMessage));
             }
         }
     }

@@ -14,6 +14,12 @@ using System.Collections;
 
 namespace Microsoft.Xbox.Services.Client
 {
+    public enum LeaderboardFilter
+    {
+        Default,
+        NearestMe
+    }
+
     [Serializable]
     public class Leaderboard : MonoBehaviour
     {
@@ -47,7 +53,6 @@ namespace Microsoft.Xbox.Services.Client
         public string verticalScrollInputAxis;
 
         public float scrollSpeedMultiplier = 0.1f;
-
 
         [Header("UI References")]
         public Transform contentPanel;
@@ -83,8 +88,7 @@ namespace Microsoft.Xbox.Services.Client
         public Image TopLine;
 
         public Image BottomLine;
-
-        private int currentHighlightedEntryPosition = 0;
+        
         private List<PlayerProfile> currentEntries = new List<PlayerProfile>();
         private uint currentPage;
         private uint totalPages;
@@ -109,32 +113,22 @@ namespace Microsoft.Xbox.Services.Client
         private XboxSocialUserGroup userGroup;
 
         private void Awake()
-        {
+        { 
             this.EnsureEventSystem();
             XboxLiveServicesSettings.EnsureXboxLiveServicesSettings();
             this.ViewSelector.Theme = this.Theme;
-            if (this.stat == null)
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogFormat("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
-                }
-                return;
-            }
-
-            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.entryObjectPool = this.GetComponent<ObjectPool>();
 
             if (EnableControllerInput)
             { 
-
                 if (this.NextPageControllerButton != XboxControllerButtons.None)
                 {
                     this.nextControllerButton = "joystick " + this.JoystickNumber + " button " + XboxControllerConverter.GetUnityButtonNumber(this.NextPageControllerButton);
                     this.NextPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.NextPageControllerButton);
                     this.NextPageImage.SetNativeSize();
                 }
-                else {
+                else
+                {
                     this.NextPageImage.enabled = false;
                 }
 
@@ -144,7 +138,8 @@ namespace Microsoft.Xbox.Services.Client
                     this.PreviousPageImage.sprite = XboxControllerConverter.GetXboxButtonSpite(this.Theme, this.PreviousPageControllerButton);
                     this.PreviousPageImage.SetNativeSize();
                 }
-                else {
+                else
+                {
                     this.PreviousPageImage.enabled = false;
                 }
 
@@ -170,7 +165,8 @@ namespace Microsoft.Xbox.Services.Client
                     this.PrevViewImage.enabled = false;
                 }
             }
-            else {
+            else
+            {
                 this.NextViewImage.enabled = false;
                 this.PrevViewImage.enabled = false;
                 this.NextPageImage.enabled = false;
@@ -180,10 +176,21 @@ namespace Microsoft.Xbox.Services.Client
 
         private void Start()
         {
+            if (this.stat == null)
+            {
+                var errorMessage = string.Format("Leaderboard '{0}' does not have a stat configured and will not function properly.", this.name);
+                ExceptionManager.Instance.ThrowException(
+                           ExceptionSource.Leaderboard,
+                           ExceptionType.StatIsNotConfigured,
+                           new Exception(errorMessage));
+                return;
+            }
+
+            this.HeaderText.text = this.stat.DisplayName.ToUpper();
             this.StartCoroutine(this.LoadTheme(this.Theme));
 
             this.ViewSelector.SelectFilter((int)this.viewFilter);
-            if (this.xboxLiveUser == null)
+            if (this.xboxLiveUser == null && SignInManager.Instance.GetCurrentNumberOfPlayers() > 0)
             {
                 this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
                 if (this.xboxLiveUser != null)
@@ -191,6 +198,11 @@ namespace Microsoft.Xbox.Services.Client
                     this.statsAddedLocalUser = true;
                     this.socialAddedLocalUser = true;
                     this.UpdateData(0, viewFilter);
+                }
+            }
+            else {
+                if (this.xboxLiveUser == null) {
+
                 }
             }
         }
@@ -217,7 +229,7 @@ namespace Microsoft.Xbox.Services.Client
                 if (!string.IsNullOrEmpty(this.verticalScrollInputAxis) && Input.GetAxis(this.verticalScrollInputAxis) != 0)
                 {
                     var inputValue = Input.GetAxis(this.verticalScrollInputAxis);
-                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + inputValue * scrollSpeedMultiplier;
+                    this.scrollRect.verticalScrollbar.value = this.scrollRect.verticalNormalizedPosition + (inputValue * scrollSpeedMultiplier);
                 }
 
                 if (!string.IsNullOrEmpty(this.nextViewControllerButton) && Input.GetKeyDown(this.nextViewControllerButton))
@@ -497,20 +509,16 @@ namespace Microsoft.Xbox.Services.Client
                 this.xboxLiveUser = null;
                 this.Clear();
             }
-            else
-            {
-                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                {
-                    Debug.LogError(errorMessage);
-                }
-            }
         }
 
         private void OnEnable()
         {
             this.SetupForAddingUser();
+            if (this.xboxLiveUser == null && SignInManager.Instance.GetCurrentNumberOfPlayers() > 0)
+            {
+                this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
+            }
 
-            this.xboxLiveUser = SignInManager.Instance.GetPlayer(this.PlayerNumber);
             if (this.xboxLiveUser != null)
             {
                 this.statsAddedLocalUser = true;
@@ -562,8 +570,4 @@ namespace Microsoft.Xbox.Services.Client
         }
     }
 
-    public enum LeaderboardFilter {
-        Default,
-        NearestMe
-    }
 }
