@@ -74,6 +74,7 @@ namespace Microsoft.Xbox.Services.Client
             if (this.GetMaximumNumberOfPlayers() > 1)
             {
                 var autoPicker = new Windows.System.UserPicker { AllowGuestAccounts = false };
+                var userPicked = false;
                 autoPicker.PickSingleUserAsync().AsTask().ContinueWith(
                         task =>
                         {
@@ -83,16 +84,20 @@ namespace Microsoft.Xbox.Services.Client
                                 playerInfo.XboxLiveUser = new XboxLiveUser(playerInfo.WindowsUser);
                                 XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
                                 this.PlayersPendingSignIn.Add(playerNumber);
-                                this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
+                                userPicked = true;
                             }
                             else
                             {
-                                if (XboxLiveServicesSettings.Instance.DebugLogsOn)
-                                {
-                                    Debug.Log("Exception occured: " + task.Exception.Message);
-                                }
+                                ExceptionManager.Instance.ThrowException(
+                                        ExceptionSource.SignInManager,
+                                        ExceptionType.SignInFailed,
+                                        task.Exception);
+                                userPicked = false;
                             }
                         });
+                    if (userPicked) {
+                        this.StartCoroutine(this.SignInAsync(playerNumber, this.CurrentPlayers[playerNumber]));
+                    }
             }
             else
             {
