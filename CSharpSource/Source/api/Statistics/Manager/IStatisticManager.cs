@@ -68,6 +68,11 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <param name="user">The local user whose stats to access</param>
         /// <param name="statName">The name of the statistic to modify</param>
         /// <return>Whether or not the setting was successful along with updated stat</return>
+        /// <remarks>
+        /// The title is responsible for tracking user stats. For example with connected storage.
+        /// This method will return the value for a stat stored in the service; however, this value 
+        /// returned will not be valid if the service couldn't be reached.
+        /// </remarks>
         StatisticValue GetStatistic(XboxLiveUser user, string statName);
 
         /// <summary> 
@@ -76,6 +81,18 @@ namespace Microsoft.Xbox.Services.Statistics.Manager
         /// <param name="user">The local user whose stats to access</param>
         /// <param name="statNameList">The list to fill with stat names</param>
         /// <return>Whether or not the setting was successful.</return>
+        /// <remarks>
+        /// These are the names for the stats that the user already has values for.
+        /// This call won't return all the stat names configured for the title.
+        ///
+        /// For example
+        ///
+        /// A title has stat1, stat2, and stat3 configured in the developer portal.
+        /// The user has previously set a value for stat2.
+        /// GetStatisticNames() will only return "stat2".
+        /// 
+        /// Note that if the service can't be reached then this will return an empty list.
+        /// </remarks>
         IList<string> GetStatisticNames(XboxLiveUser user);
 
         /// <summary> 
