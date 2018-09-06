@@ -280,13 +280,15 @@ namespace Microsoft.Xbox.Services.Client
             }
             else
             {
-                ExceptionManager.Instance.ThrowException(
-                            ExceptionSource.PlayerAuthentication,
-                            ExceptionType.SignInFailed,
-                            new Exception(errorMessage));
-                this.signInPanel.GetComponentInChildren<Button>().interactable = true;
-                this.AllowSignInAttempt = true;
+                if (authStatus != XboxLiveAuthStatus.Canceled)
+                {
+                    ExceptionManager.Instance.ThrowException(
+                                ExceptionSource.PlayerAuthentication,
+                                ExceptionType.SignInFailed,
+                                new Exception(errorMessage));
+                }
             }
+            this.ExecuteOnMainThread.Enqueue(Refresh);
         }
 
         private void Refresh()
