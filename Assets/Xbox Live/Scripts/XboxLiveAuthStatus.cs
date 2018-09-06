@@ -7,6 +7,7 @@ namespace Microsoft.Xbox.Services.Client
     {
         Unknown,
         Succeeded,
+        Canceled,
         Unsupported,
         Invalid,
         Failed

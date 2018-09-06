@@ -83,20 +83,38 @@ namespace Microsoft.Xbox.Services.Client
                         {
                             if (task.Status == TaskStatus.RanToCompletion)
                             {
-                                playerInfo.WindowsUser = task.Result;
-                                playerInfo.XboxLiveUser = new XboxLiveUser(playerInfo.WindowsUser);
-                                XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
-                                this.PlayersPendingSignIn.Add(playerNumber);
-                                userPicked = true;
+                                if (task.Result != null)
+                                {
+                                    playerInfo.WindowsUser = task.Result;
+                                    playerInfo.XboxLiveUser = new XboxLiveUser(playerInfo.WindowsUser);
+                                    XboxLiveUser.SignOutCompleted += XboxLiveUserSignOutCompleted;
+                                    this.PlayersPendingSignIn.Add(playerNumber);
+                                    userPicked = true;
+                                }
+                                else {
+                                    userPicked = false;
+                                    NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Canceled, "Sign In Failed: Player " + playerNumber + " failed. Status: Canceled by the User.");
+                                }
                             }
                             else
                             {
-                                ExceptionManager.Instance.ThrowException(
-                                        ExceptionSource.SignInManager,
-                                        ExceptionType.SignInFailed,
-                                        task.Exception);
-                                userPicked = false;
-
+                                if (task.Status == TaskStatus.Canceled)
+                                {
+                                    userPicked = false;
+                                    NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Canceled, "Sign In Failed: Player " + playerNumber + " failed. Status: Canceled by the User.");
+                                }
+                                else
+                                {
+                                    if (task.Status == TaskStatus.Faulted)
+                                    {
+                                        ExceptionManager.Instance.ThrowException(
+                                            ExceptionSource.SignInManager,
+                                            ExceptionType.SignInFailed,
+                                            task.Exception);
+                                        userPicked = false;
+                                        NotifyAllCallbacks(playerNumber, null, XboxLiveAuthStatus.Failed, "Sign In Failed: Player " + playerNumber + " failed.");
+                                    }
+                                }
                             }
                         });
                     if (userPicked) {
