@@ -69,9 +69,7 @@ Note: Ensure Unity was installed with Windows Store .NET Scripting Backend, and 
 
 ## Using the Xbox Live Unity Asset 
 
-See the docs at https://docs.microsoft.com/en-us/windows/uwp/xbox-live/get-started-with-creators/develop-creators-title-with-unity
-
-
+See the docs at https://docs.microsoft.com/en-us/gaming/xbox-live/get-started/setup-ide/creators/unity-win10/cr-unity-win10_nav
 
 ## Using the Game Save Plugin
 
