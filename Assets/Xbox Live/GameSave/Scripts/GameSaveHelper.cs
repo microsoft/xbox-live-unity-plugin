@@ -108,9 +108,12 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 if (this.gameSaveProvider != null)
                 {
                     var loadBuffers = this.LoadDataHelper(containerName, blobsToRead);
-                    foreach (var loadedBuffer in loadBuffers)
+                    if (loadBuffers != null)
                     {
-                        returnDictionary.Add(loadedBuffer.Key, loadedBuffer.Value.ToArray());
+                        foreach (var loadedBuffer in loadBuffers)
+                        {
+                            returnDictionary.Add(loadedBuffer.Key, loadedBuffer.Value.ToArray());
+                        }
                     }
                 }
                 else
@@ -146,12 +149,15 @@ namespace Microsoft.Xbox.Services.ConnectedStorage
                 if (this.gameSaveProvider != null)
                 {
                     var loadBuffers = this.LoadDataHelper(containerName, blobsToRead);
-                    foreach (var loadedBuffer in loadBuffers)
+                    if (loadBuffers != null)
                     {
-                        var loadedBufferValue = loadedBuffer.Value;
-                        var reader = DataReader.FromBuffer(loadedBufferValue);
-                        var loadedData = reader.ReadString(loadedBufferValue.Length);
-                        returnDictionary.Add(loadedBuffer.Key, loadedData);
+                        foreach (var loadedBuffer in loadBuffers)
+                        {
+                            var loadedBufferValue = loadedBuffer.Value;
+                            var reader = DataReader.FromBuffer(loadedBufferValue);
+                            var loadedData = reader.ReadString(loadedBufferValue.Length);
+                            returnDictionary.Add(loadedBuffer.Key, loadedData);
+                        }
                     }
                 }
                 else
