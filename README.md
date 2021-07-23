@@ -1,3 +1,13 @@
+## 2021 Update: More Accessible: Creators Program No Longer Requires Xbox Live
+One vector of accessibility in game development is reducing the friction and technical complexity required to build and publish games to a store.
+
+__In February 2021 we removed the requirement for UWP games to integrate with Xbox Live to publish to Xbox and are phasing out software needed to support Xbox Live on UWP.__ The Store policy has been updated at [UWP Store Policies](https://docs.microsoft.com/en-us/windows/uwp/publish/store-policies)
+
+We'd also like to mention that the GDK is now available to all developers free of charge, to help developers learn how to build games for the Xbox App on Windows and Game Pass; no license required for learning: [https://aka.ms/gdk](https://aka.ms/gdk) 
+
+The Microsoft Game Development Kit (GDK) contains the *common* tools, libraries, and documentation needed to build games for the [Xbox App on Windows 10]( https://www.xbox.com/en-US/apps/xbox-app-for-windows-10), [Xbox Game Pass for PC]( https://www.xbox.com/en-US/xbox-game-pass/pc-games?OCID=AID2100895_SEM_64cb82c395a51ebbffc2e27408836bc1:G:s&ef_id=64cb82c395a51ebbffc2e27408836bc1:G:s&msclkid=64cb82c395a51ebbffc2e27408836bc1), Xbox consoles (Xbox Series X|S, Xbox One), and [Xbox Game Pass cloud gaming]( https://www.xbox.com/en-US/xbox-game-pass/cloud-gaming).
+
+
 ## Welcome!
 
 The Xbox Live Unity Plugin provides a way for developers in the Xbox Live Creators Program to quickly and easily integrate Xbox Live functionality into their [Unity](https://unity3d.com/) based game.  For more information about the Xbox Live Creators Program go to [http://aka.ms/xblcp](http://aka.ms/xblcp).
@@ -24,8 +34,6 @@ The Unity Plugin is broken into the following parts
 
 * __ProjectSettings__ contains standard Unity project settings files.
 
-## Getting Started
-If you're just looking to integrate Xbox Live functionality into your Unity game, you can [download the latest UnityPackage from Releases](http://github.com/Microsoft/xbox-live-unity-plugin/releases/latest).  If you want to make changes or you need to debug something, you can do so directly from this source.
 
 ### Prerequisites
 
