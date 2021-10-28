@@ -8,7 +8,7 @@ Most Xbox Live functionality in Unity is managed by the `XboxLive` script.  This
 
 Any of your scripts that need to make calls to Xbox Live APIs should use the various properties `XboxLive.Instance`.
 
-* **`Context`** provides the main entry point into many Xbox Live services and will be initialized after a user has been Authenticated using `SignInAsync()`.  See the [Xbox Live API documentation](http://github.com/Microsoft/xbox-live-api-csharp) for details.
+* **`Context`** provides the main entry point into many Xbox Live services and will be initialized after a user has been authenticated using `SignInAsync()`.  See the [Xbox Live API documentation](https://docs.microsoft.com/gaming/xbox-live/api-ref/live-api-reference-nav) for details.
 * **`User`** provides a reference to the currently authenticated user which can be used when making calls to various services.
 
 ## `UnityTaskExtensions` script
